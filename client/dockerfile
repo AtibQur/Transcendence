@@ -1,0 +1,19 @@
+FROM node:19
+
+# Set the working directory inside the container
+WORKDIR /app
+
+# Copy the package.json and package-lock.json files
+COPY package*.json ./
+
+# Copy all the project files
+COPY . .
+
+# Install the dependencies
+RUN npm install
+
+# Expose the port on which your Vue.js application will run (default: 8080)
+EXPOSE 8080
+
+# Specify the command to run your Vue.js application
+CMD npm run build
