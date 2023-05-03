@@ -28,7 +28,6 @@ services:
     restart: always
     build:
       context: ./backend
-      dockerfile: dockerfile
     ports:
       - 3000:3000
     depends_on:
@@ -37,6 +36,7 @@ services:
   frontend:
     build:
       context: ./client
-      dockerfile: dockerfile
     ports:
       - 8080:8080
+    depends_on:
+      - backend

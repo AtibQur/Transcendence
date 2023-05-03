@@ -12,8 +12,8 @@ COPY . .
 # Install the dependencies
 RUN npm install
 
-# Expose the port on which your Vue.js application will run (default: 8080)
+# Expose the port on which your Vue.js application will run (default: 8080)                                                                         
 EXPOSE 8080
 
 # Specify the command to run your Vue.js application
-CMD npm run build
+CMD [ "npm", "run", "serve" ]
