@@ -25,8 +25,18 @@ services:
       - postgresql
     
   backend:
-    image: nestjs/cli
     restart: always
     build:
       context: ./backend
-      dockerfile: dockerfile
+    ports:
+      - 3000:3000
+    depends_on:
+      - postgresql
+  
+  frontend:
+    build:
+      context: ./client
+    ports:
+      - 8080:8080
+    depends_on:
+      - backend
