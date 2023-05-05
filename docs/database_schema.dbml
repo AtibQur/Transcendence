@@ -1,0 +1,76 @@
+Table players {
+  id integer [primary key]
+  username varchar
+  oauth_id integer
+  avatar_url varchar [default: "'default_avatar.png'"]
+  two_factor_enabled boolean [default: false]
+  password text
+  created_at timestamp
+}
+
+Table player_stats {
+  player_id integer [primary key, ref: > players.id]
+  wins integer [default: 0]
+  losses integer [default: 0]
+  ladder_level integer [default: 0]
+  achievements text [note: "A comma-separated list of achievement IDs earned by the player."]
+  status player_status [not null]
+}
+
+Enum player_status {
+  online
+  offline
+  in_game
+}
+
+Table friends {
+  user_id integer [ref: > players.id]
+  friend_id integer [ref: > players.id]
+  status friend_status [not null]
+  created_at timestamp
+}
+
+Enum friend_status {
+  pending
+  accepted
+}
+
+Table blocked_players {
+  player_id integer [ref: > players.id]
+  blocked_player_id integer [ref: > players.id]
+  created_at timestamp
+}
+
+Table channels {
+  id integer [primary key]
+  name varchar
+  owner_id integer [ref: > players.id]
+  password varchar
+  is_private boolean [default: false]
+  created_at timestamp
+}
+
+Table chat_messages {
+  id integer [primary key]
+  content text
+  sender_id integer [ref: > players.id]
+  channel_id integer [ref: > channels.id]
+  created_at timestamp
+}
+
+Table channel_members {
+  player_id integer [ref: > players.id]
+  channel_id integer [ref: > channels.id]
+  is_admin boolean [default: false]
+  is_muted boolean [default: false]
+  is_banned boolean [default: false]
+}
+
+Table match_history {
+  id int [pk, increment]
+  user_id int [not null, ref: > players.id]
+  opponent_id int [not null, ref: > players.id]
+  user_points int [default: 0]
+  opponent_points int [default: 0]
+  timestamp timestamp [not null]
+}
