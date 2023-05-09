@@ -37,11 +37,12 @@ services:
       - /app/node_modules
   
   frontend:
+    restart: always
     build:
       context: ./frontend
       dockerfile: Dockerfile
-    ports:
-      - 8080:8080
     volumes:
       - ./frontend:/app
       - /app/node_modules
+    ports:
+      - "8080:8080"

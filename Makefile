@@ -3,3 +3,5 @@ all:
 
 down:
 	@docker compose down -v
+
+re: down all
