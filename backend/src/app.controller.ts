@@ -3,10 +3,16 @@ import { AuthGuard } from '@nestjs/passport';
 
 @Controller()
 export class AppController {
-  @Get('profile')
+
+  @Get()
+  getHello(): string {
+    return 'Hello World!';
+  }
+
+  @Get('protected-route')
   @UseGuards(AuthGuard('42'))
-  getProfile() {
-    // Here, you can access the user information through the `req.user` object
-    return { message: 'This is your profile' };
+  getProtectedRoute(): string {
+    return 'you have entered my king';
   }
 }
+

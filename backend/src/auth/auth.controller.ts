@@ -3,19 +3,21 @@ import { AuthGuard } from '@nestjs/passport';
 
 @Controller('auth')
 export class AuthController {
-    @Get('42')
+    @Get('/42')
     @UseGuards(AuthGuard('42'))
-    async login() {}
-
-    @Get('42/callback')
-    @UseGuards(AuthGuard('42'))
-    async callback(@Req() red: any, @Res() res: any) {
-        res.redirect('/');
+    async fortyTwoLogin() {
     }
 
-    @Get('logout')
-    async logout(@Req() req: any, @Res() res: any) {
+    @Get('/42/callback')
+    @UseGuards(AuthGuard('42'))
+    async fortyTwoCallback(@Req() req: any, @Res() res: any) {
+        console.log(req.user);
+        res.redirect('http://localhost:3000');
+    }
+
+    @Get('/logout')
+    async fortyTwoLogout(@Req() req: any, @Res() res: any) {
         req.logout();
-        res.redirect('/');
+        res.redirect('http://localhost:3000');
     }
 }
