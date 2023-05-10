@@ -12,12 +12,12 @@ export class AuthController {
     @UseGuards(AuthGuard('42'))
     async fortyTwoCallback(@Req() req: any, @Res() res: any) {
         console.log(req.user);
-        res.redirect('http://localhost:3000');
+        res.redirect('http://localhost:3000/');
     }
 
     @Get('/logout')
     async fortyTwoLogout(@Req() req: any, @Res() res: any) {
         req.logout();
-        res.redirect('http://localhost:3000');
+        res.redirect('http://localhost:3000/');
     }
 }
