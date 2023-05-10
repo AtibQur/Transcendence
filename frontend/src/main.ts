@@ -13,15 +13,13 @@ const routes: RouteRecordRaw[] = [
       path: '/about',
       component: About,
     },
-  ];
+];
 
 const router = createRouter({
     history: createWebHistory(),
     routes,
 });
 
-const app = createApp(App);
+const app = createApp(App).use(router);
 app.use(router);
 app.mount('#app');
-
-createApp(App).mount('#app')
