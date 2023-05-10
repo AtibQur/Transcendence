@@ -1,18 +1,22 @@
 <template>
-  <img alt="Vue logo" src="./assets/images/logo.png">
-  <HelloWorld msg="Welcome to Your Vue.js + TypeScript App"/>
+	<h1>Vue: Hello Nest</h1>
+	<h1>Nest: {{ answer }}</h1>
+	<HelloWorld msg="Welcome to Your Vue.js App"/>
 </template>
 
-<script lang="ts">
-import { defineComponent } from 'vue';
-import HelloWorld from './components/common/HelloWorld.vue';
-
-export default defineComponent({
-  name: 'App',
-  components: {
-    HelloWorld
-  }
-});
+<script>
+	  import axios from 'axios'
+	  export default {
+		  data() {
+			  return {
+				  answer: ''
+			  }
+		  },
+		  mounted () {
+			  axios.get('http://localhost:3000/')
+				  .then(response => this.answer = response.data)
+		  }
+	  }
 </script>
 
 <style>
