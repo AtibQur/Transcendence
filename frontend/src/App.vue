@@ -1,11 +1,7 @@
 <template>
-	<h1>Vue: Hello Nest</h1>
+	<!-- <h1>Vue: Hello Nest</h1>
 	<h1>Nest: {{ answer }}</h1>
-	<HelloWorld msg="Welcome to Your Vue.js App"/>
-	<nav>
-		<router-link to="/">Home</router-link> |
-		<router-link to="/about">About</router-link>
-	</nav>
+	<HelloWorld msg="Welcome to Your Vue.js App"/> -->
 	<router-view/>
   </template>
 
