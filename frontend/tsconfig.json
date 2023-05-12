@@ -3,6 +3,7 @@
     "target": "esnext",
     "module": "esnext",
     "strict": true,
+    "noImplicitAny": false,
     "jsx": "preserve",
     "moduleResolution": "node",
     "skipLibCheck": true,
@@ -12,13 +13,14 @@
     "useDefineForClassFields": true,
     "sourceMap": true,
     "baseUrl": ".",
-    "types": [
-      "webpack-env"
-    ],
+    "types": ["node", "vue", "vue-router", "webpack-env"],
     "paths": {
       "@/*": [
         "src/*"
-      ]
+      ],
+      "vue-router": [
+        "node_modules/vue-router/dist/vue-router.esm-bundler.js"
+      ],
     },
     "lib": [
       "esnext",
@@ -36,5 +38,5 @@
   ],
   "exclude": [
     "node_modules"
-  ]
+  ],
 }
