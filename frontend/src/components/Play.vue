@@ -3,8 +3,8 @@
       <h1>Play</h1>
     </div>
   </template>
-  
-  <script>
+
+<script>
   export default {
     name: 'PlayGame'
   }
