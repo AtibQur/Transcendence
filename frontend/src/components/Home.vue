@@ -13,7 +13,15 @@
   </div>
 </template>
 
+<script>
+  export default {
+    name: 'HomeView'
+  }
+</script>
+
 <style>
+  @import url('https://fonts.googleapis.com/css?family=JetBrains+Mono');
+
   .PongContainer {
     display: flex;
     flex-direction: column;
@@ -23,19 +31,25 @@
   }
   
   .PongLogo {
-    font-size: 50px;
-    width: fit-content;
-    margin: 0;
+    font-family: 'JetBrains Mono';
+    font-style: normal;
+    font-weight: 400;
+    font-size: 96px;
+    line-height: 127px;
+    color: #134279;
+    text-shadow: -3px 3px #a29e9e;
   }
 
   .PongTable {
     display: flex;
     justify-content: space-between;
-    width: 600px;
+    width: 500px;
     align-items: center;
     flex-direction: column;
+    justify-content: center;
+    font-weight: 400px;
   }
-
+  
   .PongTable ul {
     display: flex;
     list-style-type: none;
@@ -44,13 +58,12 @@
   }
 
   .PongTable li {
-    margin-right: 20px;
+    margin: 0px 50px 0px 50px;
+    font-size: 16px;
+    text-decoration: none;
+  }
+  .PongTable li a {
+    color: #134279;
+    text-decoration: none;
   }
 </style>
-
-
-<script>
-export default {
-  name: 'HomeView'
-}
-</script>
