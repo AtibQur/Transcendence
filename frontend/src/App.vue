@@ -3,23 +3,32 @@
 	<h1>Nest: {{ answer }}</h1>
 	<HelloWorld msg="Welcome to Your Vue.js App"/> -->
 	<router-view/>
-  </template>
+</template>
 
-<script>
-		import axios from 'axios'
-		export default {
-			data() {
-				return {
-					answer: ''
-				}
-			},
-			mounted () {
-				axios.get('http://localhost:3000/')
-					.then(response => this.answer = response.data)
-			}
+<script setup lang="ts">
+	import axios from 'axios';
+	import { onBeforeMount, onMounted, ref } from 'vue';
+
+	//constants
+	const answer = ref("");
+	const answerLoaded = ref(false);
+
+	//functions
+	async function fetchAnswer() {
+		try {
+			const response = await axios.get('http://localhost:3000');
+			answer.value = response.data;
+			answerLoaded.value = true
+		} catch (error) {
+			console.log("Error occured");
 		}
-</script>
+	}
 
+	onBeforeMount(() => {
+		fetchAnswer();
+	})
+
+</script>
 <style>
 #app {
 	font-family: Avenir, Helvetica, Arial, sans-serif;
