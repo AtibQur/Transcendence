@@ -1,11 +1,13 @@
-import { Controller, Get, Query, Req, Res, UseGuards } from '@nestjs/common';
+import { Controller, Get, Req, Res, UseGuards } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 
 @Controller('auth')
 export class AuthController {
     @Get('/42')
     @UseGuards(AuthGuard('42'))
-    async fortyTwoLogin() {}
+    async fortyTwoLogin() {
+        console.log('you have entered my king');
+    }
 
     @Get('/42/callback')
     @UseGuards(AuthGuard('42'))

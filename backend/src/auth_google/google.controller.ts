@@ -16,4 +16,11 @@ export class GoogleController {
             return 'No user from google'
         return req.user;
     }
+
+    @Get('auth/google/logout')
+    @UseGuards(AuthGuard('google'))
+    async googleLogout(@Req() req) {
+        req.logout();
+        return 'Logged out';
+    }
 }

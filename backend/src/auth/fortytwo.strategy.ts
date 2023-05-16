@@ -7,15 +7,13 @@ import * as path from 'path';
 const envPath = path.resolve(__dirname, '../../../.env');
 dotenv.config({ path: envPath });
 
-
 @Injectable()
 export class FortyTwoStrategy extends PassportStrategy(Strategy, '42') {
-    
     constructor() {
         super({
             clientID : process.env.FT_CLIENTID,
             clientSecret : process.env.FT_CLIENTSCT,
-            callBackUri : process.env.FT_REDIRECTURI,
+            callBackURL : process.env.FT_REDIRECTURI,
             scope: 'public',
         });  
     }
