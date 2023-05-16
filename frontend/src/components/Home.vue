@@ -15,14 +15,15 @@
 
 <script>
   export default {
-    name: 'HomeView'
+    name: 'HomeScreen'
   }
 </script>
 
 <style>
   @import url('https://fonts.googleapis.com/css?family=JetBrains+Mono');
-
+  
   .PongContainer {
+    background-color: #B2DAE7;
     display: flex;
     flex-direction: column;
     align-items: center;
