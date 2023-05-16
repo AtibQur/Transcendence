@@ -18,7 +18,7 @@ export class MessagesGateway {
   async create(
     @MessageBody() createMessageDto: CreateMessageDto,
     @ConnectedSocket() client: Socket,
-  ) {
+) {
     const message = await this.messagesService.create(createMessageDto, client.id);
 
     this.server.emit('message', message);

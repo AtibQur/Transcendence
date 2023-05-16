@@ -3,8 +3,8 @@
       <h1>Chat</h1>
       <div v-if="!joined"> 
         <form @submit.prevent="join">
-            <label> What's your name?</label>
-            <input v-model="name" />
+            <label> What's your name? </label>
+            <input v-model="name" placeholder='Write your name'/>
             <button type="submit">Send</button>
         </form>
       </div>
@@ -17,18 +17,16 @@
 
         <div v-if="typingDisplay">{{ typingDisplay }}</div>
 
-        <!-- <hr /> -->
+        <hr />
 
         <div class="message-input">
             <form @submit.prevent="sendMessage">
-                <label>Message:</label>
-                <input v-model="messageText" @input="emitTyping" />
+                <label>Message: </label>
+                <input v-model="messageText" placeholder='Write a message' @input="emitTyping" />
 
                 <button type="submit">Send</button>
             </form>
         </div>
-
-        <div v-if="typingDisplay"> {{ typingDisplay }}</div>
       </div>
     </div>
   </template>
@@ -106,7 +104,5 @@ const emitTyping = () => {
 .messages-container {
     flex: 1;
 }
-
-
 
 </style>
