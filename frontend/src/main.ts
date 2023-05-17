@@ -1,9 +1,8 @@
 import { createApp } from 'vue';
 import { createRouter, createWebHistory, RouteRecordRaw } from 'vue-router';
 import App from './App.vue';
-import Home from './components/views/Home.vue';
-import About from './components/views/About.vue';
-import Game from './components/pong/Game.vue';
+import Home from './components/Home.vue';
+import Play from './components/pong/Play.vue';
 
 const routes: RouteRecordRaw[] = [
     {
@@ -11,12 +10,8 @@ const routes: RouteRecordRaw[] = [
       component: Home,
     },
     {
-      path: '/about',
-      component: About,
-    },
-	{
-		path: '/game',
-		component: Game,
+		path: '/play',
+		component: Play,
 	},
 ];
 
