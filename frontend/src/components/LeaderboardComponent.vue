@@ -50,9 +50,9 @@
     position: absolute;
     top: 50%;
     left: 50%;
-    width: 75%;
+    width: 50%;
     transform: translate(-50%, -50%);
-    padding-bottom: 75%;
+    padding: 20%;
     border: 2px solid black; /* can remove later */
   }
 
