@@ -5,7 +5,7 @@ import { Server, Socket } from 'socket.io';
 
 @WebSocketGateway({
 	cors: {
-		origin: '*',
+		origin: 'http://localhost:8080',
 	},
 })
 export class MessagesGateway {
@@ -18,13 +18,13 @@ export class MessagesGateway {
   async create(
     @MessageBody() createMessageDto: CreateMessageDto,
     @ConnectedSocket() client: Socket,
-) {
-    const message = await this.messagesService.create(createMessageDto, client.id);
+  ) {
+      const message = await this.messagesService.create(createMessageDto, client.id);
 
-    this.server.emit('message', message);
+      this.server.emit('message', message);
 
-    return message;
-  }
+      return message;
+    }
 
   @SubscribeMessage('findAllMessages')
   findAll() {
