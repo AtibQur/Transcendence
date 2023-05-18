@@ -31,21 +31,37 @@ export class MessagesGateway {
     return this.messagesService.findAll();
   }
 
+  @SubscribeMessage('clearAllMessages')
+  clearAll() {
+	return this.messagesService.clearAll();
+  }
+
   @SubscribeMessage('join')
   joinRoom(
     @MessageBody('name') name: string,
+    @MessageBody('newUser') newUser: boolean,
     @ConnectedSocket() client: Socket,
   ) {
-    return this.messagesService.identify(name, client.id);
-  }
+        client.broadcast.emit('userJoined', { name, newUser });
+        return this.messagesService.identify(name, client.id);
+    }
 
   @SubscribeMessage('typing')
   async typing(
     @MessageBody('isTyping') isTyping: boolean,
     @ConnectedSocket() client: Socket,
   ) {
-    const name = await this.messagesService.getClientName(client.id);
+        const name = await this.messagesService.getClientName(client.id);
+        client.broadcast.emit('typing', { name, isTyping }); // ensure that is not send to the sender itself!
+    }
 
-    client.broadcast.emit('typing', { name, isTyping }); // ensure that is not send to the sender itself!
-  }
+    @SubscribeMessage('leave')
+    leaveRoom(
+        @MessageBody('name') name: string,
+        @MessageBody('hasLeft') newUser: boolean,
+        @ConnectedSocket() client: Socket,
+    ) {
+          client.broadcast.emit('userLeft', { name, hasLeft: true});
+          this.messagesService.deleteUser(client.id);
+      }
 }

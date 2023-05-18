@@ -14,6 +14,12 @@ export class MessagesService {
     return Object.values(this.clientToUser);
   }
 
+  deleteUser(clientId: string) {
+    console.log(this.clientToUser);
+    delete this.clientToUser[clientId];
+    console.log(this.clientToUser);
+  }
+
   getClientName(clientId: string) {
     return this.clientToUser[clientId];
   }
@@ -30,5 +36,9 @@ export class MessagesService {
 
   findAll() {
     return this.messages; //here should come a query to select all from message table
+  }
+
+  clearAll() {
+    return this.messages.splice(0);;
   }
 }
