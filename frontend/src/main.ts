@@ -1,5 +1,6 @@
 import { createApp } from 'vue';
 import { createRouter, createWebHistory, RouteRecordRaw } from 'vue-router';
+import axiosInstance from './axiosConfig';
 import App from './App.vue';
 import Home from './components/Home.vue';
 import Play from './components/PlayGame.vue';
@@ -32,4 +33,5 @@ const router = createRouter({
 
 const app = createApp(App).use(router);
 app.use(router);
+app.config.globalProperties.$axios = axiosInstance;
 app.mount('#app');
