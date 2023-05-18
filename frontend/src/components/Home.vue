@@ -8,6 +8,7 @@
         <li><router-link to="/play">Play</router-link></li>
         <li><router-link to="/leaderboard">Leaderboard</router-link></li>
         <li><router-link to="/chat">Chat</router-link></li>
+        <li><router-link to="/populatedatabase">Populate Database</router-link></li>
       </ul>
     </div>
   </div>
