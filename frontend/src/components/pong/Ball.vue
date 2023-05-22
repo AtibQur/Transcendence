@@ -1,4 +1,4 @@
-<template>
+<!-- <template>
 	<div class="ball" :style="{ top: position.x + '%', left: position.y + '%' }"></div>
 </template>
 
@@ -22,4 +22,4 @@ export default {
   border-radius: 50%;
   background-color: rgb(232, 20, 24);
 }
-</style>
+</style> -->
