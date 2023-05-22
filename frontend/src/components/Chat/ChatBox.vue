@@ -23,9 +23,14 @@
             <form @submit.prevent="sendMessage">
                 <label>Message: </label>
                 <input v-model="messageText" placeholder='Write a message' @input="emitTyping" />
-
                 <button type="submit">Send</button>
             </form>
+            <div v-if="showNotification">
+                <!-- Notification message when someone joins -->
+                <p>{{ notificationMessage }}</p>
+            </div>
+            <button @click="clearAllMessages">Clear all</button>
+            <button @click="leave">Leave chat</button>
         </div>
       </div>
     </div>
@@ -47,13 +52,14 @@ interface Message {
 const messages = ref<Message[]>([]);
 const messageText = ref('');
 const joined = ref(false);
+const showNotification = ref(false);
 const name = ref('');
 const typingDisplay = ref('');
+const notificationMessage = ref('');
 
 onBeforeMount(() => {
 	// add exception if there are networking problems
     socket.emit('findAllMessages', {}, (response: Message[]) => {
-        console.log(response);
         messages.value = response;
     });
 
@@ -68,10 +74,36 @@ onBeforeMount(() => {
             typingDisplay.value = '';
         }
     });
+
+    socket.on('userJoined', ({ name, newUser}) => {
+      if (newUser) {
+          notificationMessage.value = `${name} has joined the chat.`;
+          showNotification.value = true;
+          
+          setTimeout(() => {
+              showNotification.value = false;
+            }, 3000);
+        } else {
+          notificationMessage.value = '';
+      }
+    });
+
+    socket.on('userLeft', ({ name, hasLeft}) => {
+      if (hasLeft) {
+          notificationMessage.value = `${name} has left the chat.`;
+          showNotification.value = true;
+          
+          setTimeout(() => {
+              showNotification.value = false;
+            }, 3000);
+        } else {
+          notificationMessage.value = '';
+      }
+    });
 });
 
 const join = () => {
-    socket.emit('join', { name: name.value}, () => {
+    socket.emit('join', { name: name.value, newUser: true}, () => {
         joined.value = true;
     })
 }
@@ -91,6 +123,17 @@ const emitTyping = () => {
     }, 2000);
 }
 
+const clearAllMessages = () => {
+    socket.emit('clearAllMessages', {}, (response: Message[]) => {
+        messages.value = response;
+    });
+}
+
+const leave = () => {
+    socket.emit('leave', {name: name.value, isLeaving: true});
+    joined.value = false;
+}
+
   </script>
 
 
@@ -102,7 +145,13 @@ const emitTyping = () => {
 }
 
 .messages-container {
-    flex: 1;
+    background: white;
+    height: 50vh;
+    padding: 1em;
+    overflow: auto;
+    max-width: 350px;
+    margin: 0 auto 2em auto;
+    box-shadow: 2px 2px 5px 2px rgba(0, 0, 0, 0.3)
 }
 
 </style>
