@@ -5,9 +5,9 @@
     </div>
     <div class="PongTable">
       <ul>
-        <li><router-link to="/Play">Play</router-link></li>
-        <li><router-link to="/Leaderboard">Leaderboard</router-link></li>
-        <li><router-link to="/Chat">Chat</router-link></li>
+        <li><router-link to="/play">Play</router-link></li>
+        <li><router-link to="/leaderboard">Leaderboard</router-link></li>
+        <li><router-link to="/chat">Chat</router-link></li>
       </ul>
     </div>
   </div>

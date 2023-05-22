@@ -1,0 +1,109 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator dbml {
+  provider = "prisma-dbml-generator"
+}
+
+model Player {
+  id                 Int      @id @default(autoincrement())
+  username           String   @unique
+  oauth_id           Int?
+  avatar_url         String   @default("default_avatar.png")
+  two_factor_enabled Boolean @default(false)
+  password           String
+  player_stats       PlayerStats?
+
+  owner_of           Channel[]
+  member_of          ChannelMember[]
+  sent_messages      ChatMessage[]
+  matches_played     Match[]
+  blocked_players    BlockedPlayer[]
+  friends            Friend[]
+}
+
+model PlayerStats {
+  id            Int      @id @unique
+  wins          Int      @default(0)
+  losses        Int      @default(0)
+  ladder_level  Int      @default(1)
+  achievements  String[]
+  status        PlayerStatus
+
+  player        Player   @relation(fields: [id], references: [id])
+}
+
+enum PlayerStatus {
+  online
+  offline
+  in_game
+}
+
+model Channel {
+  id         Int      @id @default(autoincrement())
+  name       String
+  password   String?
+  is_private Boolean  @default(false)
+
+  owner_id   Int
+  owner      Player   @relation(fields: [owner_id], references: [id])
+
+  messages   ChatMessage[]
+  members    ChannelMember[]
+}
+
+model ChannelMember {
+  id         Int @unique
+  member     Player   @relation(fields: [id], references: [id])
+
+  channel_id Int
+  channel    Channel @relation(fields: [channel_id], references: [id])
+
+  is_admin   Boolean @default(false)
+  is_muted   Boolean @default(false)
+  is_banned  Boolean @default(false)
+  muted_at   DateTime
+}
+
+model ChatMessage {
+  id         Int      @id @default(autoincrement())
+  content    String
+  sender_id  Int
+  channel_id Int
+  sent_at    DateTime
+  sender     Player  @relation(fields: [sender_id], references: [id])
+  channel    Channel @relation(fields: [channel_id], references: [id])
+}
+
+model Match {
+  id              Int      @id @default(autoincrement())
+  player_id       Int
+  opponent_id     Int
+  player_points   Int      @default(0)
+  opponent_points Int      @default(0)
+  timestamp       DateTime
+  player          Player  @relation(fields: [player_id], references: [id])
+}
+
+model BlockedPlayer {
+  id          Int     @id @default(autoincrement())
+
+  player_id   Int
+  player      Player  @relation(fields: [player_id], references: [id])
+}
+
+model Friend {
+  id          Int     @id @default(autoincrement())
+
+  player_id   Int
+  player      Player  @relation(fields: [player_id], references: [id])
+}
