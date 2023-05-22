@@ -3,6 +3,7 @@ import { createRouter, createWebHistory, RouteRecordRaw } from 'vue-router';
 import App from './App.vue';
 import Home from './components/Home.vue';
 import Play from './components/Play.vue';
+import Test from './components/test/test.vue';
 
 const routes: RouteRecordRaw[] = [
     {
@@ -12,6 +13,10 @@ const routes: RouteRecordRaw[] = [
     {
       path: '/play',
       component: Play,
+    },
+    {
+      path: '/test',
+      component: Test,
     },
 ];
 

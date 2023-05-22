@@ -1,7 +1,7 @@
 <template>
-	<!-- <h1>Vue: Hello Nest</h1>
+	<h1>Vue: Hello Nest</h1>
 	<h1>Nest: {{ answer }}</h1>
-	<HelloWorld msg="Welcome to Your Vue.js App"/> -->
+	<HelloWorld msg="Welcome to Your Vue.js App"/>
 	<router-view/>
 </template>
 
@@ -19,6 +19,7 @@
 			const response = await axios.get('http://localhost:3000');
 			answer.value = response.data;
 			answerLoaded.value = true
+			return answer.value;
 		} catch (error) {
 			console.log("Error occured");
 		}
