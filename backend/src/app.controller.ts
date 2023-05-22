@@ -6,7 +6,7 @@ export class AppController {
 
   @Get()
   getHello(): string {
-    return 'Hello World!';
+    return 'Poepje met curry';
   }
 
   @Get('protected-route')

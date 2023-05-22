@@ -1,7 +1,7 @@
 <template>
-	<h1>Vue: Hello Nest</h1>
+	<!-- <h1>Vue: Hello Nest</h1>
 	<h1>Nest: {{ answer }}</h1>
-	<HelloWorld msg="Welcome to Your Vue.js App"/>
+	<HelloWorld msg="Welcome to Your Vue.js App"/> -->
 	<router-view/>
 </template>
 

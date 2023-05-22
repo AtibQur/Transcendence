@@ -6,15 +6,15 @@ export class AuthController {
     @Get('/42')
     @UseGuards(AuthGuard('42'))
     async fortyTwoLogin() {
-        console.log('you have entered my king');
+        return ('you have entered my king');
     }
 
-    @Get('/42/callback')
-    @UseGuards(AuthGuard('42'))
-    async fortyTwoCallback(@Req() req: any, @Res() res: any) {
-        console.log(req);
-        res.redirect('http://localhost:3000/protected-route');
-    }
+    // @Get('/42/callback')
+    // @UseGuards(AuthGuard('42'))
+    // async fortyTwoCallback(@Req() req: any, @Res() res: any) {
+    //     console.log(req);
+    //     res.redirect('http://localhost:3000/protected-route');
+    // }
 
     @Get('/logout')
     async fortyTwoLogout(@Req() req: any, @Res() res: any) {
