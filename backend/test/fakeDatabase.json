@@ -1,0 +1,34 @@
+{
+    "leaderboard": [
+      {
+        "username": "player1",
+        "avatar_url": "avatar1.png",
+        "ladder_level": 3,
+        "games_won": 10
+      },
+      {
+        "username": "player2",
+        "avatar_url": "avatar2.png",
+        "ladder_level": 2,
+        "games_won": 8
+      },
+      {
+        "username": "player3",
+        "avatar_url": "avatar3.png",
+        "ladder_level": 4,
+        "games_won": 12
+      },
+      {
+        "username": "player4",
+        "avatar_url": "avatar4.png",
+        "ladder_level": 1,
+        "games_won": 6
+      },
+      {
+        "username": "player5",
+        "avatar_url": "avatar5.png",
+        "ladder_level": 2,
+        "games_won": 9
+      }
+    ]
+  }
