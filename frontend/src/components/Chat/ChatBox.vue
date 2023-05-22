@@ -132,6 +132,7 @@ const clearAllMessages = () => {
 const leave = () => {
     socket.emit('leave', {name: name.value, isLeaving: true});
     joined.value = false;
+    name.value = '';
 }
 
   </script>

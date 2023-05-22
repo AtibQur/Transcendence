@@ -1,6 +1,6 @@
 import { WebSocketGateway, SubscribeMessage, MessageBody, WebSocketServer, ConnectedSocket } from '@nestjs/websockets';
-import { MessagesService } from './messages.service';
-import { CreateMessageDto } from './dto/create-message.dto';
+import { MessageService } from '../message/message.service';
+import { CreateMessageDto } from '../message/dto/create-message.dto';
 import { Server, Socket } from 'socket.io';
 
 @WebSocketGateway({
@@ -8,18 +8,18 @@ import { Server, Socket } from 'socket.io';
 		origin: 'http://localhost:8080',
 	},
 })
-export class MessagesGateway {
+export class ChatGateway {
   @WebSocketServer()
   server: Server;
 
-  constructor(private readonly messagesService: MessagesService) {}
+  constructor(private readonly messageService: MessageService) {}
 
   @SubscribeMessage('createMessage')
   async create(
     @MessageBody() createMessageDto: CreateMessageDto,
     @ConnectedSocket() client: Socket,
   ) {
-      const message = await this.messagesService.create(createMessageDto, client.id);
+      const message = await this.messageService.create(createMessageDto, client.id);
 
       this.server.emit('message', message);
 
@@ -28,12 +28,12 @@ export class MessagesGateway {
 
   @SubscribeMessage('findAllMessages')
   findAll() {
-    return this.messagesService.findAll();
+    return this.messageService.findAll();
   }
 
   @SubscribeMessage('clearAllMessages')
   clearAll() {
-	return this.messagesService.clearAll();
+	return this.messageService.clearAll();
   }
 
   @SubscribeMessage('join')
@@ -43,7 +43,7 @@ export class MessagesGateway {
     @ConnectedSocket() client: Socket,
   ) {
         client.broadcast.emit('userJoined', { name, newUser });
-        return this.messagesService.identify(name, client.id);
+        return this.messageService.identify(name, client.id);
     }
 
   @SubscribeMessage('typing')
@@ -51,17 +51,17 @@ export class MessagesGateway {
     @MessageBody('isTyping') isTyping: boolean,
     @ConnectedSocket() client: Socket,
   ) {
-        const name = await this.messagesService.getClientName(client.id);
+        const name = await this.messageService.getClientName(client.id);
         client.broadcast.emit('typing', { name, isTyping }); // ensure that is not send to the sender itself!
     }
 
-    @SubscribeMessage('leave')
-    leaveRoom(
-        @MessageBody('name') name: string,
-        @MessageBody('hasLeft') newUser: boolean,
-        @ConnectedSocket() client: Socket,
-    ) {
-          client.broadcast.emit('userLeft', { name, hasLeft: true});
-          this.messagesService.deleteUser(client.id);
-      }
+  @SubscribeMessage('leave')
+  leaveRoom(
+      @MessageBody('name') name: string,
+      @MessageBody('hasLeft') newUser: boolean,
+      @ConnectedSocket() client: Socket,
+  ) {
+        client.broadcast.emit('userLeft', { name, hasLeft: true});
+        this.messageService.deleteUser(client.id);
+    }
 }

@@ -3,7 +3,7 @@ import { CreateMessageDto } from './dto/create-message.dto';
 import { Message } from './entities/message.entity';
 
 @Injectable()
-export class MessagesService {
+export class MessageService {
   // here should be the entry of the database
   messages: Message[] = [{ name: 'Tessa', text: 'hiii', id: 0}];
   clientToUser = {};
