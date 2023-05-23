@@ -18,13 +18,13 @@ export class FortyTwoStrategy extends PassportStrategy(Strategy, '42') {
         });  
     }
 
-    async validate(accessToken: string, profile: any, done: any) {
-        const user = {
-            'id': profile.id,
-            'username': profile.username,
-            'displayName': profile.displayName,
-            accessToken,
+    async validate(accessToken: string, refreshToken: string, profile: any) {
+        const { username, photos } = profile;
+        const user = { username, photos, accessToken, refreshToken };
+        
+        if (!user) {
+            return null;
         }
-        done(null, user);
-    }
+        return user;
+      }
 }

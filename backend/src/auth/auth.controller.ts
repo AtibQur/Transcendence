@@ -12,8 +12,8 @@ export class AuthController {
     @Get('/42/callback')
     @UseGuards(AuthGuard('42'))
     async fortyTwoCallback(@Req() req: any, @Res() res: any) {
-        console.log(req);
-        res.redirect('http://localhost:3000/protected-route');
+        console.log(req.user);
+        res.redirect('http://localhost:8080');
     }
 
     @Get('/logout')
