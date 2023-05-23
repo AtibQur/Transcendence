@@ -13,7 +13,7 @@ export class FortyTwoStrategy extends PassportStrategy(Strategy, '42') {
         super({
             clientID : process.env.FT_CLIENTID,
             clientSecret : process.env.FT_CLIENTSCT,
-            callBackURL : process.env.FT_REDIRECTURI,
+            callbackURL : process.env.FT_REDIRECTURI,
             scope: 'public',
         });  
     }
