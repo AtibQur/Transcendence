@@ -3,11 +3,11 @@ import { LeaderboardService } from './leaderboard.service';
 
 @Controller('/leaderboard')
 export class LeaderboardController {
-    constructor(private readonly LeaderboardService: LeaderboardService) {}
-
-    
-    @Get()
-    getName(): string {
-        return this.LeaderboardService.getName();
+    constructor(private readonly leaderboardService: LeaderboardService) {}
+    @Get('username')
+    loadUsername(): string {
+      const username = this.leaderboardService.loadUsername();
+      return username;
     }
+    
 }

@@ -1,5 +1,5 @@
 <template>
-	{{  NameLoaded ? Name : "Loading..." }}
+	Name: {{ Name }} <br>
 
     <div class="Leaderboard">
 			<div class="Leaderboard-header">
