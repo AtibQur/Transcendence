@@ -1,4 +1,6 @@
 <template>
+	{{  NameLoaded ? Name : "Loading..." }}
+
     <div class="Leaderboard">
 			<div class="Leaderboard-header">
 				<div class="Leaderboard-logo">
@@ -39,10 +41,29 @@
     </div>
 </template>
 
-<script>
-  export default {
-    name: 'LeaderboardComponent',
-  };
+<script setup lang="ts">
+	import axios from 'axios';
+	import { onBeforeMount, onMounted, ref } from 'vue';
+
+	//constants
+	const Name = ref("");
+	const NameLoaded = ref(false);
+
+	//functions
+	async function fetchName() {
+		try {
+			const response = await axios.get('http://localhost:3000/leaderboard');
+			Name.value = response.data;
+			NameLoaded.value = true
+		} catch (error) {
+			console.log("Error occured");
+		}
+	}
+
+	onBeforeMount(() => {
+		fetchName();
+	})
+
 </script>
 
 <style>

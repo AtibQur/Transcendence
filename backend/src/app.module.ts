@@ -1,16 +1,10 @@
 import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-// import { ServeStaticModule} from '@nestjs/serve-static'; // New
-// import { join } from 'path'; // New
+import { LeaderboardModule } from './leaderboard/leaderboard.module';
 
 @Module({
-//   imports: [
-//     ServeStaticModule.forRoot({ // New
-//       rootPath: join(__dirname, '../..', '/frontend/dist'), // New
-//     }), // New
-//   ],
- imports: [],
+ imports: [LeaderboardModule],
  controllers: [AppController],
  providers: [AppService],
 })
