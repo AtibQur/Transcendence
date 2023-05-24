@@ -29,8 +29,10 @@ model Player {
   member_of          ChannelMember[]
   sent_messages      ChatMessage[]
   matches_played     Match[]
-  blocked_players    BlockedPlayer[]
-  friends            Friend[]
+  blocked_players    BlockedPlayer[]    @relation("blocked_players")
+  blocked_by         BlockedPlayer[]    @relation("blocked_by")
+  friends            Friend[]           @relation("friends")
+  friends_con        Friend[]           @relation("friends_con")
   sent_invitations   GameInvitation[]   @relation("sent_invitations")
   recv_invitations   GameInvitation[]   @relation("recv_invitations")
 }
@@ -103,14 +105,20 @@ model BlockedPlayer {
   id          Int     @id @default(autoincrement())
 
   player_id   Int
-  player      Player  @relation(fields: [player_id], references: [id])
+  player      Player  @relation("blocked_players", fields: [player_id], references: [id])
+
+  blocked_id  Int
+  blocked     Player  @relation("blocked_by", fields: [blocked_id], references: [id])
 }
 
 model Friend {
   id          Int     @id @default(autoincrement())
 
   player_id   Int
-  player      Player  @relation(fields: [player_id], references: [id])
+  player      Player  @relation("friends", fields: [player_id], references: [id])
+
+  friend_id   Int
+  friend      Player  @relation("friends_con", fields: [friend_id], references: [id])
 }
 
 model GameInvitation {
