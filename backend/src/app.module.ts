@@ -4,7 +4,8 @@ import { AppService } from './app.service';
 // import { ServeStaticModule} from '@nestjs/serve-static'; // New
 // import { join } from 'path'; // New
 import { MessageModule } from './message/message.module';
-import { UserModule } from './user/user.module';
+import { PlayerModule } from './player/player.module';
+import { ChannelModule } from './channel/channel.module';
 import { ChatModule } from './chat/chat.module';
 
 @Module({
@@ -13,7 +14,7 @@ import { ChatModule } from './chat/chat.module';
 //       rootPath: join(__dirname, '../..', '/frontend/dist'), // New
 //     }), // New
 //   ],
- imports: [MessageModule, UserModule, ChatModule],
+ imports: [MessageModule, PlayerModule, ChannelModule, ChatModule],
  controllers: [AppController],
  providers: [AppService],
 })

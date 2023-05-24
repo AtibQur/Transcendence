@@ -5,32 +5,16 @@ import { Message } from './entities/message.entity';
 @Injectable()
 export class MessageService {
   // here should be the entry of the database
-  messages: Message[] = [{ name: 'Tessa', text: 'hiii', id: 0}];
-  clientToUser = {};
-
-  identify(name: string, clientId: string) {
-    this.clientToUser[clientId] = name;
-
-    return Object.values(this.clientToUser);
-  }
-
-  deleteUser(clientId: string) {
-    console.log(this.clientToUser);
-    delete this.clientToUser[clientId];
-    console.log(this.clientToUser);
-  }
-
-  getClientName(clientId: string) {
-    return this.clientToUser[clientId];
-  }
-
-  create(createMessageDto: CreateMessageDto, clientId: string) {
+  messages: Message[] = [];
+  
+  create(createMessageDto: CreateMessageDto, clientName: string) {
     const message = {
-		name: this.clientToUser[clientId],
+		name: clientName,
 		text: createMessageDto.text,
-		id: 1,
+		id: createMessageDto.id,
 	};
-    this.messages.push(message); // to do: improve
+	console.log(message);
+    this.messages.push(message);
     return message;
   }
 
