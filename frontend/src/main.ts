@@ -4,6 +4,7 @@ import App from './App.vue';
 import Home from './components/Home.vue';
 import Play from './components/Play.vue';
 import Auth from './components/Auth/AuthCheck.vue';
+import Login from './components/Auth/AuthRedirect.vue';
 
 const routes: RouteRecordRaw[] = [
     {
@@ -17,6 +18,10 @@ const routes: RouteRecordRaw[] = [
     {
       path: '/auth',
       component: Auth,
+    },
+    {
+      path: '/login',
+      component: Login,
     },
 ];
 

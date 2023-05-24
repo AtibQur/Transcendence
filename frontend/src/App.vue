@@ -7,7 +7,7 @@
 
 <script setup lang="ts">
 	import axios from 'axios';
-	import { onBeforeMount, onMounted, ref } from 'vue';
+	import { onBeforeMount, ref } from 'vue';
 
 	//constants
 	const answer = ref("");
