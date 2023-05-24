@@ -18,5 +18,9 @@ export class LeaderboardController {
     return wins;
   }
 
-
+  @Get('/rank')
+  async loadRank(): Promise<string> {
+    const rank = await this.leaderboardService.loadRank();
+    return rank;
+  }
 }

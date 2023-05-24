@@ -1,9 +1,8 @@
 <template>
-
     <div class="Leaderboard">
 			<div class="Leaderboard-header">
 				<div class="Leaderboard-logo">
-					<img src="../assets/images/pongEmoji.png" alt="Pong-logo">
+					<img src="../../assets/images/pongEmoji.png" alt="Pong-logo">
 				</div>
 				<div class="Leaderboard-text">
 					<h1>LEADERBOARD</h1>
@@ -30,7 +29,7 @@
 					<h2> {{ Name }}</h2>
 				</div>
 				<div class="Leaderboard-player-name">
-					<h2>Hardcoded name</h2>
+					<h2> {{ Rank }}</h2>
 				</div>
 				<div class="Leaderboard-player-games">
 					<h2> {{ Wins }}</h2>
@@ -40,45 +39,67 @@
 </template>
 
 <script setup lang="ts">
-	import axios from 'axios';
-	import { onBeforeMount, onMounted, ref } from 'vue';
 
-	// get the name from the backend
-	//constants
-	const Name = ref("");
-	const NameLoaded = ref(false);
+	// import { Name } from './LeaderboardPlayer.vue';
+	// import { Wins } from './LeaderboardPlayer.vue';
+	// import { Rank } from './LeaderboardPlayer.vue';
 
-	//functions
-	async function fetchName() {
-		try {
-			const response = await axios.get('http://localhost:3000/Leaderboard/name');
-			Name.value = response.data;
-			NameLoaded.value = true
-		} catch (error) {
-			console.log("Error occured");
-		}
-	}
+	// // Footer player info
 
-	// get the wins from the backend
-	//constants
-	const Wins = ref("");
-	const WinsLoaded = ref(false);
+	// // imports
+	// import axios from 'axios';
+	// import { onBeforeMount, onMounted, ref } from 'vue';
 
-	//functions
-	async function fetchWins() {
-		try {
-			const response = await axios.get('http://localhost:3000/Leaderboard/wins');
-			Wins.value = response.data;
-			WinsLoaded.value = true
-		} catch (error) {
-			console.log("Error occured");
-		}
-	}
+	// // get the name from the backend
+	// const Name = ref("");
+	// const NameLoaded = ref(false);
+
+	// //functions
+	// async function fetchName() {
+	// 	try {
+	// 		const response = await axios.get('http://localhost:3000/Leaderboard/name');
+	// 		Name.value = response.data;
+	// 		NameLoaded.value = true
+	// 	} catch (error) {
+	// 		console.log("Error occured");
+	// 	}
+	// }
+
+	// // get the wins from the backend
+	// const Wins = ref("");
+	// const WinsLoaded = ref(false);
+
+	// //functions
+	// async function fetchWins() {
+	// 	try {
+	// 		const response = await axios.get('http://localhost:3000/Leaderboard/wins');
+	// 		Wins.value = response.data;
+	// 		WinsLoaded.value = true
+	// 	} catch (error) {
+	// 		console.log("Error occured");
+	// 	}
+	// }
+
+	// // get the Rank from the backend
+	// const Rank = ref("");
+	// const RankLoaded = ref(false);
+
+	// //functions
+	// async function fetchRank() {
+	// 	try {
+	// 		const response = await axios.get('http://localhost:3000/Leaderboard/Rank');
+	// 		Rank.value = response.data;
+	// 		RankLoaded.value = true
+	// 	} catch (error) {
+	// 		console.log("Error occured");
+	// 	}
+	// }
 	
-	onBeforeMount(() => {
-		fetchName();
-		fetchWins();
-	})
+	// onBeforeMount(() => {
+	// 	fetchName();
+	// 	fetchWins();
+	// 	fetchRank();
+	// })
 
 </script>
 
