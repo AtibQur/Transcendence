@@ -1,6 +1,7 @@
 import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
+import { CrudModule } from './crud/crud.module';
 import { ServeStaticModule} from '@nestjs/serve-static'; // New
 import { join } from 'path'; // New
 import { AuthModule } from './auth/auth.module'; // New
@@ -13,7 +14,8 @@ import { GoogleModule } from './auth_google/google.module';
       rootPath: join(__dirname, '../../', 'frontend/dist'), // New
     }), // New
     GoogleModule, // New
-    AuthModule, 
+    AuthModule,
+    CrudModule,
   ],
   controllers: [AppController],
   providers: [AppService],

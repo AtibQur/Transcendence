@@ -13,7 +13,7 @@ export class AuthController {
     @UseGuards(AuthGuard('42'))
     async fortyTwoCallback(@Req() req: any, @Res() res: any) {
         console.log(req.user);
-        res.redirect('http://localhost:8080/Login');
+        res.redirect('http://localhost:8080/Login?username=' + req.user.username);
     }
 
     @Get('FetchUser')
