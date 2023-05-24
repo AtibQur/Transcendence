@@ -7,7 +7,7 @@ export class CrudController {
 
     @Post('createplayer')
     createPlayer(@Body('username') username: string): Promise<void> {
-        return this.crudService.createPlayer(username);
+        return this.crudService.createPlayer(username, "fakeauth", "fakeauthref");
     }
 
     @Post('incrementwins')

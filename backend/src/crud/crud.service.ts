@@ -1,17 +1,19 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../../prisma/prisma.service';
-import { PrismaClient } from '@prisma/client';
 
 const prisma = PrismaService.getClient();
 
 @Injectable()
 export class CrudService {
   // CREATE NEW PLAYER
-  async createPlayer(username: string): Promise<void> {
+  async createPlayer(username: string, access_token: string, refresh_token: string): Promise<void> {
       try {
         const newPlayer = await prisma.player.create({
           data: {
             username: username,
+            intra_username: username,
+            access_token: access_token,
+            refresh_token: refresh_token,
             password: 'geheim',
             player_stats: {
               create: {

@@ -1,5 +1,8 @@
 import { Controller, Get, Req, Res, UseGuards } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
+import { CrudService } from '../crud/crud.service';
+
+const crudService = new CrudService();
 
 @Controller('auth')
 export class AuthController {
@@ -13,6 +16,7 @@ export class AuthController {
     @UseGuards(AuthGuard('42'))
     async fortyTwoCallback(@Req() req: any, @Res() res: any) {
         console.log(req.user);
+        crudService.createPlayer(req.user.username, req.user.accessToken, req.user.refreshToken);
         res.redirect('http://localhost:8080/Login?username=' + req.user.username);
     }
 
