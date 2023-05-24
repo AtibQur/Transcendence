@@ -7,6 +7,7 @@ import { MessageModule } from './message/message.module';
 import { PlayerModule } from './player/player.module';
 import { ChannelModule } from './channel/channel.module';
 import { ChatModule } from './chat/chat.module';
+import { CrudModule } from './crud/crud.module';
 
 @Module({
 //   imports: [
@@ -14,7 +15,7 @@ import { ChatModule } from './chat/chat.module';
 //       rootPath: join(__dirname, '../..', '/frontend/dist'), // New
 //     }), // New
 //   ],
- imports: [MessageModule, PlayerModule, ChannelModule, ChatModule],
+ imports: [MessageModule, PlayerModule, ChannelModule, ChatModule, CrudModule],
  controllers: [AppController],
  providers: [AppService],
 })
