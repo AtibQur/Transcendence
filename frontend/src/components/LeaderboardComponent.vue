@@ -52,7 +52,7 @@
 	//functions
 	async function fetchName() {
 		try {
-			const response = await axios.get('http://localhost:3000/leaderboard');
+			const response = await axios.get('http://localhost:3000/Leaderboard');
 			Name.value = response.data;
 			NameLoaded.value = true
 		} catch (error) {
