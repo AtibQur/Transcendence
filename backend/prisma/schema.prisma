@@ -17,7 +17,9 @@ generator dbml {
 model Player {
   id                 Int      @id @default(autoincrement())
   username           String   @unique
-  oauth_id           Int?
+  intra_username     String   @default("username")
+  access_token       String   @default("token")
+  refresh_token      String   @default("reftoken")
   avatar_url         String   @default("default_avatar.png")
   two_factor_enabled Boolean @default(false)
   password           String
@@ -29,6 +31,8 @@ model Player {
   matches_played     Match[]
   blocked_players    BlockedPlayer[]
   friends            Friend[]
+  sent_invitations   GameInvitation[]   @relation("sent_invitations")
+  recv_invitations   GameInvitation[]   @relation("recv_invitations")
 }
 
 model PlayerStats {
@@ -71,6 +75,7 @@ model ChannelMember {
   is_admin   Boolean @default(false)
   is_muted   Boolean @default(false)
   is_banned  Boolean @default(false)
+  added_at   DateTime
   muted_at   DateTime
 }
 
@@ -106,4 +111,15 @@ model Friend {
 
   player_id   Int
   player      Player  @relation(fields: [player_id], references: [id])
+}
+
+model GameInvitation {
+  id           Int      @id @default(autoincrement())
+  sender_id    Int
+  recipient_id Int
+  timestamp    DateTime @default(now())
+  accepted     Boolean  @default(false)
+
+  sender       Player   @relation("sent_invitations", fields: [sender_id], references: [id])
+  recipient    Player   @relation("recv_invitations", fields: [recipient_id], references: [id])
 }
