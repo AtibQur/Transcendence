@@ -1,5 +1,4 @@
 <template>
-	Name: {{ Name }} <br>
 
     <div class="Leaderboard">
 			<div class="Leaderboard-header">
@@ -28,16 +27,15 @@
 
 			<div class="Leaderboard-footer">
 				<div class="Leaderboard-player-rank">
-					<h2>hardcoded 1</h2>
+					<h2> {{ Name }}</h2>
 				</div>
 				<div class="Leaderboard-player-name">
 					<h2>Hardcoded name</h2>
 				</div>
 				<div class="Leaderboard-player-games">
-					<h2>Hardercoded games</h2>
+					<h2> {{ Wins }}</h2>
 				</div>
 			</div>
-
     </div>
 </template>
 
@@ -45,6 +43,7 @@
 	import axios from 'axios';
 	import { onBeforeMount, onMounted, ref } from 'vue';
 
+	// get the name from the backend
 	//constants
 	const Name = ref("");
 	const NameLoaded = ref(false);
@@ -52,7 +51,7 @@
 	//functions
 	async function fetchName() {
 		try {
-			const response = await axios.get('http://localhost:3000/Leaderboard');
+			const response = await axios.get('http://localhost:3000/Leaderboard/name');
 			Name.value = response.data;
 			NameLoaded.value = true
 		} catch (error) {
@@ -60,8 +59,25 @@
 		}
 	}
 
+	// get the wins from the backend
+	//constants
+	const Wins = ref("");
+	const WinsLoaded = ref(false);
+
+	//functions
+	async function fetchWins() {
+		try {
+			const response = await axios.get('http://localhost:3000/Leaderboard/wins');
+			Wins.value = response.data;
+			WinsLoaded.value = true
+		} catch (error) {
+			console.log("Error occured");
+		}
+	}
+	
 	onBeforeMount(() => {
 		fetchName();
+		fetchWins();
 	})
 
 </script>
