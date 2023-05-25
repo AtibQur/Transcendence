@@ -2,21 +2,22 @@
     <div class="chat">
         <h1>Chat</h1>
         <div v-if="!joined">
-            <div v-if="!player">
-                <form @submit.prevent="addPlayer">
-                    <label> What's your name? </label>
-                    <input v-model="name" placeholder='Write your name'/>
-                    <button type="submit">Send</button>
-                </form>
-            </div>
-            <div v-else>
+            <!-- <div v-if="!player"> -->
+                <!-- <form @submit.prevent="addPlayer"> -->
+            <form @submit.prevent="join">
+                <label> What's your name? </label>
+                <input v-model="name" placeholder='Write your name'/>
+                <button type="submit">Send</button>
+            </form>
+            <!-- </div> -->
+            <!-- <div v-else>
                 <label> Which channel would you like to join? </label>
                 <button @click="joinChannel('Channel 1')">Channel 1</button>
-                <!-- <button @click="joinChannel">Channel 2</button> -->
-             </div>
+                <button @click="joinChannel">Channel 2</button>
+             </div> -->
         </div>
       
-        <!-- <div class="chat-container" v-else>
+        <div class="chat-container" v-else>
             <div class="messages-container">
                 <div v-for="message in messages" :key="message.id">
                     [{{ message.name }}]: {{ message.text }}
@@ -30,14 +31,14 @@
                     <input v-model="messageText" placeholder='Write a message' @input="emitTyping" />
                     <button type="submit">Send</button>
                 </form>
-                <div v-if="showNotification"> -->
+                <div v-if="showNotification"> 
                     <!-- Notification message when someone joins -->
-                    <!-- <p>{{ notificationMessage }}</p>
+                    <p>{{ notificationMessage }}</p>
                 </div>
                 <button @click="clearAllMessages">Clear all</button>
                 <button @click="leave">Leave chat</button>
-            </div> -->
-        <!-- </div> -->
+            </div>
+        </div>
     </div>
   </template>
 
@@ -66,8 +67,8 @@ const joined = ref(false);
 const player = ref(false);
 const showNotification = ref(false);
 const name = ref('');
-// const typingDisplay = ref('');
-// const notificationMessage = ref('');
+const typingDisplay = ref('');
+const notificationMessage = ref('');
 
 onBeforeMount(() => {
 	// add exception if there are networking problems
@@ -83,82 +84,85 @@ onBeforeMount(() => {
         messages.value.push(message);
     });
 
-    // socket.on('typing', ({ name, isTyping }) => {
-    //     if (isTyping) {
-    //         typingDisplay.value = `${name} is typing...`;
-    //     } else {
-    //         typingDisplay.value = '';
-    //     }
-    // });
+    socket.on('typing', ({ name, isTyping }) => {
+        if (isTyping) {
+            typingDisplay.value = `${name} is typing...`;
+        } else {
+            typingDisplay.value = '';
+        }
+    });
 
-    // socket.on('userJoined', ({ name, newUser}) => {
-    //   if (newUser) {
-    //       notificationMessage.value = `${name} has joined the chat.`;
-    //       showNotification.value = true;
+    socket.on('userJoined', ({ name, newUser}) => {
+      if (newUser) {
+          notificationMessage.value = `${name} has joined the chat.`;
+          showNotification.value = true;
           
-    //       setTimeout(() => {
-    //           showNotification.value = false;
-    //         }, 3000);
-    //     } else {
-    //       notificationMessage.value = '';
-    //   }
-    // });
+          setTimeout(() => {
+              showNotification.value = false;
+            }, 3000);
+        } else {
+          notificationMessage.value = '';
+      }
+    });
 
-    // socket.on('userLeft', ({ name, hasLeft}) => {
-    //   if (hasLeft) {
-    //       notificationMessage.value = `${name} has left the chat.`;
-    //       showNotification.value = true;
+    socket.on('userLeft', ({ name, hasLeft}) => {
+      if (hasLeft) {
+          notificationMessage.value = `${name} has left the chat.`;
+          showNotification.value = true;
           
-    //       setTimeout(() => {
-    //           showNotification.value = false;
-    //         }, 3000);
-    //     } else {
-    //       notificationMessage.value = '';
-    //   }
-    // });
+          setTimeout(() => {
+              showNotification.value = false;
+            }, 3000);
+        } else {
+          notificationMessage.value = '';
+      }
+    });
 });
 
-const addPlayer = () => {
-    socket.emit('addPlayer', {username: name.value})
-    player.value = true;
-}
+// const addPlayer = () => {
+//     socket.emit('addPlayer', {username: name.value})
+//     player.value = true;
+// }
 
-const joinChannel = (channelName: string) => {
-    socket.emit('join', {channelName: channelName, username: name.value, newUser: true}, () => {
+const join = () => {
+    socket.emit('join', {username: name.value, newUser: true}, () => {
+        console.log('new join');
         joined.value = true;
     })
 }
 
-// const createChannel = () => {
-
-// }
-
-// const sendMessage = () => {
-//     socket.emit('createMessage', {text: messageText.value}, () => {
-//         messageText.value = '';
+// const joinChannel = (channelName: string) => {
+//     socket.emit('join', {channelName: channelName, username: name.value, newUser: true}, () => {
+//         joined.value = true;
 //     })
 // }
 
-// let timeout;
+const sendMessage = () => {
+    socket.emit('createMessage', {text: messageText.value}, () => {
+        messageText.value = '';
+    })
+}
 
-// const emitTyping = () => {
-//     socket.emit('typing', { isTyping: true });
-//     timeout = setTimeout(() => {
-//         socket.emit('typing', { isTyping: false });
-//     }, 2000);
-// }
+let timeout;
 
-// const clearAllMessages = () => {
-//     socket.emit('clearAllMessages', {}, (response: Message[]) => {
-//         messages.value = response;
-//     });
-// }
+const emitTyping = () => {
+    socket.emit('typing', { isTyping: true });
+    timeout = setTimeout(() => {
+        socket.emit('typing', { isTyping: false });
+    }, 2000);
+}
 
-// const leave = () => {
-//     socket.emit('leave', {name: name.value, isLeaving: true});
-//     joined.value = false;
-//     name.value = '';
-// }
+const clearAllMessages = () => {
+    socket.emit('clearAllMessages', {}, (response: Message[]) => {
+        messages.value = response;
+    });
+}
+
+const leave = () => {
+    socket.emit('leave', {name: name.value, isLeaving: true});
+    joined.value = false;
+    name.value = '';
+}
 
 </script>
 

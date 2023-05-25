@@ -5,6 +5,7 @@ import { ChannelService } from 'src/channel/channel.service';
 import { CreateMessageDto } from '../message/dto/create-message.dto';
 import { CreatePlayerDto } from 'src/player/dto/create-player.dto';
 import { Server, Socket } from 'socket.io';
+import { Logger } from '@nestjs/common';
 
 @WebSocketGateway({
 	cors: {
@@ -20,6 +21,8 @@ export class ChatGateway {
         private readonly playerService: PlayerService,
         private readonly channelService: ChannelService,
     ) {}
+
+    private logger = new Logger('ChatGateway');
 
     //CREATE MESSAGE
     @SubscribeMessage('createMessage')
@@ -64,12 +67,23 @@ export class ChatGateway {
     //JOIN ROOM -> CREATE PLAYER
     @SubscribeMessage('join')
     joinRoom(
-        @MessageBody() payload: {channelName: string, username: string, newUser: boolean},
+        @MessageBody() payload: {username: string, newUser: boolean},
         @ConnectedSocket() client: Socket,
     ) {
-        this.playerService.create(payload.username, client.id);
-        client.broadcast.emit('userJoined', { name: this.playerService.getPlayerName(client.id), newUser: payload.newUser });
+        // const channel = this.channelService.create(payload.username, client.id);
+        // this.playerService.addChannel(channel);
+		client.broadcast.emit('userJoined', { name: payload.username, newUser: payload.newUser });
+		return this.playerService.create(payload.username, client.id);
     }
+    // @SubscribeMessage('join')
+    // joinRoom(
+    //     @MessageBody() payload: {channelName: string, username: string, newUser: boolean},
+    //     @ConnectedSocket() client: Socket,
+    // ) {
+    //     const channel = this.channelService.create(payload.username, client.id);
+    //     // this.playerService.addChannel(channel);
+	// 	client.broadcast.emit('userJoined', { name: this.playerService.getPlayerName(client.id), newUser: payload.newUser });
+    // }
 
     //NOTIFY THAT USER IS TYPING
     @SubscribeMessage('typing')
