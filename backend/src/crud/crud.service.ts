@@ -34,6 +34,22 @@ export class CrudService {
       }
   }
 
+  async updateUsername(id: number, username: string) {
+    try {
+      await prisma.player.update({
+        where: {
+          id: id,
+        },
+        data: {
+          username: username,
+        },
+      });
+    }
+    catch (error) {
+      console.error('Error occurred:', error);
+    }
+  }
+
   // +1 THE WINS OF PLAYER #id
   async updateWins(id: number): Promise<void> {
     try {
@@ -94,6 +110,20 @@ export class CrudService {
     }
     catch (error) {
       console.error('Error occurred:', error);
+    }
+  }
+
+  async deletePlayer(id: number) {
+    try {
+      const deletedPlayer = await prisma.player.delete({
+        where: {
+          id: id,
+        },
+      });
+      console.log('Player deleted:', deletedPlayer);
+    }
+    catch (error) {
+      console.error('Error deleting player:', error);
     }
   }
 }

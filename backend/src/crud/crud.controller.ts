@@ -1,4 +1,4 @@
-import { Controller, Post, Body } from '@nestjs/common';
+import { Controller, Post, Delete, Body, Param } from '@nestjs/common';
 import { CrudService } from './crud.service';
 
 @Controller()
@@ -10,21 +10,28 @@ export class CrudController {
         return this.crudService.createPlayer(username, "fakeauth", "fakeauthref");
     }
 
+    @Post('changeusername')
+    updateUsername(@Body('id') id: string, @Body('username') username: string) {
+        return this.crudService.updateUsername(Number(id), username);
+    }
+
     @Post('incrementwins')
-    updateWins(@Body('id') id: number): Promise<void> {
-        console.log(id);
-        return this.crudService.updateWins(id);
+    updateWins(@Body('id') id: string): Promise<void> {
+        return this.crudService.updateWins(Number(id));
     }
 
     @Post('incrementlosses')
-    updateLosses(@Body('id') id: number): Promise<void> {
-        console.log(id);
-        return this.crudService.updateLosses(id);
+    updateLosses(@Body('id') id: string): Promise<void> {
+        return this.crudService.updateLosses(Number(id));
     }
 
     @Post('incrementlevel')
-    updateLevel(@Body('id') id: number): Promise<void> {
-        console.log(id);
-        return this.crudService.updateLevel(id);
+    updateLevel(@Body('id') id: string): Promise<void> {
+        return this.crudService.updateLevel(Number(id));
+    }
+
+    @Delete('deleteplayer/:id')
+    deletePlayer(@Param('id') id: string) {
+        return this.crudService.deletePlayer(Number(id));
     }
 }
