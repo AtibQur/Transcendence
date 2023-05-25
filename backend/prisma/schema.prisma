@@ -21,9 +21,9 @@ model Player {
   access_token       String   @default("token")
   refresh_token      String   @default("reftoken")
   avatar_url         String   @default("default_avatar.png")
-  two_factor_enabled Boolean @default(false)
+  two_factor_enabled Boolean  @default(false)
   password           String
-  player_stats       PlayerStats?
+  player_stats       PlayerStats?  @relation("player_stats")
 
   owner_of           Channel[]
   member_of          ChannelMember[]
@@ -45,7 +45,7 @@ model PlayerStats {
   achievements  String[]
   status        PlayerStatus
 
-  player        Player   @relation(fields: [id], references: [id])
+  player        Player   @relation("player_stats", fields: [id], references: [id], onDelete: Cascade)
 }
 
 enum PlayerStatus {

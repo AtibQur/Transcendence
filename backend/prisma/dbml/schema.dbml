@@ -109,7 +109,7 @@ Enum PlayerStatus {
   in_game
 }
 
-Ref: PlayerStats.id - Player.id
+Ref: PlayerStats.id - Player.id [delete: Cascade]
 
 Ref: Channel.owner_id > Player.id
 
