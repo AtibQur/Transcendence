@@ -7,6 +7,8 @@ import { join } from 'path'; // New
 import { AuthModule } from './auth/auth.module'; // New
 import { GoogleModule } from './auth_google/google.module';
 import { PlayerModule } from './player/player.module';
+import { ChannelModule } from './channel/channel.module';
+import { ChannelmemberModule } from './channelmember/channelmember.module';
 
 
 @Module({
@@ -18,6 +20,8 @@ import { PlayerModule } from './player/player.module';
     AuthModule,
     CrudModule,
     PlayerModule,
+    ChannelModule,
+    ChannelmemberModule,
   ],
   controllers: [AppController],
   providers: [AppService],
