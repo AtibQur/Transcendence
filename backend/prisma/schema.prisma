@@ -68,8 +68,9 @@ model Channel {
 }
 
 model ChannelMember {
-  id         Int @unique
-  member     Player   @relation(fields: [id], references: [id])
+  id         Int      @id @default(autoincrement())
+  member_id  Int
+  member     Player   @relation(fields: [member_id], references: [id])
 
   channel_id Int
   channel    Channel @relation(fields: [channel_id], references: [id])
@@ -78,7 +79,7 @@ model ChannelMember {
   is_muted   Boolean @default(false)
   is_banned  Boolean @default(false)
   added_at   DateTime
-  muted_at   DateTime
+  muted_at   DateTime?
 }
 
 model ChatMessage {

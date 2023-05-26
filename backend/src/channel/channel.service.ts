@@ -11,20 +11,27 @@ export class ChannelService {
   // CREATE NEW CHANNEL
   async createChannel(createChannelDto: CreateChannelDto) {
     try {
+      const channelData: any = {
+        name: createChannelDto.name,
+        is_private: createChannelDto.is_private,
+        owner_id: createChannelDto.owner_id,
+      };
+
+      if (createChannelDto.is_private) {
+        channelData.password = createChannelDto.password;
+      }
+
       const newChannel = await prisma.channel.create({
-        data: {
-          name: createChannelDto.name,
-          password: createChannelDto.password,
-          is_private: createChannelDto.is_private,
-          owner_id: createChannelDto.owner_id,
-          },
+        data: channelData,
       });
+
       console.log('Channel saved in db:', newChannel.name);
       return `This action adds a new channel: ${createChannelDto.name}`;
     } catch (error) {
       console.error('Error occurred:', error);
     }
-}
+  }
+
 
   findAll() {
     return `This action returns all channel`;
