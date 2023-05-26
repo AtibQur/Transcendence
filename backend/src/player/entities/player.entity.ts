@@ -1,7 +1,7 @@
 import { Channel } from "src/channel/entities/channel.entity";
 
 export class Player {
-	id: string; //number;
+	// id: string; //number;
 	username: string;
 	// oauth_id: int;
 	// avatar_url: string;
@@ -14,5 +14,5 @@ export class Player {
 	// matches_played: Match[];
 	// blocked_players: BlockedPlayer[];
 	// friends: Friend[];
-	channels: Channel[];
+	// channels: Channel[];
 }

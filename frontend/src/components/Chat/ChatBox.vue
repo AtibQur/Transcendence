@@ -1,42 +1,47 @@
 <template>
     <div class="chat">
-        <h1>Chat</h1>
-        <div v-if="!joined">
-            <!-- <div v-if="!player"> -->
-                <!-- <form @submit.prevent="addPlayer"> -->
-            <form @submit.prevent="join">
+        <div v-if="!logged">
+            <form @submit.prevent="addPlayer">
                 <label> What's your name? </label>
                 <input v-model="name" placeholder='Write your name'/>
                 <button type="submit">Send</button>
             </form>
-            <!-- </div> -->
-            <!-- <div v-else>
-                <label> Which channel would you like to join? </label>
-                <button @click="joinChannel('Channel 1')">Channel 1</button>
-                <button @click="joinChannel">Channel 2</button>
-             </div> -->
         </div>
-      
         <div class="chat-container" v-else>
-            <div class="messages-container">
-                <div v-for="message in messages" :key="message.id">
-                    [{{ message.name }}]: {{ message.text }}
+            <div class="sidebar">
+                <div class="channel-container">
+                    <h4>Available Channels</h4>
+                    <ul id="channelList">
+                        <button v-for="(channel, index) in channels" :key="index" @click="changeChannel(channel.name)">
+                            {{ channel.name }}
+                        </button>
+                    </ul>
+                </div>
+                <div class="users-container">
+                    <h4>Online Users</h4>
+                    <ul id="userList">
+                        <li v-for="(player, index) in onlinePlayers" :key="index">
+                            {{ player.username === name ? player.username + ' (You)' : player.username }}
+                        </li>
+                    </ul>
                 </div>
             </div>
-            <div v-if="typingDisplay">{{ typingDisplay }}</div>
-            <hr />
-            <div class="message-input">
-                <form @submit.prevent="sendMessage">
-                    <label>Message: </label>
-                    <input v-model="messageText" placeholder='Write a message' @input="emitTyping" />
-                    <button type="submit">Send</button>
-                </form>
-                <div v-if="showNotification"> 
-                    <!-- Notification message when someone joins -->
-                    <p>{{ notificationMessage }}</p>
+
+            <div class="main">
+                <div v-if="isChannel">
+                    <div class="chat-box">
+                        <h2> {{ activeChannel }} </h2>
+                        <ul id="chatMessages">
+                        <!-- Chat messages will be dynamically added here -->
+                        </ul>
+                    </div>
+                    <div class="message-input">
+                        <!-- <form @submit.prevent="sendMessage"> -->
+                            <input v-model="content" placeholder='Write a message'/>
+                            <button type="submit">Send</button>
+                        <!-- </form> -->
+                    </div>
                 </div>
-                <button @click="clearAllMessages">Clear all</button>
-                <button @click="leave">Leave chat</button>
             </div>
         </div>
     </div>
@@ -44,144 +49,130 @@
 
 <script setup lang="ts">
 import { io } from 'socket.io-client';
-import { onBeforeMount, ref } from 'vue'
+import { onBeforeMount, ref, setBlockTracking } from 'vue'
+
+interface Player {
+    username: string
+}
+
+interface Channel {
+    name: string
+}
+
+interface Message {
+    sender: string;
+    channel: string;
+    text: string;
+}
 
 const socket = io('http://localhost:3000'); //connect socket to backend
 
-//not sure if this should be here, but otherwise it cannot infer the type of response
-interface Message {
-    name: string;
-    text: string;
-    id: string;
-}
+const logged = ref(false);
+const name = ref('');
+const content = ref('');
+const onlinePlayers = ref<Player[]>([]);
+const channels = ref<Channel[]>([]);
+const activeChannel = ref('');
+const isChannel = ref(false);
 
-interface Player {
-	id: string; //number;
-	username: string;
+const chat = {
+    channel1: [],
+    channel2: [],
+    channel3: []
 }
 
 const messages = ref<Message[]>([]);
-const players = ref<Player[]>([]);
-const messageText = ref('');
-const joined = ref(false);
-const player = ref(false);
-const showNotification = ref(false);
-const name = ref('');
-const typingDisplay = ref('');
-const notificationMessage = ref('');
 
 onBeforeMount(() => {
-	// add exception if there are networking problems
-    socket.emit('findAllMessages', {}, (response: Message[]) => {
-        messages.value = response;
+    socket.emit('findAllOnlinePlayers', {}, (response: Player[]) => {
+        onlinePlayers.value = response;
     });
 
-    socket.emit('findAllPlayers', {}, (response: Player[]) => {
-        players.value = response;
+    socket.emit('findAllChannels', {}, (response: Channel[]) => {
+        channels.value = response;
+    });
+
+    // socket.emit('findAllChannelMessages', { channelName: activeChannel.value }, (response: Message[]) => {
+    //     chat[activeChannel.value].push = response;
+    // })
+
+    socket.on('player', (player) => {
+        onlinePlayers.value.push(player);
     })
 
     socket.on('message', (message) => {
         messages.value.push(message);
     });
 
-    socket.on('typing', ({ name, isTyping }) => {
-        if (isTyping) {
-            typingDisplay.value = `${name} is typing...`;
-        } else {
-            typingDisplay.value = '';
-        }
-    });
-
-    socket.on('userJoined', ({ name, newUser}) => {
-      if (newUser) {
-          notificationMessage.value = `${name} has joined the chat.`;
-          showNotification.value = true;
-          
-          setTimeout(() => {
-              showNotification.value = false;
-            }, 3000);
-        } else {
-          notificationMessage.value = '';
-      }
-    });
-
-    socket.on('userLeft', ({ name, hasLeft}) => {
-      if (hasLeft) {
-          notificationMessage.value = `${name} has left the chat.`;
-          showNotification.value = true;
-          
-          setTimeout(() => {
-              showNotification.value = false;
-            }, 3000);
-        } else {
-          notificationMessage.value = '';
-      }
-    });
 });
 
-// const addPlayer = () => {
-//     socket.emit('addPlayer', {username: name.value})
-//     player.value = true;
-// }
-
-const join = () => {
-    socket.emit('join', {username: name.value, newUser: true}, () => {
-        console.log('new join');
-        joined.value = true;
+const addPlayer = () => {
+    socket.emit('addPlayer', { username: name.value }, () => {
+        logged.value = true;
     })
 }
 
-// const joinChannel = (channelName: string) => {
-//     socket.emit('join', {channelName: channelName, username: name.value, newUser: true}, () => {
-//         joined.value = true;
-//     })
-// }
-
-const sendMessage = () => {
-    socket.emit('createMessage', {text: messageText.value}, () => {
-        messageText.value = '';
+const changeChannel = (channel_name: string) => {
+    socket.emit('join', { playerName: name.value, channelName: channel_name}, () => {
+        isChannel.value = true;
+        activeChannel.value = channel_name;
+        console.log('hello');
     })
 }
 
-let timeout;
-
-const emitTyping = () => {
-    socket.emit('typing', { isTyping: true });
-    timeout = setTimeout(() => {
-        socket.emit('typing', { isTyping: false });
-    }, 2000);
-}
-
-const clearAllMessages = () => {
-    socket.emit('clearAllMessages', {}, (response: Message[]) => {
-        messages.value = response;
-    });
-}
-
-const leave = () => {
-    socket.emit('leave', {name: name.value, isLeaving: true});
-    joined.value = false;
-    name.value = '';
-}
 
 </script>
 
 
 <style>
 
-.chat {
+.chat-container {
     padding: 20px;
+    display: flex;
     height: 100vh;
 }
 
-.messages-container {
+/* Sidebar */
+.sidebar {
+    flex: 1;
+    padding: 20px;
+    background-color: #f1f1f1;
+}
+
+.sidebar h4 {
+    margin-top: 0;
+}
+
+/* Main Content */
+.main {
+    flex: 2;
+    padding: 20px;
+    background-color: #ffffff;
+}
+
+/* Chat Box */
+.chat-box {
+    margin-top: 20px;
+    flex-direction: column;
     background: white;
-    height: 50vh;
+    height: 75vh;
     padding: 1em;
     overflow: auto;
     max-width: 350px;
     margin: 0 auto 2em auto;
     box-shadow: 2px 2px 5px 2px rgba(0, 0, 0, 0.3)
 }
+
+/* List Items */
+ul {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+}
+
+li {
+    margin-bottom: 10px;
+}
+
 
 </style>

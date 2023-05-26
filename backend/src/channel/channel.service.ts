@@ -5,35 +5,44 @@ import { CreateChannelDto } from './dto/create-channel.dto';
 @Injectable()
 export class ChannelService {
 	channels: Channel[] = [
-		{ id: 'channel001', name: 'Channel 1', messages: [] },
-		{ id: 'channel002', name: 'Channel 2', messages: [] }
+		{ name: "Channel 1" },
+		{ name: "Channel 2" },
+		{ name: "Channel 3" }
 	]
 
-	create(createChannelDto: CreateChannelDto, channelId: string) {
+	create(channelName: string) {
 		const channel = {
-			id: channelId,
-			name: createChannelDto.name,
-			messages: [],
+			name: channelName,
 		};
+		if (this.channels.some(channel => channel.name === channelName)) {
+            console.log('Channel already exists');
+        } else {
+            this.channels.push(channel);
+            console.log('added channel: ', channel.name);
+        }
 		this.channels.push(channel);
 		console.log(this.channels);
 		return channel;
 	}
 
-	delete(channelId: string) {
-        const index = this.channels.findIndex(channel => channel.id === channelId);
-
-        if (index !== -1) {
-            this.channels.splice(index, 1);
-        }
+	findAll() {
+		return this.channels;
 	}
 
-	getChannelName(channelId: string) {
-        const index = this.channels.findIndex(channel => channel.id === channelId);
+	// delete(channelId: string) {
+    //     const index = this.channels.findIndex(channel => channel.id === channelId);
 
-        if (index !== -1) {
-            return this.channels[index].name;
-        }
-        return ('Error: channel not found');
-	}
+    //     if (index !== -1) {
+    //         this.channels.splice(index, 1);
+    //     }
+	// }
+
+	// getChannelName(channelId: string) {
+    //     const index = this.channels.findIndex(channel => channel.id === channelId);
+
+    //     if (index !== -1) {
+    //         return this.channels[index].name;
+    //     }
+    //     return ('Error: channel not found');
+	// }
 }

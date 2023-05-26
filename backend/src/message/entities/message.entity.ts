@@ -1,5 +1,5 @@
 export class Message {
-	name: string;
+	sender: string;
+	channel: string;
 	text: string;
-	id: string;
 }

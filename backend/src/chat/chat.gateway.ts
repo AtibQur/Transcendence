@@ -1,9 +1,16 @@
-import { WebSocketGateway, SubscribeMessage, MessageBody, WebSocketServer, ConnectedSocket } from '@nestjs/websockets';
+import { WebSocketGateway, 
+        SubscribeMessage,
+        MessageBody, 
+        WebSocketServer, 
+        ConnectedSocket,
+        OnGatewayInit,
+        OnGatewayConnection,
+        OnGatewayDisconnect, } from '@nestjs/websockets';
 import { MessageService } from '../message/message.service';
 import { PlayerService } from 'src/player/player.service';
 import { ChannelService } from 'src/channel/channel.service';
-import { CreateMessageDto } from '../message/dto/create-message.dto';
-import { CreatePlayerDto } from 'src/player/dto/create-player.dto';
+// import { CreateMessageDto } from '../message/dto/create-message.dto';
+// import { CreatePlayerDto } from 'src/player/dto/create-player.dto';
 import { Server, Socket } from 'socket.io';
 import { Logger } from '@nestjs/common';
 
@@ -12,7 +19,7 @@ import { Logger } from '@nestjs/common';
 		origin: 'http://localhost:8080', // allow only from our frontend
 	},
 })
-export class ChatGateway {
+export class ChatGateway { //implements OnGatewayConnection, OnGatewayDisconnect {
   @WebSocketServer()
   server: Server;
 
@@ -21,88 +28,51 @@ export class ChatGateway {
         private readonly playerService: PlayerService,
         private readonly channelService: ChannelService,
     ) {}
-
     private logger = new Logger('ChatGateway');
 
-    //CREATE MESSAGE
-    @SubscribeMessage('createMessage')
-    async create(
-        @MessageBody() createMessageDto: CreateMessageDto,
-        @ConnectedSocket() client: Socket,
-     ) {
-        createMessageDto.id = client.id;
-        const message = await this.messageService.create(createMessageDto, this.playerService.getPlayerName(client.id));
+    // handleConnection(@ConnectedSocket() client: Socket){
+    //   this.logger.log(`client connected ${client.id}`)
+    // }
 
-        this.server.emit('message', message);
+    // handleDisconnect(@ConnectedSocket() client: Socket){
+    //   this.logger.log(`client disconnected ${client.id}`)
+    // }
 
-        return message;
+    @SubscribeMessage('addPlayer')
+    async addPlayer(
+        @MessageBody() payload: { username: string }
+    ){
+        const player = await this.playerService.create(payload.username);
+        this.server.emit('player', player)
+        return player;
     }
 
-    //FIND ALL MESSAGES
-    @SubscribeMessage('findAllMessages')
-    findAllMessages() {
-        return this.messageService.findAll();
-    }
-
-    //FIND ALL PLAYERS
-    @SubscribeMessage('findAllPlayers')
-    findAllPlayers() {
+    @SubscribeMessage('findAllOnlinePlayers')
+    findAllOnlinePlayers(){
         return this.playerService.findAll();
     }
 
-    //CLEAR ALL MESSAGE -> just for testing purposes
-    @SubscribeMessage('clearAllMessages')
-    clearAll() {
-        return this.messageService.clearAll();
+    @SubscribeMessage('findAllChannels')
+    findAllChannels(){
+        return this.channelService.findAll();
     }
 
-    @SubscribeMessage('addPlayer')
-    addPlayer(
-        @MessageBody() payload: {username: string},
-        @ConnectedSocket() client: Socket,
-    ) {
-        this.playerService.create(payload.username, client.id);
+    @SubscribeMessage('findAllChannelMessages')
+    findAllChannelMessages(
+        @MessageBody() payload: { channelName: string}
+    ){
+        return this.messageService.findAllChannelMessages(payload.channelName);
     }
 
-    //JOIN ROOM -> CREATE PLAYER
     @SubscribeMessage('join')
-    joinRoom(
-        @MessageBody() payload: {username: string, newUser: boolean},
-        @ConnectedSocket() client: Socket,
-    ) {
-        // const channel = this.channelService.create(payload.username, client.id);
-        // this.playerService.addChannel(channel);
-		client.broadcast.emit('userJoined', { name: payload.username, newUser: payload.newUser });
-		return this.playerService.create(payload.username, client.id);
+    joinChannel(
+        @MessageBody() payload: { playerName: string, channelName: string},
+        @ConnectedSocket() client: Socket
+    ){
+        client.join(payload.channelName);
+        console.log(payload.playerName, ' joins ', payload.channelName);
+        return true;
+        // client.broadcast.emit('userJoined', payload.playerName);
     }
-    // @SubscribeMessage('join')
-    // joinRoom(
-    //     @MessageBody() payload: {channelName: string, username: string, newUser: boolean},
-    //     @ConnectedSocket() client: Socket,
-    // ) {
-    //     const channel = this.channelService.create(payload.username, client.id);
-    //     // this.playerService.addChannel(channel);
-	// 	client.broadcast.emit('userJoined', { name: this.playerService.getPlayerName(client.id), newUser: payload.newUser });
-    // }
-
-    //NOTIFY THAT USER IS TYPING
-    @SubscribeMessage('typing')
-    async typing(
-        @MessageBody('isTyping') isTyping: boolean,
-        @ConnectedSocket() client: Socket,
-    ) {
-            const name = await this.playerService.getPlayerName(client.id);
-            client.broadcast.emit('typing', { name, isTyping });
-        }
-
-    //LEAVE ROOM
-    @SubscribeMessage('leave')
-    leaveRoom(
-        @MessageBody('name') name: string,
-        @MessageBody('hasLeft') newUser: boolean,
-        @ConnectedSocket() client: Socket,
-    ) {
-            client.broadcast.emit('userLeft', { name, hasLeft: true});
-            this.playerService.delete(client.id);
-        }
 }
+
