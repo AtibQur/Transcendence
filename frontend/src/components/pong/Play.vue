@@ -7,8 +7,7 @@
 				<div class="score2"> {{ score2 }}</div>
 				<div class="line"></div>
 				<div class="ball" :style="{ left: ball.x + 'px', top: ball.y + 'px' }"></div>
-				<div class="paddle" :style="{ top: paddleY + 'px' }">
-				</div>
+				<div class="paddle" :style="{ top: paddleY + 'px' }"></div>
 				<div class="paddle2" :style="{ top: paddle2Y + 'px' }"></div>
 				<div :style="dynamicStyle">
 					<div :style="textStyle"> {{  dynamicText }}</div>
@@ -16,6 +15,7 @@
 					<router-link to="/Leaderboard"><button v-if="leaderboard">Leaderboard</button></router-link>
 					<router-link to="/"><button v-if="leaderboard">Exit</button></router-link>
 				</div>
+				<button class="start-button" v-if="!gameStarted" @click="startGame">Press to start</button>
 			</div>
 		</div>
 	</div>
@@ -49,9 +49,9 @@ data() {
 			x: 50,
 			y: 50,
 			radius: 10,
-			speedX: 1,
-			speedY: 1,
-			velocity: 5,
+			dirX: 1,
+			dirY: 1,
+			velocity: 4,
 		},
 			score1: 0,
 			score2: 0,
@@ -62,61 +62,54 @@ data() {
 			s: false,
 		},
 		gameOver: false,
+		gameStarted: false,
 	};
 },
 methods: {
+	// Ball Movement
 	moveBall(){
-		this.ball.x += this.ball.speedX;
-		this.ball.y += this.ball.speedY;
+		if (this.gameStarted === false)
+			return;
+		this.ball.x += this.ball.dirX;
+		this.ball.y += this.ball.dirY;
 
 		if (this.ball.x + this.ball.radius > this.canvasWidth - 10 || this.ball.x < 0) {
-			this.ball.speedX =- this.ball.speedX;
+			this.ball.dirX =- this.ball.dirX;
 		}
 		if (this.ball.y + this.ball.radius > this.canvasHeight - 10 || this.ball.y < 0) {
-			this.ball.speedY =- this.ball.speedY;
+			this.ball.dirY =- this.ball.dirY;
 		}
 
 		if (this.ball.x < 0){
 			this.score2++;
 			this.ball.x = 422;
 			this.ball.y = 251;
+			this.ball.velocity = 5;
 		}
 		if (this.ball.x + this.ball.radius > this.canvasWidth - 10){
 			this.score1++;
 			this.ball.x = 422;
 			this.ball.y = 251;
+			this.ball.velocity = 5;
 		}
+
+		// Ball Bounce
 		const paddleTop = this.paddleY - 40;
 		const paddleBottom = this.paddleY + 40;
-		// if (this.ball.x < 15 && this.ball.x > 10 && ballCenterY >= paddleTop && ballCenterY <= paddleBottom) {
-		// // Calculate the new speedX and speedY based on the collision position
-		// const collisionOffset = ballCenterY - (this.paddleY + 40);
-		// const normalizedOffset = collisionOffset / 40; // Normalize the offset between -1 and 1
-		// const bounceAngle = normalizedOffset * Math.PI / 4; // Adjust the angle as needed
-		// this.ball.speedX = -Math.cos(bounceAngle) * this.ball.velocity;
-		// this.ball.speedY = Math.sin(bounceAngle) * this.ball.velocity;
-		// }
-
-		const ballLeft = this.ball.y + (this.ball.radius / 2);
-		if (this.ball.x < 15 && this.ball.x > 10 && ballLeft >= paddleTop && ballLeft <= paddleBottom) {
-			const collisionOffset = (ballLeft - this.paddleTop)/ 80;
-			const normalizedOffset = (Math.PI / 4) * Math.sin(this.paddleY / 80);
-			const bounceAngle = (collisionOffset - 0.5) * normalizedOffset;
-
-			console.log('Bounce Angle', bounceAngle);
-			console.log('Math', Math.cos(bounceAngle));
-			console.log('Ball Speed X', this.ball.speedX);
-
-			this.ball.speedX = Math.sin(bounceAngle) * this.ball.velocity;
-			// this.ball.speedX =- this.ball.speedX;
+		const ballCenter = this.ball.y + (this.ball.radius / 2);
+		const hitPoint = ballCenter - paddleTop;
+		if (this.ball.x < 15 && this.ball.x > 10 && ballCenter >= paddleTop && ballCenter <= paddleBottom) {
+			this.ball.velocity += 0.5;
+			this.ball.dirX =- this.ball.dirX;
 		}
-		if (this.ball.x < this.canvasWidth - 10 && this.ball.x > this.canvasWidth - 30 && ballLeft >= this.paddle2Y - 40 && ballLeft <= this.paddle2Y + 40) {
-			this.ball.speedX =- this.ball.speedX;
+		if (this.ball.x < this.canvasWidth - 10 && this.ball.x > this.canvasWidth - 30 && ballCenter >= this.paddle2Y - 40 && ballCenter <= this.paddle2Y + 40) {
+			this.ball.velocity += 0.5;
+			this.ball.dirX =- this.ball.dirX;
 		}
 		this.updateDynamicStyle();
 		this.updateTextStyle();
 	},
-	// ending pop-up
+	// Ending Pop-Up
 	updateTextStyle(){
 		const textSize = this.canvasWidth * 0.05;
 		this.textStyle.fontSize = `${textSize}px`;
@@ -146,26 +139,29 @@ methods: {
 	refreshPage() {
       location.reload();
     },
-	// key input
+	// Key Input
 	keyUp(event) {
-			if (event.key === 'w' || event.key === 's') {
+			if (event.key === 'w' || event.key === 's' || event.key === 'ArrowUp' || event.key === 'ArrowDown') {
 				this.keysPressed[event.key] = false;
 			}
 		},
 	keyDown(event) {
-		if (event.key === 'w' || event.key === 's') {
+		if (event.key === 'w' || event.key === 's' || event.key === 'ArrowUp' || event.key === 'ArrowDown') {
 			this.keysPressed[event.key] = true;
 		}
 	},
-	//paddle movement
+	//Paddle Movement
 	movePaddle() {
 		if (this.keysPressed['w'] && this.paddleY > 40)
-			this.paddleY -= 1;
-		else if (this.keysPressed['s'] && this.paddleY < this.canvasHeight - 40)
-			this.paddleY += 1;
+			this.paddleY -= 2;
+		if (this.keysPressed['s'] && this.paddleY < this.canvasHeight - 40)
+			this.paddleY += 2;
+		if (this.keysPressed['ArrowUp'] && this.paddle2Y > 40)
+			this.paddle2Y -= 2;
+		if (this.keysPressed['ArrowDown'] && this.paddle2Y < this.canvasHeight - 40)
+			this.paddle2Y += 2;
 	},
 	loop() {
-		this.paddle2Y = this.ball.y;
 		if (this.gameOver === false){
 			for (let i = 0; i < this.ball.velocity; i++)
 				this.moveBall();
@@ -176,17 +172,20 @@ methods: {
 		this.canvas = this.$refs.canvas;
 		this.canvasWidth = this.$refs.canvas.offsetWidth;
 		this.canvasHeight = this.canvasWidth * (9 / 16);
+		this.ball.x = this.canvasWidth / 2 - 7;
+		this.ball.y = (Math.random() * this.canvasHeight);
 	},
+	startGame(){
+		this.gameStarted = true;
+	}
 },
 	mounted() {
 		window.addEventListener('keyup', this.keyUp);
 		window.addEventListener('keydown', this.keyDown);
 		setInterval(this.movePaddle, 1); // Adjust the interval value as needed for desired smoothness
 		this.handleResize();
-		this.ball.x = (this.canvasWidth / 2 - 8);
-		this.ball.y = (this.canvasHeight / 2 - 5);
-		// this.ball.speedX = Math.random() > 0.5 ? 1 : - 1;
-		// this.ball.speedY = Math.random() > 0.5 ? 1 : - 1;
+		this.ball.dirX = Math.random() > 0.5 ? 1 : - 1;
+		this.ball.dirY = Math.random() > 0.5 ? 1 : - 1;
 		this.loop();
 	},
 	beforeUnmount() {
@@ -254,17 +253,17 @@ html, body {
 
 .ball {
 	position: absolute;
-	left: 0;
-	top: 0;
 	width: 20px;
 	height: 20px;
+	/* top: 50px; */
+	/* left: 50px; */
 	border-radius: 50%;
 	background-color: rgb(208, 16, 32);
 }
 
 .paddle {
 	position: absolute;
-	width: 10px;
+	width: 15px;
 	height: 80px;
 	left: 5px;
 	background-color: rgb(90, 92, 159);
@@ -273,7 +272,7 @@ html, body {
 
 .paddle2 {
 	position: absolute;
-	width: 10px;
+	width: 15px;
 	height: 80px;
 	right: 5px;
 	background-color: rgb(90, 92, 159);
@@ -283,5 +282,20 @@ html, body {
 .leaderboard {
 	position: absolute;
 	top: 200px;
+}
+
+.start-button {
+	position: absolute;
+	padding: 10px 20px;
+	color: #2c3e50;
+	font-size: 40px;
+	top: 40%;
+	left: 36%;
+	border: none;
+	border-radius: 4px;
+	cursor: pointer;
+}
+.start-button:hover {
+  background-color: #45a049;
 }
 </style>
