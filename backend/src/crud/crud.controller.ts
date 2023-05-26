@@ -12,26 +12,28 @@ export class CrudController {
 
     @Post('changeusername')
     updateUsername(@Body('id') id: string, @Body('username') username: string) {
-        return this.crudService.updateUsername(Number(id), username);
+        return this.crudService.updateUsername(+id, username);
     }
 
     @Post('incrementwins')
     updateWins(@Body('id') id: string): Promise<void> {
-        return this.crudService.updateWins(Number(id));
+        console.log(id);
+        console.log(+id);
+        return this.crudService.updateWins(+id);
     }
 
     @Post('incrementlosses')
     updateLosses(@Body('id') id: string): Promise<void> {
-        return this.crudService.updateLosses(Number(id));
+        return this.crudService.updateLosses(+id);
     }
 
     @Post('incrementlevel')
     updateLevel(@Body('id') id: string): Promise<void> {
-        return this.crudService.updateLevel(Number(id));
+        return this.crudService.updateLevel(+id);
     }
 
     @Delete('deleteplayer/:id')
     deletePlayer(@Param('id') id: string) {
-        return this.crudService.deletePlayer(Number(id));
+        return this.crudService.deletePlayer(+id);
     }
 }
