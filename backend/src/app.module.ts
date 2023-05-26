@@ -9,6 +9,7 @@ import { GoogleModule } from './auth_google/google.module';
 import { PlayerModule } from './player/player.module';
 import { ChannelModule } from './channel/channel.module';
 import { ChannelmemberModule } from './channelmember/channelmember.module';
+import { ChatmessageModule } from './chatmessage/chatmessage.module';
 
 
 @Module({
@@ -22,6 +23,7 @@ import { ChannelmemberModule } from './channelmember/channelmember.module';
     PlayerModule,
     ChannelModule,
     ChannelmemberModule,
+    ChatmessageModule,
   ],
   controllers: [AppController],
   providers: [AppService],
