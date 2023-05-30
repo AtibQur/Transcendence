@@ -1,6 +1,8 @@
 <template>
 	<div class="container">
-		<h1>Pong Game</h1>
+		<div class="PongLogo">
+			<h1>PO1NG</h1>
+		</div>
 		<div class="canvas-container">
 			<div class="canvas" ref="canvas">
 				<div class="score1"> {{ score1 }}</div>
@@ -11,9 +13,11 @@
 				<div class="paddle2" :style="{ top: paddle2Y + 'px' }"></div>
 				<div :style="dynamicStyle">
 					<div :style="textStyle"> {{  dynamicText }}</div>
-					<router-link to="/Play"><button v-if="leaderboard" @click="refreshPage">Retry</button></router-link>
-					<router-link to="/Leaderboard"><button v-if="leaderboard">Leaderboard</button></router-link>
-					<router-link to="/"><button v-if="leaderboard">Exit</button></router-link>
+					<div class="buttons">
+						<router-link to="/Play"><button v-if="leaderboard" @click="refreshPage">Retry</button></router-link>
+						<router-link to="/Leaderboard"><button v-if="leaderboard">Leaderboard</button></router-link>
+						<router-link to="/"><button v-if="leaderboard">Exit</button></router-link>
+					</div>
 				</div>
 				<button class="start-button" v-if="!gameStarted" @click="startGame">Press to start</button>
 			</div>
@@ -22,10 +26,12 @@
 </template>
   
 <script>
+import io from 'socket.io-client';
 export default {
 	name: 'PongGame',
 data() {
 	return {
+		socket: null,
 		leaderboard: false,
 		dynamicStyle: {
 			endScreen: 'false',
@@ -180,6 +186,8 @@ methods: {
 	}
 },
 	mounted() {
+		const socket = io('http://localhost:3000');
+		socket.emit('customEvent', { message: 'Hello server!' });
 		window.addEventListener('keyup', this.keyUp);
 		window.addEventListener('keydown', this.keyDown);
 		setInterval(this.movePaddle, 1); // Adjust the interval value as needed for desired smoothness
@@ -202,6 +210,17 @@ html, body {
   padding: 0;
   height: 100%;
 }
+
+.PongLogo {
+    font-family: 'JetBrains Mono';
+    font-style: normal;
+    font-weight: 400;
+    font-size: 30px;
+    line-height: 127px;
+    color: #134279;
+    text-shadow: -3px 3px #a29e9e;
+  }
+
 .container {
 	display: flex;
 	flex-direction: column;
@@ -224,6 +243,7 @@ html, body {
 	width: 100%;
 	padding-bottom: 56.25%;
 	background-color: rgb(250, 250, 250);
+
 }
 
 .score1 {
@@ -289,8 +309,8 @@ html, body {
 	padding: 10px 20px;
 	color: #2c3e50;
 	font-size: 40px;
-	top: 40%;
-	left: 36%;
+	top: 18%;
+	left: 34.5%;
 	border: none;
 	border-radius: 4px;
 	cursor: pointer;
@@ -298,4 +318,11 @@ html, body {
 .start-button:hover {
   background-color: #45a049;
 }
+
+.buttons {
+	position: absolute;
+	top: 10%;
+	left: 20%;
+}
+
 </style>
