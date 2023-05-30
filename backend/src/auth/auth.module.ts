@@ -5,7 +5,7 @@ import { AuthController } from './auth.controller';
 
 @Module({
     imports: [
-      PassportModule.register({ defaultStrategy: '42' }),
+      PassportModule.register({ defaultStrategy: '42' , session: true}),
     ],
     providers: [FortyTwoStrategy],
     controllers: [AuthController],

@@ -1,4 +1,4 @@
-import { Controller, Get, Req, Res, UseGuards } from '@nestjs/common';
+import { Controller, Get, Req, Res, Session, UseGuards } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 
 @Controller('auth')
@@ -14,6 +14,12 @@ export class AuthController {
     async fortyTwoCallback(@Req() req: any, @Res() res: any) {
         console.log(req.user);
         res.redirect('http://localhost:8080/Login?username=' + req.user.username);
+    }
+
+    @Get("session")
+    async session(@Session() session: Record<string, any>) {
+        console.log(session);
+        console.log(session.id);
     }
 
     @Get('FetchUser')
