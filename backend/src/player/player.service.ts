@@ -36,8 +36,19 @@ export class PlayerService {
     }
 }
 
-  findAll() {
-    return `This action returns all player`;
+  async findAll() {
+    return prisma.playerStats.findMany({
+      select: {
+        player: {
+          select: {
+            username: true,
+          },
+        },
+        wins: true,
+        losses: true,
+        ladder_level: true,
+      },
+    });
   }
 
   findOne(id: number) {
