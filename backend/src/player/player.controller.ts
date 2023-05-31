@@ -13,7 +13,7 @@ export class PlayerController {
     return this.playerService.createPlayer(createPlayerDto);
   }
 
-  // TODO
+  // GET ALL PLAYER STATS (FOR LEADERBOARD)
   @Get()
   findAll() {
     return this.playerService.findAll();

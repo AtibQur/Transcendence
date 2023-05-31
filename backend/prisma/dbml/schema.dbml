@@ -6,11 +6,9 @@ Table Player {
   id Int [pk, increment]
   username String [unique, not null]
   intra_username String [not null, default: 'username']
-  access_token String [not null, default: 'token']
-  refresh_token String [not null, default: 'reftoken']
   avatar_url String [not null, default: 'default_avatar.png']
+  avatar Bytes
   two_factor_enabled Boolean [not null, default: false]
-  password String [not null]
   player_stats PlayerStats
   owner_of Channel [not null]
   member_of ChannelMember [not null]
@@ -29,7 +27,7 @@ Table PlayerStats {
   wins Int [not null, default: 0]
   losses Int [not null, default: 0]
   ladder_level Int [not null, default: 1]
-  achievements String[] [not null]
+  achievements Json
   status PlayerStatus [not null]
   player Player [not null]
 }
@@ -98,7 +96,7 @@ Table GameInvitation {
   id Int [pk, increment]
   sender_id Int [not null]
   recipient_id Int [not null]
-  timestamp DateTime [default: `now()`, not null]
+  timestamp DateTime [not null]
   accepted Boolean [not null, default: false]
   sender Player [not null]
   recipient Player [not null]

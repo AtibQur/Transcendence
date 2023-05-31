@@ -15,13 +15,15 @@ export class PlayerService {
         data: {
           username: createPlayerDto.username,
           intra_username: createPlayerDto.username,
-          password: 'geheim',
           player_stats: {
             create: {
               wins: 0,
               losses: 0,
               ladder_level: 1,
-              achievements: [],
+              achievements: {
+                'first win': true,
+                'high score': false,
+              },
               status: 'online',
             },
           },
@@ -47,6 +49,7 @@ export class PlayerService {
         wins: true,
         losses: true,
         ladder_level: true,
+        achievements: true,
       },
     });
   }

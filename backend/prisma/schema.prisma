@@ -18,11 +18,9 @@ model Player {
   id                 Int      @id @default(autoincrement())
   username           String   @unique
   intra_username     String   @default("username")
-  access_token       String   @default("token")
-  refresh_token      String   @default("reftoken")
   avatar_url         String   @default("default_avatar.png")
+  avatar             Bytes?
   two_factor_enabled Boolean  @default(false)
-  password           String
   player_stats       PlayerStats?  @relation("player_stats")
 
   owner_of           Channel[]
@@ -42,7 +40,7 @@ model PlayerStats {
   wins          Int      @default(0)
   losses        Int      @default(0)
   ladder_level  Int      @default(1)
-  achievements  String[]
+  achievements  Json?
   status        PlayerStatus
 
   player        Player   @relation("player_stats", fields: [id], references: [id], onDelete: Cascade)
@@ -126,7 +124,7 @@ model GameInvitation {
   id           Int      @id @default(autoincrement())
   sender_id    Int
   recipient_id Int
-  timestamp    DateTime @default(now())
+  timestamp    DateTime
   accepted     Boolean  @default(false)
 
   sender       Player   @relation("sent_invitations", fields: [sender_id], references: [id])
