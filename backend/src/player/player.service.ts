@@ -76,7 +76,7 @@ export class PlayerService {
   }
 
   // +1 THE WINS
-  async updateWins(id: number, updatePlayerDto: UpdatePlayerDto) {
+  async updateWins(id: number) {
     try {
       await prisma.player.update({
         where: {
@@ -97,7 +97,7 @@ export class PlayerService {
   }
 
   // +1 LOSSES
-  async updateLosses(id: number, updatePlayerDto: UpdatePlayerDto) {
+  async updateLosses(id: number) {
     try {
       await prisma.player.update({
         where: {
@@ -118,7 +118,7 @@ export class PlayerService {
   }
   
   // +1 LEVEL
-  async updateLevel(id: number, updatePlayerDto: UpdatePlayerDto) {
+  async updateLevel(id: number) {
     try {
       await prisma.player.update({
         where: {

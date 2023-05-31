@@ -11,6 +11,7 @@ import { PlayerModule } from './player/player.module';
 import { ChannelModule } from './channel/channel.module';
 import { ChannelmemberModule } from './channelmember/channelmember.module';
 import { ChatmessageModule } from './chatmessage/chatmessage.module';
+import { MatchModule } from './match/match.module';
 
 
 @Module({
@@ -24,6 +25,7 @@ import { ChatmessageModule } from './chatmessage/chatmessage.module';
     ChannelModule,
     ChannelmemberModule,
     ChatmessageModule,
+    MatchModule,
   ],
   controllers: [AppController],
   providers: [AppService],

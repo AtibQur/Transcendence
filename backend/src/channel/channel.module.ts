@@ -5,7 +5,7 @@ import { ChannelmemberService } from 'src/channelmember/channelmember.service';
 import { ChannelmemberModule } from 'src/channelmember/channelmember.module';
 
 @Module({
-  imports: [ChannelmemberModule], // Import the module containing the ChannelmemberService
+  imports: [ChannelmemberModule],
   controllers: [ChannelController],
   providers: [ChannelService, ChannelmemberService]
 })

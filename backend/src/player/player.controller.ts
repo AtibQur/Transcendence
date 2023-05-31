@@ -33,20 +33,20 @@ export class PlayerController {
 
   // +1 WINS
   @Patch('wins/:id')
-  updateWins(@Param('id') id: string, @Body() updatePlayerDto: UpdatePlayerDto) {
-      return this.playerService.updateWins(+id, updatePlayerDto);
+  updateWins(@Param('id') id: string) {
+      return this.playerService.updateWins(+id);
   }
 
   // +1 LOSSES
   @Patch('losses/:id')
-  updateLosses(@Param('id') id: string, @Body() updatePlayerDto: UpdatePlayerDto) {
-      return this.playerService.updateLosses(+id, updatePlayerDto);
+  updateLosses(@Param('id') id: string) {
+      return this.playerService.updateLosses(+id);
   }
 
   // +1 LEVEL
   @Patch('level/:id')
-  updateLevel(@Param('id') id: string, @Body() updatePlayerDto: UpdatePlayerDto) {
-      return this.playerService.updateLevel(+id, updatePlayerDto);
+  updateLevel(@Param('id') id: string) {
+      return this.playerService.updateLevel(+id);
   }
 
   // CHANGE STATUS

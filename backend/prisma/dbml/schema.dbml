@@ -14,6 +14,7 @@ Table Player {
   member_of ChannelMember [not null]
   sent_messages ChatMessage [not null]
   matches_played Match [not null]
+  matches_con Match [not null]
   blocked_players BlockedPlayer [not null]
   blocked_by BlockedPlayer [not null]
   friends Friend [not null]
@@ -69,11 +70,12 @@ Table ChatMessage {
 Table Match {
   id Int [pk, increment]
   player_id Int [not null]
+  player Player [not null]
   opponent_id Int [not null]
+  opponent Player [not null]
   player_points Int [not null, default: 0]
   opponent_points Int [not null, default: 0]
   timestamp DateTime [not null]
-  player Player [not null]
 }
 
 Table BlockedPlayer {
@@ -121,6 +123,8 @@ Ref: ChatMessage.sender_id > Player.id
 Ref: ChatMessage.channel_id > Channel.id
 
 Ref: Match.player_id > Player.id
+
+Ref: Match.opponent_id > Player.id
 
 Ref: BlockedPlayer.player_id > Player.id
 

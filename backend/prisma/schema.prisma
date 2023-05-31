@@ -26,7 +26,8 @@ model Player {
   owner_of           Channel[]
   member_of          ChannelMember[]
   sent_messages      ChatMessage[]
-  matches_played     Match[]
+  matches_played     Match[]            @relation("matches_played")
+  matches_con        Match[]            @relation("matches_con")
   blocked_players    BlockedPlayer[]    @relation("blocked_players")
   blocked_by         BlockedPlayer[]    @relation("blocked_by")
   friends            Friend[]           @relation("friends")
@@ -93,11 +94,14 @@ model ChatMessage {
 model Match {
   id              Int      @id @default(autoincrement())
   player_id       Int
+  player          Player  @relation("matches_played", fields: [player_id], references: [id])
+
   opponent_id     Int
+  opponent        Player  @relation("matches_con", fields: [opponent_id], references: [id])
+
   player_points   Int      @default(0)
   opponent_points Int      @default(0)
   timestamp       DateTime
-  player          Player  @relation(fields: [player_id], references: [id])
 }
 
 model BlockedPlayer {
