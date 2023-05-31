@@ -1,5 +1,5 @@
-import { Message } from "src/message/entities/message.entity";
-import { Player } from "src/player/entities/player.entity";
+import { Message } from "src/chat_message/entities/message.entity";
+import { Player } from "src/chat_player/entities/player.entity";
 
 export class Channel {
 	// id: string;//number;

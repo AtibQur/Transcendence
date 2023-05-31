@@ -1,9 +1,9 @@
 import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-import { MessageModule } from './message/message.module';
-import { PlayerModule } from './player/player.module';
-import { ChannelModule } from './channel/channel.module';
+import { MessageModule } from './chat_message/message.module';
+import { PlayerModule } from './chat_player/player.module';
+import { ChannelModule } from './chat_channel/channel.module';
 import { ChatModule } from './chat/chat.module';
 import { CrudModule } from './crud/crud.module';
 import { ServeStaticModule} from '@nestjs/serve-static'; // New

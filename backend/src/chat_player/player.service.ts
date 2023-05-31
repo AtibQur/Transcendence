@@ -1,6 +1,5 @@
 import { Injectable } from '@nestjs/common';
 import { Player } from './entities/player.entity';
-import e from 'express';
 
 @Injectable()
 export class PlayerService {

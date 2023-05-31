@@ -1,4 +1,4 @@
-import { Channel } from "src/channel/entities/channel.entity";
+import { Channel } from "src/chat_channel/entities/channel.entity";
 
 export class Player {
 	// id: string; //number;

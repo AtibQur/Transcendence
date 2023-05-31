@@ -6,9 +6,9 @@ import { WebSocketGateway,
         OnGatewayInit,
         OnGatewayConnection,
         OnGatewayDisconnect, } from '@nestjs/websockets';
-import { MessageService } from '../message/message.service';
-import { PlayerService } from 'src/player/player.service';
-import { ChannelService } from 'src/channel/channel.service';
+import { MessageService } from '../chat_message/message.service';
+import { PlayerService } from 'src/chat_player/player.service';
+import { ChannelService } from 'src/chat_channel/channel.service';
 // import { CreateMessageDto } from '../message/dto/create-message.dto';
 // import { CreatePlayerDto } from 'src/player/dto/create-player.dto';
 import { Server, Socket } from 'socket.io';
