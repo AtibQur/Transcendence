@@ -1,47 +1,11 @@
 <template>
     <div class="chat">
-        <div v-if="!logged">
-            <form @submit.prevent="addPlayer">
-                <label> What's your name? </label>
-                <input v-model="name" placeholder='Write your name'/>
-                <button type="submit">Send</button>
-            </form>
-        </div>
-        <div class="chat-container" v-else>
-            <div class="sidebar">
-                <div class="channel-container">
-                    <h4>Available Channels</h4>
-                    <ul id="channelList">
-                        <button v-for="(channel, index) in channels" :key="index" @click="changeChannel(channel.name)">
-                            {{ channel.name }}
-                        </button>
-                    </ul>
-                </div>
-                <div class="users-container">
-                    <h4>Online Users</h4>
-                    <ul id="userList">
-                        <li v-for="(player, index) in onlinePlayers" :key="index">
-                            {{ player.username === name ? player.username + ' (You)' : player.username }}
-                        </li>
-                    </ul>
-                </div>
-            </div>
-
-            <div class="main">
-                <div v-if="isChannel">
-                    <div class="chat-box">
-                        <h2> {{ activeChannel }} </h2>
-                        <ul id="chatMessages">
-                        <!-- Chat messages will be dynamically added here -->
-                        </ul>
-                    </div>
-                    <div class="message-input">
-                        <!-- <form @submit.prevent="sendMessage"> -->
-                            <input v-model="content" placeholder='Write a message'/>
-                            <button type="submit">Send</button>
-                        <!-- </form> -->
-                    </div>
-                </div>
+        <div v-if="isChannel">
+            <div class="chat-box">
+                <h2> {{ activeChannel }} </h2>
+                <ul id="chatMessages">
+                <!-- Chat messages will be dynamically added here -->
+                </ul>
             </div>
         </div>
     </div>

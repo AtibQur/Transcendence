@@ -32,7 +32,7 @@ export class PlayerService {
       });
       console.log('User saved in db:', newPlayer.username);
       console.log('PlayerStats initialized:', newPlayer.player_stats);
-      return `This action adds a new player: ${createPlayerDto.username}`;
+      return newPlayer.id;
     } catch (error) {
       console.error('Error occurred:', error);
     }

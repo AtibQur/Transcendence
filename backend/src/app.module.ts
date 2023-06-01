@@ -12,6 +12,7 @@ import { ChannelModule } from './channel/channel.module';
 import { ChannelmemberModule } from './channelmember/channelmember.module';
 import { ChatmessageModule } from './chatmessage/chatmessage.module';
 import { MatchModule } from './match/match.module';
+import { ChatModule } from './chat/chat.module';
 
 
 @Module({
@@ -26,6 +27,7 @@ import { MatchModule } from './match/match.module';
     ChannelmemberModule,
     ChatmessageModule,
     MatchModule,
+    ChatModule,
   ],
   controllers: [AppController],
   providers: [AppService],
