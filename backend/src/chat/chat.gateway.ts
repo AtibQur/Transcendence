@@ -49,7 +49,7 @@ export class ChatGateway { //implements OnGatewayConnection, OnGatewayDisconnect
 
     @SubscribeMessage('findAllOnlinePlayers')
     findAllOnlinePlayers(){
-        return this.playerService.findAll();
+        return this.playerService.findAllStats();
     }
 
     // @SubscribeMessage('findAllChannels')
