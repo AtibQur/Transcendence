@@ -37,6 +37,30 @@ export class ChannelmemberService {
   findAll() {
     return `This action returns all channelmember`;
   }
+  
+  //FIND ALL CHANNELS OF PLAYER
+  async findAllChannels(id: number) {
+    return prisma.channelMember.findMany({
+        where: {
+          member_id: id
+        },
+        select: {
+            channel_id: true
+        }
+      });
+  }
+  
+  //FIND ALL CHANNELMEMBERS
+  findAllChannelmembers(id: number) {
+    return prisma.channelMember.findMany({
+        where: {
+          channel_id: id
+        },
+        select: {
+            member_id: true
+        }
+      });
+  }
 
   findOne(id: number) {
     return `This action returns a #${id} channelmember`;
