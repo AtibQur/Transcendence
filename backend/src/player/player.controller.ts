@@ -31,6 +31,12 @@ export class PlayerController {
     return this.playerService.findOneUsername(+id);
   }
 
+  // GET AVATAR
+  @Get('avatar/:id')
+  findOneAvatar(@Param('id') id: string) {
+    return this.playerService.findOneAvatar(+id);
+  }
+
   // CHANGE USERNAME
   @Patch('username/:id')
   updateUsername(@Param('id') id: string, @Body() updatePlayerDto: UpdatePlayerDto) {

@@ -82,7 +82,7 @@ export class PlayerService {
           id: id,
         },
         select: {
-          username:true
+          username: true
         }
       });
       return selectedPlayer.username;
@@ -93,6 +93,22 @@ export class PlayerService {
   }
 
   // GET AVATAR
+  async findOneAvatar(id: number) {
+    try {
+      const selectedPlayer = await prisma.player.findUnique({
+        where: {
+          id: id,
+        },
+        select: {
+          avatar: true
+        }
+      });
+      return selectedPlayer.avatar;
+    }
+    catch (error) {
+      console.error('Error occurred:', error);
+    }
+  }
 
   // CHANGE USERNAME
   async updateUsername(id: number, updatePlayerDto: UpdatePlayerDto) {
