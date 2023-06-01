@@ -6,7 +6,8 @@
         <div class="chat-start-page" v-else>
             <h3>Welcome {{ username }} {{ id }}!</h3>
             <div class="side-bar">
-                <ChannelDisplay :username="username"/>
+                <ChannelDisplay :id="id"/>
+                <AddChannel/>
                 <!-- <OnlinePlayers/> -->
             </div>
             <div class="chat-container">
@@ -22,6 +23,7 @@ import { socket } from '../../socket';
 import { onBeforeMount, ref } from 'vue';
 import AddPlayer from './AddPlayer.vue'
 import ChannelDisplay from './ChannelDisplay.vue'
+import AddChannel from './AddChannel.vue';
 
 const logged = ref(false);
 const username = ref('');
