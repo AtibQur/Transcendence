@@ -17,11 +17,11 @@ export class ChannelmemberService {
         is_admin: createChannelmemberDto.is_admin,
         is_muted: createChannelmemberDto.is_muted,
         is_banned: createChannelmemberDto.is_banned,
-        added_at: new Date(createChannelmemberDto.added_at),
+        added_at: new Date(),
       };
   
       if (createChannelmemberDto.is_muted) {
-        data.muted_at = new Date(createChannelmemberDto.muted_at);
+        data.muted_at = new Date();
       }
   
       await prisma.channelMember.create({
@@ -38,7 +38,7 @@ export class ChannelmemberService {
     return `This action returns all channelmember`;
   }
   
-  //FIND ALL CHANNELS OF PLAYER
+  // FIND ALL CHANNELS OF PLAYER
   async findAllChannels(id: number) {
     return prisma.channelMember.findMany({
         where: {
@@ -50,11 +50,11 @@ export class ChannelmemberService {
       });
   }
   
-  //FIND ALL CHANNELMEMBERS
-  findAllChannelmembers(id: number) {
+  // FIND ALL CHANNELMEMBERS OF CHANNEL
+  findAllChannelmembers(channel_id: number) {
     return prisma.channelMember.findMany({
         where: {
-          channel_id: id
+          channel_id: channel_id
         },
         select: {
             member_id: true
