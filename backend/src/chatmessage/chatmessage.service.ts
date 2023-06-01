@@ -1,12 +1,13 @@
 import { Injectable } from '@nestjs/common';
 import { CreateChatmessageDto } from './dto/create-chatmessage.dto';
-import { UpdateChatmessageDto } from './dto/update-chatmessage.dto';
 import { PrismaService } from '../../prisma/prisma.service';
 
 const prisma = PrismaService.getClient();
 
 @Injectable()
 export class ChatmessageService {
+  
+  // CREATE NEW CHAT MESSAGE
   async createChatMessage(createChatmessageDto: CreateChatmessageDto) {
     try {
       const newChatMessage = await prisma.chatMessage.create({
@@ -14,7 +15,7 @@ export class ChatmessageService {
           content: createChatmessageDto.content,
           sender_id: createChatmessageDto.sender_id,
           channel_id: createChatmessageDto.channel_id,
-          sent_at: new Date(createChatmessageDto.sent_at),
+          sent_at: new Date(),
         },
       });
       return newChatMessage;
@@ -23,19 +24,12 @@ export class ChatmessageService {
     }
   }
 
-  findAll() {
-    return `This action returns all chatmessage`;
-  }
-
-  findOne(id: number) {
-    return `This action returns a #${id} chatmessage`;
-  }
-
-  update(id: number, updateChatmessageDto: UpdateChatmessageDto) {
-    return `This action updates a #${id} chatmessage`;
-  }
-
-  remove(id: number) {
-    return `This action removes a #${id} chatmessage`;
+  // GET ALL CHAT MESSAGES WITHIN ONE CHANNEL
+  async findChannelMsgs(channel_id: number) {
+    return prisma.chatMessage.findMany({
+      where: {
+        channel_id: channel_id
+      }
+    });
   }
 }
