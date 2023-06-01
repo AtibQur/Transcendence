@@ -48,20 +48,4 @@ export class ChannelService {
     }
   }
 
-
-  findAll() {
-    return `This action returns all channel`;
-  }
-
-  findOne(id: number) {
-    return `This action returns a #${id} channel`;
-  }
-
-  update(id: number, updateChannelDto: UpdateChannelDto) {
-    return `This action updates a #${id} channel`;
-  }
-
-  remove(id: number) {
-    return `This action removes a #${id} channel`;
-  }
 }
