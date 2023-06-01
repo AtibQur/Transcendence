@@ -14,15 +14,21 @@ export class PlayerController {
   }
 
   // GET ALL PLAYER STATS (FOR LEADERBOARD)
-  @Get()
-  findAll() {
-    return this.playerService.findAll();
+  @Get('leaderboard')
+  findAllStats() {
+    return this.playerService.findAllStats();
   }
 
-  // TODO
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.playerService.findOne(+id);
+  // GET ALL STATS FOR ONE PLAYER
+  @Get('stats/:id')
+  findOneStats(@Param('id') id: string) {
+    return this.playerService.findOneStats(+id);
+  }
+
+  // GET USERNAME
+  @Get('username/:id')
+  findOneUsername(@Param('id') id: string) {
+    return this.playerService.findOneUsername(+id);
   }
 
   // CHANGE USERNAME

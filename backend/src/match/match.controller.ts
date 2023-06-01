@@ -12,23 +12,15 @@ export class MatchController {
     return this.matchService.createMatch(createMatchDto);
   }
 
-  @Get()
+  // GET ALL PLAYERS MATCH HISTORY
+  @Get('history')
   findAll() {
     return this.matchService.findAll();
   }
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.matchService.findOne(+id);
+  // GET A PLAYERS MATCH HISTORY
+  @Get('history/:id')
+  findMatchHistory(@Param('id') id: string) {
+    return this.matchService.findMatchHistory(+id);
   }
-
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateMatchDto: UpdateMatchDto) {
-    return this.matchService.update(+id, updateMatchDto);
-  }
-
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.matchService.remove(+id);
-  }
-}
+} 

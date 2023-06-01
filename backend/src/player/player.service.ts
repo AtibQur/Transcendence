@@ -38,8 +38,28 @@ export class PlayerService {
     }
 }
 
-  async findAll() {
+  // GET ALL PLAYER STATS (FOR LEADERBOARD)
+  async findAllStats() {
     return prisma.playerStats.findMany({
+      select: {
+        player: {
+          select: {
+            username: true,
+          },
+        },
+        wins: true,
+        losses: true,
+        ladder_level: true,
+      },
+    });
+  }
+
+  // GET ALL STATS FOR ONE PLAYER
+  findOneStats(id: number) {
+    return prisma.playerStats.findMany({
+      where: {
+        id: id,
+      },
       select: {
         player: {
           select: {
@@ -54,9 +74,25 @@ export class PlayerService {
     });
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} player`;
+  // GET USERNAME
+  async findOneUsername(id: number) {
+    try {
+      const selectedPlayer = await prisma.player.findUnique({
+        where: {
+          id: id,
+        },
+        select: {
+          username:true
+        }
+      });
+      return selectedPlayer.username;
+    }
+    catch (error) {
+      console.error('Error occurred:', error);
+    }
   }
+
+  // GET AVATAR
 
   // CHANGE USERNAME
   async updateUsername(id: number, updatePlayerDto: UpdatePlayerDto) {

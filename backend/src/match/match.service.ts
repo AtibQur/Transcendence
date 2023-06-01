@@ -1,6 +1,5 @@
 import { Injectable } from '@nestjs/common';
 import { CreateMatchDto } from './dto/create-match.dto';
-import { UpdateMatchDto } from './dto/update-match.dto';
 import { PrismaService } from '../../prisma/prisma.service';
 import { PlayerService } from 'src/player/player.service';
 
@@ -40,18 +39,18 @@ export class MatchService {
   }
 
   findAll() {
-    return `This action returns all match`;
+    return prisma.match.findMany({});
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} match`;
+  findMatchHistory(id: number) {
+    return prisma.match.findMany({
+      where: {
+        OR: [
+          { player_id: id },
+          { opponent_id: id }
+        ]
+      },
+    });
   }
 
-  update(id: number, updateMatchDto: UpdateMatchDto) {
-    return `This action updates a #${id} match`;
-  }
-
-  remove(id: number) {
-    return `This action removes a #${id} match`;
-  }
 }
