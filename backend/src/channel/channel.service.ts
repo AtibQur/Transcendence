@@ -46,4 +46,34 @@ export class ChannelService {
     }
   }
 
+  async findOneChannel(id: number) {
+    try {
+        const selectedChannel = await prisma.channel.findUnique({
+            where: {
+              id: id,
+            },
+          });
+  
+          return selectedChannel;
+    }
+    catch (error) {
+        console.error('Error occurred:', error);
+    }
+  }
+//   async findAllChannelName(id: number) {
+//     try {
+//         const selectedChannel = await prisma.channel.findUnique({
+//         where: {
+//             id: id,
+//         },
+//         select: {
+//             name: true
+//         }
+//         });
+//         return selectedChannel.name;
+//     }
+//     catch (error) {
+//         console.error('Error occurred:', error);
+//     }
+//   }
 }

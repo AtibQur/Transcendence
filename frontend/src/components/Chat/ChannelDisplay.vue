@@ -10,7 +10,7 @@
 </template>
 
 <script setup lang="ts">
-import { socket } from '@/socket';
+import { socket } from '../../socket';
 import { onBeforeMount, ref } from 'vue'
 
 interface Channel {
@@ -21,11 +21,11 @@ interface Channel {
 }
 
 const props = defineProps({ id: Number });
-// const channels = ref<Channel>({});
+// const channels = ref({});
 console.log(props.id);
 
 onBeforeMount(() => {
-    socket.emit('findAllChannels', props.id, (response) => {
+    socket.emit('findAllChannelNames', props.id, (response) => {
         console.log(response);
     })
 })

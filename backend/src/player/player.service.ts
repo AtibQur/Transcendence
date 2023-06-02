@@ -53,12 +53,8 @@ export class PlayerService {
             id: true,
           },
         });
-    
-        if (user) {
-          return user.id;
-        } else {
-          return null;
-        }
+
+        return user.id;
 
       } catch (error) {
         console.error('Error searching for user:', error);
