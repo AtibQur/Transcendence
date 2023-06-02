@@ -2,6 +2,8 @@ import { Controller, Get, Req, Res, Session, UseGuards } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { CreatePlayerDto } from 'src/player/dto/create-player.dto';
 import { PlayerService } from 'src/player/player.service';
+import * as speakeasy from 'speakeasy';
+import * as qrCode from 'qrcode';
 
 const playerService = new PlayerService();
 
@@ -40,5 +42,18 @@ export class AuthController {
     async fortyTwoLogout(@Req() req: any, @Res() res: any) {
         req.logout();
         res.redirect('http://localhost:3000/');
+    }
+
+    @Get('2fa')
+    async twoFactorAuth(@Req() req: any, @Res() res: any) {
+        const secret = speakeasy.generateSecret({ 
+            name: 'trance',
+        });
+        console.log(secret);
+        qrCode.toDataURL(secret.otpauth_url, (err, data) => {
+            if (err)
+                return res.send('Error occured');
+            res.send(`<img src=${data}>`)
+        });
     }
 }
