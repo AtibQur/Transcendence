@@ -17,18 +17,23 @@ generator dbml {
 model Player {
   id                 Int      @id @default(autoincrement())
   username           String   @unique
-  oauth_id           Int?
+  intra_username     String   @default("username")
   avatar_url         String   @default("default_avatar.png")
-  two_factor_enabled Boolean @default(false)
-  password           String
-  player_stats       PlayerStats?
+  avatar             Bytes?
+  two_factor_enabled Boolean  @default(false)
+  player_stats       PlayerStats?  @relation("player_stats")
 
   owner_of           Channel[]
   member_of          ChannelMember[]
   sent_messages      ChatMessage[]
-  matches_played     Match[]
-  blocked_players    BlockedPlayer[]
-  friends            Friend[]
+  matches_played     Match[]            @relation("matches_played")
+  matches_con        Match[]            @relation("matches_con")
+  blocked_players    BlockedPlayer[]    @relation("blocked_players")
+  blocked_by         BlockedPlayer[]    @relation("blocked_by")
+  friends            Friend[]           @relation("friends")
+  friends_con        Friend[]           @relation("friends_con")
+  sent_invitations   GameInvitation[]   @relation("sent_invitations")
+  recv_invitations   GameInvitation[]   @relation("recv_invitations")
 }
 
 model PlayerStats {
@@ -36,10 +41,10 @@ model PlayerStats {
   wins          Int      @default(0)
   losses        Int      @default(0)
   ladder_level  Int      @default(1)
-  achievements  String[]
+  achievements  Json?
   status        PlayerStatus
 
-  player        Player   @relation(fields: [id], references: [id])
+  player        Player   @relation("player_stats", fields: [id], references: [id], onDelete: Cascade)
 }
 
 enum PlayerStatus {
@@ -62,8 +67,9 @@ model Channel {
 }
 
 model ChannelMember {
-  id         Int @unique
-  member     Player   @relation(fields: [id], references: [id])
+  id         Int      @id @default(autoincrement())
+  member_id  Int
+  member     Player   @relation(fields: [member_id], references: [id])
 
   channel_id Int
   channel    Channel @relation(fields: [channel_id], references: [id])
@@ -71,7 +77,8 @@ model ChannelMember {
   is_admin   Boolean @default(false)
   is_muted   Boolean @default(false)
   is_banned  Boolean @default(false)
-  muted_at   DateTime
+  added_at   DateTime
+  muted_at   DateTime?
 }
 
 model ChatMessage {
@@ -87,23 +94,43 @@ model ChatMessage {
 model Match {
   id              Int      @id @default(autoincrement())
   player_id       Int
+  player          Player  @relation("matches_played", fields: [player_id], references: [id])
+
   opponent_id     Int
+  opponent        Player  @relation("matches_con", fields: [opponent_id], references: [id])
+
   player_points   Int      @default(0)
   opponent_points Int      @default(0)
   timestamp       DateTime
-  player          Player  @relation(fields: [player_id], references: [id])
 }
 
 model BlockedPlayer {
   id          Int     @id @default(autoincrement())
 
   player_id   Int
-  player      Player  @relation(fields: [player_id], references: [id])
+  player      Player  @relation("blocked_players", fields: [player_id], references: [id])
+
+  blocked_id  Int
+  blocked     Player  @relation("blocked_by", fields: [blocked_id], references: [id])
 }
 
 model Friend {
   id          Int     @id @default(autoincrement())
 
   player_id   Int
-  player      Player  @relation(fields: [player_id], references: [id])
+  player      Player  @relation("friends", fields: [player_id], references: [id])
+
+  friend_id   Int
+  friend      Player  @relation("friends_con", fields: [friend_id], references: [id])
+}
+
+model GameInvitation {
+  id           Int      @id @default(autoincrement())
+  sender_id    Int
+  recipient_id Int
+  timestamp    DateTime
+  accepted     Boolean  @default(false)
+
+  sender       Player   @relation("sent_invitations", fields: [sender_id], references: [id])
+  recipient    Player   @relation("recv_invitations", fields: [recipient_id], references: [id])
 }
