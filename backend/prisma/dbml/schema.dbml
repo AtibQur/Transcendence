@@ -5,17 +5,22 @@
 Table Player {
   id Int [pk, increment]
   username String [unique, not null]
-  oauth_id Int
+  intra_username String [not null, default: 'username']
   avatar_url String [not null, default: 'default_avatar.png']
+  avatar Bytes
   two_factor_enabled Boolean [not null, default: false]
-  password String [not null]
   player_stats PlayerStats
   owner_of Channel [not null]
   member_of ChannelMember [not null]
   sent_messages ChatMessage [not null]
   matches_played Match [not null]
+  matches_con Match [not null]
   blocked_players BlockedPlayer [not null]
+  blocked_by BlockedPlayer [not null]
   friends Friend [not null]
+  friends_con Friend [not null]
+  sent_invitations GameInvitation [not null]
+  recv_invitations GameInvitation [not null]
 }
 
 Table PlayerStats {
@@ -23,7 +28,7 @@ Table PlayerStats {
   wins Int [not null, default: 0]
   losses Int [not null, default: 0]
   ladder_level Int [not null, default: 1]
-  achievements String[] [not null]
+  achievements Json
   status PlayerStatus [not null]
   player Player [not null]
 }
@@ -40,14 +45,16 @@ Table Channel {
 }
 
 Table ChannelMember {
-  id Int [unique, not null]
+  id Int [pk, increment]
+  member_id Int [not null]
   member Player [not null]
   channel_id Int [not null]
   channel Channel [not null]
   is_admin Boolean [not null, default: false]
   is_muted Boolean [not null, default: false]
   is_banned Boolean [not null, default: false]
-  muted_at DateTime [not null]
+  added_at DateTime [not null]
+  muted_at DateTime
 }
 
 Table ChatMessage {
@@ -63,23 +70,38 @@ Table ChatMessage {
 Table Match {
   id Int [pk, increment]
   player_id Int [not null]
+  player Player [not null]
   opponent_id Int [not null]
+  opponent Player [not null]
   player_points Int [not null, default: 0]
   opponent_points Int [not null, default: 0]
   timestamp DateTime [not null]
-  player Player [not null]
 }
 
 Table BlockedPlayer {
   id Int [pk, increment]
   player_id Int [not null]
   player Player [not null]
+  blocked_id Int [not null]
+  blocked Player [not null]
 }
 
 Table Friend {
   id Int [pk, increment]
   player_id Int [not null]
   player Player [not null]
+  friend_id Int [not null]
+  friend Player [not null]
+}
+
+Table GameInvitation {
+  id Int [pk, increment]
+  sender_id Int [not null]
+  recipient_id Int [not null]
+  timestamp DateTime [not null]
+  accepted Boolean [not null, default: false]
+  sender Player [not null]
+  recipient Player [not null]
 }
 
 Enum PlayerStatus {
@@ -88,11 +110,11 @@ Enum PlayerStatus {
   in_game
 }
 
-Ref: PlayerStats.id - Player.id
+Ref: PlayerStats.id - Player.id [delete: Cascade]
 
 Ref: Channel.owner_id > Player.id
 
-Ref: ChannelMember.id > Player.id
+Ref: ChannelMember.member_id > Player.id
 
 Ref: ChannelMember.channel_id > Channel.id
 
@@ -102,6 +124,16 @@ Ref: ChatMessage.channel_id > Channel.id
 
 Ref: Match.player_id > Player.id
 
+Ref: Match.opponent_id > Player.id
+
 Ref: BlockedPlayer.player_id > Player.id
 
+Ref: BlockedPlayer.blocked_id > Player.id
+
 Ref: Friend.player_id > Player.id
+
+Ref: Friend.friend_id > Player.id
+
+Ref: GameInvitation.sender_id > Player.id
+
+Ref: GameInvitation.recipient_id > Player.id
