@@ -6,6 +6,7 @@ import { ServeStaticModule} from '@nestjs/serve-static'; // New
 import { join } from 'path'; // New
 import { AuthModule } from './auth/auth.module'; // New
 import { GoogleModule } from './auth_google/google.module';
+import { PongModule } from './pong/pong.module';
 
 
 @Module({
@@ -16,6 +17,7 @@ import { GoogleModule } from './auth_google/google.module';
     GoogleModule, // New
     AuthModule,
     CrudModule,
+	PongModule,
   ],
   controllers: [AppController],
   providers: [AppService],

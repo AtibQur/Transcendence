@@ -26,7 +26,7 @@
 </template>
   
 <script>
-import io from 'socket.io-client';
+// import io from 'socket.io-client';
 export default {
 	name: 'PongGame',
 data() {
@@ -36,10 +36,7 @@ data() {
 		dynamicStyle: {
 			endScreen: 'false',
 			position: 'absolute',
-			top: '35%',
-			left: '33%',
-			backgroundColor: 'rgb(178, 218, 231)',
-			width: '0px',
+			top: '35%',			width: '0px',
 			height: '0px',
 			// border: '1.5px solid rgb(32, 38, 130)',
 		},	
@@ -186,8 +183,8 @@ methods: {
 	}
 },
 	mounted() {
-		const socket = io('http://localhost:3000');
-		socket.emit('customEvent', { message: 'Hello server!' });
+		// const socket = io('http://localhost:3000');
+		// socket.emit('customEvent', { message: 'Hello server!' });
 		window.addEventListener('keyup', this.keyUp);
 		window.addEventListener('keydown', this.keyDown);
 		setInterval(this.movePaddle, 1); // Adjust the interval value as needed for desired smoothness
@@ -219,7 +216,7 @@ html, body {
     line-height: 127px;
     color: #134279;
     text-shadow: -3px 3px #a29e9e;
-  }
+}
 
 .container {
 	display: flex;
@@ -268,7 +265,7 @@ html, body {
 	width: 5px;
 	height: 100%;
 	background-color: rgb(178, 218, 231);
-	background-image: repeating-linear-gradient(to top, rgb(250, 250, 250) 0px, rgb(250, 250, 250) 14px, transparent 14px, transparent 28.5px);
+	background-image: repeating-linear-gradient(to top, )rgb(250, 250, 250 0px, rgb(250, 250, 250) 14px, transparent 14px, transparent 28.5px);
 }
 
 .ball {
