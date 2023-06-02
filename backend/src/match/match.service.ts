@@ -42,15 +42,19 @@ export class MatchService {
     return prisma.match.findMany({});
   }
 
-  findMatchHistory(id: number) {
-    return prisma.match.findMany({
-      where: {
-        OR: [
-          { player_id: id },
-          { opponent_id: id }
-        ]
-      },
-    });
+  async findMatchHistory(id: number) {
+    try {
+      const matchHistory = await prisma.match.findMany({
+        where: {
+          OR: [
+            { player_id: id },
+            { opponent_id: id }
+          ]
+        },
+      });
+      return matchHistory;
+    } catch (error) {
+      console.error('Error occurred:', error);
+    }
   }
-
 }
