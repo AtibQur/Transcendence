@@ -316,6 +316,7 @@ export class PlayerService {
     this.updateLadderLevel(id, ladderLevel);
   }
 
+  // ACHIEVE AN ACHIEVEMENT
   async achieveAchievement(id: number, updatePlayerDto: UpdatePlayerDto) {
     try {
       let achievements = await this.findOneAchievements(id);
