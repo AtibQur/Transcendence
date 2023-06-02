@@ -17,7 +17,7 @@ export class ChannelService {
   // CREATE NEW CHANNEL
   async createChannel(createChannelDto: CreateChannelDto) {
     try {
-      const channelData: any = {
+      const channelData: CreateChannelDto = {
         name: createChannelDto.name,
         is_private: createChannelDto.is_private,
         owner_id: createChannelDto.owner_id,
@@ -40,9 +40,7 @@ export class ChannelService {
       channelMemberDto.added_at = new Date();
       channelMemberDto.muted_at = new Date();
       this.channelmemberService.createChannelmember(channelMemberDto);
-      console.log('Channel saved in db:', newChannel);
-      return `This action adds a new channel: ${createChannelDto.name}
-              and adds the owner #${createChannelDto.owner_id} as a member`;
+      return newChannel.id;
     } catch (error) {
       console.error('Error occurred:', error);
     }
