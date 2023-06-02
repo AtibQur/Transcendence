@@ -34,9 +34,36 @@ export class PlayerService {
       console.log('PlayerStats initialized:', newPlayer.player_stats);
       return newPlayer.id;
     } catch (error) {
-      console.error('Error occurred:', error);
+        if (error.code === 'P2002') {
+            console.log('Player already exists');
+            return this.findIdByUsername(createPlayerDto.username);
+        }
+        console.error('Error occurred:', error);
     }
 }
+
+  // GET ID BY USERNAME
+  async findIdByUsername(username: string) {
+    try {
+        const user = await prisma.player.findUnique({
+          where: {
+            username: username,
+          },
+          select: {
+            id: true,
+          },
+        });
+    
+        if (user) {
+          return user.id;
+        } else {
+          return null;
+        }
+
+      } catch (error) {
+        console.error('Error searching for user:', error);
+      }
+  }
 
   // GET ALL PLAYER STATS (FOR LEADERBOARD)
   async findAllStats() {
