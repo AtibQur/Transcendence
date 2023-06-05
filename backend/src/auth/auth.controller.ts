@@ -53,7 +53,8 @@ export class AuthController {
         qrCode.toDataURL(secret.otpauth_url, (err, data) => {
             if (err)
                 return res.send('Error occured');
-            res.send(`<img src=${data}>`)
+            console.log(data);
+            res.send(data);
         });
     }
 }

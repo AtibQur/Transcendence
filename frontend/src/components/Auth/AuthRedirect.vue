@@ -3,22 +3,25 @@
         <h2>Welcome {{ name }}</h2>
     <div>
         <div>
-            "Set username here! ..."
+            Your 2FA code is:
         </div>
-        <div id="imageContainer"></div>
-
+        <ImageComponent />
+        <form>
+            <label for="digitInput">Enter your verification code: </label>
+            <input type="number" id="digitInput" name="digitInput" maxlength="6" min="100000" max="999999">
+            <input type="submit" value="Submit">
+        </form>
     </div>
 </template>
 
 <script setup lang="ts">
     import axios from 'axios';
     import { onMounted ,ref } from 'vue';
-
+    import ImageComponent from './ImageComponent.vue';
+    
     const name = ref("");
-    const imageUrl = 'https://localhost:3000/auth/42';
-    const imageElement = document.createElement('img');
     const answerLoaded = ref(false);
-
+    
     async function fetchName() {
         try {
             const response = await axios.get('http://localhost:3000/auth/FetchUser');
@@ -29,20 +32,9 @@
             console.log("Error: Could not fetch name");
         }
     }
-
-    async function setImage() {
-        imageElement.src = imageUrl;
-        imageElement.alt = 'Image';
-        const container = document.getElementById('imageContainer');
-        if (container) {
-            container.appendChild(imageElement);
-        }
-    }
-
-
+    
     onMounted(() => {
         fetchName();
-        setImage();
     })
 
 </script>
