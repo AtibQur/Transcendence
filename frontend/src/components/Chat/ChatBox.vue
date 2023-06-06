@@ -9,7 +9,7 @@
 
 <script setup lang="ts">
 import { socket } from '@/socket';
-import { onBeforeMount, ref, computed, watchEffect} from 'vue'
+import { onBeforeMount, onUpdated, ref, computed, watch} from 'vue'
 
 interface Message {
     id: number
@@ -28,24 +28,45 @@ const props = defineProps({
 const channelName = ref('');
 const messages = ref<Message[]>([]);
 const senderNames = ref<Record<number, string>>({}); // Hold the sender names
+const currentChannelId = ref(props.channelId);
 
 onBeforeMount(async () => {
     // FIND CHANNEL MESSAGES
-    const response = await new Promise<Message[]>((resolve) => {
-        socket.emit('findAllChannelMessages', props.channelId, (response: Message[]) => {
-        resolve(response);
+    const fetchChatMessages = async (channelId) => {
+        socket.emit('findAllChannelMessages', channelId, (response: Message[]) => {
+            try {
+                messages.value = response;
+            } catch (e) {
+                console.log('Error: fetching messages');
+            }
         });
-    });
-    messages.value = response;
+    };
 
     //FIND CHANNEL NAME
-    socket.emit('findOneChannelName', props.channelId, (name: string) => {
-        channelName.value = name;
-    });
+    const fetchChannelName = async (channelId) => {
+        socket.emit('findOneChannelName', props.channelId, (name: string) => {
+            try {
+                channelName.value = name;
+            } catch (e) {
+                console.log('Error: fetching channel name');
+            }
+        });
+    };
+
+    await fetchChatMessages(currentChannelId.value);
+    await fetchChannelName(currentChannelId.value);
+
 
     //ADD MESSAGE TO CURRENT MESSAGES
     socket.on('chatmessage', (message) => {
         messages.value.push(message);
+    });
+
+    //TRACK WHETHER CHANNEL_ID CHANGES
+    watch(() => props.channelId, async (newChannelId) => {
+        currentChannelId.value = newChannelId;
+        await fetchChatMessages(newChannelId);
+        await fetchChannelName(currentChannelId.value);
     });
 
 });

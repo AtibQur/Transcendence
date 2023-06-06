@@ -4,15 +4,17 @@
             <AddPlayer @logIn='logIn'/>
         </div>
         <div class="chat-start-page" v-else>
-            <h3>Welcome {{ username }} {{ playerId }}!</h3>
-            <!-- <div class="side-bar">
-                <ChannelDisplay :id="id"/>
-                <AddChannel/>
-                <OnlinePlayers/>
-            </div> -->
+            <div class="side-bar">
+                <h3>Welcome {{ username }} {{ playerId }}!</h3>
+                <ChannelDisplay :playerId="playerId" @changeChannel='changeChannel'/>
+                <AddChannel :playerId="playerId"/>
+                <!-- <OnlinePlayers/> -->
+            </div>
             <div class="chat-box">
-                <ChatBox :channelId="channelId"/>
-                <AddMessage :senderId="playerId" :channelId="channelId"/>
+                <div v-if="inChannel">
+                    <ChatBox :channelId="channelId"/>
+                    <AddMessage :senderId="playerId" :channelId="channelId"/>
+                </div>
             </div>
         </div>
     </div>
@@ -28,9 +30,10 @@ import ChatBox from './ChatBox.vue';
 import AddMessage from './AddMessage.vue';
 
 const logged = ref(false);
+const inChannel = ref(false);
 const username = ref('');
 const playerId = ref(-1);
-const channelId = ref(3); //test
+const channelId = ref(-1); //test
 
 const logIn = (playerInfo: {username: string, playerId: number}) => {
     username.value = playerInfo.username;
@@ -38,10 +41,19 @@ const logIn = (playerInfo: {username: string, playerId: number}) => {
     logged.value = true;
 }
 
+const changeChannel = (channel_id: number) => {
+    channelId.value = channel_id;
+    inChannel.value = true;
+}
+
 </script>
 
 
 <style>
+
+.chat-start-page {
+    display: flex;
+}
 
 .side-bar {
     flex: 1;
@@ -52,6 +64,7 @@ const logIn = (playerInfo: {username: string, playerId: number}) => {
 /* Chat Box */
 .chat-box {
     /* margin-top: 20px; */
+    flex: 2;
     flex-direction: column;
     background: white;
     height: 75vh;

@@ -36,7 +36,6 @@ const content = ref('');
 // })
 
 const sendMessage = () => {
-    console.log(props.senderId);
     socket.emit('addChatmessage', { content: content.value, sender_id: props.senderId, channel_id: props.channelId }, () => {
         content.value = '';
     })

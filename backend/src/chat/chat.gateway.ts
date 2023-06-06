@@ -14,6 +14,7 @@ import { Logger } from '@nestjs/common';
 import { ChannelmemberService } from 'src/channelmember/channelmember.service';
 import { ChatmessageService } from 'src/chatmessage/chatmessage.service';
 import { CreateChatmessageDto } from 'src/chatmessage/dto/create-chatmessage.dto';
+import { CreateChannelDto } from 'src/channel/dto/create-channel.dto';
 
 @WebSocketGateway({
 	cors: {
@@ -46,9 +47,18 @@ export class ChatGateway { //implements OnGatewayConnection, OnGatewayDisconnect
     async addPlayer(
         @MessageBody() createPlayerDto: CreatePlayerDto
     ){
-        const player = await this.playerService.createPlayer(createPlayerDto);
-        this.server.emit('player', player)
-        return player;
+        const player_id = await this.playerService.createPlayer(createPlayerDto);
+        this.server.emit('player', player_id);
+        return player_id;
+    }
+
+    @SubscribeMessage('addChannel')
+    async addChannel(
+        @MessageBody() createChannelDto: CreateChannelDto
+    ){
+        const channel_id = await this.channelService.createChannel(createChannelDto);
+        this.server.emit('newChannel', { channel_id: channel_id } );
+        return channel_id;
     }
 
     //ADD MESSAGE
@@ -56,9 +66,9 @@ export class ChatGateway { //implements OnGatewayConnection, OnGatewayDisconnect
     async addMessage(
         @MessageBody() createChatmessageDto: CreateChatmessageDto
     ){
-        const chatmessage = await this.chatmessageService.createChatMessage(createChatmessageDto);
-        this.server.emit('chatmessage', chatmessage)
-        return chatmessage;
+        const chatmessage_id = await this.chatmessageService.createChatMessage(createChatmessageDto);
+        this.server.emit('chatmessage', chatmessage_id);
+        return chatmessage_id;
     }
 
     //FIND ALL ONLINE PLAYERS
@@ -68,19 +78,20 @@ export class ChatGateway { //implements OnGatewayConnection, OnGatewayDisconnect
     // }
 
     //FIND ALL CHANNEL NAMES OF PLAYER
-    @SubscribeMessage('findAllChannelNames')
-    findAllChannelNames(
+    @SubscribeMessage('findPlayerChannels')
+    findPlayerChannels(
         @MessageBody() id: number
     ){
-        return this.channelmemberService.findAllChannels(id);
+        return this.channelmemberService.findPlayerChannels(id);
     }
 
     //FIND ONE CHANNEL NAME
     @SubscribeMessage('findOneChannelName')
     async findOneChannelName (
-        @MessageBody() id: number
+        @MessageBody() channelId: number
     ){
-        const channel = await this.channelService.findOneChannel(id);
+        const channel = await this.channelService.findOneChannel(channelId);
+        // console.log(channel);
         return channel.name;
     }
 

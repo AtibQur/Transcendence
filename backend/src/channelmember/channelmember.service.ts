@@ -39,7 +39,7 @@ export class ChannelmemberService {
   }
   
   // FIND ALL CHANNELS OF PLAYER
-  async findAllChannels(id: number) {
+  async findPlayerChannels(id: number) {
     return prisma.channelMember.findMany({
         where: {
           member_id: id

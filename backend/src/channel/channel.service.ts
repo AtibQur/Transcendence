@@ -60,6 +60,7 @@ export class ChannelService {
         console.error('Error occurred:', error);
     }
   }
+
 //   async findAllChannelName(id: number) {
 //     try {
 //         const selectedChannel = await prisma.channel.findUnique({
