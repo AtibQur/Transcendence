@@ -9,6 +9,7 @@ import Login from './components/Auth/AuthRedirect.vue';
 import Leaderboard from './components/LeaderboardComponent.vue';
 import PopulateDatabase from './components/PopulateDatabase.vue';
 import ChatView from './components/Chat/ChatView.vue';
+import Redirect2faVerify from './components/Auth/Redirect2faVerify.vue';
 
 const routes: RouteRecordRaw[] = [
     {
@@ -39,6 +40,10 @@ const routes: RouteRecordRaw[] = [
       path: '/chat',
       component: ChatView,
     },
+    {
+      path: '/login/redirect2faverify',
+      component: Redirect2faVerify,
+    }
 ];
 
 const router = createRouter({
