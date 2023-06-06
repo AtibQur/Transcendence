@@ -1,10 +1,16 @@
 <template>
-	<router-view/>
-</template>
+	<div>
+		<Menubar/>
+	</div>
+	<div>
+		<router-view/>
+	</div>
+  </template>
 
 <script setup lang="ts">
 	import axios from 'axios';
 	import { onBeforeMount, ref } from 'vue';
+	import Menubar from './components/Menubar/Menubar.vue';
 
 	//constants
 	const answer = ref("");
