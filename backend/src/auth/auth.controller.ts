@@ -2,6 +2,7 @@ import { Controller, Get, Req, Res, Session, UseGuards } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { CreatePlayerDto } from 'src/player/dto/create-player.dto';
 import { PlayerService } from 'src/player/player.service';
+import * as session from 'express-session';
 import * as speakeasy from 'speakeasy';
 import * as qrCode from 'qrcode';
 
@@ -22,7 +23,7 @@ export class AuthController {
         const createPlayerDto = new CreatePlayerDto();
         createPlayerDto.username = req.user.username;
         playerService.createPlayer(createPlayerDto);
-
+        // req.session.user = req.user;
         res.redirect('http://localhost:8080/Login?username=' + req.user.username);
     }
 
@@ -50,7 +51,6 @@ export class AuthController {
         var secret = speakeasy.generateSecret({ 
             name: 'trance',
         });
-        console.log(req.user);
         qrCode.toDataURL(secret.otpauth_url, (err, data) => {
             if (err)
                 return res.send('Error occured');
@@ -59,15 +59,14 @@ export class AuthController {
     }
 
     @Get('2fa/verify')
-    async twoFactorAuthVerify(@Req() req: any, @Res() res: any) {
-        const { token, secret } = req.query;
+    async twoFactorAuthVerify(@Req() req: any, @Res() res: any, @Session() session: Record<string, any>) {
+        const token = req.query.token;
+        const secret = req.query.secret;
         const verified = speakeasy.totp.verify({
             secret: secret,
             encoding: 'base32',
             token: token,
         });
-        console.log(secret);
-        console.log(token);
         if (verified) {
             console.log('2fa verified');
             res.send('2fa verified, you will be redirected to the login page');
