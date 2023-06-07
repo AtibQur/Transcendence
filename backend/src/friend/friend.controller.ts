@@ -13,23 +13,14 @@ export class FriendController {
     return this.friendService.addFriend(+id, addFriendDto);
   }
 
-  @Get()
-  findAll() {
-    return this.friendService.findAll();
-  }
-
+  // GET A PLAYERS FRIENDS
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.friendService.findOne(+id);
-  }
-
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateFriendDto: UpdateFriendDto) {
-    return this.friendService.update(+id, updateFriendDto);
+  findFriends(@Param('id') id: string) {
+    return this.friendService.findFriends(+id);
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.friendService.remove(+id);
+  remove(@Param('id') id: string, @Body() updateFriendDto: UpdateFriendDto) {
+    return this.friendService.remove(+id, updateFriendDto);
   }
 }
