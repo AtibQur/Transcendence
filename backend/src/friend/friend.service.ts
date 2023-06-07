@@ -1,11 +1,52 @@
 import { Injectable } from '@nestjs/common';
-import { CreateFriendDto } from './dto/create-friend.dto';
+import { AddFriendDto } from './dto/add-friend.dto';
 import { UpdateFriendDto } from './dto/update-friend.dto';
+import { PlayerService } from 'src/player/player.service';
+import { PrismaService } from '../../prisma/prisma.service';
+
+const prisma = PrismaService.getClient();
 
 @Injectable()
 export class FriendService {
-  create(createFriendDto: CreateFriendDto) {
-    return 'This action adds a new friend';
+  constructor(
+    private readonly playerService: PlayerService
+  ) {}
+
+  async addFriend(id: number, addFriendDto: AddFriendDto) {
+    try {
+      const friendId = await this.playerService.findIdByUsername(addFriendDto.friendUsername);
+      
+      // Check if the friendship already exists
+      const existingFriendship = await prisma.friend.findFirst({
+        where: {
+          OR: [
+            {
+              player_id: id,
+              friend_id: friendId,
+            },
+            {
+              player_id: friendId,
+              friend_id: id,
+            },
+          ],
+        },
+      });
+      
+      if (existingFriendship) {
+        return "This user is already your friend.";
+      }
+      
+      const newFriend = await prisma.friend.create({
+        data: {
+          player_id: id,
+          friend_id: friendId,
+        },
+      });
+      
+      return `Friend added: ${addFriendDto.friendUsername}`;
+    } catch (error) {
+      console.error('Error occurred:', error);
+    }
   }
 
   findAll() {
