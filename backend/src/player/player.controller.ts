@@ -25,6 +25,12 @@ export class PlayerController {
     return this.playerService.findOneStats(+id);
   }
 
+  // GET PLAYERS ACHIEVEMENTS
+  @Get('achievements/:id')
+  findOneAchievements(@Param('id') id: string) {
+    return this.playerService.findOneAchievements(+id);
+  }
+
   // GET USERNAME
   @Get('username/:id')
   findOneUsername(@Param('id') id: string) {
@@ -55,12 +61,6 @@ export class PlayerController {
       return this.playerService.updateLosses(+id);
   }
 
-  // +1 LEVEL
-  @Patch('level/:id')
-  updateLevel(@Param('id') id: string) {
-      return this.playerService.updateLevel(+id);
-  }
-
   // CHANGE STATUS
   @Patch('status/:id')
   updateStatus(@Param('id') id: string, @Body() updatePlayerDto: UpdatePlayerDto) {
@@ -71,5 +71,11 @@ export class PlayerController {
   @Delete('delete/:id')
   deletePlayer(@Param('id') id: string) {
     return this.playerService.deletePlayer(+id);
+  }
+
+  // ACHIEVE AN ACHIEVEMENT
+  @Patch('achieve/:id')
+  achieveAchievement(@Param('id') id: string, @Body() updatePlayerDto: UpdatePlayerDto) {
+    return this.playerService.achieveAchievement(+id, updatePlayerDto);
   }
 }

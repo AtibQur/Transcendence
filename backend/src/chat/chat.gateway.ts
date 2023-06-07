@@ -8,11 +8,12 @@ import { WebSocketGateway,
         OnGatewayDisconnect, } from '@nestjs/websockets';
 // import { MessageService } from '../message/message.service';
 import { PlayerService } from 'src/player/player.service';
-// import { ChannelService } from 'src/channel/channel.service';
+import { ChannelService } from 'src/channel/channel.service';
 // import { CreateMessageDto } from '../message/dto/create-message.dto';
 import { CreatePlayerDto } from 'src/player/dto/create-player.dto';
 import { Server, Socket } from 'socket.io';
 import { Logger } from '@nestjs/common';
+import { ChannelmemberService } from 'src/channelmember/channelmember.service';
 
 @WebSocketGateway({
 	cors: {
@@ -26,6 +27,7 @@ export class ChatGateway { //implements OnGatewayConnection, OnGatewayDisconnect
     constructor(
         // private readonly messageService: MessageService,
         private readonly playerService: PlayerService,
+        private readonly channelmemberService: ChannelmemberService
         // private readonly channelService: ChannelService,
     ) {}
     private logger = new Logger('ChatGateway');
@@ -52,10 +54,12 @@ export class ChatGateway { //implements OnGatewayConnection, OnGatewayDisconnect
         return this.playerService.findAllStats();
     }
 
-    // @SubscribeMessage('findAllChannels')
-    // findAllChannels(){
-    //     return this.channelService.findAll();
-    // }
+    @SubscribeMessage('findAllChannels')
+    findAllChannels(
+        @MessageBody() id: number
+    ){
+        return this.channelmemberService.findAllChannels(id);
+    }
 
     // @SubscribeMessage('findAllChannelMessages')
     // findAllChannelMessages(
