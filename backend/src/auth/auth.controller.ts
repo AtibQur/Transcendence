@@ -19,11 +19,13 @@ export class AuthController {
 
     @Get('/42/callback')
     @UseGuards(AuthGuard('42'))
-    async fortyTwoCallback(@Req() req: any, @Res() res: any) {
+    async fortyTwoCallback(@Req() req: any, @Res() res: any, @Session() session: Record<string, any>) {
         const createPlayerDto = new CreatePlayerDto();
         createPlayerDto.username = req.user.username;
-        playerService.createPlayer(createPlayerDto);
-        // req.session.user = req.user;
+        const playerId = await playerService.createPlayer(createPlayerDto);
+
+        session.authenticated = true;
+        console.log(playerId);
         res.redirect('http://localhost:8080/Login?username=' + req.user.username);
     }
 
@@ -47,10 +49,12 @@ export class AuthController {
     }
 
     @Get('2fa')
-    async twoFactorAuth(@Req() req: any, @Res() res: any) {
+    async twoFactorAuth(@Req() req: any, @Res() res: any, @Session() session: Record<string, any>) {
         var secret = speakeasy.generateSecret({ 
             name: 'trance',
         });
+        console.log(session);
+        console.log(session.id);
         qrCode.toDataURL(secret.otpauth_url, (err, data) => {
             if (err)
                 return res.send('Error occured');
