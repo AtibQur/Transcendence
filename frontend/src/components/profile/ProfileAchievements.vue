@@ -23,7 +23,8 @@
   align-items: flex-start;
   margin-top: 30px;
   width: 150%;
-  height: 800px;
+  height: 700px;
+  min-height: 500px;
   border: 2px solid #131780;
   border-radius: 8px;
   overflow-y: scroll;

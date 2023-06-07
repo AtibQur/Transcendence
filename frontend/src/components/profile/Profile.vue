@@ -66,20 +66,21 @@
   </script>
   
   <style>
-  .ProfileContainer {
-    position: absolute;
-    left: 400px;
-    top: 50%;
-    transform: translateY(-50%);
-    width: calc(100% - 800px);
-    min-width: 1500px;
-    height: 75%;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    border: 1px solid black;
-  }
+.ProfileContainer {
+  position: absolute;
+  left: 400px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: calc(100% - 800px);
+  min-width: 1500px;
+  height: 75vh; /* Adjust the height to fit 75% of the screen */
+  min-height: 1000px; /* Set a minimum height to ensure content visibility */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid black;
+}
   
   .ProfileData {
     position: absolute;
