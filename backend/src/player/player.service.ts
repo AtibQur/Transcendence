@@ -12,7 +12,7 @@ export class PlayerService {
   async createPlayer(createPlayerDto: CreatePlayerDto) {
     try {
       const newPlayer = await prisma.player.create({
-        data: {
+        data: { 
           username: createPlayerDto.username,
           intra_username: createPlayerDto.username,
           player_stats: {

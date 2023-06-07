@@ -24,8 +24,8 @@ export class AuthController {
         createPlayerDto.username = req.user.username;
         const playerId = await playerService.createPlayer(createPlayerDto);
 
-        session.authenticated = true;
         console.log(playerId);
+        session.authenticated = true;
         res.redirect('http://localhost:8080/Login?username=' + req.user.username);
     }
 
