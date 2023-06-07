@@ -9,6 +9,7 @@
                 <ChannelDisplay :playerId="playerId" @changeChannel='changeChannel'/>
                 <AddChannel :playerId="playerId"/>
                 <!-- currently display all players that exist -->
+                <h3> {{ playerId }}</h3>
                 <OnlinePlayers :playerId="playerId"/> 
             </div>
             <div class="chat-box">

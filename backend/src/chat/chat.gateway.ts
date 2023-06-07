@@ -108,8 +108,7 @@ export class ChatGateway { //implements OnGatewayConnection, OnGatewayDisconnect
     findUserName(
         @MessageBody() id: number
     ){
-        console.log(id);
-        // return this.playerService.findOneUsername(id);
+        return this.playerService.findOneUsername(id);
     }
 
     // @SubscribeMessage('findAllChannelMessages')
