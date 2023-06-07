@@ -4,9 +4,6 @@ import { PlayerStatus } from '@prisma/client';
 
 export class UpdatePlayerDto extends PartialType(CreatePlayerDto) {
     username?: string;
-    wins?: number;
-    losses?: number;
-    ladder_level?: number;
-    achievements?: string[];
+    achieved?: string;
     status?: PlayerStatus;
 }

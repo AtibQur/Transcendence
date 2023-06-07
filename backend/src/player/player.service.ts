@@ -21,8 +21,23 @@ export class PlayerService {
               losses: 0,
               ladder_level: 1,
               achievements: {
-                'first win': true,
-                'high score': false,
+                'First win': false,
+                '10 wins': false,
+                '50 wins': false,
+                '100 wins': false,
+                '10 consecutive wins': false,
+                '50 consecutive wins': false,
+                'Reached level 5': false,
+                'Reached level 10': false,
+                'Reached level 20': false,
+                'Reached level 50': false,
+                'Reached level 100': false,
+                'First friend': false,
+                '5 friends': false,
+                '10 friends': false,
+                '100 friends': false,
+                'First chat messages sent': false,
+                '10 chat messages sent': false,
               },
               status: 'online',
             },
@@ -34,9 +49,36 @@ export class PlayerService {
       console.log('PlayerStats initialized:', newPlayer.player_stats);
       return newPlayer.id;
     } catch (error) {
-      console.error('Error occurred:', error);
+        if (error.code === 'P2002') {
+            console.log('Player already exists');
+            return this.findIdByUsername(createPlayerDto.username);
+        }
+        console.error('Error occurred:', error);
     }
 }
+
+  // GET ID BY USERNAME
+  async findIdByUsername(username: string) {
+    try {
+        const user = await prisma.player.findUnique({
+          where: {
+            username: username,
+          },
+          select: {
+            id: true,
+          },
+        });
+    
+        if (user) {
+          return user.id;
+        } else {
+          return null;
+        }
+
+      } catch (error) {
+        console.error('Error searching for user:', error);
+      }
+  }
 
   // GET ALL PLAYER STATS (FOR LEADERBOARD)
   async findAllStats() {
@@ -56,7 +98,7 @@ export class PlayerService {
 
   // GET ALL STATS FOR ONE PLAYER
   findOneStats(id: number) {
-    return prisma.playerStats.findMany({
+    return prisma.playerStats.findUnique({
       where: {
         id: id,
       },
@@ -69,9 +111,26 @@ export class PlayerService {
         wins: true,
         losses: true,
         ladder_level: true,
-        achievements: true,
       },
     });
+  }
+
+  // GET PLAYERS ACHIEVEMENTS
+  async findOneAchievements(id: number) {
+    try {
+      const selectedPlayer = await prisma.playerStats.findUnique({
+        where: {
+          id: id,
+        },
+        select: {
+          achievements: true,
+        },
+      });
+      return selectedPlayer.achievements;
+    }
+    catch (error) {
+      console.error('Error occurred:', error);
+    }
   }
 
   // GET USERNAME
@@ -142,6 +201,7 @@ export class PlayerService {
           },
         },
       });
+      this.calcLadderLevel(id);
     }
     catch (error) {
       console.error('Error occurred:', error);
@@ -163,6 +223,7 @@ export class PlayerService {
           },
         },
       });
+      this.calcLadderLevel(id);
     }
     catch (error) {
       console.error('Error occurred:', error);
@@ -224,6 +285,58 @@ export class PlayerService {
     }
     catch (error) {
       console.error('Error deleting player:', error);
+    }
+  }
+
+  // UPDATE LADDER LEVEL (only called from the calcLadderLevel function)
+  async updateLadderLevel(id: number, newLevel: number) {
+    try {
+      await prisma.playerStats.update({
+        where: {
+          id: id,
+        },
+        data: {
+          ladder_level: newLevel,
+        },
+      });
+    }
+    catch (error) {
+      console.error('Error occurred:', error);
+    }
+  }
+
+  // CALCULATE LADDER LEVEL SCORE
+  async calcLadderLevel(id: number) {
+    const playerStatsData = await this.findOneStats(id);
+    const achievements = await this.findOneAchievements(id);
+    const achievedCount = Object.values(achievements).filter(value => value === true).length;
+    let ladderLevel = (playerStatsData.wins * 2) - playerStatsData.losses + (achievedCount * 5);
+    ladderLevel = Math.max(ladderLevel, 1);
+
+    this.updateLadderLevel(id, ladderLevel);
+  }
+
+  // ACHIEVE AN ACHIEVEMENT
+  async achieveAchievement(id: number, updatePlayerDto: UpdatePlayerDto) {
+    try {
+      let achievements = await this.findOneAchievements(id);
+      if (achievements.hasOwnProperty(updatePlayerDto.achieved)) {
+        achievements[updatePlayerDto.achieved] = true;
+      }
+      else {
+        return ('Error: invalid achievement');
+      }
+      await prisma.playerStats.update({
+        where: {
+          id: id,
+        },
+        data: {
+          achievements: achievements,
+        },
+      });
+      return (achievements);
+    } catch (error) {
+      console.error('Error occurred:', error);
     }
   }
 }
