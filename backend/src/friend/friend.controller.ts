@@ -19,6 +19,7 @@ export class FriendController {
     return this.friendService.findFriends(+id);
   }
 
+  // DELETE A FRIENDSHIP
   @Delete(':id')
   remove(@Param('id') id: string, @Body() updateFriendDto: UpdateFriendDto) {
     return this.friendService.remove(+id, updateFriendDto);

@@ -12,13 +12,13 @@ export class FriendService {
     private readonly playerService: PlayerService
   ) {}
 
+  // ADD OTHER PLAYER AS FRIEND
   async addFriend(id: number, addFriendDto: AddFriendDto) {
     try {
       const friendId = await this.playerService.findIdByUsername(addFriendDto.friendUsername);
       if (id == friendId) {
         return "You can not add yourself as a friend! That's pathetic..";
       }
-      // Check if the friendship already exists
       const existingFriendship = await prisma.friend.findFirst({
         where: {
           OR: [
@@ -50,6 +50,7 @@ export class FriendService {
     }
   }
 
+  // GET A PLAYERS FRIENDS
   async findFriends(id: number) {
     try {
       const friends = await prisma.friend.findMany({
@@ -68,10 +69,10 @@ export class FriendService {
     return `This action returns a #${id} friend`;
   }
 
+  // DELETE A FRIENDSHIP
   async remove(id: number, updateFriendDto: UpdateFriendDto) {
   try {
     const friendId = await this.playerService.findIdByUsername(updateFriendDto.friendUsername);
-    // Check if the friendship exists in either direction
     const existingFriendship = await prisma.friend.findFirst({
       where: {
         OR: [
@@ -89,12 +90,12 @@ export class FriendService {
     if (!existingFriendship) {
       return ('Friendship does not exist');
     }
-    const deletedFriend = await prisma.friend.delete({
+    const deletedFriendship = await prisma.friend.delete({
       where: {
         id: existingFriendship.id
       },
     })
-    return `This action removes friend #${deletedFriend.id}`;
+    return `This action removes friendship #${deletedFriendship.id}`;
   }
   catch (error) {
     console.error('Error occured: ', error);
