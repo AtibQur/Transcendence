@@ -8,7 +8,8 @@
                 <h3>Welcome {{ username }} {{ playerId }}!</h3>
                 <ChannelDisplay :playerId="playerId" @changeChannel='changeChannel'/>
                 <AddChannel :playerId="playerId"/>
-                <!-- <OnlinePlayers/> -->
+                <!-- currently display all players that exist -->
+                <OnlinePlayers :playerId="playerId"/> 
             </div>
             <div class="chat-box">
                 <div v-if="inChannel">
@@ -28,6 +29,7 @@ import ChannelDisplay from './ChannelDisplay.vue'
 import AddChannel from './AddChannel.vue';
 import ChatBox from './ChatBox.vue';
 import AddMessage from './AddMessage.vue';
+import OnlinePlayers from './OnlinePlayers.vue';
 
 const logged = ref(false);
 const inChannel = ref(false);

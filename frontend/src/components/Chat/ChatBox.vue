@@ -43,7 +43,7 @@ onBeforeMount(async () => {
     };
 
     //FIND CHANNEL NAME
-    const fetchChannelName = async (channelId) => {
+    const fetchChannelName = async (channelId: number) => {
         socket.emit('findOneChannelName', props.channelId, (name: string) => {
             try {
                 channelName.value = name;

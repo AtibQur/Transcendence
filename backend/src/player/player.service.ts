@@ -61,6 +61,18 @@ export class PlayerService {
       }
   }
 
+  async findAllOnlinePlayers() {
+    return prisma.playerStats.findMany({
+        select: {
+          player: {
+            select: {
+              username: true,
+            },
+          }
+        },
+    });
+  }
+
   // GET ALL PLAYER STATS (FOR LEADERBOARD)
   async findAllStats() {
     return prisma.playerStats.findMany({

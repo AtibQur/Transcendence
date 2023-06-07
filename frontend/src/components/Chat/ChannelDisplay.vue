@@ -45,11 +45,12 @@ onBeforeMount(() => {
     // FIND ALL CHANNEL FOR PLAYER
     socket.emit('findPlayerChannels', props.playerId, (response) => {
         channels.value = response;
-        console.log('length: ', Object.keys(channels.value).length);
     });
 
     //UPDATE LIST OF CHANNELS IF NEW CHANNEL IS ADDED
     socket.on('newChannel', (payload: {channel_id: number}) => {
+        
+        // only if current player is member of the channel!!
         channels.value.push({ channel_id: payload.channel_id });
     });
 
@@ -65,6 +66,7 @@ const changeChannel = (channel_id: number) => {
 }
 
 const fetchChannelName = async (channel_id: number) => {
+
     return new Promise<string>((resolve) => {
         socket.emit('findOneChannelName', channel_id, (channel_name: string) => {
             resolve(channel_name);

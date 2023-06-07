@@ -72,10 +72,10 @@ export class ChatGateway { //implements OnGatewayConnection, OnGatewayDisconnect
     }
 
     //FIND ALL ONLINE PLAYERS
-    // @SubscribeMessage('findAllOnlinePlayers')
-    // findAllOnlinePlayers(){
-    //     return this.playerService.findAllStats();
-    // }
+    @SubscribeMessage('findAllOnlinePlayers')
+    findAllOnlinePlayers(){
+        return this.playerService.findAllOnlinePlayers();
+    }
 
     //FIND ALL CHANNEL NAMES OF PLAYER
     @SubscribeMessage('findPlayerChannels')
@@ -108,7 +108,8 @@ export class ChatGateway { //implements OnGatewayConnection, OnGatewayDisconnect
     findUserName(
         @MessageBody() id: number
     ){
-        return this.playerService.findOneUsername(id);
+        console.log(id);
+        // return this.playerService.findOneUsername(id);
     }
 
     // @SubscribeMessage('findAllChannelMessages')
