@@ -2,9 +2,9 @@
   <div class="border-container">
     <div class="border">
       <div class="border-text">
-        <div class="border-row">
-          <div class="border-label">Total Achievements:</div>
-          <div class="border-value">{{ totalAchievements }}</div>
+        <div v-for="(item, index) in stats" :key="index" class="border-row">
+          <div class="border-label">{{ item.label }}:</div>
+          <div class="border-value">{{ item.value }}</div>
         </div>
       </div>
     </div>
@@ -12,24 +12,46 @@
 </template>
 
 <script setup lang="ts">
-  import { onBeforeMount, ref } from 'vue';
+  import { onBeforeMount, ref, computed } from 'vue';
   import axiosInstance from '../../axiosConfig';
 
   const totalAchievements = ref("");
+  const percentageWon = ref("");
+  const playerStats = ref({})
+  const stats = computed(() => [
+    { label: "Total Played Games", value: playerStats.value.wins + playerStats.value.losses },
+    { label: "Total Wins", value: playerStats.value.wins },
+    { label: "Total Losses", value: playerStats.value.losses },
+    { label: "Percentage Games Won", value: percentageWon.value },
+    { label: "Ladder Level", value: playerStats.value.ladder_level },
+    { label: "Total Achievements", value: totalAchievements.value },
+  ]);
 
-  //functions
   onBeforeMount(async () => {
     try {
-      totalAchievements.value = await fetchAchievements(43); // hardcoded
-      console.log(totalAchievements.value)
+      const playerId = 43; // HARDCODED!!!! VUL PLAYER ID IN DIE JE HEBT IN JE DATABASE
+      totalAchievements.value = await fetchAchievements(playerId);
+      playerStats.value = await fetchPlayerStats(playerId);
+      percentageWon.value = await fetchPercentageWon(playerId)
+      console.log(playerStats.value.wins)
     } catch (error) {
       console.log("Error occured");
     }
   });
 
   const fetchAchievements = async (player_id: number) => {
-    const response = await axiosInstance.get('player/totalachievements/43');
-    console.log(response)
+    const response = await axiosInstance.get('player/totalachievements/' + player_id.toString());
+    return response.data;
+  }
+
+  const fetchPlayerStats = async (player_id: number) => {
+    const response = await axiosInstance.get('player/stats/' + player_id.toString());
+    return response.data;
+  }
+
+  const fetchPercentageWon = async (player_id: number) => {
+    const response = await axiosInstance.get('player/percentagewins/' + player_id.toString());
+    console.log(response.data)
     return response.data;
   }
 
