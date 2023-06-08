@@ -50,7 +50,8 @@
 
   const fetchPercentageWon = async (player_id: number) => {
     const response = await axiosInstance.get('player/percentagewins/' + player_id.toString());
-    return response.data;
+    let percentageWon = parseFloat(response.data).toFixed(1);
+    return percentageWon;
   }
 
 </script>
