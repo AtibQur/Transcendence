@@ -141,6 +141,16 @@ export class PlayerService {
     }
   }
 
+  async findAchievementsTotal(id:number) {
+    try {
+      const allAchievements = await this.findOneAchievements(id);
+      const trueAchievements = Object.values(allAchievements).filter(value => value === true);
+      return trueAchievements.length;
+    } catch (error) {
+      console.error('Error occurred:', error);
+    }
+  }
+
   // GET USERNAME
   async findOneUsername(id: number) {
     try {
@@ -173,6 +183,16 @@ export class PlayerService {
       return selectedPlayer.avatar;
     }
     catch (error) {
+      console.error('Error occurred:', error);
+    }
+  }
+
+  // GET PERCENTAGE WINS
+  async findPercentageWins(id: number) {
+    try {
+      const playerStats = await this.findOneStats(id);
+      return (playerStats.wins / playerStats.losses * 100);
+    } catch (error) {
       console.error('Error occurred:', error);
     }
   }
