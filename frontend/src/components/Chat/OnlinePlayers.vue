@@ -23,10 +23,19 @@ const props = defineProps({
     }
 });
 
-onBeforeMount(() => {
-    socket.emit('findUsername', props.playerId, (name: string) => {
-        currentPlayer.value = name;
-    });
+onBeforeMount(async () => {
+    
+    const fetchUsername = async (playerId) => {
+        socket.emit('findUsername', props.playerId, (name: string) => {
+            try {
+                currentPlayer.value = name;
+            } catch (e) {
+                console.log('Error: fetching messages');
+            }
+        });
+    }
+
+    await fetchUsername(props.playerId);
 
     // FIND ALL CHANNEL FOR PLAYER
     socket.emit('findAllOnlinePlayers', (response) => {
@@ -36,8 +45,9 @@ onBeforeMount(() => {
     });
 
     //UPDATE LIST OF ONLINE PLAYERS IF NEW PLAYER IS ADDED
-    // socket.on('player', (payload: {channel_id: number}) => {
-    //     channels.value.push({ channel_id: payload.channel_id });
+    // socket.on('player', (player_id: number) => {
+    //     const newPlayerName = await fetchUsername(player_id);
+    //     onlinePlayers.value.push();
     // });
 
 })

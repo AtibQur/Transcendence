@@ -12,6 +12,7 @@
 <script setup lang="ts">
 import { socket } from '../../socket';
 import { onBeforeMount, ref, computed } from 'vue'
+import AddChannel from './AddChannel.vue';
 
 interface Channel {
     name: string,
@@ -47,11 +48,9 @@ onBeforeMount(() => {
         channels.value = response;
     });
 
-    //UPDATE LIST OF CHANNELS IF NEW CHANNEL IS ADDED
+    //LISTEN IF A NEW CHANNEL IS ADDED
     socket.on('newChannel', (payload: {channel_id: number}) => {
-        
-        // only if current player is member of the channel!!
-        channels.value.push({ channel_id: payload.channel_id });
+        addChannel(payload.channel_id);
     });
 
     // socket.on('leftChannel', (channel_id) => {
@@ -60,11 +59,32 @@ onBeforeMount(() => {
 
 })
 
+async function addChannel(channelId: number) {
+    try {
+        const isMember = await checkMembership(props.playerId, channelId);
+        if (isMember) {
+            console.log(`player ${props.playerId} is member of ${channelId}`)
+            channels.value.push({channel_id: channelId});
+        }
+    } catch (error) {
+        console.log('Error: adding channel');
+    }
+}
+
+async function checkMembership(playerId: number, channelId: number) {
+    return new Promise<boolean>((resolve) => {
+        socket.emit('checkMembership', {playerId, channelId}, (result: boolean) => {
+            resolve(result);
+        })
+    })
+}
+
 // EVENT TO CHANGE CURRENT CHANNEL
 const changeChannel = (channel_id: number) => {
     emit('changeChannel', channel_id);
 }
 
+//FETCH NAME FROM DATABASE
 const fetchChannelName = async (channel_id: number) => {
 
     return new Promise<string>((resolve) => {
@@ -74,16 +94,17 @@ const fetchChannelName = async (channel_id: number) => {
     });
 };
 
+//UPDATE LIST OF CHANNELS
 const updateChannelName = async (channel_id: number) => {
     const channel_name = await fetchChannelName(channel_id);
     channelNames.value[channel_id] = channel_name;
 };
 
+//GET NAME OF CHANNEL BY ID
 const getChannelName = (channel_id: number) => {
     if (channelNames.value[channel_id]) {
         return channelNames.value[channel_id];
     }
-    
     updateChannelName(channel_id);
     return computed(() => channelNames.value[channel_id]);
 };

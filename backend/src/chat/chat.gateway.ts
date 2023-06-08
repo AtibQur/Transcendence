@@ -1,11 +1,7 @@
 import { WebSocketGateway, 
         SubscribeMessage,
         MessageBody, 
-        WebSocketServer, 
-        ConnectedSocket,
-        OnGatewayInit,
-        OnGatewayConnection,
-        OnGatewayDisconnect, } from '@nestjs/websockets';
+        WebSocketServer } from '@nestjs/websockets';
 import { PlayerService } from 'src/player/player.service';
 import { ChannelService } from 'src/channel/channel.service';
 import { CreatePlayerDto } from 'src/player/dto/create-player.dto';
@@ -21,26 +17,19 @@ import { CreateChannelDto } from 'src/channel/dto/create-channel.dto';
 		origin: 'http://localhost:8080', // allow only from our frontend
 	},
 })
-export class ChatGateway { //implements OnGatewayConnection, OnGatewayDisconnect {
+export class ChatGateway {
   @WebSocketServer()
   server: Server;
 
     constructor(
-        // private readonly messageService: MessageService,
         private readonly playerService: PlayerService,
         private readonly channelmemberService: ChannelmemberService,
         private readonly channelService: ChannelService,
         private readonly chatmessageService: ChatmessageService
     ) {}
+
     private logger = new Logger('ChatGateway');
 
-    // handleConnection(@ConnectedSocket() client: Socket){
-    //   this.logger.log(`client connected ${client.id}`)
-    // }
-
-    // handleDisconnect(@ConnectedSocket() client: Socket){
-    //   this.logger.log(`client disconnected ${client.id}`)
-    // }
 
     //ADD PLAYER
     @SubscribeMessage('addPlayer')
@@ -52,6 +41,7 @@ export class ChatGateway { //implements OnGatewayConnection, OnGatewayDisconnect
         return player_id;
     }
 
+    //ADD MESSAGE
     @SubscribeMessage('addChannel')
     async addChannel(
         @MessageBody() createChannelDto: CreateChannelDto
@@ -69,6 +59,14 @@ export class ChatGateway { //implements OnGatewayConnection, OnGatewayDisconnect
         const chatmessage_id = await this.chatmessageService.createChatMessage(createChatmessageDto);
         this.server.emit('chatmessage', chatmessage_id);
         return chatmessage_id;
+    }
+
+    //CHECK CHANNELMEMBERSHIP OF PLAYER
+    @SubscribeMessage('checkMembership')
+    async checkMembership(
+        @MessageBody() payload: { playerId: number, channelId: number }
+    ) {
+        return this.channelmemberService.checkMembership(payload.playerId, payload.channelId);
     }
 
     //FIND ALL ONLINE PLAYERS

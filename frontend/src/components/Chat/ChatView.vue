@@ -8,13 +8,13 @@
                 <h3>Welcome {{ username }} {{ playerId }}!</h3>
                 <ChannelDisplay :playerId="playerId" @changeChannel='changeChannel'/>
                 <AddChannel :playerId="playerId"/>
-                <!-- currently display all players that exist -->
+                <!-- currently displays all players that exist -->
                 <h3> {{ playerId }}</h3>
                 <OnlinePlayers :playerId="playerId"/> 
             </div>
             <div class="chat-box">
                 <div v-if="inChannel">
-                    <ChatBox :channelId="channelId"/>
+                    <ChatBox :playerId="playerId" :channelId="channelId"/>
                     <AddMessage :senderId="playerId" :channelId="channelId"/>
                 </div>
             </div>
