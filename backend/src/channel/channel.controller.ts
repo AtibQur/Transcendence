@@ -11,5 +11,11 @@ export class ChannelController {
   create(@Body() createChannelDto: CreateChannelDto) {
     return this.channelService.createChannel(createChannelDto);
   }
+
+    // GET ALL CHAT MESSAGES WITHIN ONE CHANNEL
+  @Get(':channel_id')
+  findOneChannel(@Param('channel_id') channel_id: string) {
+    return this.channelService.findOneChannel(+channel_id);
+  }
   
 }

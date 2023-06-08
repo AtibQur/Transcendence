@@ -12,7 +12,7 @@ export class MatchController {
     return this.matchService.createMatch(createMatchDto);
   }
 
-  // GET ALL PLAYERS MATCH HISTORY
+  // GET ALL PLAYED MATCHES
   @Get('history')
   findAll() {
     return this.matchService.findAll();

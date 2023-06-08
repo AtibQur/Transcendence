@@ -68,16 +68,24 @@ export class PlayerService {
             id: true,
           },
         });
-    
-        if (user) {
-          return user.id;
-        } else {
-          return null;
-        }
+
+        return user.id;
 
       } catch (error) {
         console.error('Error searching for user:', error);
       }
+  }
+
+  async findAllOnlinePlayers() {
+    return prisma.playerStats.findMany({
+        select: {
+          player: {
+            select: {
+              username: true,
+            },
+          }
+        },
+    });
   }
 
   // GET ALL PLAYER STATS (FOR LEADERBOARD)

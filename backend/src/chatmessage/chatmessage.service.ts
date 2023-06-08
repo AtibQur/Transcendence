@@ -10,6 +10,8 @@ export class ChatmessageService {
   // CREATE NEW CHAT MESSAGE
   async createChatMessage(createChatmessageDto: CreateChatmessageDto) {
     try {
+        console.log(createChatmessageDto.sender_id);
+        console.log(createChatmessageDto.channel_id);
       const newChatMessage = await prisma.chatMessage.create({
         data: {
           content: createChatmessageDto.content,
@@ -18,6 +20,7 @@ export class ChatmessageService {
           sent_at: new Date(),
         },
       });
+      console.log('Chatmessage is created');
       return newChatMessage;
     } catch (error) {
       console.error('Error occurred:', error);
