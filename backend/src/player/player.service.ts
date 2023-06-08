@@ -111,11 +111,6 @@ export class PlayerService {
         id: id,
       },
       select: {
-        player: {
-          select: {
-            username: true,
-          },
-        },
         wins: true,
         losses: true,
         ladder_level: true,

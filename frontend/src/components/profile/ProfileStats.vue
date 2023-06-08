@@ -33,7 +33,6 @@
       totalAchievements.value = await fetchAchievements(playerId);
       playerStats.value = await fetchPlayerStats(playerId);
       percentageWon.value = await fetchPercentageWon(playerId)
-      console.log(playerStats.value.wins)
     } catch (error) {
       console.log("Error occured");
     }
@@ -51,7 +50,6 @@
 
   const fetchPercentageWon = async (player_id: number) => {
     const response = await axiosInstance.get('player/percentagewins/' + player_id.toString());
-    console.log(response.data)
     return response.data;
   }
 
