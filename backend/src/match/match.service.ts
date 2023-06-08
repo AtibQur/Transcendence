@@ -52,6 +52,18 @@ export class MatchService {
             { opponent_id: id }
           ]
         },
+        include: {
+          player: {
+            select: {
+              username: true
+            }
+          },
+          opponent: {
+            select: {
+              username: true
+            }
+          }
+        }
       });
       return matchHistory;
     }
