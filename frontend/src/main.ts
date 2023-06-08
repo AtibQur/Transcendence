@@ -8,6 +8,7 @@ import Auth from './components/Auth/AuthCheck.vue';
 import Login from './components/Auth/AuthRedirect.vue';
 import ProfilePage from './components/profile/Profile.vue';
 import Leaderboard from './components/LeaderboardComponent.vue';
+import ProfileSettings from './components/profile/ProfileSettings.vue';
 import PopulateDatabase from './components/PopulateDatabase.vue';
 import ChatView from './components/Chat/ChatView.vue';
 
@@ -44,6 +45,10 @@ const routes: RouteRecordRaw[] = [
       path: '/profile',
       component: ProfilePage,
     },
+    {
+      path: '/settings',
+      component: ProfileSettings,
+    }
 ];
 
 const router = createRouter({
