@@ -28,4 +28,4 @@ export class MatchController {
   findTotalMatches(@Param('id') id: string) {
     return this.matchService.findTotalMatches(+id);
   }
-} 
+}
