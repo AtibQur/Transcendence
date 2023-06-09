@@ -1,5 +1,6 @@
 <template>
     <h4>Available Channels</h4>
+    <h3> hello  {{ props.playerId }}</h3>
     <ul id="channelList">
         <button v-for="(channel, index) in channels" :key="index" @click="changeChannel(channel.channel_id)">
             {{ getChannelName(channel.channel_id) }}
@@ -10,13 +11,6 @@
 <script setup lang="ts">
 import { socket } from '../../socket';
 import { onBeforeMount, ref, computed } from 'vue'
-
-interface Channel {
-    name: string,
-    password?: string,
-    is_private: boolean,
-    owner_id: number
-}
 
 const props = defineProps({
     playerId: {
@@ -30,18 +24,11 @@ const emit = defineEmits(['changeChannel']);
 const channels = ref({});
 const channelNames = ref<Record<number, string>>({}); // Hold the sender names
 
-/* 
-    1. at the start all channels of a player are displayed. -> findPlayerChannels()
-        - with the player id, an object is returned with the channel_id,
-        - for each channel_id, the name needs to be found -> findOneChannelName()
-    2. component is also listening whether there is a new channel added for the current player -> addChannel()
-    3. component is also listening whether the player leaves a channels -> leaveChannel()
-*/
+onBeforeMount(async () => {
 
-onBeforeMount(() => {
-
+    console.log('hello', props.playerId);
     // FIND ALL CHANNEL FOR PLAYER
-    socket.emit('findPlayerChannels', props.playerId, (response) => {
+    await socket.emit('findPlayerChannels', props.playerId, (response) => {
         channels.value = response;
     });
 

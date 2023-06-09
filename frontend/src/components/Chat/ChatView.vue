@@ -1,23 +1,24 @@
 <template>
     <div class="chat">
-        <div class="login" v-if="!logged">
-            <AddPlayer @logIn='logIn'/>
+        <div class="login" v-if="!playerStore.getIsLogged">
+            <!-- Load user -->
+            <AddPlayer/>
         </div>
         <div class="chat-start-page" v-else>
             <div class="left-side-bar">
-                <h3>Welcome {{ username }} {{ playerId }}!</h3>
-                <ChannelDisplay :playerId="playerId" @changeChannel='changeChannel'/>
-                <AddChannel :playerId="playerId"/>
-                <OnlinePlayers :playerId="playerId"/> 
+                <h3>Welcome {{ playerStore.getUsername }} {{ playerStore.getPlayerId }}!</h3>
+                <ChannelDisplay :playerId="playerStore.getPlayerId" @changeChannel='changeChannel'/>
+                <AddChannel :playerId="playerStore.getPlayerId"/>
+                <OnlinePlayers :playerId="playerStore.getPlayerId"/> 
             </div>
             <div class="chat-box">
                 <div v-if="inChannel">
-                    <ChatBox :playerId="playerId" :channelId="channelId"/>
-                    <AddMessage :senderId="playerId" :channelId="channelId"/>
+                    <ChatBox :playerId="playerStore.getPlayerId" :channelId="channelId"/>
+                    <AddMessage :senderId="playerStore.getPlayerId" :channelId="channelId"/>
                 </div>
             </div>
             <div class="right-side-bar">
-                <!-- <ChannelmemberDisplay/> -->
+                <ChannelmemberDisplay/>
             </div>
         </div>
     </div>
@@ -33,18 +34,20 @@ import ChatBox from './ChatBox.vue';
 import AddMessage from './AddMessage.vue';
 import OnlinePlayers from './OnlinePlayers.vue';
 import ChannelmemberDisplay from './ChannelDisplay.vue';
+import { usePlayerStore } from '@/stores/player';
 
+const playerStore = usePlayerStore();
 const logged = ref(false);
 const inChannel = ref(false);
 const username = ref('');
 const playerId = ref(-1);
 const channelId = ref(-1); //test
 
-const logIn = (playerInfo: {username: string, playerId: number}) => {
-    username.value = playerInfo.username;
-    playerId.value = playerInfo.playerId;
-    logged.value = true;
-}
+// const logIn = (playerInfo: {username: string, playerId: number}) => {
+//     username.value = playerInfo.username;
+//     playerId.value = playerInfo.playerId;
+//     logged.value = true;
+// }
 
 const changeChannel = (channel_id: number) => {
     channelId.value = channel_id;

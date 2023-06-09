@@ -1,6 +1,7 @@
 import { WebSocketGateway, 
         SubscribeMessage,
-        MessageBody, 
+        MessageBody,
+        ConnectedSocket,
         WebSocketServer } from '@nestjs/websockets';
 import { PlayerService } from 'src/player/player.service';
 import { ChannelService } from 'src/channel/channel.service';
@@ -30,16 +31,23 @@ export class ChatGateway {
 
     private logger = new Logger('ChatGateway');
 
-
-    //ADD PLAYER
-    @SubscribeMessage('addPlayer')
-    async addPlayer(
-        @MessageBody() createPlayerDto: CreatePlayerDto
-    ){
-        const player_id = await this.playerService.createPlayer(createPlayerDto);
-        this.server.emit('player', player_id);
-        return player_id;
+    handleConnection(@ConnectedSocket() client: Socket){
+      this.logger.log(`client connected ${client.id}`)
     }
+
+    handleDisconnect(@ConnectedSocket() client: Socket){
+      this.logger.log(`client disconnected ${client.id}`)
+    }
+
+    // //ADD PLAYER
+    // @SubscribeMessage('addPlayer')
+    // async addPlayer(
+    //     @MessageBody() createPlayerDto: CreatePlayerDto
+    // ){
+    //     const player_id = await this.playerService.createPlayer(createPlayerDto);
+    //     this.server.emit('player', player_id);
+    //     return player_id;
+    // }
 
     //ADD MESSAGE
     @SubscribeMessage('addChannel')
@@ -80,6 +88,7 @@ export class ChatGateway {
     findPlayerChannels(
         @MessageBody() id: number
     ){
+        console.log(id);
         return this.channelmemberService.findPlayerChannels(id);
     }
 

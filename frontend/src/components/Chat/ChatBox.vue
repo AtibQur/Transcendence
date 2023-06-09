@@ -10,13 +10,7 @@
 <script setup lang="ts">
 import { socket } from '@/socket';
 import { onBeforeMount, onUpdated, ref, computed, watch} from 'vue'
-
-interface Message {
-    id: number
-    content: string;
-    sender_id: number;
-    channel_id: number;
-}
+import Message from '@/types/Message';
 
 const props = defineProps({
     playerId: {

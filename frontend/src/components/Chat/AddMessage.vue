@@ -10,12 +10,7 @@
 <script setup lang="ts">
 import { socket } from '../../socket';
 import { onBeforeMount, ref } from 'vue';
-
-interface Message {
-    content: string;
-    sender_id: number;
-    channel_id: number;
-}
+// import Message from '@/types/Message';
 
 const props = defineProps({
     senderId: {
