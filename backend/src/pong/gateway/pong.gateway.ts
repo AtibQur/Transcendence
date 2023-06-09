@@ -1,24 +1,26 @@
 import {
 	SubscribeMessage,
 	MessageBody,
+	ConnectedSocket,
 	WebSocketGateway,
 	WebSocketServer,
-	OnGatewayInit,
-	OnGatewayConnection,
-	OnGatewayDisconnect,
-	ConnectedSocket,
+	// OnGatewayInit,
+	// OnGatewayConnection,
+	// OnGatewayDisconnect,
   } from '@nestjs/websockets';
-// import { subscribe } from 'diagnostics_channel';
+import { PongService } from '../pong.service';
 import { Server, Socket } from 'socket.io';
 
 @WebSocketGateway()
-export class PongGateway implements OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect {
-	@WebSocketServer() server: Server;
+export class PongGateway {
+	@WebSocketServer() 
+	server: Server;
 
-	@SubscribeMessage('move')
-	handleMove(@MessageBody() data: string): string {
-		return data;
+	@SubscribeMessage('movement')
+	handleMovement(
+		@ConnectedSocket() client: Socket,
+		@MessageBody() data: any): void {
+		console.log(data);
+		this.server.emit('state', data);
 	}
-		// @ConnectedSocket() client: Socket,
-		// this.server.emit('updateGame', data)
 }

@@ -2,24 +2,25 @@ import { Ball } from './interfaces/ball.interface';
 import { Player } from './interfaces/player.interface';
 
 export class pongGame {
-		private canvasWidth = 858;
-		private canvasHeight = 525;
-		private player1: Player = {
-			x: 80,
-			y: 80,
-			score: 0,
-		};
-		private player2: Player = {
-			x: 80,
-			y: 80,
-			score: 0,
-		};
-		private ball: Ball = {
-			x: 0,
-			y: 0,
-			dirX: 1,
-			dirY: 1
-		};
+	private canvasWidth = 858;
+	private canvasHeight = 525;
+	private player1: Player = {
+		x: 80,
+		y: 80,
+		score: 0,
+	};
+	private player2: Player = {
+		x: 80,
+		y: 80,
+		score: 0,
+	};
+	ball: Ball = {
+		x: 0,
+		y: 0,
+		dirX: 1,
+		dirY: 1,
+		speed: 1,
+	};
 
 	// checkPaddleCollision() {
 	// 	const paddleTop = this.player1.y - 40;
@@ -47,14 +48,20 @@ export class pongGame {
 	// 	}
 	// 	this.resetBall();
 	// };
-	moveBall() {
+	moveBall(ball): typeof ball {
 		this.ball.x += this.ball.dirX * this.ball.speed;
 		this.ball.y += this.ball.dirY * this.ball.speed;
+		console.log(this.ball);
 	}
 
+	loop(ball){
+		for (let i = 0; i < this.ball.speed; i++)
+			this.moveBall(ball);
+		requestAnimationFrame(this.loop);
+	}
 	updateGame() {
-		this.moveBall();
-		
+		console.log("HELLOO");
+		this.loop(this.ball);
 		// this.checkPaddleCollision();
 		// this.checkScore();
 	}

@@ -1,5 +1,10 @@
 import { Controller, Get, Req, Res, UseGuards } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
+import { CreatePlayerDto } from 'src/player/dto/create-player.dto';
+import { PlayerService } from 'src/player/player.service';
+
+const playerService = new PlayerService();
+
 
 @Controller('auth')
 export class AuthController {
@@ -12,7 +17,9 @@ export class AuthController {
     @Get('/42/callback')
     @UseGuards(AuthGuard('42'))
     async fortyTwoCallback(@Req() req: any, @Res() res: any) {
-        console.log(req.user);
+        const createPlayerDto = new CreatePlayerDto();
+        createPlayerDto.username = req.user.username;
+        playerService.createPlayer(createPlayerDto);
         res.redirect('http://localhost:8080/Login?username=' + req.user.username);
     }
 

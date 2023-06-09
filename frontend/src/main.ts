@@ -3,9 +3,10 @@ import { createRouter, createWebHistory, RouteRecordRaw } from 'vue-router';
 import axiosInstance from './axiosConfig';
 import App from './App.vue';
 import Home from './components/Home.vue';
-import Play from './components/pong/PlayGame.vue';
+import Play from './components/pong/Play.vue';
 import Auth from './components/Auth/AuthCheck.vue';
 import Login from './components/Auth/AuthRedirect.vue';
+import ProfilePage from './components/profile/Profile.vue';
 import Leaderboard from './components/LeaderboardComponent.vue';
 import PopulateDatabase from './components/PopulateDatabase.vue';
 
@@ -33,6 +34,10 @@ const routes: RouteRecordRaw[] = [
     {
     path: '/populatedatabase',
     component: PopulateDatabase,
+    },
+    {
+      path: '/profile',
+      component: ProfilePage,
     },
 ];
 
