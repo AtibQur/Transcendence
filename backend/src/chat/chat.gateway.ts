@@ -1,11 +1,8 @@
 import { WebSocketGateway, 
         SubscribeMessage,
-        MessageBody, 
-        WebSocketServer, 
+        MessageBody,
         ConnectedSocket,
-        OnGatewayInit,
-        OnGatewayConnection,
-        OnGatewayDisconnect, } from '@nestjs/websockets';
+        WebSocketServer } from '@nestjs/websockets';
 import { PlayerService } from 'src/player/player.service';
 import { ChannelService } from 'src/channel/channel.service';
 import { CreatePlayerDto } from 'src/player/dto/create-player.dto';
@@ -21,37 +18,38 @@ import { CreateChannelDto } from 'src/channel/dto/create-channel.dto';
 		origin: 'http://localhost:8080', // allow only from our frontend
 	},
 })
-export class ChatGateway { //implements OnGatewayConnection, OnGatewayDisconnect {
+export class ChatGateway {
   @WebSocketServer()
   server: Server;
 
     constructor(
-        // private readonly messageService: MessageService,
         private readonly playerService: PlayerService,
         private readonly channelmemberService: ChannelmemberService,
         private readonly channelService: ChannelService,
         private readonly chatmessageService: ChatmessageService
     ) {}
+
     private logger = new Logger('ChatGateway');
 
-    // handleConnection(@ConnectedSocket() client: Socket){
-    //   this.logger.log(`client connected ${client.id}`)
-    // }
-
-    // handleDisconnect(@ConnectedSocket() client: Socket){
-    //   this.logger.log(`client disconnected ${client.id}`)
-    // }
-
-    //ADD PLAYER
-    @SubscribeMessage('addPlayer')
-    async addPlayer(
-        @MessageBody() createPlayerDto: CreatePlayerDto
-    ){
-        const player_id = await this.playerService.createPlayer(createPlayerDto);
-        this.server.emit('player', player_id);
-        return player_id;
+    handleConnection(@ConnectedSocket() client: Socket){
+      this.logger.log(`client connected ${client.id}`)
     }
 
+    handleDisconnect(@ConnectedSocket() client: Socket){
+      this.logger.log(`client disconnected ${client.id}`)
+    }
+
+    // //ADD PLAYER
+    // @SubscribeMessage('addPlayer')
+    // async addPlayer(
+    //     @MessageBody() createPlayerDto: CreatePlayerDto
+    // ){
+    //     const player_id = await this.playerService.createPlayer(createPlayerDto);
+    //     this.server.emit('player', player_id);
+    //     return player_id;
+    // }
+
+    //ADD MESSAGE
     @SubscribeMessage('addChannel')
     async addChannel(
         @MessageBody() createChannelDto: CreateChannelDto
@@ -71,6 +69,14 @@ export class ChatGateway { //implements OnGatewayConnection, OnGatewayDisconnect
         return chatmessage_id;
     }
 
+    //CHECK CHANNELMEMBERSHIP OF PLAYER
+    @SubscribeMessage('checkMembership')
+    async checkMembership(
+        @MessageBody() payload: { playerId: number, channelId: number }
+    ) {
+        return this.channelmemberService.checkMembership(payload.playerId, payload.channelId);
+    }
+
     //FIND ALL ONLINE PLAYERS
     @SubscribeMessage('findAllOnlinePlayers')
     findAllOnlinePlayers(){
@@ -82,6 +88,7 @@ export class ChatGateway { //implements OnGatewayConnection, OnGatewayDisconnect
     findPlayerChannels(
         @MessageBody() id: number
     ){
+        console.log(id);
         return this.channelmemberService.findPlayerChannels(id);
     }
 

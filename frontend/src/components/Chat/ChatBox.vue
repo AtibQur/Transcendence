@@ -10,15 +10,13 @@
 <script setup lang="ts">
 import { socket } from '@/socket';
 import { onBeforeMount, onUpdated, ref, computed, watch} from 'vue'
-
-interface Message {
-    id: number
-    content: string;
-    sender_id: number;
-    channel_id: number;
-}
+import Message from '@/types/Message';
 
 const props = defineProps({
+    playerId: {
+        type: Number,
+        required: true
+    },
     channelId: {
         type: Number,
         required: true
@@ -31,6 +29,8 @@ const senderNames = ref<Record<number, string>>({}); // Hold the sender names
 const currentChannelId = ref(props.channelId);
 
 onBeforeMount(async () => {
+    
+    
     // FIND CHANNEL MESSAGES
     const fetchChatMessages = async (channelId) => {
         socket.emit('findAllChannelMessages', channelId, (response: Message[]) => {
@@ -58,8 +58,8 @@ onBeforeMount(async () => {
 
 
     //ADD MESSAGE TO CURRENT MESSAGES
-    socket.on('chatmessage', (message) => {
-        messages.value.push(message);
+    socket.on('chatmessage', (message: Message) => {
+        addChatmessage(message);
     });
 
     //TRACK WHETHER CHANNEL_ID CHANGES
@@ -71,6 +71,27 @@ onBeforeMount(async () => {
 
 });
 
+async function addChatmessage(message: Message) {
+    try {
+        const isMember = await checkMembership(props.playerId, message.channel_id);
+        if (isMember) {
+            messages.value.push(message);
+        }
+    } catch (error) {
+        console.log('Error: adding message');
+    }
+}
+
+//maybe make a composable of this?! used in multiple files
+async function checkMembership(playerId: number, channelId: number) {
+    return new Promise<boolean>((resolve) => {
+        socket.emit('checkMembership', {playerId, channelId}, (result: boolean) => {
+            resolve(result);
+        })
+    })
+}
+
+//FETCH NAME FROM DATABASE
 const fetchSenderName = async (sender_id: number) => {
     return new Promise<string>((resolve) => {
         socket.emit('findUsername', sender_id, (sender_name: string) => {
@@ -79,20 +100,21 @@ const fetchSenderName = async (sender_id: number) => {
     });
 };
 
+//UPDATE LIST OF SENDERS
 const updateSenderName = async (sender_id: number) => {
     const sender_name = await fetchSenderName(sender_id);
     senderNames.value[sender_id] = sender_name;
 };
 
+//GET NAME OF SENDER BY ID
 const getSenderName = (sender_id: number) => {
     if (senderNames.value[sender_id]) {
         return senderNames.value[sender_id];
     }
-    
     updateSenderName(sender_id);
-
     return computed(() => senderNames.value[sender_id]);
 };
+
 </script>
 
 
