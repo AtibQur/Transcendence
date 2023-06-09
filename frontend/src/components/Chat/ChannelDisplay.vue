@@ -1,18 +1,15 @@
 <template>
-    <div class="channel-container">
-        <h4>Available Channels</h4>
-        <ul id="channelList">
-            <button v-for="(channel, index) in channels" :key="index" @click="changeChannel(channel.channel_id)">
-                {{ getChannelName(channel.channel_id) }}
-            </button>
-        </ul>
-    </div>
+    <h4>Available Channels</h4>
+    <ul id="channelList">
+        <button v-for="(channel, index) in channels" :key="index" @click="changeChannel(channel.channel_id)">
+            {{ getChannelName(channel.channel_id) }}
+        </button>
+    </ul>
 </template>
 
 <script setup lang="ts">
 import { socket } from '../../socket';
 import { onBeforeMount, ref, computed } from 'vue'
-import AddChannel from './AddChannel.vue';
 
 interface Channel {
     name: string,

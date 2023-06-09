@@ -35,6 +35,8 @@ const senderNames = ref<Record<number, string>>({}); // Hold the sender names
 const currentChannelId = ref(props.channelId);
 
 onBeforeMount(async () => {
+    
+    
     // FIND CHANNEL MESSAGES
     const fetchChatMessages = async (channelId) => {
         socket.emit('findAllChannelMessages', channelId, (response: Message[]) => {
