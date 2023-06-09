@@ -15,8 +15,8 @@
   import { onBeforeMount, ref, computed } from 'vue';
   import axiosInstance from '../../axiosConfig';
 
-  const totalAchievements = ref("");
-  const percentageWon = ref("");
+  const totalAchievements = ref(0);
+  const percentageWon = ref(0);
   const playerStats = ref({})
   const stats = computed(() => [
     { label: "Total Played Games", value: playerStats.value.wins + playerStats.value.losses },
@@ -30,7 +30,7 @@
   onBeforeMount(async () => {
     try {
       const playerId = 43; // HARDCODED!!!! VUL PLAYER ID IN DIE JE HEBT IN JE DATABASE
-      totalAchievements.value = await fetchAchievements(playerId);
+      totalAchievements.value = await fetchTotalAchievements(playerId);
       playerStats.value = await fetchPlayerStats(playerId);
       percentageWon.value = await fetchPercentageWon(playerId)
     } catch (error) {
@@ -38,7 +38,7 @@
     }
   });
 
-  const fetchAchievements = async (player_id: number) => {
+  const fetchTotalAchievements = async (player_id: number) => {
     const response = await axiosInstance.get('player/totalachievements/' + player_id.toString());
     return response.data;
   }

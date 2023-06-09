@@ -12,7 +12,7 @@
 </template>
 
 <script setup lang="ts">
-  import { onBeforeMount, ref, computed } from 'vue';
+  import { onBeforeMount, ref } from 'vue';
   import axiosInstance from '../../axiosConfig';
 
   const matches = ref("");
