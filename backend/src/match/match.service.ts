@@ -33,13 +33,14 @@ export class MatchService {
         this.playerService.updateLosses(newMatch.player_id);
       }
       return `This action adds a new match: match #${newMatch.id}`;
-    } catch (error) {
+    }
+    catch (error) {
       console.error('Error occurred:', error);
     }
   }
 
-  findAll() {
-    return prisma.match.findMany({});
+  async findAll() {
+    return await prisma.match.findMany({});
   }
 
   async findMatchHistory(id: number) {
@@ -51,9 +52,32 @@ export class MatchService {
             { opponent_id: id }
           ]
         },
+        include: {
+          player: {
+            select: {
+              username: true
+            }
+          },
+          opponent: {
+            select: {
+              username: true
+            }
+          }
+        }
       });
       return matchHistory;
-    } catch (error) {
+    }
+    catch (error) {
+      console.error('Error occurred:', error);
+    }
+  }
+
+  async findTotalMatches(id: number) {
+    try {
+      const allMatches = await this.findMatchHistory(+id)
+      return Object.keys(allMatches).length;
+    }
+    catch (error) {
       console.error('Error occurred:', error);
     }
   }

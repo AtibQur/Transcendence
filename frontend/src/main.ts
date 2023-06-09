@@ -10,6 +10,7 @@ import ProfilePage from './components/profile/ProfilePage.vue';
 import Leaderboard from './components/LeaderboardComponent.vue';
 import ProfileSettings from './components/profile/ProfileSettings.vue';
 import PopulateDatabase from './components/PopulateDatabase.vue';
+import ChatView from './components/Chat/ChatView.vue';
 
 const routes: RouteRecordRaw[] = [
     {
@@ -27,6 +28,10 @@ const routes: RouteRecordRaw[] = [
     {
       path: '/login',
       component: Login,
+    },
+    {
+      path: '/chat',
+      component: ChatView,
     },
     {
       path: '/leaderboard',
