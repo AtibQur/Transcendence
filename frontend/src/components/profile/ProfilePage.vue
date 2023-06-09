@@ -1,6 +1,4 @@
 <template>
-    <h1> name:  "{{ username }}"</h1>
-
     <div class="ProfileContainer">
       <div class="ProfileData">
         <div class="ProfilePicture">
@@ -8,7 +6,7 @@
         </div>
         <div class="ProfileInfo">
           <div class="ProfileName">
-            <!-- <h1> {{ username }} </h1> -->
+            <h1> {{ username }} </h1>
           </div>
           <div class="ProfileStatus">
             <h3>status: Hardcoded Online</h3>
@@ -47,38 +45,30 @@
     </div>
   </template>
   
-  <script>
-  import axios from 'axios';
+  <script setup lang="ts">
+  import { onBeforeMount, ref, computed } from 'vue';
+  import axiosInstance from '../../axiosConfig';
   import ProfileAchievements from "./ProfileAchievements.vue";
   import ProfileStats from "./ProfileStats.vue";
   import ProfileHistory from "./ProfileHistory.vue";
 
-  export default {
-  name: "ProfilePage",
-  data() {
-    return {
-      selectedOption: 'Achievements',
-      username: ''
-    };
-  },
-  components: {
-    ProfileAchievements,
-    ProfileStats,
-    ProfileHistory
-  },
-  mounted() {
-    const userId = '3';
+  const username = ref("");
+  const selectedOption = ref("Achievements");
 
-    axios.get(`http://localhost:3000/player/username/${userId}`)
-      .then(response => {
-        console.log('Response:', response.data);
-        this.username = response.data.username;
-      })
-      .catch(error => {
-        console.error('Error retrieving username:', error);
-      });
-  },
-};
+  onBeforeMount(async () => {
+  try {
+    const playerId = 3;
+    username.value = await fetchUsername(playerId);
+    console.log(username.value);
+  } catch (error) {
+    console.log("Error occured");
+  }
+  });
+
+  const fetchUsername = async (player_id: number) => {
+    const response = await axiosInstance.get('player/username/' + player_id.toString());
+    return response.data;
+  }
   </script>
   
   <style>
@@ -207,3 +197,4 @@
     display: block;
   }
   </style>
+
