@@ -31,6 +31,12 @@ export class PlayerController {
     return this.playerService.findOneAchievements(+id);
   }
 
+  // GET NUMBER OF ACHIEVED ACHIEVEMENTS
+  @Get('totalachievements/:id')
+  findAchievementsTotal(@Param('id') id: string) {
+    return this.playerService.findAchievementsTotal(+id);
+  }
+
   // GET USERNAME
   @Get('username/:id')
   findOneUsername(@Param('id') id: string) {
@@ -41,6 +47,12 @@ export class PlayerController {
   @Get('avatar/:id')
   findOneAvatar(@Param('id') id: string) {
     return this.playerService.findOneAvatar(+id);
+  }
+  
+  // GET PERCENTAGE WINS
+  @Get('percentagewins/:id')
+  findPercentageWins(@Param('id') id: string) {
+    return this.playerService.findPercentageWins(+id);
   }
 
   // CHANGE USERNAME

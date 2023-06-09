@@ -6,7 +6,7 @@
         </div>
         <div class="ProfileInfo">
           <div class="ProfileName">
-            <h1>John Doe</h1>
+            <h1> {{ username }} </h1>
           </div>
           <div class="ProfileStatus">
             <h3>status: Hardcoded Online</h3>
@@ -29,7 +29,7 @@
         <select v-model="selectedOption">
           <option value="Achievements">Achievements</option>
           <option value="Stats">Stats</option>
-          <option value="History">History</option>
+          <option value="Match History">Match History</option>
         </select>
   
         <div v-if="selectedOption === 'Achievements'" class="show">
@@ -38,31 +38,37 @@
         <div v-else-if="selectedOption === 'Stats'" class="show">
             <ProfileStats />
         </div>
-        <div v-else-if="selectedOption === 'History'" class="show">
+        <div v-else-if="selectedOption === 'Match History'" class="show">
             <ProfileHistory />
         </div>
       </div>
     </div>
   </template>
   
-  <script>
+  <script setup lang="ts">
+  import { onBeforeMount, ref, computed } from 'vue';
+  import axiosInstance from '../../axiosConfig';
   import ProfileAchievements from "./ProfileAchievements.vue";
   import ProfileStats from "./ProfileStats.vue";
   import ProfileHistory from "./ProfileHistory.vue";
 
-  export default {
-    name: "ProfilePage",
-    data() {
-      return {
-        selectedOption: "Achievements",
-      };
-    },
-    components: {
-        ProfileAchievements,
-        ProfileStats,
-        ProfileHistory
-    },
-  };
+  const username = ref("");
+  const selectedOption = ref("Achievements");
+
+  onBeforeMount(async () => {
+  try {
+    const playerId = 3;
+    username.value = await fetchUsername(playerId);
+    console.log(username.value);
+  } catch (error) {
+    console.log("Error occured");
+  }
+  });
+
+  const fetchUsername = async (player_id: number) => {
+    const response = await axiosInstance.get('player/username/' + player_id.toString());
+    return response.data;
+  }
   </script>
   
   <style>
@@ -73,8 +79,8 @@
   transform: translateY(-50%);
   width: calc(100% - 800px);
   min-width: 1500px;
-  height: 75vh; /* Adjust the height to fit 75% of the screen */
-  min-height: 1000px; /* Set a minimum height to ensure content visibility */
+  height: 75vh;
+  min-height: 1000px;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -191,3 +197,4 @@
     display: block;
   }
   </style>
+

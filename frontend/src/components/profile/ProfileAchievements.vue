@@ -2,18 +2,40 @@
   <div class="scrollable-container">
     <div class="content">
       <ul class="item-list">
-        <li v-for="item in items" :key="item" class="item">
-          <div class="image-container">
-            <img :src="getImageForItem(item)" alt="Item Image">
-          </div>
-          <div class="name-container">
-            <div class="item-name">{{ item }}</div>
+        <li v-for="(value, key) in achievements" :key="key" class="item">
+          <div class="image-container"></div>
+          <div :class="['name-container', { 'bold-black': value, 'regular-grey': !value }]">
+            <div class="item-name">{{ key }}</div>
           </div>
         </li>
       </ul>
     </div>
   </div>
 </template>
+
+<script setup lang="ts">
+  import { onBeforeMount, ref } from 'vue';
+  import axiosInstance from '../../axiosConfig';
+
+  const achievements = ref({});
+
+onBeforeMount(async () => {
+    try {
+      const playerId = 3; // HARDCODED!!!! VUL PLAYER ID IN DIE JE HEBT IN JE DATABASE
+      achievements.value = await fetchAchievements(playerId);
+      console.log(achievements)
+    } catch (error) {
+      console.log("Error occured");
+    }
+  });
+
+  const fetchAchievements = async (player_id: number) => {
+    const response = await axiosInstance.get('player/achievements/' + player_id.toString());
+    return response.data;
+  }
+
+</script>
+
 
 <style>
 .scrollable-container {
@@ -78,43 +100,17 @@
 .item-name {
   text-align: center;
 }
-</style>
 
-<script>
-export default {
-  data() {
-    return {
-      items: [
-        'Item 1',
-        'Item 2',
-        'Item 3',
-        'Item 4',
-        'Item 5',
-        'Item 6',
-        'Item 7',
-        'Item 8',
-        'Item 9',
-        'Item 10',
-        'Item 11',
-        'Item 12',
-        'Item 13',
-        'Item 14',
-        'Item 15',
-        'Item 16',
-        'Item 17',
-        'Item 18',
-        'Item 19',
-        'Item 20',
-      ],
-    };
-  },
-  methods: {
-    getImageForItem(item) {
-      // Add logic here to return the image source for each item
-      // You can use a mapping or generate random images based on the item
-      // For simplicity, let's assume the image filenames follow a pattern
-      return `path/to/images/${item.toLowerCase().replace(/\s+/g, '-')}.jpg`;
-    },
-  },
-};
-</script>
+.bold-black {
+  font-weight: bold;
+  font-size: large;
+
+  color: black;
+}
+
+.regular-grey {
+  font-weight: normal;
+  font-size: large;
+  color: grey;
+}
+</style>
