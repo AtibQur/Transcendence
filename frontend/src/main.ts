@@ -1,4 +1,5 @@
 import { createApp } from 'vue';
+import { createPinia } from 'pinia'
 import { createRouter, createWebHistory, RouteRecordRaw } from 'vue-router';
 import axiosInstance from './axiosConfig';
 import App from './App.vue';
@@ -10,6 +11,7 @@ import ProfilePage from './components/profile/ProfilePage.vue';
 import Leaderboard from './components/LeaderboardComponent.vue';
 import PopulateDatabase from './components/PopulateDatabase.vue';
 import ChatView from './components/Chat/ChatView.vue';
+import Redirect2faVerify from './components/Auth/Redirect2faVerify.vue';
 
 const routes: RouteRecordRaw[] = [
     {
@@ -44,6 +46,10 @@ const routes: RouteRecordRaw[] = [
       path: '/profile',
       component: ProfilePage,
     },
+    {
+      path: '/login/redirect2faverify',
+      component: Redirect2faVerify,
+    }
 ];
 
 const router = createRouter({
@@ -53,5 +59,9 @@ const router = createRouter({
 
 const app = createApp(App).use(router);
 app.use(router);
+
+const pinia = createPinia()
+app.use(pinia);
+
 app.config.globalProperties.$axios = axiosInstance;
 app.mount('#app');
