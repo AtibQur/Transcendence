@@ -29,7 +29,7 @@
         <select v-model="selectedOption">
           <option value="Achievements">Achievements</option>
           <option value="Stats">Stats</option>
-          <option value="History">History</option>
+          <option value="Match History">Match History</option>
         </select>
   
         <div v-if="selectedOption === 'Achievements'" class="show">
@@ -38,7 +38,7 @@
         <div v-else-if="selectedOption === 'Stats'" class="show">
             <ProfileStats />
         </div>
-        <div v-else-if="selectedOption === 'History'" class="show">
+        <div v-else-if="selectedOption === 'Match History'" class="show">
             <ProfileHistory />
         </div>
       </div>

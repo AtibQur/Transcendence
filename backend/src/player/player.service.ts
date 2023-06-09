@@ -111,11 +111,6 @@ export class PlayerService {
         id: id,
       },
       select: {
-        player: {
-          select: {
-            username: true,
-          },
-        },
         wins: true,
         losses: true,
         ladder_level: true,
@@ -137,6 +132,16 @@ export class PlayerService {
       return selectedPlayer.achievements;
     }
     catch (error) {
+      console.error('Error occurred:', error);
+    }
+  }
+
+  async findAchievementsTotal(id:number) {
+    try {
+      const allAchievements = await this.findOneAchievements(id);
+      const trueAchievements = Object.values(allAchievements).filter(value => value === true);
+      return trueAchievements.length;
+    } catch (error) {
       console.error('Error occurred:', error);
     }
   }
@@ -173,6 +178,17 @@ export class PlayerService {
       return selectedPlayer.avatar;
     }
     catch (error) {
+      console.error('Error occurred:', error);
+    }
+  }
+
+  // GET PERCENTAGE WINS
+  async findPercentageWins(id: number) {
+    try {
+      const playerStats = await this.findOneStats(id);
+      const totalGames = playerStats.wins + playerStats.losses;
+      return (playerStats.wins / totalGames * 100);
+    } catch (error) {
       console.error('Error occurred:', error);
     }
   }
