@@ -23,4 +23,4 @@ export class MatchController {
   findMatchHistory(@Param('id') id: string) {
     return this.matchService.findMatchHistory(+id);
   }
-} 
+}

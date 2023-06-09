@@ -4,7 +4,7 @@
       <ul class="item-list">
         <li v-for="item in items" :key="item" class="item">
           <div class="image-container">
-            <img :src="getImageForItem(item)" alt="Item Image">
+            <!-- <img :src="getImageForItem(item)" alt="Item Image"> -->
           </div>
           <div class="name-container">
             <div class="item-name">{{ item }}</div>

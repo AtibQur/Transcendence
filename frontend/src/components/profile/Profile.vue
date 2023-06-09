@@ -1,4 +1,6 @@
 <template>
+    <h1> name:  "{{ username }}"</h1>
+
     <div class="ProfileContainer">
       <div class="ProfileData">
         <div class="ProfilePicture">
@@ -6,7 +8,7 @@
         </div>
         <div class="ProfileInfo">
           <div class="ProfileName">
-            <h1>John Doe</h1>
+            <!-- <h1> {{ username }} </h1> -->
           </div>
           <div class="ProfileStatus">
             <h3>status: Hardcoded Online</h3>
@@ -46,23 +48,37 @@
   </template>
   
   <script>
+  import axios from 'axios';
   import ProfileAchievements from "./ProfileAchievements.vue";
   import ProfileStats from "./ProfileStats.vue";
   import ProfileHistory from "./ProfileHistory.vue";
 
   export default {
-    name: "ProfilePage",
-    data() {
-      return {
-        selectedOption: "Achievements",
-      };
-    },
-    components: {
-        ProfileAchievements,
-        ProfileStats,
-        ProfileHistory
-    },
-  };
+  name: "ProfilePage",
+  data() {
+    return {
+      selectedOption: 'Achievements',
+      username: ''
+    };
+  },
+  components: {
+    ProfileAchievements,
+    ProfileStats,
+    ProfileHistory
+  },
+  mounted() {
+    const userId = '3';
+
+    axios.get(`http://localhost:3000/player/username/${userId}`)
+      .then(response => {
+        console.log('Response:', response.data);
+        this.username = response.data.username;
+      })
+      .catch(error => {
+        console.error('Error retrieving username:', error);
+      });
+  },
+};
   </script>
   
   <style>
@@ -73,8 +89,8 @@
   transform: translateY(-50%);
   width: calc(100% - 800px);
   min-width: 1500px;
-  height: 75vh; /* Adjust the height to fit 75% of the screen */
-  min-height: 1000px; /* Set a minimum height to ensure content visibility */
+  height: 75vh;
+  min-height: 1000px;
   display: flex;
   flex-direction: column;
   align-items: center;
