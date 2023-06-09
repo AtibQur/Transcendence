@@ -17,17 +17,17 @@
       <div class="ProfileOptions">
         <div class="ProfileOptionsContainer">
           <ul>
-            <li><router-link to="Settings">Settings</router-link></li>
-            <li><router-link to="/">Random</router-link></li>
-            <li><router-link to="/">Random</router-link></li>
-            <li><router-link to="/">Random</router-link></li>
+            <li @click="changeUsername()">Name change</li>
+            <li>Picture change</li>
+            <li>2FA Authorisation</li>
+            <li></li>
           </ul>
         </div>
       </div>
   
       <div class="ProfileStats">
         <select v-model="selectedOption">
-          <option value="Achievements">Achievements</option>
+          <option value="Achievements">{{ username }}'s Achievements</option>
           <option value="Stats">Stats</option>
           <option value="Match History">Match History</option>
         </select>
@@ -46,7 +46,7 @@
   </template>
   
   <script setup lang="ts">
-  import { onBeforeMount, ref, computed } from 'vue';
+  import { onBeforeMount, ref} from 'vue';
   import axiosInstance from '../../axiosConfig';
   import ProfileAchievements from "./ProfileAchievements.vue";
   import ProfileStats from "./ProfileStats.vue";
@@ -63,12 +63,26 @@
   } catch (error) {
     console.log("Error occured");
   }
-  });
+});
 
-  const fetchUsername = async (player_id: number) => {
-    const response = await axiosInstance.get('player/username/' + player_id.toString());
-    return response.data;
+const fetchUsername = async (player_id: number) => {
+  const response = await axiosInstance.get('player/username/' + player_id.toString());
+  return response.data;
+}
+
+const changeUsername = async () => {
+  const newUsername = prompt('Enter a new username');
+  if (newUsername) {
+    try {
+      const playerId = 3;
+      await axiosInstance.patch(`player/username/${playerId}`, { username: newUsername });
+      username.value = newUsername; // Update the local username value
+    } catch (error) {
+      console.log('Error occurred while updating username:', error);
+    }
   }
+};
+
   </script>
   
   <style>
@@ -94,6 +108,7 @@
     top: 10%;
     width: 20%;
     height: 50%;
+    margin-top: 10px;
     border: 1px solid black;
   }
   .ProfileData .ProfilePicture {
