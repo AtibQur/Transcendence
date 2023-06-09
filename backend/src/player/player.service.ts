@@ -186,7 +186,8 @@ export class PlayerService {
   async findPercentageWins(id: number) {
     try {
       const playerStats = await this.findOneStats(id);
-      return (playerStats.wins / playerStats.losses * 100);
+      const totalGames = playerStats.wins + playerStats.losses;
+      return (playerStats.wins / totalGames * 100);
     } catch (error) {
       console.error('Error occurred:', error);
     }
