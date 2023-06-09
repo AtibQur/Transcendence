@@ -11,32 +11,32 @@
 import { socket } from '../../socket';
 import { onBeforeMount, ref, computed } from 'vue'
 
-const props = defineProps({
-    channelId: {
-        type: Number,
-        required: true
-    }
-});
+// const props = defineProps({
+//     channelId: {
+//         type: Number,
+//         required: true
+//     }
+// });
 
-const channelmembers = ref({});
+// const channelmembers = ref({});
 
-onBeforeMount(() => {
+// onBeforeMount(() => {
 
-    // FIND ALL CHANNEL FOR PLAYER
-    socket.emit('findPlayerChannels', props.playerId, (response) => {
-        channels.value = response;
-    });
+//     // FIND ALL CHANNEL FOR PLAYER
+//     socket.emit('findPlayerChannels', props.playerId, (response) => {
+//         channels.value = response;
+//     });
 
-    //LISTEN IF A NEW CHANNEL IS ADDED
-    socket.on('newChannel', (payload: {channel_id: number}) => {
-        addChannel(payload.channel_id);
-    });
+//     //LISTEN IF A NEW CHANNEL IS ADDED
+//     socket.on('newChannel', (payload: {channel_id: number}) => {
+//         addChannel(payload.channel_id);
+//     });
 
-    // socket.on('leftChannel', (channel_id) => {
+//     // socket.on('leftChannel', (channel_id) => {
 
-    // });
+//     // });
 
-})
+// })
 
 </script>
 

@@ -7,7 +7,7 @@
         <div class="chat-start-page" v-else>
             <div class="left-side-bar">
                 <h3>Welcome {{ playerStore.getUsername }} {{ playerStore.getPlayerId }}!</h3>
-                <ChannelDisplay :playerId="playerStore.getPlayerId" @changeChannel='changeChannel'/>
+                <ChannelDisplay :playerId="playerId" @changeChannel='changeChannel'/>
                 <AddChannel :playerId="playerStore.getPlayerId"/>
                 <OnlinePlayers :playerId="playerStore.getPlayerId"/> 
             </div>
@@ -26,21 +26,21 @@
 
 <script setup lang="ts">
 import { socket } from '../../socket';
-import { onBeforeMount, ref } from 'vue';
+import { onBeforeMount, ref, computed } from 'vue';
 import AddPlayer from './AddPlayer.vue'
 import ChannelDisplay from './ChannelDisplay.vue'
 import AddChannel from './AddChannel.vue';
 import ChatBox from './ChatBox.vue';
 import AddMessage from './AddMessage.vue';
 import OnlinePlayers from './OnlinePlayers.vue';
-import ChannelmemberDisplay from './ChannelDisplay.vue';
+import ChannelmemberDisplay from './ChannelmemberDisplay.vue';
 import { usePlayerStore } from '@/stores/player';
 
 const playerStore = usePlayerStore();
 const logged = ref(false);
 const inChannel = ref(false);
 const username = ref('');
-const playerId = ref(-1);
+const playerId = computed(() => playerStore.getPlayerId);
 const channelId = ref(-1); //test
 
 // const logIn = (playerInfo: {username: string, playerId: number}) => {
