@@ -77,8 +77,12 @@ const changeUsername = async () => {
       const playerId = 3;
       const updatedUsername = await axiosInstance.patch(`player/username/${playerId}`, { username: newUsername });
       username.value = updatedUsername.data; // Update the local username value
+      if (newUsername != username.value) {
+        throw new Error("Username already exists");
+      }
     } catch (error) {
-      console.log('Error occurred while updating username:', error);
+      alert("Username already exists. Please choose a different username.");
+      console.log(error);
     }
   }
 };

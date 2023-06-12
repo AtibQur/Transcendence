@@ -208,9 +208,7 @@ export class PlayerService {
     }
     catch (error) {
       if (error.code === 'P2002') {
-        console.log('Username already taken');
-        const oldUsername = await this.findOneUsername(id);
-        return oldUsername;
+        return await this.findOneUsername(id);
     }
       console.error('Error occurred:', error);
     }
