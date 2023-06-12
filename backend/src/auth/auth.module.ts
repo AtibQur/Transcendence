@@ -12,6 +12,7 @@ import { PlayerService } from 'src/player/player.service';
     providers: [
     FortyTwoStrategy,
     SessionSerializer,
+    PlayerService,
     ],
     controllers: [AuthController],
     exports: [PassportModule],

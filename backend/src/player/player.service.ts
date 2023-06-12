@@ -164,6 +164,23 @@ export class PlayerService {
     }
   }
 
+  async findOnePlayerByUsername(id: number) {
+    try {
+      const selectedPlayer = await prisma.player.findUnique({
+        where: {
+          id: id,
+        },
+        select: {
+          username: true
+        }
+      });
+      return selectedPlayer;
+    }
+    catch (error) {
+      console.error('Error occurred:', error);
+    }
+  }
+
   // GET AVATAR
   async findOneAvatar(id: number) {
     try {

@@ -1,5 +1,5 @@
 import { Controller, Get, UseGuards } from '@nestjs/common';
-import { AuthGuard } from '@nestjs/passport';
+import { LocalAuthGuard } from './auth/local.authguard';
 
 @Controller()
 export class AppController {
@@ -10,7 +10,7 @@ export class AppController {
   }
 
   @Get('protected-route')
-  @UseGuards(AuthGuard('42'))
+  @UseGuards(LocalAuthGuard)
   getProtectedRoute(): string {
     return 'you have entered my king';
   }

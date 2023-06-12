@@ -1,5 +1,6 @@
 import { Controller, Get, Req, Res, Session, UseGuards } from '@nestjs/common';
-import { AuthGuard } from '@nestjs/passport';
+import { LocalAuthGuard } from './local.authguard';
+import { AuthenticatedGuard } from './local.authguard';
 import { CreatePlayerDto } from 'src/player/dto/create-player.dto';
 import { PlayerService } from 'src/player/player.service';
 import * as session from 'express-session';
@@ -11,21 +12,20 @@ const playerService = new PlayerService();
 
 @Controller('auth')
 export class AuthController {
+    @UseGuards(LocalAuthGuard)
     @Get('/42')
-    @UseGuards(AuthGuard('42'))
     async fortyTwoLogin() {
         return ('you have entered my king');
     }
 
+    @UseGuards(LocalAuthGuard)
     @Get('/42/callback')
-    @UseGuards(AuthGuard('42'))
     async fortyTwoCallback(@Req() req: any, @Res() res: any, @Session() session: Record<string, any>) {
         const createPlayerDto = new CreatePlayerDto();
         createPlayerDto.username = req.user.username;
         const playerId = await playerService.createPlayer(createPlayerDto);
 
-        console.log(playerId);
-        session.authenticated = true;
+        // session.authenticated = true;
         res.redirect('http://localhost:8080/Login?username=' + req.user.username);
     }
 
@@ -53,8 +53,6 @@ export class AuthController {
         var secret = speakeasy.generateSecret({ 
             name: 'trance',
         });
-        console.log(session);
-        console.log(session.id);
         qrCode.toDataURL(secret.otpauth_url, (err, data) => {
             if (err)
                 return res.send('Error occured');
@@ -78,5 +76,11 @@ export class AuthController {
             console.log('incorrect code');
             res.send('incorrect code');
         }
+    }
+
+    @UseGuards(AuthenticatedGuard)
+    @Get('status')
+    async GetAuthStatus(@Req() req: any) {
+        return(req.user);
     }
 }
