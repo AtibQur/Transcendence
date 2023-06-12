@@ -44,9 +44,13 @@ export class ChannelmemberService {
         where: {
           member_id: id
         },
-        select: {
-            channel_id: true
-        }
+        include: {
+            channel: {
+                select: {
+                    name: true
+                }
+            }
+        },
       });
   }
   
@@ -86,7 +90,7 @@ export class ChannelmemberService {
         return false;
 
     } catch (error) {
-        console.log('Error checking membersip of player: ', error);
+        console.log('Error checking membership of player: ', error);
     }
   }
 

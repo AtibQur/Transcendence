@@ -64,17 +64,25 @@ export class ChatGateway {
     async addMessage(
         @MessageBody() createChatmessageDto: CreateChatmessageDto
     ){
-        const chatmessage_id = await this.chatmessageService.createChatMessage(createChatmessageDto);
-        this.server.emit('chatmessage', chatmessage_id);
-        return chatmessage_id;
+        const chatmessage = await this.chatmessageService.createChatMessage(createChatmessageDto);
+        this.server.to(chatmessage.channel.name).emit('chatmessage', chatmessage);
+        return chatmessage;
     }
 
-    //CHECK CHANNELMEMBERSHIP OF PLAYER
-    @SubscribeMessage('checkMembership')
-    async checkMembership(
-        @MessageBody() payload: { playerId: number, channelId: number }
+    //JOIN ALL ROOMS OF PLAYER
+    @SubscribeMessage('joinRooms')
+    async joinRooms(
+        @MessageBody() player_id: number,
+        @ConnectedSocket() client: Socket
     ) {
-        return this.channelmemberService.checkMembership(payload.playerId, payload.channelId);
+        try {
+            const channels = await this.channelmemberService.findPlayerChannels(player_id);
+            channels.forEach(function(channel) {
+                client.join(channel.channel.name);
+              });
+        } catch (error) {
+            console.log('Error joining channels: ', error);
+        }
     }
 
     //FIND ALL ONLINE PLAYERS
@@ -88,7 +96,6 @@ export class ChatGateway {
     findPlayerChannels(
         @MessageBody() id: number
     ){
-        console.log(id);
         return this.channelmemberService.findPlayerChannels(id);
     }
 

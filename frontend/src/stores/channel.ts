@@ -1,15 +1,22 @@
-import Channel from '@/types/Channel';
-import { defineStore } from 'pinia'
+import { socket } from '@/socket';
+import { defineStore } from 'pinia';
 
 export const useChatStore = defineStore('channel', {
     state: () => ({
         //initialize
-        channels: [] as Channel[]
+        channels: [] ,
+        currentChannel: -1 as number
     }),
-    getters: {
+    // getters: {
 
-    },
+    // },
     actions: {
-
+        async loadChannels(id: number) {
+            //get and save channels
+            console.log(id);
+            const data = await socket.emit('findPlayerChannels', id);
+            console.log(data);
+            //join all channels
+        }
     },
 });

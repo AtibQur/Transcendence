@@ -26,7 +26,6 @@ const channelNames = ref<Record<number, string>>({}); // Hold the sender names
 
 onBeforeMount(async () => {
 
-    console.log('hello', props.playerId);
     // FIND ALL CHANNEL FOR PLAYER
     await socket.emit('findPlayerChannels', props.playerId, (response) => {
         channels.value = response;

@@ -61,6 +61,21 @@ export class ChannelService {
     }
   }
 
+//   async joinRooms(player_id: number) {
+//     try {
+//         const channels = await this.channelmemberService.findPlayerChannels(player_id);
+//         var channelNames = [];
+//         for (const obj of channels) {
+            
+//             channelNames.push(obj.channel.name);
+//         }
+//         console.log(channelNames);
+//     }
+//     catch (error) {
+//         console.error('Error joining rooms: ', error);
+//     }
+//   }
+
 //   async findAllChannelName(id: number) {
 //     try {
 //         const selectedChannel = await prisma.channel.findUnique({

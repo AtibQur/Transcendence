@@ -59,6 +59,7 @@ onBeforeMount(async () => {
 
     //ADD MESSAGE TO CURRENT MESSAGES
     socket.on('chatmessage', (message: Message) => {
+        console.log(message);
         addChatmessage(message);
     });
 
@@ -73,22 +74,10 @@ onBeforeMount(async () => {
 
 async function addChatmessage(message: Message) {
     try {
-        const isMember = await checkMembership(props.playerId, message.channel_id);
-        if (isMember) {
-            messages.value.push(message);
-        }
+        messages.value.push(message);
     } catch (error) {
         console.log('Error: adding message');
     }
-}
-
-//maybe make a composable of this?! used in multiple files
-async function checkMembership(playerId: number, channelId: number) {
-    return new Promise<boolean>((resolve) => {
-        socket.emit('checkMembership', {playerId, channelId}, (result: boolean) => {
-            resolve(result);
-        })
-    })
 }
 
 //FETCH NAME FROM DATABASE
