@@ -204,8 +204,14 @@ export class PlayerService {
           username: updatePlayerDto.username,
         },
       });
+      return updatePlayerDto.username;
     }
     catch (error) {
+      if (error.code === 'P2002') {
+        console.log('Username already taken');
+        const oldUsername = await this.findOneUsername(id);
+        return oldUsername;
+    }
       console.error('Error occurred:', error);
     }
   }

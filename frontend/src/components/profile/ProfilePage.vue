@@ -75,8 +75,8 @@ const changeUsername = async () => {
   if (newUsername) {
     try {
       const playerId = 3;
-      await axiosInstance.patch(`player/username/${playerId}`, { username: newUsername });
-      username.value = newUsername; // Update the local username value
+      const updatedUsername = await axiosInstance.patch(`player/username/${playerId}`, { username: newUsername });
+      username.value = updatedUsername.data; // Update the local username value
     } catch (error) {
       console.log('Error occurred while updating username:', error);
     }
