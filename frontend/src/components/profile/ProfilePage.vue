@@ -1,93 +1,195 @@
 <template>
-    <div class="ProfileContainer">
-      <div class="ProfileData">
-        <div class="ProfilePicture">
-          <img src="https://www.w3schools.com/howto/img_avatar.png" alt="Avatar" style="width:100%">
-        </div>
-        <div class="ProfileInfo">
-          <div class="ProfileName">
-            <h1> {{ username }} </h1>
-          </div>
-          <div class="ProfileStatus">
-            <h3>status: Hardcoded Online</h3>
-          </div>
-        </div>
+  <div class="ProfileContainer">
+    <div class="ProfileData">
+      <div class="ProfilePicture">
+        <img :src="profilePicture" alt="Avatar" style="width:100%">
       </div>
-  
-      <div class="ProfileOptions">
-        <div class="ProfileOptionsContainer">
-          <ul>
-            <li @click="changeUsername()">Name change</li>
-            <li>Picture change</li>
-            <li>2FA Authorisation</li>
-            <li></li>
-          </ul>
+      <div class="ProfileInfo">
+        <div class="ProfileName">
+          <h1>{{ username }}</h1>
         </div>
-      </div>
-  
-      <div class="ProfileStats">
-        <select v-model="selectedOption">
-          <option value="Achievements">{{ username }}'s Achievements</option>
-          <option value="Stats">Stats</option>
-          <option value="Match History">Match History</option>
-        </select>
-  
-        <div v-if="selectedOption === 'Achievements'" class="show">
-            <ProfileAchievements />
-        </div>
-        <div v-else-if="selectedOption === 'Stats'" class="show">
-            <ProfileStats />
-        </div>
-        <div v-else-if="selectedOption === 'Match History'" class="show">
-            <ProfileHistory />
+        <div class="ProfileStatus">
+          <h3>status: Hardcoded Online</h3>
         </div>
       </div>
     </div>
-  </template>
-  
-  <script setup lang="ts">
-  import { onBeforeMount, ref} from 'vue';
-  import axiosInstance from '../../axiosConfig';
-  import ProfileAchievements from "./ProfileAchievements.vue";
+
+    <div class="ProfileOptions">
+      <div class="ProfileOptionsContainer">
+        <ul>
+          <li @click="changeUsername">Name change</li>
+          <li @click="changeProfilePicture">Picture change</li>
+          <li>2FA Authorisation</li>
+          <li></li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="ProfileStats">
+      <select v-model="selectedOption">
+        <option value="Achievements">{{ username }}'s Achievements</option>
+        <option value="Stats">Stats</option>
+        <option value="Match History">Match History</option>
+      </select>
+
+      <div v-if="selectedOption === 'Achievements'" class="show">
+        <ProfileAchievements />
+      </div>
+      <div v-else-if="selectedOption === 'Stats'" class="show">
+        <ProfileStats />
+      </div>
+      <div v-else-if="selectedOption === 'Match History'" class="show">
+        <ProfileHistory />
+      </div>
+    </div>
+
+    <div v-if="showChangeNameModal" class="Modal" @click="closeModal">
+      <div class="ModalContent" @click.stop>
+        <h2>Name Change</h2>
+        <input
+          type="text"
+          v-model="newName"
+          placeholder="Enter a new name"
+          @keydown.enter="submitNameChange"
+        />
+        <div class="ModalButtons">
+          <button @click="cancelNameChange">Cancel</button>
+          <button @click="confirmNameChange">Save</button>
+        </div>
+      </div>
+    </div>
+
+    <div v-if="showChangePictureModal" class="Modal" @click="closeModal">
+      <div class="ModalContent" @click.stop>
+        <h2>Profile Picture Change</h2>
+        <input
+          type="file"
+          accept="image/*"
+          ref="profilePictureInput"
+          style="display: none"
+          @change="handlePictureChange"
+        />
+        <button @click="openPictureInput">Select Image</button>
+        <div class="ModalButtons">
+          <button @click="cancelPictureChange">Cancel</button>
+          <button @click="confirmPictureChange">Save</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</template>
+
+<script setup lang="ts">
+  import { onBeforeMount, ref } from 'vue';
   import ProfileStats from "./ProfileStats.vue";
+  import axiosInstance from '../../axiosConfig';
   import ProfileHistory from "./ProfileHistory.vue";
+  import ProfileAchievements from "./ProfileAchievements.vue";
 
   const username = ref("");
   const selectedOption = ref("Achievements");
+  const showChangeNameModal = ref(false);
+  const newName = ref('');
+  const profilePicture = ref("https://www.w3schools.com/howto/img_avatar.png");
+  const showChangePictureModal = ref(false);
+  const profilePictureInput = ref(null);
 
   onBeforeMount(async () => {
-  try {
-    const playerId = 3;
-    username.value = await fetchUsername(playerId);
-    console.log(username.value);
-  } catch (error) {
-    console.log("Error occured");
-  }
-});
-
-const fetchUsername = async (player_id: number) => {
-  const response = await axiosInstance.get('player/username/' + player_id.toString());
-  return response.data;
-}
-
-const changeUsername = async () => {
-  const newUsername = prompt('Enter a new username');
-  if (newUsername) {
     try {
-      const playerId = 3;
-      const updatedUsername = await axiosInstance.patch(`player/username/${playerId}`, { username: newUsername });
-      username.value = updatedUsername.data; // Update the local username value
-      if (newUsername != username.value) {
-        throw new Error("Username already exists");
-      }
+      const playerId = 4;
+      username.value = await fetchUsername(playerId);
+      console.log(username.value);
     } catch (error) {
-      alert("Username already exists. Please choose a different username.");
-      console.log(error);
+      console.log("Error occurred");
+    }
+  });
+
+  const fetchUsername = async (player_id: number) => {
+    const response = await axiosInstance.get('player/username/' + player_id.toString());
+    return response.data;
+  }
+
+  const changeUsername = () => {
+    showChangeNameModal.value = true;
+  };
+
+  const cancelNameChange = () => {
+    showChangeNameModal.value = false;
+    newName.value = '';
+  };
+
+  const confirmNameChange = async () => {
+    if (newName.value) {
+      try {
+        const playerId = 4;
+        await axiosInstance.patch(`player/username/${playerId}`, { username: newName.value });
+        username.value = newName.value; // Update the local username value
+      } catch (error) {
+        console.log('Error occurred while updating username:', error);
+      }
+    }
+    showChangeNameModal.value = false;
+    newName.value = '';
+  };
+
+  const changeProfilePicture = () => {
+    showChangePictureModal.value = true;
+  };
+
+  const openPictureInput = () => {
+    profilePictureInput.value.click();
+  };
+
+  const handlePictureChange = (event) => {
+    const file = event.target.files[0];
+    const reader = new FileReader();
+    reader.onload = () => {
+      profilePicture.value = reader.result;
+    };
+    reader.readAsDataURL(file);
+  };
+
+  const cancelPictureChange = () => {
+    profilePictureInput.value.value = '';
+    showChangePictureModal.value = false;
+  };
+
+  const confirmPictureChange = async () => {
+  if (profilePictureInput.value.files.length > 0) {
+    const file = profilePictureInput.value.files[0];
+    const formData = new FormData();
+    formData.append('avatar', file);
+
+    try {
+      const playerId = 4; // Replace with the actual player ID
+      await axiosInstance.patch(`player/avatar/${playerId}`, formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      });
+
+      // Update the local profile picture URL
+      profilePicture.value = URL.createObjectURL(file);
+    } catch (error) {
+      console.log('Error occurred while updating profile picture:', error);
     }
   }
+
+  showChangePictureModal.value = false;
 };
 
-  </script>
+  const closeModal = () => {
+    showChangeNameModal.value = false;
+    showChangePictureModal.value = false;
+    newName.value = '';
+  };
+
+  const submitNameChange = () => {
+    if (newName.value) {
+      confirmNameChange();
+    }
+  };
+</script>
   
   <style>
 .ProfileContainer {
@@ -113,7 +215,7 @@ const changeUsername = async () => {
     width: 20%;
     height: 50%;
     margin-top: 10px;
-    border: 1px solid black;
+    /* border: 1px solid black; */
   }
   .ProfileData .ProfilePicture {
     position: absolute;
@@ -122,7 +224,7 @@ const changeUsername = async () => {
     transform: translateX(-50%);
     width: 100%;
     height: 60%;
-    border: 1px solid black;
+    /* border: 1px solid black; */
   }
   .ProfileData .ProfilePicture img {
     position: absolute;
@@ -139,7 +241,7 @@ const changeUsername = async () => {
     top: 60%;
     width: 100%;
     height: 40%;
-    border: 1px solid black;
+    /* border: 1px solid black; */
   }
   
   .ProfileOptions {
@@ -148,7 +250,7 @@ const changeUsername = async () => {
     top: 65%;
     width: 25%;
     height: 30%;
-    border: 1px solid black;
+    /* border: 1px solid black; */
   }
   .ProfileOptions .ProfileOptionsContainer {
     position: absolute;
@@ -156,7 +258,7 @@ const changeUsername = async () => {
     top: 15%;
     width: 100%;
     height: 70%;
-    border: 1px solid black;
+    /* border: 1px solid black; */
   }
   .ProfileOptions .ProfileOptionsContainer ul {
     position: absolute;
@@ -165,18 +267,25 @@ const changeUsername = async () => {
     transform: translate(-50%, -50%);
     width: 100%;
     height: 75%;
-    border: 1px solid black;
+    /* border: 1px solid black; */
     list-style-type: none;
     margin: 0;
     padding: 0;
   }
   .ProfileOptions .ProfileOptionsContainer ul li {
-    width: 100%;
-    height: 25%;
-    font-size: 22px;
-    font-weight: 400;
-    text-align: left;
-  }
+  width: 100%;
+  height: 25%;
+  font-size: 22px;
+  font-weight: 400;
+  text-align: left;
+  cursor: pointer; /* Add cursor style to indicate interactivity */
+  transition: color 0.3s, background-color 0.3s; /* Add transition for smooth effect */
+}
+
+.ProfileOptions .ProfileOptionsContainer ul li:hover {
+  color: #1f6091; /* Change color on hover */
+}
+
   .ProfileOptions .ProfileOptionsContainer ul li a {
     color: #134279;
     font-family: JetBrains Mono;
@@ -215,5 +324,48 @@ const changeUsername = async () => {
   .ProfileStats > div.show {
     display: block;
   }
-  </style>
+  .Modal {
+  position: fixed;
+  z-index: 1;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
 
+.ModalContent {
+  background-color: aliceblue; 
+  padding: 20px;
+  border: 1px solid #888;
+  border-radius: 4px;
+  text-align: center;
+  width: 30%; /* Adjust the width as desired */
+}
+
+.ModalContent h2 {
+  margin-top: 0;
+}
+
+.ModalContent input {
+  width: 50%;
+  padding: 10px;
+  margin-bottom: 10px;
+}
+
+.ModalButtons {
+  display: flex;
+  justify-content: center;
+}
+
+.ModalButtons button {
+  margin: 0 5px;
+}
+.ModalContent button:hover {
+  color: #fefefe; /* Change color on hover */
+  background-color: #697b8e;
+}
+  </style>

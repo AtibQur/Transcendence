@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, UseInterceptors, UploadedFile } from '@nestjs/common';
 import { PlayerService } from './player.service';
 import { CreatePlayerDto } from './dto/create-player.dto';
 import { UpdatePlayerDto } from './dto/update-player.dto';
@@ -48,7 +48,7 @@ export class PlayerController {
   findOneAvatar(@Param('id') id: string) {
     return this.playerService.findOneAvatar(+id);
   }
-  
+
   // GET PERCENTAGE WINS
   @Get('percentagewins/:id')
   findPercentageWins(@Param('id') id: string) {
@@ -58,25 +58,25 @@ export class PlayerController {
   // CHANGE USERNAME
   @Patch('username/:id')
   updateUsername(@Param('id') id: string, @Body() updatePlayerDto: UpdatePlayerDto) {
-      return this.playerService.updateUsername(+id, updatePlayerDto);
+    return this.playerService.updateUsername(+id, updatePlayerDto);
   }
 
   // +1 WINS
   @Patch('wins/:id')
   updateWins(@Param('id') id: string) {
-      return this.playerService.updateWins(+id);
+    return this.playerService.updateWins(+id);
   }
 
   // +1 LOSSES
   @Patch('losses/:id')
   updateLosses(@Param('id') id: string) {
-      return this.playerService.updateLosses(+id);
+    return this.playerService.updateLosses(+id);
   }
 
   // CHANGE STATUS
   @Patch('status/:id')
   updateStatus(@Param('id') id: string, @Body() updatePlayerDto: UpdatePlayerDto) {
-      return this.playerService.updateStatus(+id, updatePlayerDto);
+    return this.playerService.updateStatus(+id, updatePlayerDto);
   }
 
   // DELETE A PLAYER
