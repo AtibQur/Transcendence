@@ -66,6 +66,23 @@ export class ChannelmemberService {
       });
   }
 
+  // FIND ALL CHANNELMEMBERS OF CHANNEL
+  findAllChannelmembersNames(channel_id: number) {
+   
+    return prisma.channelMember.findMany({
+        where: {
+            channel_id: channel_id
+        },
+        include: {
+            member: {
+              select: {
+                username: true
+              }
+            }
+        }
+      });
+  }
+
   findOne(id: number) {
     return `This action returns a #${id} channelmember`;
   }

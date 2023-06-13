@@ -31,9 +31,9 @@ onBeforeMount(async () => {
         channels.value = response;
     });
 
-    //LISTEN IF A NEW CHANNEL IS ADDED
+    // LISTEN IF A NEW CHANNEL IS ADDED
     socket.on('newChannel', (payload: {channel_id: number}) => {
-        addChannel(payload.channel_id);
+        channels.value.push({channel_id: payload.channel_id})
     });
 
     // socket.on('leftChannel', (channel_id) => {
@@ -41,26 +41,6 @@ onBeforeMount(async () => {
     // });
 
 })
-
-async function addChannel(channelId: number) {
-    try {
-        const isMember = await checkMembership(props.playerId, channelId);
-        if (isMember) {
-            console.log(`player ${props.playerId} is member of ${channelId}`)
-            channels.value.push({channel_id: channelId});
-        }
-    } catch (error) {
-        console.log('Error: adding channel');
-    }
-}
-
-async function checkMembership(playerId: number, channelId: number) {
-    return new Promise<boolean>((resolve) => {
-        socket.emit('checkMembership', {playerId, channelId}, (result: boolean) => {
-            resolve(result);
-        })
-    })
-}
 
 // EVENT TO CHANGE CURRENT CHANNEL
 const changeChannel = (channel_id: number) => {

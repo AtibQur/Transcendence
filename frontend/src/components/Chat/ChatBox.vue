@@ -59,7 +59,7 @@ onBeforeMount(async () => {
 
     //ADD MESSAGE TO CURRENT MESSAGES
     socket.on('chatmessage', (message: Message) => {
-        console.log(message);
+        console.log(message.sender.username);
         addChatmessage(message);
     });
 

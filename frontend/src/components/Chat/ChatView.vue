@@ -7,7 +7,7 @@
         <div class="chat-start-page" v-else>
             <div class="left-side-bar">
                 <h3>Welcome {{ playerStore.getUsername }} {{ playerStore.getPlayerId }}!</h3>
-                <ChannelDisplay :playerId="playerId" @changeChannel='changeChannel'/>
+                <ChannelDisplay :playerId="playerStore.getPlayerId" @changeChannel='changeChannel'/>
                 <AddChannel :playerId="playerStore.getPlayerId"/>
                 <OnlinePlayers :playerId="playerStore.getPlayerId"/> 
             </div>
@@ -17,16 +17,17 @@
                     <AddMessage :senderId="playerStore.getPlayerId" :channelId="channelId"/>
                 </div>
             </div>
-            <div class="right-side-bar">
-                <ChannelmemberDisplay/>
+            <div class="right-side-bar" v-if="inChannel">
+                <ChannelmemberDisplay :channelId="channelId" />
+                <!-- if player is admin; how to retrieve this from the back end? -->
+                <AddChannelmember :channelId="channelId"/>
             </div>
         </div>
     </div>
 </template>
 
 <script setup lang="ts">
-import { socket } from '../../socket';
-import { onBeforeMount, ref, computed } from 'vue';
+import { ref, computed } from 'vue';
 import AddPlayer from './AddPlayer.vue'
 import ChannelDisplay from './ChannelDisplay.vue'
 import AddChannel from './AddChannel.vue';
@@ -34,23 +35,18 @@ import ChatBox from './ChatBox.vue';
 import AddMessage from './AddMessage.vue';
 import OnlinePlayers from './OnlinePlayers.vue';
 import ChannelmemberDisplay from './ChannelmemberDisplay.vue';
+import AddChannelmember from './AddChannelmember.vue';
 import { usePlayerStore } from '@/stores/player';
 
 const playerStore = usePlayerStore();
 const logged = ref(false);
 const inChannel = ref(false);
 const username = ref('');
-const playerId = computed(() => playerStore.getPlayerId);
 const channelId = ref(-1); //test
-
-// const logIn = (playerInfo: {username: string, playerId: number}) => {
-//     username.value = playerInfo.username;
-//     playerId.value = playerInfo.playerId;
-//     logged.value = true;
-// }
 
 const changeChannel = (channel_id: number) => {
     channelId.value = channel_id;
+    console.log(channelId.value);
     inChannel.value = true;
 }
 

@@ -104,9 +104,31 @@ export class ChatGateway {
     async findOneChannelName (
         @MessageBody() channelId: number
     ){
-        const channel = await this.channelService.findOneChannel(channelId);
-        // console.log(channel);
-        return channel.name;
+        try {
+            const channel = await this.channelService.findOneChannel(channelId);
+            return channel.name;
+        } catch (error) {
+            console.log('Error finding channel name: ', error);
+        }
+    }
+
+    // FIND ALL MEMBERS OF CHANNEL
+    @SubscribeMessage('findAllChannelmembersNames')
+    async findAllChannelmembers (
+        @MessageBody() channelId: number
+    ) {
+        try {
+            const channelmembers = await this.channelmemberService.findAllChannelmembersNames(channelId);
+            const names = [];
+
+            channelmembers.forEach(function(channelmember) {
+                names.push(channelmember.member.username);
+              });
+            
+            return names;
+        } catch (error) {
+            console.log('Error finding channel members: ', error);
+        }
     }
 
     //FIND ALL CHANNEL MESSAGES
