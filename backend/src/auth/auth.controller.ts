@@ -43,20 +43,23 @@ export class AuthController {
         req.logout();
         res.redirect('http://localhost:3000/');
     }
-
+    
+    @UseGuards(AuthenticatedGuard)
     @Get('2fa')
     async twoFactorAuth(@Req() req: any, @Res() res: any, @Session() session: Record<string, any>) {
         var secret = speakeasy.generateSecret({ 
             name: 'trance',
         });
-        req.session.passport.user.tfasecret = secret.base32;
+        // // req.session.passport.user.tfasecret = secret.base32;
+        // console.log(req.session.passport.user);
         qrCode.toDataURL(secret.otpauth_url, (err, data) => {
             if (err)
                 return res.send('Error occured');
             res.send(data);
         });
     }
-
+    
+    // @UseGuards(AuthenticatedGuard)
     @Get('2fa/verify')
     async twoFactorAuthVerify(@Req() req: any, @Res() res: any, @Session() session: Record<string, any>) {
         const token = req.query.token;
