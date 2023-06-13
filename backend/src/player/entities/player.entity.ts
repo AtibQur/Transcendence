@@ -3,4 +3,6 @@ export class Player {
     username: string;
     intra_username: string;
     status: string;
+    tfasecret: string;
+    tfatoken: string;
 }

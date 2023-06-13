@@ -2,6 +2,7 @@ import { PassportSerializer } from '@nestjs/passport';
 import { Player } from 'src/player/entities/player.entity';
 import { PlayerService } from 'src/player/player.service';
 import { Injectable } from '@nestjs/common';
+import { CreatePlayerDto } from 'src/player/dto/create-player.dto';
 
 @Injectable()
 export class SessionSerializer extends PassportSerializer {
@@ -9,15 +10,19 @@ export class SessionSerializer extends PassportSerializer {
         super();
       }
     
-    serializeUser(player: Player, done: (err: Error, player: Player) => void) {
+    async serializeUser(player: Player, done: (err: Error, player: Player) => void) {
         console.log('serializeUser');
-        player.id = 1;
+        const createPlayerDto = new CreatePlayerDto();
+        createPlayerDto.username = player.username;
+        const playerId = await this.playerService.createPlayer(createPlayerDto);
+        player.id = playerId;
+        player.intra_username = player.username;
+        player.status = 'online';
         done(null, player);
     }
 
     async deserializeUser(player: Player, done: (err, playerDB: Player) => void) {
-        console.log('deserializeUser')
-        console.log(player.id);
+        console.log('deserializeUser');
         const playerDB = await this.playerService.findOnePlayerByUsername(player.id) as Player;
         return playerDB ? done(null, playerDB) : done(null, null)
     }

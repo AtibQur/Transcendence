@@ -21,11 +21,7 @@ export class AuthController {
     @UseGuards(LocalAuthGuard)
     @Get('/42/callback')
     async fortyTwoCallback(@Req() req: any, @Res() res: any, @Session() session: Record<string, any>) {
-        const createPlayerDto = new CreatePlayerDto();
-        createPlayerDto.username = req.user.username;
-        const playerId = await playerService.createPlayer(createPlayerDto);
-
-        // session.authenticated = true;
+        session.authenticated = true;
         res.redirect('http://localhost:8080/Login?username=' + req.user.username);
     }
 
@@ -53,6 +49,7 @@ export class AuthController {
         var secret = speakeasy.generateSecret({ 
             name: 'trance',
         });
+        req.session.passport.user.tfasecret = secret.base32;
         qrCode.toDataURL(secret.otpauth_url, (err, data) => {
             if (err)
                 return res.send('Error occured');
@@ -65,7 +62,7 @@ export class AuthController {
         const token = req.query.token;
         const secret = req.query.secret;
         const verified = speakeasy.totp.verify({
-            secret: secret,
+            secret: req.session.passport.user.tfasecret,
             encoding: 'base32',
             token: token,
         });
@@ -81,6 +78,7 @@ export class AuthController {
     @UseGuards(AuthenticatedGuard)
     @Get('status')
     async GetAuthStatus(@Req() req: any) {
-        return(req.user);
+        return(req.session.passport.user.intra_username);
+        // return(req);
     }
 }
