@@ -2,6 +2,8 @@ import { Controller, Get, Post, Body, Patch, Param, Delete, UseInterceptors, Upl
 import { PlayerService } from './player.service';
 import { CreatePlayerDto } from './dto/create-player.dto';
 import { UpdatePlayerDto } from './dto/update-player.dto';
+import { UploadAvatarDto } from './dto/upload-avatar.dto';
+import { FileInterceptor } from '@nestjs/platform-express';
 
 @Controller('player')
 export class PlayerController {
@@ -11,6 +13,32 @@ export class PlayerController {
   @Post('create')
   create(@Body() createPlayerDto: CreatePlayerDto) {
     return this.playerService.createPlayer(createPlayerDto);
+  }
+
+  // UPLOAD AN AVATAR
+  @Post('avatar/upload/:id')
+  test(){
+    return("test");
+  }
+
+
+  // @Post('avatar/upload/:id')
+  // @UseInterceptors(FileInterceptor('avatar')) {
+  //   uploadAvatar(@Param('id') id: string, @UploadedFile() File: Express.Multer.File) {
+  //     return this.playerService.uploadAvatar(+id, Express.Multer.File)
+  //   }
+  // }
+
+  @Post('avatar/upload/:id')
+  @UseInterceptors(FileInterceptor('avatar'))
+  async uploadAvatar(@Param('id') id: number, @UploadedFile() file: Express.Multer.File) {
+    try {
+      console.log(file)
+      const avatar = await this.playerService.uploadAvatar(id, file);
+      return avatar;
+    } catch (error) {
+      console.error(error);
+    }
   }
 
   // GET ALL PLAYER STATS (FOR LEADERBOARD)

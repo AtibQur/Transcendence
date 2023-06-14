@@ -19,6 +19,7 @@
         <ul>
           <li @click="changeUsernameModal">Name change</li>
           <li @click="changeProfilePicture">Picture change</li>
+          <avatar-upload></avatar-upload>
           <li>2FA Authorisation</li>
           <li></li>
         </ul>
@@ -62,7 +63,10 @@
     <div v-if="showChangePictureModal" class="Modal" @click="closeModal">
       <div class="ModalContent" @click.stop>
         <h2>Profile Picture Change</h2>
-        <input
+        <div v-if="showChangePictureModal" class="show">
+          <ProfileAvatar />
+        </div>
+        <!-- <input
           type="file"
           accept="image/*"
           ref="profilePictureInput"
@@ -73,7 +77,7 @@
         <div class="ModalButtons">
           <button @click="cancelPictureChange">Cancel</button>
           <button @click="confirmPictureChange">Save</button>
-        </div>
+        </div> -->
       </div>
     </div>
   </div>
@@ -85,6 +89,7 @@
   import axiosInstance from '../../axiosConfig';
   import ProfileHistory from "./ProfileHistory.vue";
   import ProfileAchievements from "./ProfileAchievements.vue";
+  import ProfileAvatar from './ProfileAvatar.vue';
 
   const username = ref("");
   const selectedOption = ref("Achievements");
