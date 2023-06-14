@@ -73,6 +73,7 @@ export class PlayerService {
 
       } catch (error) {
         console.error('Error searching for user:', error);
+        return null;
       }
   }
 
@@ -158,6 +159,23 @@ export class PlayerService {
         }
       });
       return selectedPlayer.username;
+    }
+    catch (error) {
+      console.error('Error occurred:', error);
+    }
+  }
+
+  async findOneIntraUsername(id: number) {
+    try {
+      const selectedPlayer = await prisma.player.findUnique({
+        where: {
+          id: id,
+        },
+        select: {
+          intra_username: true
+        }
+      });
+      return selectedPlayer.intra_username;
     }
     catch (error) {
       console.error('Error occurred:', error);

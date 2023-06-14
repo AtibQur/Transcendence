@@ -28,9 +28,12 @@ export class ChannelmemberService {
         data,
       });
   
-      return `This action adds a new channelmember: ${createChannelmemberDto.member_id}`;
+      return 'Player is added to channel';
     } catch (error) {
-      console.error('Error occurred:', error);
+        if (error.code === 'P2002') {
+            return 'Player is already member of this channel';
+        }
+       console.error('Error occurred:', error);
     }
   }
 
@@ -98,11 +101,13 @@ export class ChannelmemberService {
             where: {
                 member_id: playerId,
                 channel_id: channelId
+            },
+            select: {
+                is_admin: true
             }
         })
 
-        console.log(selectedChannelmember.is_admin);
-        return selectedChannelmember.is_admin
+        return selectedChannelmember[0].is_admin;
     } catch (error) {
         console.log('Error checking if channelmember is admin: ', error);
     }

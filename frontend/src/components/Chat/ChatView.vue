@@ -19,8 +19,9 @@
             </div>
             <div class="right-side-bar" v-if="inChannel">
                 <ChannelmemberDisplay :channelId="channelId" />
-                <!-- if player is admin; how to retrieve this from the back end? -->
-                <AddChannelmember :channelId="channelId"/>
+                <div v-if="isAdmin">
+                    <AddChannelmember :channelId="channelId"/>
+                </div>
             </div>
         </div>
     </div>
@@ -46,15 +47,14 @@ const isAdmin = ref(false);
 const username = ref('');
 const channelId = ref(-1); //test
 
-const changeChannel = (channel_id: number) => {
+const changeChannel = async (channel_id: number) => {
     channelId.value = channel_id;
     inChannel.value = true;
-    isAdmin.value = fetchIsAdmin(playerStore.getPlayerId, channel_id);
+    isAdmin.value = await fetchIsAdmin(playerStore.getPlayerId, channel_id);
 }
 
 const fetchIsAdmin = async (player_id: number, channel_id: number) => {
     const response = await axiosInstance.get('channelmember/admin/' + player_id.toString() + '/' + channel_id.toString());
-    console.log(response.data);
     return response.data;
 }
 

@@ -12,6 +12,7 @@ import { ChannelmemberService } from 'src/channelmember/channelmember.service';
 import { ChatmessageService } from 'src/chatmessage/chatmessage.service';
 import { CreateChatmessageDto } from 'src/chatmessage/dto/create-chatmessage.dto';
 import { CreateChannelDto } from 'src/channel/dto/create-channel.dto';
+import { Channel } from 'src/channel/entities/channel.entity';
 
 @WebSocketGateway({
 	cors: {
@@ -39,24 +40,20 @@ export class ChatGateway {
       this.logger.log(`client disconnected ${client.id}`)
     }
 
-    // //ADD PLAYER
-    // @SubscribeMessage('addPlayer')
-    // async addPlayer(
-    //     @MessageBody() createPlayerDto: CreatePlayerDto
-    // ){
-    //     const player_id = await this.playerService.createPlayer(createPlayerDto);
-    //     this.server.emit('player', player_id);
-    //     return player_id;
-    // }
-
     //ADD MESSAGE
     @SubscribeMessage('addChannel')
     async addChannel(
-        @MessageBody() createChannelDto: CreateChannelDto
+        @MessageBody() createChannelDto: CreateChannelDto,
+        @ConnectedSocket() client: Socket
     ){
-        const channel_id = await this.channelService.createChannel(createChannelDto);
-        this.server.emit('newChannel', { channel_id: channel_id } );
-        return channel_id;
+        try {
+            const channel_id = await this.channelService.createChannel(createChannelDto);
+            client.join(createChannelDto.name);
+            this.server.emit('newChannel', { channel_id: channel_id } );
+            return channel_id;
+        } catch (error) {
+            console.log('Error creating channel: ', error);
+        }
     }
 
     //ADD MESSAGE
@@ -67,6 +64,22 @@ export class ChatGateway {
         const chatmessage = await this.chatmessageService.createChatMessage(createChatmessageDto);
         this.server.to(chatmessage.channel.name).emit('chatmessage', chatmessage);
         return chatmessage;
+    }
+
+    //ADD CHANNELMEMBER
+    @SubscribeMessage('addChannelmember')
+    async addChannelmember(
+        @MessageBody() payload: {channelmember_name: string, channel_id: number}
+    ) {
+        try {
+            const player_id = await this.playerService.findIdByUsername(payload.channelmember_name);
+            if (!player_id)
+                throw new Error;
+            return this.channelmemberService.createChannelmember({ member_id: +player_id, channel_id: +payload.channel_id, is_admin: false, is_muted: false, is_banned: false });
+        } catch (error) {
+            console.log('Error adding channelmember: ', error);
+            return 'Player does not exist';
+        }
     }
 
     //JOIN ALL ROOMS OF PLAYER
@@ -80,6 +93,8 @@ export class ChatGateway {
             channels.forEach(function(channel) {
                 client.join(channel.channel.name);
               });
+            const intra_username = await this.playerService.findOneIntraUsername(player_id);
+            client.join(intra_username);
         } catch (error) {
             console.log('Error joining channels: ', error);
         }
@@ -146,23 +161,5 @@ export class ChatGateway {
     ){
         return this.playerService.findOneUsername(id);
     }
-
-    // @SubscribeMessage('findAllChannelMessages')
-    // findAllChannelMessages(
-    //     @MessageBody() payload: { channelName: string}
-    // ){
-    //     return this.messageService.findAllChannelMessages(payload.channelName);
-    // }
-
-    // @SubscribeMessage('join')
-    // joinChannel(
-    //     @MessageBody() payload: { playerName: string, channelName: string},
-    //     @ConnectedSocket() client: Socket
-    // ){
-    //     client.join(payload.channelName);
-    //     console.log(payload.playerName, ' joins ', payload.channelName);
-    //     return true;
-    //     // client.broadcast.emit('userJoined', payload.playerName);
-    // }
 }
 
