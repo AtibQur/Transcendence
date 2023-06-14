@@ -4,16 +4,13 @@
     <div>
         <div>
             Your 2FA code is:
+            <ImageComponent />
         </div>
-        <ImageComponent />
         <form>
             <label for="digitInput">Enter your verification code: </label>
             <input type="number" id="digitInput" name="digitInput" maxlength="6" minlength="6">
             <handleSubmit />
         </form>
-        <div>
-            user: {{ user }}
-        </div>
     </div>
 </template>
 

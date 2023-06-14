@@ -31,30 +31,22 @@ export class AuthController {
         console.log(session.id);
     }
 
-    @Get('FetchUser')
-    async FetchUser(@Req() req: any) {
-        if (!req.user)
-            return 'Codammer';
-        return req.user.username;
-    }
-
     @Get('/logout')
     async fortyTwoLogout(@Req() req: any, @Res() res: any) {
         req.logout();
         res.redirect('http://localhost:3000/');
     }
     
-    @UseGuards(AuthenticatedGuard)
+    // @UseGuards(AuthenticatedGuard)
     @Get('2fa')
-    async twoFactorAuth(@Req() req: any, @Res() res: any, @Session() session: Record<string, any>) {
+    async twoFactorAuth(@Req() req: any, @Res() res: any) {
         var secret = speakeasy.generateSecret({ 
             name: 'trance',
         });
-        // // req.session.passport.user.tfasecret = secret.base32;
-        // console.log(req.session.passport.user);
+        console.log(req.session.passport.user);
         qrCode.toDataURL(secret.otpauth_url, (err, data) => {
             if (err)
-                return res.send('Error occured');
+            return res.send('Error occured');
             res.send(data);
         });
     }
@@ -82,6 +74,11 @@ export class AuthController {
     @Get('status')
     async GetAuthStatus(@Req() req: any) {
         return(req.session.passport.user.intra_username);
-        // return(req);
+    }
+
+    @UseGuards(AuthenticatedGuard)
+    @Get('id')
+    async GetAuthId(@Req() req: any) {
+        return(req.session.passport.user.id);
     }
 }
