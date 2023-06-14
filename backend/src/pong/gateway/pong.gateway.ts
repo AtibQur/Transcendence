@@ -23,4 +23,12 @@ export class PongGateway {
 		console.log(data);
 		this.server.emit('state', data);
 	}
+
+	@SubscribeMessage('joinMatchmaking')
+	handleMatchmaking(
+		@ConnectedSocket() client: Socket,
+		@MessageBody() id: number): void {
+		console.log(id);
+		console.log('joined waiting room');
+	}
 }

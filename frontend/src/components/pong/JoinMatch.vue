@@ -12,19 +12,19 @@ import { defineComponent } from 'vue'
 export default defineComponent({
 	name: "JoinMatch",
 	components: {  },
-// data() {
-	// return {
-	// },
-// },
+data() {
+	return {
+		id: 1,
+	};
+},
 mounted() {
-		socket.on('connect', () => console.log('Socket Connected!'));
-		socket.on('state', (data) => {
-			console.log(data)
-		})
-		if (!socket) {
-			console.log('Socket not connected')
-			return;
-		}
+	console.log('hoi');
+	socket.on('connect', () => console.log('Socket Connected!'));
+	if (!socket) {
+		console.log('Socket not connected')
+		return;
+	}
+	socket.emit('joinMatchmaking', 1);
 		// window.addEventListener('keyup', this.keyUp);
 		// window.addEventListener('keydown', this.keyDown);
 		// setInterval(this.movePaddle, 1);

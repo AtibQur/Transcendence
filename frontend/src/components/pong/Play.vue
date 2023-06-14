@@ -9,25 +9,24 @@
 				<button class="start-button" v-if="!startMatch" @click="joinGame">Join Game</button>
 			</div>
 			<div v-if="showDifficulty">
-				<!-- <button class="start-button" v-if="!startSolo" @click="startGame">Solo Game</button> -->
 				<button class="start-button" v-if="!startSolo" @click="selectDifficulty('easy')">Easy</button>
 				<button class="start-button" v-if="!startSolo" @click="selectDifficulty('medium')">Medium</button>
 				<button class="start-button" v-if="!startSolo" @click="selectDifficulty('hard')">Hard</button>
 			</div>
 		</div>
 	</div>
-	<JoinMatch v-if="startMatch" />
+	<MatchMaking v-if="startMatch" />
 	<SoloMatch v-if="startSolo" :selectedDifficulty="selectedDifficulty"/>
 </template>
 
 <script lang="ts">
 import SoloMatch from './SoloMatch.vue'
-import JoinMatch from './JoinMatch.vue'
+import MatchMaking from './MatchMaking.vue'
 import { defineComponent } from 'vue'
 
 export default defineComponent({
 	name: "PlayGame",
-	components: {SoloMatch, JoinMatch},
+	components: {SoloMatch, MatchMaking},
 data() {
 	return {
 			showDifficulty: false,

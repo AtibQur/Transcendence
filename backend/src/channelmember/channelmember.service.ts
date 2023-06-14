@@ -39,7 +39,7 @@ export class ChannelmemberService {
   }
   
   // FIND ALL CHANNELS OF PLAYER
-  async findAllChannels(id: number) {
+  async findPlayerChannels(id: number) {
     return prisma.channelMember.findMany({
         where: {
           member_id: id
@@ -68,6 +68,26 @@ export class ChannelmemberService {
 
   update(id: number, updateChannelmemberDto: UpdateChannelmemberDto) {
     return `This action updates a #${id} channelmember`;
+  }
+
+  // CHECK MEMBERSHIP OF PLAYER
+  async checkMembership(playerId: number, channelId: number) {
+    try {
+        const selectedChannel = await prisma.channelMember.findMany({
+            where: {
+                member_id: playerId,
+                channel_id: channelId
+            }
+        })
+
+        if (selectedChannel.length !== 0) {
+            return true;
+        }
+        return false;
+
+    } catch (error) {
+        console.log('Error checking membersip of player: ', error);
+    }
   }
 
   // DELETE A CHANNELMEMBER

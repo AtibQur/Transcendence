@@ -13,8 +13,8 @@ export class ChatmessageController {
   }
 
   // GET ALL CHAT MESSAGES WITHIN ONE CHANNEL
-  @Get(':channel_id')
-  findChannelMsgs(@Param('channel_id') channel_id: string) {
-    return this.chatmessageService.findChannelMsgs(+channel_id);
-  }
+//   @Get(':channel_id')
+//   findChannelMsgs(@Param('channel_id') channel_id: string) {
+//     return this.chatmessageService.findChannelMsgs(+channel_id);
+//   }
 }

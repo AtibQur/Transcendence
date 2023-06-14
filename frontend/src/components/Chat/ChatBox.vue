@@ -1,141 +1,129 @@
 <template>
-    <div class="chat">
-        <div v-if="isChannel">
-            <div class="chat-box">
-                <h2> {{ activeChannel }} </h2>
-                <ul id="chatMessages">
-                <!-- Chat messages will be dynamically added here -->
-                </ul>
-            </div>
+    <h2> Chat: {{ channelName }} </h2>
+    <div>
+        <div v-for="message in messages" :key="message.id">
+            {{ getSenderName(message.sender_id) }}: {{ message.content }}
         </div>
     </div>
   </template>
 
 <script setup lang="ts">
-import { io } from 'socket.io-client';
-import { onBeforeMount, ref, setBlockTracking } from 'vue'
+import { socket } from '@/socket';
+import { onBeforeMount, onUpdated, ref, computed, watch} from 'vue'
+import Message from '@/types/Message';
 
-interface Player {
-    username: string
-}
+const props = defineProps({
+    playerId: {
+        type: Number,
+        required: true
+    },
+    channelId: {
+        type: Number,
+        required: true
+    }
+});
 
-interface Channel {
-    name: string
-}
-
-interface Message {
-    sender: string;
-    channel: string;
-    text: string;
-}
-
-const socket = io('http://localhost:3000'); //connect socket to backend
-
-const logged = ref(false);
-const name = ref('');
-const content = ref('');
-const onlinePlayers = ref<Player[]>([]);
-const channels = ref<Channel[]>([]);
-const activeChannel = ref('');
-const isChannel = ref(false);
-
-const chat = {
-    channel1: [],
-    channel2: [],
-    channel3: []
-}
-
+const channelName = ref('');
 const messages = ref<Message[]>([]);
+const senderNames = ref<Record<number, string>>({}); // Hold the sender names
+const currentChannelId = ref(props.channelId);
 
-onBeforeMount(() => {
-    socket.emit('findAllOnlinePlayers', {}, (response: Player[]) => {
-        onlinePlayers.value = response;
+onBeforeMount(async () => {
+    
+    
+    // FIND CHANNEL MESSAGES
+    const fetchChatMessages = async (channelId) => {
+        socket.emit('findAllChannelMessages', channelId, (response: Message[]) => {
+            try {
+                messages.value = response;
+            } catch (e) {
+                console.log('Error: fetching messages');
+            }
+        });
+    };
+
+    //FIND CHANNEL NAME
+    const fetchChannelName = async (channelId: number) => {
+        socket.emit('findOneChannelName', props.channelId, (name: string) => {
+            try {
+                channelName.value = name;
+            } catch (e) {
+                console.log('Error: fetching channel name');
+            }
+        });
+    };
+
+    await fetchChatMessages(currentChannelId.value);
+    await fetchChannelName(currentChannelId.value);
+
+
+    //ADD MESSAGE TO CURRENT MESSAGES
+    socket.on('chatmessage', (message: Message) => {
+        addChatmessage(message);
     });
 
-    socket.emit('findAllChannels', {}, (response: Channel[]) => {
-        channels.value = response;
-    });
-
-    // socket.emit('findAllChannelMessages', { channelName: activeChannel.value }, (response: Message[]) => {
-    //     chat[activeChannel.value].push = response;
-    // })
-
-    socket.on('player', (player) => {
-        onlinePlayers.value.push(player);
-    })
-
-    socket.on('message', (message) => {
-        messages.value.push(message);
+    //TRACK WHETHER CHANNEL_ID CHANGES
+    watch(() => props.channelId, async (newChannelId) => {
+        currentChannelId.value = newChannelId;
+        await fetchChatMessages(newChannelId);
+        await fetchChannelName(currentChannelId.value);
     });
 
 });
 
-const addPlayer = () => {
-    socket.emit('addPlayer', { username: name.value }, () => {
-        logged.value = true;
+async function addChatmessage(message: Message) {
+    try {
+        const isMember = await checkMembership(props.playerId, message.channel_id);
+        if (isMember) {
+            messages.value.push(message);
+        }
+    } catch (error) {
+        console.log('Error: adding message');
+    }
+}
+
+//maybe make a composable of this?! used in multiple files
+async function checkMembership(playerId: number, channelId: number) {
+    return new Promise<boolean>((resolve) => {
+        socket.emit('checkMembership', {playerId, channelId}, (result: boolean) => {
+            resolve(result);
+        })
     })
 }
 
-const changeChannel = (channel_name: string) => {
-    socket.emit('join', { playerName: name.value, channelName: channel_name}, () => {
-        isChannel.value = true;
-        activeChannel.value = channel_name;
-        console.log('hello');
-    })
-}
+//FETCH NAME FROM DATABASE
+const fetchSenderName = async (sender_id: number) => {
+    return new Promise<string>((resolve) => {
+        socket.emit('findUsername', sender_id, (sender_name: string) => {
+            resolve(sender_name);
+        });
+    });
+};
 
+//UPDATE LIST OF SENDERS
+const updateSenderName = async (sender_id: number) => {
+    const sender_name = await fetchSenderName(sender_id);
+    senderNames.value[sender_id] = sender_name;
+};
+
+//GET NAME OF SENDER BY ID
+const getSenderName = (sender_id: number) => {
+    if (senderNames.value[sender_id]) {
+        return senderNames.value[sender_id];
+    }
+    updateSenderName(sender_id);
+    return computed(() => senderNames.value[sender_id]);
+};
 
 </script>
 
 
 <style>
 
-.chat-container {
-    padding: 20px;
-    display: flex;
-    height: 100vh;
-}
-
-/* Sidebar */
-.sidebar {
-    flex: 1;
-    padding: 20px;
-    background-color: #f1f1f1;
-}
-
-.sidebar h4 {
-    margin-top: 0;
-}
-
-/* Main Content */
-.main {
-    flex: 2;
-    padding: 20px;
-    background-color: #ffffff;
-}
-
-/* Chat Box */
-.chat-box {
-    margin-top: 20px;
-    flex-direction: column;
-    background: white;
-    height: 75vh;
-    padding: 1em;
-    overflow: auto;
-    max-width: 350px;
-    margin: 0 auto 2em auto;
-    box-shadow: 2px 2px 5px 2px rgba(0, 0, 0, 0.3)
-}
-
-/* List Items */
 ul {
     list-style-type: none;
     padding: 0;
     margin: 0;
-}
-
-li {
-    margin-bottom: 10px;
 }
 
 

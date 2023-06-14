@@ -1,7 +1,6 @@
 import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
 import { MatchService } from './match.service';
 import { CreateMatchDto } from './dto/create-match.dto';
-import { UpdateMatchDto } from './dto/update-match.dto';
 
 @Controller('match')
 export class MatchController {
@@ -12,7 +11,7 @@ export class MatchController {
     return this.matchService.createMatch(createMatchDto);
   }
 
-  // GET ALL PLAYERS MATCH HISTORY
+  // GET ALL PLAYED MATCHES
   @Get('history')
   findAll() {
     return this.matchService.findAll();
@@ -23,4 +22,10 @@ export class MatchController {
   findMatchHistory(@Param('id') id: string) {
     return this.matchService.findMatchHistory(+id);
   }
-} 
+
+  // GET TOTAL MATCHES PLAYED
+  @Get('total/:id')
+  findTotalMatches(@Param('id') id: string) {
+    return this.matchService.findTotalMatches(+id);
+  }
+}

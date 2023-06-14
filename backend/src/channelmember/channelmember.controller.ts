@@ -18,8 +18,8 @@ export class ChannelmemberController {
   }
 
   @Get('allchannels/:id')
-  findAllChannels(@Param('id') id: string) {
-    return this.channelmemberService.findAllChannels(+id);
+  findPlayerChannels(@Param('id') id: string) {
+    return this.channelmemberService.findPlayerChannels(+id);
   }
 
   @Get('allmembers/:channel_id')
