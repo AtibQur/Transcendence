@@ -1,8 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import { CreatePlayerDto } from './dto/create-player.dto';
 import { UpdatePlayerDto } from './dto/update-player.dto';
-import { UploadAvatarDto } from './dto/upload-avatar.dto';
 import { PrismaService } from '../../prisma/prisma.service';
+import { File } from 'multer';
 
 const prisma = PrismaService.getClient();
 
@@ -58,10 +58,10 @@ export class PlayerService {
     }
 }
 
-  async uploadAvatar(id: number, file: Express.Multer.File) {
+  async uploadAvatar(id: number, file: File) {
     try {
       const avatarBytes = file.buffer;
-      const avatar = await prisma.player.create({
+      const avatar = await prisma.player.update({
         where: {
           id: id,
         },

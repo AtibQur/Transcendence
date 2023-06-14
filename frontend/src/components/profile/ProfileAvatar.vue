@@ -5,13 +5,12 @@
     </div>
   </template>
   
-<script setup lang="ts">
+  <script setup lang="ts">
   import { ref } from 'vue';
   import axiosInstance from '../../axiosConfig';
-
   
   const file = ref<File | null>(null);
-  
+
   const handleFileChange = (event: Event) => {
     const target = event.target as HTMLInputElement;
     if (target.files && target.files.length > 0) {
@@ -25,11 +24,11 @@
       formData.append('avatar', file.value);
       console.log(formData);
       const response = await axiosInstance.post('player/avatar/upload/43', formData, {
-          headers: {
-            'Content-Type': 'multipart/form-data',
-          },
-        });
-      console.log(response.data);
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      });
+      console.log("HALLO FRONTEND RESPONSE", response.data.avatar.data);
     }
   };
   </script>

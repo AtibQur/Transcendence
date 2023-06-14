@@ -66,18 +66,6 @@
         <div v-if="showChangePictureModal" class="show">
           <ProfileAvatar />
         </div>
-        <!-- <input
-          type="file"
-          accept="image/*"
-          ref="profilePictureInput"
-          style="display: none"
-          @change="handlePictureChange"
-        />
-        <button @click="openPictureInput">Select Image</button>
-        <div class="ModalButtons">
-          <button @click="cancelPictureChange">Cancel</button>
-          <button @click="confirmPictureChange">Save</button>
-        </div> -->
       </div>
     </div>
   </div>
@@ -95,17 +83,17 @@
   const selectedOption = ref("Achievements");
   const showChangeNameModal = ref(false);
   const newName = ref('');
-  const profilePicture = ref("https://www.w3schools.com/howto/img_avatar.png");
+  const profilePicture = ref("");
   const showChangePictureModal = ref(false);
-  const profilePictureInput = ref(null);
 
   onBeforeMount(async () => {
     try {
       const playerId = 43;
       username.value = await fetchUsername(playerId);
+      profilePicture.value = await fetchAvatar(playerId);
       console.log(username.value);
     } catch (error) {
-      console.log("Error occurred");
+      console.log("Error occurred profpage");
     }
   });
 
@@ -113,6 +101,17 @@
     const response = await axiosInstance.get('player/username/' + player_id.toString());
     return response.data;
   }
+
+  const fetchAvatar = async (player_id: number) => {
+    const response = await axiosInstance.get('player/avatar/' + player_id.toString());
+    console.log(response)
+    const imageBytes: Uint8Array = new Uint8Array(response.data.data);
+    const imageUrl = ref<string | null>(null);
+    imageUrl.value = URL.createObjectURL(new Blob([imageBytes]));
+    console.log(imageUrl.value);
+
+    return imageUrl.value;
+  };
 
   const changeUsernameModal = () => {
     showChangeNameModal.value = true;
@@ -143,48 +142,6 @@
   const changeProfilePicture = () => {
     showChangePictureModal.value = true;
   };
-
-  const openPictureInput = () => {
-    profilePictureInput.value.click();
-  };
-
-  const handlePictureChange = (event) => {
-    const file = event.target.files[0];
-    const reader = new FileReader();
-    reader.onload = () => {
-      profilePicture.value = reader.result;
-    };
-    reader.readAsDataURL(file);
-  };
-
-  const cancelPictureChange = () => {
-    profilePictureInput.value.value = '';
-    showChangePictureModal.value = false;
-  };
-
-  const confirmPictureChange = async () => {
-  if (profilePictureInput.value.files.length > 0) {
-    const file = profilePictureInput.value.files[0];
-    const formData = new FormData();
-    formData.append('avatar', file);
-
-    try {
-      const playerId = 43; // Replace with the actual player ID
-      await axiosInstance.patch(`player/avatar/${playerId}`, formData, {
-        headers: {
-          'Content-Type': 'multipart/form-data',
-        },
-      });
-
-      // Update the local profile picture URL
-      profilePicture.value = URL.createObjectURL(file);
-    } catch (error) {
-      console.log('Error occurred while updating profile picture:', error);
-    }
-  }
-
-  showChangePictureModal.value = false;
-};
 
   const closeModal = () => {
     showChangeNameModal.value = false;
