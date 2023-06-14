@@ -47,13 +47,19 @@
 
 <style>
   .Leaderboard {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    width: 50%;
-    transform: translate(-50%, -50%);
-    padding: 20%;
-    border: 2px solid black; /* can remove later */
+	position: absolute;
+  left: 400px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: calc(100% - 800px);
+  min-width: 1500px;
+  height: 75vh;
+  min-height: 1000px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  border: 2px solid black;
   }
 
 	.Leaderboard-header {
