@@ -11,7 +11,12 @@ import {
 import { PongService } from '../pong.service';
 import { Server, Socket } from 'socket.io';
 
-@WebSocketGateway()
+@WebSocketGateway({
+    cors: {
+		origin: 'http://localhost:8080', // allow only from our frontend
+	},
+})
+
 export class PongGateway {
 	@WebSocketServer() 
 	server: Server;
