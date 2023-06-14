@@ -17,7 +17,7 @@
     <div class="ProfileOptions">
       <div class="ProfileOptionsContainer">
         <ul>
-          <li @click="changeUsername">Name change</li>
+          <li @click="changeUsernameModal">Name change</li>
           <li @click="changeProfilePicture">Picture change</li>
           <li>2FA Authorisation</li>
           <li></li>
@@ -50,11 +50,11 @@
           type="text"
           v-model="newName"
           placeholder="Enter a new name"
-          @keydown.enter="submitNameChange"
+          @keydown.enter="changeUsername"
         />
         <div class="ModalButtons">
           <button @click="cancelNameChange">Cancel</button>
-          <button @click="confirmNameChange">Save</button>
+          <button @click="changeUsername">Save</button>
         </div>
       </div>
     </div>
@@ -109,25 +109,32 @@
     return response.data;
   }
 
-  const changeUsername = () => {
+  // const changeUsername = () => {
+  //   showChangeNameModal.value = true;
+  // };
+
+  const changeUsernameModal = () => {
     showChangeNameModal.value = true;
   };
 
-  const cancelNameChange = () => {
-    showChangeNameModal.value = false;
-    newName.value = '';
-  };
-
-  const confirmNameChange = async () => {
-    if (newName.value) {
-      try {
-        const playerId = 4;
-        await axiosInstance.patch(`player/username/${playerId}`, { username: newName.value });
-        username.value = newName.value; // Update the local username value
-      } catch (error) {
-        console.log('Error occurred while updating username:', error);
+  const changeUsername = async () => {
+  if (newName.value) {
+    try {
+      const playerId = 4;
+      const updatedUsername = await axiosInstance.patch(`player/username/${playerId}`, { username: newName.value });
+      username.value = updatedUsername.data; // Update the local username value
+      if (newName.value != username.value) {
+        throw new Error("Username already exists");
       }
+      closeModal();
+    } catch (error) {
+      alert("Username already exists. Please choose a different username.");
+      console.log(error);
     }
+  }
+};
+
+  const cancelNameChange = () => {
     showChangeNameModal.value = false;
     newName.value = '';
   };
@@ -184,11 +191,7 @@
     newName.value = '';
   };
 
-  const submitNameChange = () => {
-    if (newName.value) {
-      confirmNameChange();
-    }
-  };
+
 </script>
   
   <style>
