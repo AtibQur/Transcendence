@@ -32,8 +32,12 @@ onBeforeMount(async () => {
     });
 
     // LISTEN IF A NEW CHANNEL IS ADDED
-    socket.on('newChannel', (payload: {channel_id: number}) => {
-        channels.value.push({channel_id: payload.channel_id})
+    socket.on('newChannel', (channelId: number) => {
+        console.log('new channel');
+        socket.emit('joinRoom', { player_id: props.playerId, channel_id: channelId}, () => {
+            console.log('joined channel');
+            channels.value.push({channel_id: channelId})
+        })
     });
 
     // socket.on('leftChannel', (channel_id) => {

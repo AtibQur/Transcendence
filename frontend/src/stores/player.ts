@@ -32,7 +32,7 @@ export const usePlayerStore = defineStore('player', {
 
                 //load channels for the current player in chatstore
                 // await useChatStore().loadChannels(this.playerId);
-                await socket.emit('joinRooms', this.playerId);
+                await socket.emit('joinAllRooms', this.playerId);
                 
             } catch (error) {
                 console.log('Error creating player: ', error);

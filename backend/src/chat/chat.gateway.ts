@@ -72,19 +72,38 @@ export class ChatGateway {
         @MessageBody() payload: {channelmember_name: string, channel_id: number}
     ) {
         try {
-            const player_id = await this.playerService.findIdByUsername(payload.channelmember_name);
-            if (!player_id)
+            const data = await this.playerService.findInfoAddChannelmember(payload.channelmember_name, payload.channel_id);
+            if (!data)
                 throw new Error;
-            return this.channelmemberService.createChannelmember({ member_id: +player_id, channel_id: +payload.channel_id, is_admin: false, is_muted: false, is_banned: false });
+            this.server.to(data.intra_username).emit('newChannel', payload.channel_id);
+            return ;
         } catch (error) {
             console.log('Error adding channelmember: ', error);
             return 'Player does not exist';
         }
     }
 
+    //JOIN A ROOM
+    @SubscribeMessage('joinRoom')
+    async joinRoom(
+        @MessageBody() payload: {player_id: number, channel_id: number},
+        @ConnectedSocket() client: Socket
+    ) {
+        try {
+            //!!! now able to create identical channelmembers.. should be unique?!
+            await this.channelmemberService.createChannelmember({ member_id: payload.player_id, channel_id: payload.channel_id});
+            const channel = await this.channelService.findOneChannel(payload.channel_id);
+            client.join(channel.name);
+            console.log('joined');
+            return ;
+        } catch (error) {
+            console.log('Error joining channels: ', error);
+        }
+    }
+
     //JOIN ALL ROOMS OF PLAYER
-    @SubscribeMessage('joinRooms')
-    async joinRooms(
+    @SubscribeMessage('joinAllRooms')
+    async joinAllRooms(
         @MessageBody() player_id: number,
         @ConnectedSocket() client: Socket
     ) {
@@ -95,6 +114,7 @@ export class ChatGateway {
               });
             const intra_username = await this.playerService.findOneIntraUsername(player_id);
             client.join(intra_username);
+            console.log('client joined to intraname: ', intra_username);
         } catch (error) {
             console.log('Error joining channels: ', error);
         }
