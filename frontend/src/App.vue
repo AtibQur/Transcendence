@@ -5,12 +5,16 @@
 	<div>
 		<router-view/>
 	</div>
+	<div>
+		<FriendsMenubar/>
+	</div>
   </template>
 
 <script setup lang="ts">
 	import axios from 'axios';
 	import { onBeforeMount, ref } from 'vue';
 	import Menubar from './components/Menubar/Menubar.vue';
+	import FriendsMenubar from './components/Friends/FriendsMenubar/FriendsMenubar.vue';
 
 	//constants
 	const answer = ref("");

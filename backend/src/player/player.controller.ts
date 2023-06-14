@@ -90,4 +90,6 @@ export class PlayerController {
   achieveAchievement(@Param('id') id: string, @Body() updatePlayerDto: UpdatePlayerDto) {
     return this.playerService.achieveAchievement(+id, updatePlayerDto);
   }
+
 }
+

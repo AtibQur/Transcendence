@@ -1,3 +1,4 @@
+ProfilePage.vue: 
 <template>
   <div class="ProfileContainer">
     <div class="ProfileData">
@@ -135,58 +136,15 @@
     newName.value = '';
   };
 
-  const changeProfilePicture = () => {
-    showChangePictureModal.value = true;
-  };
-
   const openPictureInput = () => {
     profilePictureInput.value.click();
   };
 
-  const handlePictureChange = (event) => {
-    const file = event.target.files[0];
-    const reader = new FileReader();
-    reader.onload = () => {
-      profilePicture.value = reader.result;
-    };
-    reader.readAsDataURL(file);
-  };
-
-  const cancelPictureChange = () => {
-    profilePictureInput.value.value = '';
-    showChangePictureModal.value = false;
-  };
-
-  const confirmPictureChange = async () => {
-  if (profilePictureInput.value.files.length > 0) {
-    const file = profilePictureInput.value.files[0];
-    const formData = new FormData();
-    formData.append('avatar', file);
-
-    try {
-      const playerId = 4; // Replace with the actual player ID
-      await axiosInstance.patch(`player/avatar/${playerId}`, formData, {
-        headers: {
-          'Content-Type': 'multipart/form-data',
-        },
-      });
-
-      // Update the local profile picture URL
-      profilePicture.value = URL.createObjectURL(file);
-    } catch (error) {
-      console.log('Error occurred while updating profile picture:', error);
-    }
-  }
-
+const closeModal = () => {
+  showChangeNameModal.value = false;
   showChangePictureModal.value = false;
+  newName.value = '';
 };
-
-  const closeModal = () => {
-    showChangeNameModal.value = false;
-    showChangePictureModal.value = false;
-    newName.value = '';
-  };
-
 
 </script>
   
