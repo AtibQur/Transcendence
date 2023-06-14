@@ -91,23 +91,20 @@ export class ChannelmemberService {
     return `This action updates a #${id} channelmember`;
   }
 
-  // CHECK MEMBERSHIP OF PLAYER
-  async checkMembership(playerId: number, channelId: number) {
+  // CHECK IF MEMBER IS ADMIN
+  async findIsAdmin(playerId: number, channelId: number) {
     try {
-        const selectedChannel = await prisma.channelMember.findMany({
+        const selectedChannelmember = await prisma.channelMember.findMany({
             where: {
                 member_id: playerId,
                 channel_id: channelId
             }
         })
 
-        if (selectedChannel.length !== 0) {
-            return true;
-        }
-        return false;
-
+        console.log(selectedChannelmember.is_admin);
+        return selectedChannelmember.is_admin
     } catch (error) {
-        console.log('Error checking membership of player: ', error);
+        console.log('Error checking if channelmember is admin: ', error);
     }
   }
 
