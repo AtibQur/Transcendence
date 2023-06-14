@@ -109,10 +109,6 @@
     return response.data;
   }
 
-  // const changeUsername = () => {
-  //   showChangeNameModal.value = true;
-  // };
-
   const changeUsernameModal = () => {
     showChangeNameModal.value = true;
   };
