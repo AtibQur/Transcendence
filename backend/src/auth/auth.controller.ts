@@ -13,7 +13,7 @@ const playerService = new PlayerService();
 @Controller('auth')
 export class AuthController {
     @UseGuards(LocalAuthGuard)
-    @Get('/42')
+    @Get('/login')
     async fortyTwoLogin() {
         return ('you have entered my king');
     }
@@ -43,7 +43,7 @@ export class AuthController {
         var secret = speakeasy.generateSecret({ 
             name: 'trance',
         });
-        console.log(req.session.passport.user);
+        // console.log(req.session.passport.user);
         qrCode.toDataURL(secret.otpauth_url, (err, data) => {
             if (err)
             return res.send('Error occured');
@@ -79,6 +79,12 @@ export class AuthController {
     @UseGuards(AuthenticatedGuard)
     @Get('id')
     async GetAuthId(@Req() req: any) {
-        return(req.session.passport.user.id);
+        return(req.session);
+    }
+
+    @UseGuards(AuthenticatedGuard)
+    @Get('user')
+    async GetAuthUser(@Req() req: any) {
+        return req.session.passport.user;
     }
 }
