@@ -19,25 +19,17 @@
     }
   };
   
-  const uploadAvatar = () => {
+  const uploadAvatar = async () => {
     if (file.value) {
       const formData = new FormData();
       formData.append('avatar', file.value);
-  
-      axiosInstance
-        .post('player/avatar/upload/43', formData, {
+      console.log(formData);
+      const response = await axiosInstance.post('player/avatar/upload/43', formData, {
           headers: {
             'Content-Type': 'multipart/form-data',
           },
-        })
-        .then((response) => {
-          // Handle the response
-          console.log(response);
-        })
-        .catch((error) => {
-          // Handle the error
-          console.error(error);
         });
+      console.log(response.data);
     }
   };
   </script>

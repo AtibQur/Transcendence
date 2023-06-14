@@ -101,7 +101,7 @@
 
   onBeforeMount(async () => {
     try {
-      const playerId = 4;
+      const playerId = 43;
       username.value = await fetchUsername(playerId);
       console.log(username.value);
     } catch (error) {
@@ -121,7 +121,7 @@
   const changeUsername = async () => {
   if (newName.value) {
     try {
-      const playerId = 4;
+      const playerId = 43;
       const updatedUsername = await axiosInstance.patch(`player/username/${playerId}`, { username: newName.value });
       username.value = updatedUsername.data; // Update the local username value
       if (newName.value != username.value) {
@@ -169,7 +169,7 @@
     formData.append('avatar', file);
 
     try {
-      const playerId = 4; // Replace with the actual player ID
+      const playerId = 43; // Replace with the actual player ID
       await axiosInstance.patch(`player/avatar/${playerId}`, formData, {
         headers: {
           'Content-Type': 'multipart/form-data',

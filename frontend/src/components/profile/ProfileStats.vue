@@ -29,7 +29,7 @@
 
   onBeforeMount(async () => {
     try {
-      const playerId = 4; // HARDCODED!!!! VUL PLAYER ID IN DIE JE HEBT IN JE DATABASE
+      const playerId = 43; // HARDCODED!!!! VUL PLAYER ID IN DIE JE HEBT IN JE DATABASE
       totalAchievements.value = await fetchTotalAchievements(playerId);
       playerStats.value = await fetchPlayerStats(playerId);
       percentageWon.value = await fetchPercentageWon(playerId)

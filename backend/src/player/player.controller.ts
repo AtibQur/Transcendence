@@ -16,10 +16,10 @@ export class PlayerController {
   }
 
   // UPLOAD AN AVATAR
-  @Post('avatar/upload/:id')
-  test(){
-    return("test");
-  }
+  // @Post('avatar/upload/:id')
+  // test(@Param('id') id: string){
+  //   return this.playerService.test(+id);
+  // }
 
 
   // @Post('avatar/upload/:id')
