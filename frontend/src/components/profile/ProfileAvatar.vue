@@ -23,12 +23,11 @@
       const formData = new FormData();
       formData.append('avatar', file.value);
       console.log(formData);
-      const response = await axiosInstance.post('player/avatar/upload/43', formData, {
+      await axiosInstance.post('player/avatar/upload/43', formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
         },
       });
-      console.log("HALLO FRONTEND RESPONSE", response.data.avatar.data);
     }
   };
   </script>
