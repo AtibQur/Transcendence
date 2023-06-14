@@ -149,7 +149,6 @@
     newName.value = '';
   };
 
-  export { closeModal };
 </script>
   
   <style>
