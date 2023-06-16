@@ -74,10 +74,10 @@ ProfilePage.vue:
 
 <script setup lang="ts">
   import { onBeforeMount, ref } from 'vue';
-  import ProfileStats from "./ProfileStats.vue";
   import axiosInstance from '../../axiosConfig';
-  import ProfileHistory from "./ProfileHistory.vue";
   import ProfileAchievements from "./ProfileAchievements.vue";
+  import ProfileStats from "./ProfileStats.vue";
+  import ProfileHistory from "./ProfileHistory.vue";
   import ProfileAvatar from './ProfileAvatar.vue';
 
   const username = ref("");

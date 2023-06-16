@@ -1,14 +1,15 @@
 <template>
   <div class="Friends-Menu">
     <div class="bar" @click="toggleMenu">Friends</div>
-    <div class="menu" :class="{ 'slide-in': isOpen }">
-    </div>
+    <div class="menu" :class="{ 'slide-in': isOpen }"></div>
     <div v-if="isOpen" class="overlay" @click="toggleMenu"></div>
   </div>
 </template>
-<script>
-export default {
-  name: "FriendsMenu",
+
+<script lang="ts">
+import { defineComponent } from 'vue';
+
+export default defineComponent({
   data() {
     return {
       isOpen: false
@@ -27,10 +28,11 @@ export default {
       this.isOpen = false;
     });
   }
-};
+});
 </script>
 
-<style scoped>.hamburger-menu {
+<style scoped>
+.hamburger-menu {
   position: fixed;
   top: 0;
   right: 0;
@@ -59,8 +61,8 @@ export default {
   position: fixed;
   top: 0;
   right: 0;
-  width: 80%;
-  max-width: 400px;
+  width: 370px;
+  max-width: 370px;
   height: 100vh;
   background-color: #fff;
   transform: translateX(100%);
@@ -72,6 +74,7 @@ export default {
   transform: translateX(0);
   transition: transform 0.5s ease-out;
 }
+
 .overlay {
   position: fixed;
   top: 0;
