@@ -1,37 +1,88 @@
 <template>
-  <div>
-    <button @click="toggleButton" :class="{ 'expanded': isExpanded }"></button>
+  <div class="Friends-Menu">
+    <div class="bar" @click="toggleMenu">Friends</div>
+    <div class="menu" :class="{ 'slide-in': isOpen }">
+    </div>
+    <div v-if="isOpen" class="overlay" @click="toggleMenu"></div>
   </div>
 </template>
-
-<script lang="ts">
-// import { Vue, Component } from 'vue';
-
-// @Component
-// export default class MyButton extends Vue {
-//   isExpanded = false;
-
-//   toggleButton(): void {
-//     this.isExpanded = !this.isExpanded;
-//   }
-// }
+<script>
+export default {
+  name: "FriendsMenu",
+  data() {
+    return {
+      isOpen: false
+    };
+  },
+  methods: {
+    toggleMenu() {
+      this.isOpen = !this.isOpen;
+    },
+    closeMenu() {
+      this.isOpen = false;
+    }
+  },
+  created() {
+    this.$router.afterEach(() => {
+      this.isOpen = false;
+    });
+  }
+};
 </script>
 
-<style scoped>
-button {
+<style scoped>.hamburger-menu {
   position: fixed;
-  bottom: 20px;
-  right: 20px;
-  width: 50px;
-  height: 50px;
-  background-color: #f1f1f1;
-  border: 1px solid #000000;
-  border-radius: 5px;
-  transition: width 0.5s;
-  cursor: pointer;
+  top: 0;
+  right: 0;
+  width: 100%;
+  z-index: 999;
 }
 
-button.expanded {
-  width: 20%;
+.bar {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  cursor: pointer;
+  background-color: #000;
+  color: #fff;
+  padding: 10px 20px;
+  z-index: 1000;
+  transition: background-color 0.3s, color 0.3s;
+}
+
+.bar:hover {
+  background-color: #fff;
+  color: #000;
+}
+
+.menu {
+  position: fixed;
+  top: 0;
+  right: 0;
+  width: 80%;
+  max-width: 400px;
+  height: 100vh;
+  background-color: #fff;
+  transform: translateX(100%);
+  transition: transform 0.3s ease-in-out;
+  z-index: 1000;
+}
+
+.slide-in {
+  transform: translateX(0);
+  transition: transform 0.5s ease-out;
+}
+.overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: transparent;
+  z-index: 1000;
+}
+
+.open .menu {
+  z-index: 1001;
 }
 </style>
