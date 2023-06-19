@@ -11,7 +11,7 @@
 
 	async function StartAuth() {
 	try {
-		window.location.href = 'http://localhost:3000/api/auth/login';
+		window.location.href = 'http://localhost:3000/auth/login';
 	} catch (error) {
 		console.log('Error occurred');
 	}

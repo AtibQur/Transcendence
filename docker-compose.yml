@@ -12,26 +12,26 @@ services:
     ports:
       - 5432:5432
     
-  # backend:
-  #   depends_on:
-  #     - db
-  #   restart: always
-  #   build:
-  #     context: ./backend
-  #     dockerfile: Dockerfile
-  #   ports:
-  #     - 3000:3000
-  #   volumes:
-  #     - ./backend:/app
-  #     - /app/node_modules
+  backend:
+    depends_on:
+      - db
+    restart: always
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    ports:
+      - 3000:3000
+    volumes:
+      - ./backend:/app
+      - /app/node_modules
   
-  # frontend:
-  #   restart: always
-  #   build:
-  #     context: ./frontend
-  #     dockerfile: Dockerfile
-  #   volumes:
-  #     - ./frontend:/app
-  #     - /app/node_modules
-  #   ports:
-  #     - "8080:8080"
+  frontend:
+    restart: always
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+    ports:
+      - "8080:8080"

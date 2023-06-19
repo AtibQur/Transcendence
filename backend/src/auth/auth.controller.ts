@@ -23,9 +23,8 @@ export class AuthController {
     async fortyTwoCallback(@Req() req: any, @Res() res: any, @Session() session: Record<string, any>) {
         session.authenticated = true;
         req.session.user = req.user;
-        console.log(req.user);
         console.log(req.session);
-        res.redirect('/Login?username=' + req.user.intra_username);
+        res.redirect('http://localhost:8080/Login?username=' + req.user.intra_username);
     }
 
     @Get("session")

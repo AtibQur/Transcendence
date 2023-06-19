@@ -38,6 +38,8 @@ export class FortyTwoStrategy extends PassportStrategy(Strategy, '42') {
             id: playerId,
             intra_username: user.username,
             status: 'online',
+            accessToken: user.accessToken,
+            refreshToken: user.refreshToken,
         }
         if (await this.authService.validateUser(accessToken, player.id))
             done(null, player);
