@@ -69,6 +69,7 @@ ProfilePage.vue:
         </div>
       </div>
     </div>
+
   </div>
 </template>
 

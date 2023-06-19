@@ -1,18 +1,25 @@
 <template>
   <div class="Friends-Menu">
-    <div class="bar" @click="toggleMenu">Friends</div>
-    <div class="menu" :class="{ 'slide-in': isOpen }"></div>
-    <div v-if="isOpen" class="overlay" @click="toggleMenu"></div>
+    <div class="bar" @click="toggleMenu">
+      <h1>{{ buttonText }}</h1>
+    </div>
+    <div class="menu" :class="{ 'slide-in': isOpen }">
+      <div v-if="isOpen" class="menu-content">
+        <LoadFriends @closeMenu="closeMenu" />
+      </div>
+    </div>
   </div>
 </template>
 
 <script lang="ts">
 import { defineComponent } from 'vue';
+import LoadFriends from "./LoadFriends.vue";
 
 export default defineComponent({
   data() {
     return {
-      isOpen: false
+      isOpen: false,
+      buttonText: 'Friends'
     };
   },
   methods: {
@@ -21,12 +28,17 @@ export default defineComponent({
     },
     closeMenu() {
       this.isOpen = false;
+      this.buttonText = 'Friends';
     }
   },
   created() {
     this.$router.afterEach(() => {
       this.isOpen = false;
+      this.buttonText = 'Friends';
     });
+  },
+  components: {
+    LoadFriends
   }
 });
 </script>
@@ -46,10 +58,14 @@ export default defineComponent({
   right: 20px;
   cursor: pointer;
   background-color: #000;
-  color: #fff;
+  color: #abd0dd;
   padding: 10px 20px;
   z-index: 1000;
   transition: background-color 0.3s, color 0.3s;
+}
+.bar h1 {
+  margin: 0;
+  font-size: 20px;
 }
 
 .bar:hover {
@@ -64,7 +80,7 @@ export default defineComponent({
   width: 370px;
   max-width: 370px;
   height: 100vh;
-  background-color: #fff;
+  background-color: #abd0dd;
   transform: translateX(100%);
   transition: transform 0.3s ease-in-out;
   z-index: 1000;
@@ -87,5 +103,28 @@ export default defineComponent({
 
 .open .menu {
   z-index: 1001;
+}
+
+.slide-enter-active,
+.slide-leave-active {
+  transition: transform 0.3s;
+}
+
+.slide-enter,
+.slide-leave-to {
+  transform: translateX(100%);
+}
+
+.close {
+  cursor: pointer;
+  background-color: #000;
+  color: #abd0dd;
+  padding: 10px 20px;
+  transition: background-color 0.3s, color 0.3s;
+}
+
+.close:hover {
+  background-color: #fff;
+  color: #000;
 }
 </style>
