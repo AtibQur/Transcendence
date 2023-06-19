@@ -10,6 +10,8 @@ import { ChatmessageModule } from './chatmessage/chatmessage.module';
 import { MatchModule } from './match/match.module';
 import { ChatModule } from './chat/chat.module';
 import { FriendModule } from './friend/friend.module';
+import { ServeStaticModule } from '@nestjs/serve-static';
+import { join } from 'path';
 
 
 @Module({
@@ -23,6 +25,10 @@ import { FriendModule } from './friend/friend.module';
     MatchModule,
     ChatModule,
     FriendModule,
+    ServeStaticModule.forRoot({
+      rootPath: join(__dirname, '../../../frontend', 'dist'),
+    }),
+
   ],
   controllers: [AppController],
   providers: [AppService],

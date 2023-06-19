@@ -22,7 +22,10 @@ export class AuthController {
     @Get('/42/callback')
     async fortyTwoCallback(@Req() req: any, @Res() res: any, @Session() session: Record<string, any>) {
         session.authenticated = true;
-        res.redirect('http://localhost:8080/Login?username=' + req.user.username);
+        req.session.user = req.user;
+        console.log(req.user);
+        console.log(req.session);
+        res.redirect('/Login?username=' + req.user.intra_username);
     }
 
     @Get("session")
@@ -70,10 +73,10 @@ export class AuthController {
         }
     }
 
-    @UseGuards(AuthenticatedGuard)
+    // @UseGuards(AuthenticatedGuard)
     @Get('status')
     async GetAuthStatus(@Req() req: any) {
-        return(req.session.passport.user.intra_username);
+        return(req.session.user.intra_username);
     }
 
     @UseGuards(AuthenticatedGuard)
@@ -87,4 +90,5 @@ export class AuthController {
     async GetAuthUser(@Req() req: any) {
         return req.session.passport.user;
     }
+
 }

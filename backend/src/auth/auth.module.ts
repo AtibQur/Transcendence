@@ -4,6 +4,7 @@ import { FortyTwoStrategy } from './fortytwo.strategy';
 import { AuthController } from './auth.controller';
 import { SessionSerializer } from './session.serializer';
 import { PlayerService } from 'src/player/player.service';
+import { AuthService } from './auth.service';
 
 @Module({
     imports: [
@@ -13,6 +14,7 @@ import { PlayerService } from 'src/player/player.service';
     FortyTwoStrategy,
     SessionSerializer,
     PlayerService,
+    AuthService,
     ],
     controllers: [AuthController],
     exports: [PassportModule],

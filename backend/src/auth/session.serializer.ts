@@ -12,12 +12,6 @@ export class SessionSerializer extends PassportSerializer {
     
     async serializeUser(player: Player, done: (err: Error, player: Player) => void) {
         console.log('serializeUser');
-        const createPlayerDto = new CreatePlayerDto();
-        createPlayerDto.username = player.username;
-        const playerId = await this.playerService.createPlayer(createPlayerDto);
-        player.id = playerId;
-        player.intra_username = player.username;
-        player.status = 'online';
         done(null, player);
     }
 
@@ -26,4 +20,4 @@ export class SessionSerializer extends PassportSerializer {
         const playerDB = await this.playerService.findOnePlayerByUsername(player.id) as Player;
         return playerDB ? done(null, playerDB) : done(null, null)
     }
-}
+}3

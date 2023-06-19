@@ -1,7 +1,7 @@
 import { Controller, Get, UseGuards } from '@nestjs/common';
 import { LocalAuthGuard } from './auth/local.authguard';
 
-@Controller()
+@Controller("api")
 export class AppController {
 
   @Get()

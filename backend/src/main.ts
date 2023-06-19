@@ -23,6 +23,7 @@ async function bootstrap() {
   app.enableCors( {
 	origin: ['http://localhost:8080']
   });
+  app.setGlobalPrefix('api');
   await app.listen(3000);
 }
 bootstrap();
