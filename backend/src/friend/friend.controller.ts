@@ -19,6 +19,12 @@ export class FriendController {
     return this.friendService.findFriends(+id);
   }
 
+  // FIND FRIENDS USERNAME AND STATUS
+  @Get('username/:id')
+  findFriendsUsername(@Param('id') id: string) {
+    return this.friendService.findFriendsUsername(+id);
+  }
+
   // DELETE A FRIENDSHIP
   @Delete(':id')
   remove(@Param('id') id: string, @Body() updateFriendDto: UpdateFriendDto) {
