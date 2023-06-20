@@ -204,8 +204,12 @@ export class PlayerService {
           username: updatePlayerDto.username,
         },
       });
+      return updatePlayerDto.username;
     }
     catch (error) {
+      if (error.code === 'P2002') {
+        return await this.findOneUsername(id);
+    }
       console.error('Error occurred:', error);
     }
   }
@@ -363,4 +367,5 @@ export class PlayerService {
       console.error('Error occurred:', error);
     }
   }
+
 }
