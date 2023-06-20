@@ -1,17 +1,18 @@
 import { Controller, Get, Req, Res, Session, UseGuards } from '@nestjs/common';
 import { LocalAuthGuard } from './local.authguard';
 import { AuthenticatedGuard } from './local.authguard';
-import { CreatePlayerDto } from 'src/player/dto/create-player.dto';
 import { PlayerService } from 'src/player/player.service';
-import * as session from 'express-session';
 import * as speakeasy from 'speakeasy';
 import * as qrCode from 'qrcode';
+import { AuthService } from './auth.service';
+// import { }
 
 const playerService = new PlayerService();
 
 
 @Controller('auth')
 export class AuthController {
+    constructor(private readonly authService: AuthService) {}
     @UseGuards(LocalAuthGuard)
     @Get('/login')
     async fortyTwoLogin() {
@@ -23,6 +24,7 @@ export class AuthController {
     async fortyTwoCallback(@Req() req: any, @Res() res: any, @Session() session: Record<string, any>) {
         session.authenticated = true;
         req.session.user = req.user;
+        req.session.jwt = this.authService.generateToken(req.user.intra_username);
         console.log(req.session);
         res.redirect('http://localhost:8080/Login?username=' + req.user.intra_username);
     }

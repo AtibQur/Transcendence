@@ -8,7 +8,6 @@
 </template>
   
 <script setup lang="ts">
-
 	async function StartAuth() {
 	try {
 		window.location.href = 'http://localhost:3000/auth/login';

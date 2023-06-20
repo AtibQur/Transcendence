@@ -5,6 +5,7 @@ import { AuthController } from './auth.controller';
 import { SessionSerializer } from './session.serializer';
 import { PlayerService } from 'src/player/player.service';
 import { AuthService } from './auth.service';
+import { JwtService } from '@nestjs/jwt';
 
 @Module({
     imports: [
@@ -15,6 +16,7 @@ import { AuthService } from './auth.service';
     SessionSerializer,
     PlayerService,
     AuthService,
+    JwtService,
     ],
     controllers: [AuthController],
     exports: [PassportModule],

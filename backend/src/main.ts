@@ -24,7 +24,6 @@ async function bootstrap() {
   app.use(cors({
     origin: 'http://localhost:8080',
     credentials: true,
-    allowedHeaders: ['Content-Type', 'Authorization'],
   }))
   await app.listen(3000);
 }
