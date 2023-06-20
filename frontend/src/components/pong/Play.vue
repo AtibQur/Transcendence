@@ -40,8 +40,9 @@ methods: {
 		this.startMatch = true;
 	},
 	selectDifficulty(difficulty){
-		console.log("1 Player game started");
+		console.log("Solo match started");
 		this.selectedDifficulty = difficulty;
+		console.log('difficulty:', difficulty);
 		this.startSolo = true;
 	}
 },

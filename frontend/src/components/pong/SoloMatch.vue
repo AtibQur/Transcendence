@@ -19,7 +19,7 @@ import { defineComponent } from 'vue'
 
 export default defineComponent({
 	name: "SoloMatch",
-	components: { GameTools},
+	components: { GameTools },
 	props: ['selectedDifficulty'],
 data() {
 	return {

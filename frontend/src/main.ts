@@ -5,6 +5,7 @@ import axiosInstance from './axiosConfig';
 import App from './App.vue';
 import Home from './components/Home.vue';
 import Play from './components/pong/Play.vue';
+import Multiplayer from './components/pong/Multiplayer.vue';
 import Auth from './components/Auth/AuthCheck.vue';
 import Login from './components/Auth/AuthRedirect.vue';
 import ProfilePage from './components/profile/ProfilePage.vue';
@@ -23,6 +24,10 @@ const routes: RouteRecordRaw[] = [
       path: '/play',
       component: Play,
     },
+	{
+		path: '/play/multiplayer',
+		component: Multiplayer,
+	},
     {
       path: '/auth',
       component: Auth,

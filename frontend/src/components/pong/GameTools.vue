@@ -1,8 +1,8 @@
 <template>
 	<div class="container">
 		<div class="canvas">
-			<div class="player1" :style="{ top: player1.y + 'px'}"></div>
-			<div class="player2" :style="{ top: player2.y + 'px'}"></div>
+			<div class="player1" :style="{ top: player1.y + 'px', left: player1.x + 'px'}"></div>
+			<div class="player2" :style="{ top: player2.y + 'px', left: player2.x + 'px'}"></div>
 			<div class="score1"> {{ score1 }}</div>
 			<div class="score2"> {{ score2 }}</div>
 			<div class="line"></div>
