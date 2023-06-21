@@ -6,8 +6,8 @@ import { AuthService } from '../auth.service';
 @Module({
     imports: [
         JwtModule.register({
-            secret: 'groootegeheim',
-            signOptions: { expiresIn: '1h' },
+            secret: jwtConfig.secret,
+            signOptions: { expiresIn: jwtConfig.signOptions.expiresIn }
         }),
     ],
     exports: [JwtModule],

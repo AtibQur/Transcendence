@@ -24,10 +24,11 @@ export class AuthController {
     async fortyTwoCallback(@Req() req: any, @Res() res: any, @Session() session: Record<string, any>) {
         session.authenticated = true;
         req.session.user = req.user;
-        // req.session.jwt = this.authService.generateToken(req.user);
+        req.session.jwt = await this.authService.generateToken(req.user);
+        console.log(req.session.jwt);
         console.log(req.session.user);
-        // res.cookie('jwt', req.session.jwt.Promise, { httpOnly: true });
-        // res.header('Authorization', 'Bearer ' + req.session.jwt.Promise);
+        res.cookie('jwt', req.session.jwt, { httpOnly: true });
+        res.header('Authorization', 'Bearer ' + req.session.jwt);
         res.redirect('http://localhost:8080/Login?username=' + req.user.intra_username);
     }
 
@@ -79,7 +80,6 @@ export class AuthController {
     // @UseGuards(AuthenticatedGuard)
     @Get('status')
     async GetAuthStatus(@Req() req: any) {
-        console.log(req);
         return(req.session.user.intra_username);
     }
 

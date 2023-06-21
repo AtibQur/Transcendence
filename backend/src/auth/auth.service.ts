@@ -1,7 +1,9 @@
 import { Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
+import jwtConfig from './jwt/jwt.config';
 import axios from 'axios';
 import { Player } from 'src/player/entities/player.entity';
+import { sign } from 'crypto';
 
 @Injectable()
 export class AuthService {
