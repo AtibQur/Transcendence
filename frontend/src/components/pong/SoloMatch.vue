@@ -15,7 +15,7 @@
 
 <script lang="ts">
 import GameTools from './GameTools.vue'
-import { defineComponent } from 'vue'
+import { defineComponent, onBeforeMount } from 'vue'
 
 export default defineComponent({
 	name: "SoloMatch",
@@ -153,7 +153,7 @@ methods: {
 				this.moveBall();
 			requestAnimationFrame(this.loop);
 		}
-	}
+	},
 },
 mounted() {
 		window.addEventListener('keyup', this.keyUp);
@@ -188,3 +188,11 @@ mounted() {
 }
 
 </style>
+
+<!-- onBeforeMount(async () => {
+	try {
+
+	} catch (error) {
+
+	}
+}) -->
