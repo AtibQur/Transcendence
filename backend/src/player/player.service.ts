@@ -229,6 +229,24 @@ export class PlayerService {
     }
   }
 
+  // GET STATUS
+  async findStatus(id: number) {
+    try {
+      const selectedPlayer = await prisma.playerStats.findUnique({
+        where: {
+          id: id,
+        },
+        select: {
+          status: true
+        }
+      });
+      return selectedPlayer.status;
+    }
+    catch (error) {
+      console.error('Error occurred:', error);
+    }
+  }
+
   // CHANGE USERNAME
   async updateUsername(id: number, updatePlayerDto: UpdatePlayerDto) {
     try {
