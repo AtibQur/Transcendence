@@ -9,8 +9,8 @@ import { AuthService } from '../auth.service';
             secret: 'groootegeheim',
             signOptions: { expiresIn: '1h' },
         }),
-        AuthService,
     ],
     exports: [JwtModule],
+    providers: [AuthService],
 })
 export class JwtConfigModule {}
