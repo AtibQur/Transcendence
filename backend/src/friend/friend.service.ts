@@ -123,7 +123,6 @@ async findFriendsUsername(id: number) {
   }
 }
 
-
   // DELETE A FRIENDSHIP
   async remove(id: number, updateFriendDto: UpdateFriendDto) {
     try {
