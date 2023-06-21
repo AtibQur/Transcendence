@@ -1,3 +1,4 @@
+ProfilePage.vue: 
 <template>
   <div class="ProfileContainer">
     <div class="ProfileData">
@@ -19,6 +20,7 @@
         <ul>
           <li @click="changeUsernameModal">Name change</li>
           <li @click="changeProfilePicture">Picture change</li>
+          <avatar-upload></avatar-upload>
           <li>2FA Authorisation</li>
           <li></li>
         </ul>
@@ -62,45 +64,38 @@
     <div v-if="showChangePictureModal" class="Modal" @click="closeModal">
       <div class="ModalContent" @click.stop>
         <h2>Profile Picture Change</h2>
-        <input
-          type="file"
-          accept="image/*"
-          ref="profilePictureInput"
-          style="display: none"
-          @change="handlePictureChange"
-        />
-        <button @click="openPictureInput">Select Image</button>
-        <div class="ModalButtons">
-          <button @click="cancelPictureChange">Cancel</button>
-          <button @click="confirmPictureChange">Save</button>
+        <div v-if="showChangePictureModal" class="show">
+          <ProfileAvatar />
         </div>
       </div>
     </div>
+
   </div>
 </template>
 
 <script setup lang="ts">
   import { onBeforeMount, ref } from 'vue';
-  import ProfileStats from "./ProfileStats.vue";
   import axiosInstance from '../../axiosConfig';
-  import ProfileHistory from "./ProfileHistory.vue";
   import ProfileAchievements from "./ProfileAchievements.vue";
+  import ProfileStats from "./ProfileStats.vue";
+  import ProfileHistory from "./ProfileHistory.vue";
+  import ProfileAvatar from './ProfileAvatar.vue';
 
   const username = ref("");
   const selectedOption = ref("Achievements");
   const showChangeNameModal = ref(false);
   const newName = ref('');
-  const profilePicture = ref("https://www.w3schools.com/howto/img_avatar.png");
+  const profilePicture = ref("");
   const showChangePictureModal = ref(false);
-  const profilePictureInput = ref(null);
 
   onBeforeMount(async () => {
     try {
       const playerId = 4;
       username.value = await fetchUsername(playerId);
+      profilePicture.value = await fetchAvatar(playerId);
       console.log(username.value);
     } catch (error) {
-      console.log("Error occurred");
+      console.log("Error occurred profpage");
     }
   });
 
@@ -108,6 +103,17 @@
     const response = await axiosInstance.get('player/username/' + player_id.toString());
     return response.data;
   }
+
+  const fetchAvatar = async (player_id: number) => {
+    const response = await axiosInstance.get('player/avatar/' + player_id.toString());
+    console.log(response)
+    const imageBytes: Uint8Array = new Uint8Array(response.data.data);
+    const imageUrl = ref<string | null>(null);
+    imageUrl.value = URL.createObjectURL(new Blob([imageBytes]));
+    console.log(imageUrl.value);
+
+    return imageUrl.value;
+  };
 
   const changeUsernameModal = () => {
     showChangeNameModal.value = true;
@@ -139,54 +145,11 @@
     showChangePictureModal.value = true;
   };
 
-  const openPictureInput = () => {
-    profilePictureInput.value.click();
-  };
-
-  const handlePictureChange = (event) => {
-    const file = event.target.files[0];
-    const reader = new FileReader();
-    reader.onload = () => {
-      profilePicture.value = reader.result;
-    };
-    reader.readAsDataURL(file);
-  };
-
-  const cancelPictureChange = () => {
-    profilePictureInput.value.value = '';
-    showChangePictureModal.value = false;
-  };
-
-  const confirmPictureChange = async () => {
-  if (profilePictureInput.value.files.length > 0) {
-    const file = profilePictureInput.value.files[0];
-    const formData = new FormData();
-    formData.append('avatar', file);
-
-    try {
-      const playerId = 4; // Replace with the actual player ID
-      await axiosInstance.patch(`player/avatar/${playerId}`, formData, {
-        headers: {
-          'Content-Type': 'multipart/form-data',
-        },
-      });
-
-      // Update the local profile picture URL
-      profilePicture.value = URL.createObjectURL(file);
-    } catch (error) {
-      console.log('Error occurred while updating profile picture:', error);
-    }
-  }
-
-  showChangePictureModal.value = false;
-};
-
   const closeModal = () => {
     showChangeNameModal.value = false;
     showChangePictureModal.value = false;
     newName.value = '';
   };
-
 
 </script>
   
