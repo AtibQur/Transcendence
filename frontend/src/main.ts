@@ -9,10 +9,11 @@ import Auth from './components/Auth/AuthCheck.vue';
 import Login from './components/Auth/AuthRedirect.vue';
 import ProfilePage from './components/profile/ProfilePage.vue';
 import Leaderboard from './components/LeaderboardComponent.vue';
-import ProfileSettings from './components/profile/ProfileSettings.vue';
 import PopulateDatabase from './components/PopulateDatabase.vue';
 import ChatView from './components/Chat/ChatView.vue';
 import Redirect2faVerify from './components/Auth/Redirect2faVerify.vue';
+import FriendsPage from './components/Friends/FriendsPage.vue';
+import PlayerProfile from './components/profile/PlayerProfile.vue';
 
 const routes: RouteRecordRaw[] = [
     {
@@ -48,12 +49,17 @@ const routes: RouteRecordRaw[] = [
       component: ProfilePage,
     },
     {
-      path: '/settings',
-      component: ProfileSettings,
+      path: '/friends',
+      component: FriendsPage,
     },
     {
       path: '/login/redirect2faverify',
       component: Redirect2faVerify,
+    },
+    {
+      path: '/profile/:playerName',
+      name: 'profile',
+      component: ProfilePage, // Replace "ProfilePage" with the component for the profile page
     }
 ];
 

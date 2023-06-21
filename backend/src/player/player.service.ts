@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { CreatePlayerDto } from './dto/create-player.dto';
 import { UpdatePlayerDto } from './dto/update-player.dto';
 import { PrismaService } from '../../prisma/prisma.service';
+import { File } from 'multer';
 
 const prisma = PrismaService.getClient();
 
@@ -56,6 +57,24 @@ export class PlayerService {
         console.error('Error occurred:', error);
     }
 }
+
+  async uploadAvatar(id: number, file: File) {
+    try {
+      const avatarBytes = file.buffer;
+      const avatar = await prisma.player.update({
+        where: {
+          id: id,
+        },
+        data: {
+          avatar: avatarBytes
+        }
+      });
+      return avatar;
+    }
+    catch (error) {
+      console.error(error);
+    }
+  }
 
   // GET ID BY USERNAME
   async findIdByUsername(username: string) {
@@ -221,8 +240,12 @@ export class PlayerService {
           username: updatePlayerDto.username,
         },
       });
+      return updatePlayerDto.username;
     }
     catch (error) {
+      if (error.code === 'P2002') {
+        return await this.findOneUsername(id);
+    }
       console.error('Error occurred:', error);
     }
   }
@@ -380,4 +403,5 @@ export class PlayerService {
       console.error('Error occurred:', error);
     }
   }
+
 }
