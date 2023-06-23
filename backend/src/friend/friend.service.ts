@@ -12,43 +12,61 @@ export class FriendService {
     private readonly playerService: PlayerService
   ) {}
 
-  // ADD OTHER PLAYER AS FRIEND
-  async addFriend(id: number, addFriendDto: AddFriendDto) {
-    try {
-      const friendId = await this.playerService.findIdByUsername(addFriendDto.friendUsername);
-      if (id == friendId) {
-        return "You can not add yourself as a friend! That's pathetic..";
-      }
-      const existingFriendship = await prisma.friend.findFirst({
-        where: {
-          OR: [
-            {
-              player_id: id,
-              friend_id: friendId,
+// ADD OTHER PLAYER AS FRIEND
+async findFriends(id: number) {
+  try {
+    const friends = await prisma.friend.findMany({
+      where: {
+        OR: [
+          { player_id: id },
+          { friend_id: id }
+        ]
+      },
+      include: {
+        player: {
+          select: {
+            username: true,
+            player_stats: {
+              select: {
+                status: true,
+              },
             },
-            {
-              player_id: friendId,
-              friend_id: id,
+          },
+        },
+        friend: {
+          select: {
+            username: true,
+            player_stats: {
+              select: {
+                status: true,
+              },
             },
-          ],
+          },
         },
-      });
-      if (existingFriendship) {
-        return "This user is already your friend.";
-      }
-      const newFriend = await prisma.friend.create({
-        data: {
-          player_id: id,
-          friend_id: friendId,
-        },
-      });
+      },
+    });
 
-      return `Friend added: ${addFriendDto.friendUsername}`;
-    }
-    catch (error) {
-      console.error('Error occurred:', error);
-    }
+    const filteredFriends = friends.flatMap((friend) => {
+      if (friend.player_id === id) {
+        return {
+          username: friend.friend.username,
+          status: friend.friend.player_stats.status,
+        };
+      } else {
+        return {
+          username: friend.player.username,
+          status: friend.player.player_stats.status,
+        };
+      }
+    });
+
+    return filteredFriends;
+  } catch (error) {
+    console.error('Error occurred: ', error);
+    throw error;
   }
+}
+
 
   // GET A PLAYERS FRIENDS
   async findFriends(id: number) {
