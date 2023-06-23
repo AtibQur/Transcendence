@@ -170,7 +170,7 @@ export class PlayerService {
     try {
       const selectedPlayer = await prisma.player.findUnique({
         where: {
-          id: id,
+          id: 4,
         },
         select: {
           username: true

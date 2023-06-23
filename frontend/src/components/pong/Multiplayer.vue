@@ -65,7 +65,6 @@ methods: {
 },
 mounted() {
 	socket.on('connect', () => console.log('Socket Connected!'));
-	console.log(socket.id)
 	if (!socket) {
 		console.log('Socket not connected')
 		return;
@@ -73,14 +72,26 @@ mounted() {
 
 	socket.on('match', (match: {
 		ball: any
-		player2: any
+		player1: number;
+		player2: number
+		socket_id: string
+		score1: number
+		score2: number
 	}) => {
-		// console.log(match.bawsll)
 		this.ball = match.ball;
-		this.player2.y = match.player2
-		console.log(this.player2)
+		if (match.socket_id !== socket.id)
+			this.player1.y = match.player2
+		this.score1 = match.score1
+		this.score2 = match.score2
+		if (this.score1 === 5 || this.score2 === 5){
+			socket.emit('endGame');
+		}
 	})
-
+	socket.on('playerDisconnected', (data: {id: any }) => 
+	{ 
+		console.log(data.id, 'ended the match')
+		socket.emit('endGame');
+	})
 	window.addEventListener('keyup', this.keyUp);
 	window.addEventListener('keydown', this.keyDown);
 	setInterval(this.movePaddle, 1);

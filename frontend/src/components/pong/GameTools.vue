@@ -98,7 +98,7 @@ html, body {
 	/* top: 50px; */
 	/* left: 50px; */
 	border-radius: 50%;
-	background-color: rgb(208, 16, 32);
+	background-color:rgb(246, 125, 125);
 }
 
 </style>

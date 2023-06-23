@@ -18,14 +18,22 @@ import axiosInstance from '../../axiosConfig';
 export default {
 	name: 'MatchMaking',
 	setup() {
-		const dynamicText1 = ref('player1');
-		const dynamicText2 = ref('player2');
+		const dynamicText1 = ref('P1');
+		const dynamicText2 = ref('P2');
 		const beginMatch = ref(false);
 		const router = useRouter();
+		const player = {
+			id: 0,
+			socket_id: '',
+		};
 
 	onBeforeMount(async () => {
-		socket.emit('joinMatchmaking', 9);
-		socket.emit('joinMatchmaking', 2);
+		player.id = 9;
+		player.socket_id = socket.id;
+		socket.emit('joinMatchmaking', player.id, player.socket_id);
+		// const username = await fetchUsername(9);
+		// dynamicText1.value = username;
+		// socket.emit('joinMatchmaking', 2);
 	});
 
 	const fetchUsername = async (player_id: number) => {
@@ -33,22 +41,22 @@ export default {
 		return response.data;
 	};
 
-	socket.on('connect', () => console.log('Socket Connected!'));
+	socket.on('connection', () => console.log('Socket Connected!'));
 	if (!socket) {
 		console.log('Socket not connected');
 	}
-
 	socket.on('startMatch', async (match) => {
 	try {
-		const username = await fetchUsername(match.player1_id);
-		const opponent = await fetchUsername(match.player2_id);
-		dynamicText1.value = username;
-		dynamicText2.value = opponent;
-		console.log('Match found!');
-		console.log('redirecting');
-		// router.push('/play/multiplayer');
+		// console.log(socket.id)
+		// console.log(player)
+		console.log(match.p1, 'and', match.p2, 'are in a match');
+		// const username = await fetchUsername(match.player1_id);
+		// const opponent = await fetchUsername(match.player2_id);
+		// dynamicText2.value = opponent;
+		
+		router.push('/play/multiplayer');
 	} catch (error) {
-		console.log('Error catching username')
+		console.log('Error starting match')
 	}
 	});
 	return {

@@ -6,6 +6,5 @@ import { Request } from 'express';
 export class PongController {
 	@Get('socket.io')
 	findAll(@Req() request: Request): void {
-		console.log('hoi');
 	}
 }

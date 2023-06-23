@@ -1,17 +1,20 @@
 // import { Injectable } from '@nestjs/common';
-import { Ball } from './interfaces/ball.interface';
 import { PongGame } from './game';
 import { Server, Socket } from 'socket.io';
 import { Player } from './interfaces/player.interface'
+import { Ball } from './interfaces/ball.interface';
+import { End } from './interfaces/end.interface';
 
 
 // @Injectable()
 export class PongService {
-	private waitingList: number[] = [];
 	private pongGame: PongGame = new PongGame();
 	private ball: Ball = this.pongGame.ball;
+	private player1: Player = this.pongGame.player1;
 	private player2: Player = this.pongGame.player2;
-	
+	private end: End = this.pongGame.end;
+	private socket_id: string;
+
 	constructor(private socketServer: Socket) {}
 	
 	// moveBall(){
@@ -30,29 +33,48 @@ export class PongService {
 		// this.checkPaddleCollision();
 		// this.checkScore();
 	// }
-	async handleMatchMaking(id: number){
-		this.waitingList.push(id);
-		console.log('added', id, 'to waitinglist')
-		if (this.waitingList.length > 1){
-			console.log('two people in waiting list');
-			this.startMatch(this.waitingList.pop(), this.waitingList.pop());
-		}
-	}
+	// async handleMatchMaking(id: number){
+	// 	this.waitingList.push(id);
+	// 	console.log('added', id, 'to waitinglist')
+	// 	if (this.waitingList.length > 1){
+	// 		console.log('two people in waiting list');
+	// 		this.startMatch(this.waitingList.pop(), this.waitingList.pop());
+	// 	}
+	// }
 
-	startMatch(player1: number, player2: number){
-		this.socketServer.emit('startMatch', player1, player2);
+	// handleCreateMatch(client: Socket, p1: string, p2: string){
+	// 	console.log(p1, 'and', p2, 'are in a match');
+	// 	this.socketServer.emit('startMatch', p1, p2);
+	// }
+
+	// startMatch(player1: number, player2: number){
+	// 	this.socketServer.emit('startMatch', player1, player2);
+	// }
+	resetGame(): void {
+		this.end.gameEnd = false;
+		this.player1.score = 0;
+		this.player2.score = 0;
 	}
 
 	handleMovement(client: Socket, data: any): void {
+		this.player1.new = data;
 		this.player2.new = data;
+		this.socket_id = client.id;
 	}
 
 	tick(client: Socket): void {
-		// return;
+		console.log(this.end.gameEnd)
+		// if (this.end.gameEnd)
+			// return ;
+
 		this.pongGame.updateGame(this.ball);
+
 		client.emit('match', {
 			ball: this.ball,
 			player2: this.player2.new,
+			socket_id: this.socket_id,
+			score1: this.player1.score,
+			score2: this.player2.score,
 		},
 		);
 	}

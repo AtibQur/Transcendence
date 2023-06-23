@@ -75,7 +75,7 @@ methods: {
 		this.ball.velocity = 2;
 		this.ball.dX = Math.random() > 0.5 ? 1 : - 1;
 		this.ball.dY = Math.random() > 0.5 ? 1 : - 1;
-		this.ball.y = (Math.random() * this.canvas.height);
+		// this.ball.y = (Math.random() * this.canvas.height);
 	},
 	canvasCollision(){
 		if (this.ball.x + this.ball.radius > this.canvas.width - 10 || this.ball.x < 0) {
@@ -97,11 +97,11 @@ methods: {
 		const paddleTop = this.player1.y - 40;
 		const paddleBottom = this.player1.y + 40;
 		const ballCenter = this.ball.y + (this.ball.radius / 2);
-		if (this.ball.x < 15 && this.ball.x > 10 && ballCenter >= paddleTop && ballCenter <= paddleBottom) {
+		if (this.ball.x < 20 && this.ball.x > 15 && ballCenter >= paddleTop && ballCenter <= paddleBottom) {
 			this.ball.dX =- this.ball.dX;
 			this.ball.velocity += 0.01;
 		}
-		if (this.ball.x < this.canvas.width - 10 && this.ball.x > this.canvas.width - 30 && ballCenter >= this.player2.y - 40 && ballCenter <= this.player2.y + 40) {
+		if (this.ball.x < this.canvas.width - 20 && this.ball.x > this.canvas.width - 40 && ballCenter >= this.player2.y - 40 && ballCenter <= this.player2.y + 40) {
 			this.ball.dX =- this.ball.dX;
 			this.ball.velocity += 0.01;
 		}

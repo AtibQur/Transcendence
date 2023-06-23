@@ -20,10 +20,19 @@ export class PongGateway {
 	@WebSocketServer() 
 	server: Server;
 
-	private waitingList: number[] = [];
+	private waitingList: string[] = [];
+	// private gameFinished: boolean = false;
 	constructor(
 		private readonly pongService: PongService,
 	) {}
+
+	@SubscribeMessage('endGame')
+	handleEndGame(
+		@ConnectedSocket() client: Socket): void {
+		console.log('Game concluded')
+		// this.gameFinished = true;
+		// console.log(this.gameFinished);
+	}
 
 	@SubscribeMessage('movement')
 	handleMovement(
@@ -36,20 +45,38 @@ export class PongGateway {
 	@SubscribeMessage('joinMatchmaking')
 	handleMatchmaking(
 		@ConnectedSocket() client: Socket,
-		@MessageBody() id: number): void {
-		console.log('player', id, 'joined waiting room');
+		@MessageBody() socket_id: string): void {
+		if (!this.waitingList.includes(socket_id)) {
+			this.waitingList.push(socket_id);
+			console.log('added', socket_id, 'to waitinglist');
+		} else {
+			console.log(socket_id, 'is already in the waiting list');
+		}
+		console.log('Waiting list:', this.waitingList);
 
-		this.waitingList.push(id);
-		console.log('added', id, 'to waitinglist')
 		if (this.waitingList.length > 1){
 			console.log('two people in waiting list');
-		const player2_id = this.waitingList.pop()
-		const player1_id = this.waitingList.pop()
-		this.server.emit('startMatch', { player1_id, player2_id});
+			const p1 = this.waitingList.pop()
+			const p2 = this.waitingList.pop()
+			this.server.emit('startMatch', {p1, p2});
+			this.pongService.resetGame()
 		}
 	}
 
 	afterInit(@ConnectedSocket() client: Socket): void {
-		// setInterval(() => this.pongService.tick(client), 1000 / 60);
+		// if (!this.gameFinished){
+		setInterval(() => this.pongService.tick(client), 1000 / 60);
+		// }
+	}
+
+	handleDisconnect(client: Socket): void {
+		const disconnectedId = client.id
+		console.log('player', disconnectedId, 'left the waiting list');
+		const index = this.waitingList.indexOf(disconnectedId);
+		if (index !== -1)
+			this.waitingList.splice(index, 1);
+		console.log('Waiting list:', this.waitingList);
+		// this.gameFinished = true;
+		this.server.emit('playerDisconnected', { id: client.id });
 	}
 }
