@@ -17,6 +17,9 @@ export class BlockedplayerService {
   async createBlockedplayer(id: number, createBlockedplayerDto: CreateBlockedplayerDto) {
     try {
       const blockedId = await this.playerService.findIdByUsername(createBlockedplayerDto.blockedUsername);
+      if (blockedId == -1) {
+        return "Player does not exist"
+      }
       const existingBlock = await prisma.blockedPlayer.findFirst({
         where: {
               player_id: id,
@@ -42,6 +45,33 @@ export class BlockedplayerService {
     }
   }
 
+  async findBlockedUsername(id: number) {
+    try {
+      const blockedPlayers = await prisma.blockedPlayer.findMany({
+        where: {
+          player_id: id,
+        },
+        include: {
+          blocked: {
+            select: {
+              username: true,
+            }
+          }
+        }
+      })
+      const cleanBlockedPlayers = blockedPlayers.map((blockedPlayer) => {
+        return {
+          username: blockedPlayer.blocked.username,
+        }
+      });
+      return cleanBlockedPlayers;
+    }
+    catch (error) {
+      console.error('Error finding blocked players:', error);
+      return "Error finding blocked players"
+    }
+  }
+
   findAll() {
     return `This action returns all blockedplayer`;
   }
@@ -54,6 +84,9 @@ export class BlockedplayerService {
   async unblockPlayer(id: number, deleteBlockedplayerDto: DeleteBlockedplayerDto) {
     try {
       const blockedId = await this.playerService.findIdByUsername(deleteBlockedplayerDto.blockedUsername);
+      if (blockedId == -1) {
+        return "Player does not exist"
+      }
       const existingBlock = await prisma.blockedPlayer.findFirst({
         where: {
               player_id: id,

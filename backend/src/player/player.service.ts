@@ -88,11 +88,10 @@ export class PlayerService {
             id: true,
           },
         });
-
         return user.id;
-
       } catch (error) {
-        console.error('Error searching for user:', error);
+          console.log(`Player ${username} does not exist`);
+          return -1;
       }
   }
 

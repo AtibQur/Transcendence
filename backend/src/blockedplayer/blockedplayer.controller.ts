@@ -13,6 +13,12 @@ export class BlockedplayerController {
     return this.blockedplayerService.createBlockedplayer(+id, createBlockedplayerDto);
   }
 
+  // FIND BLOCKED PLAYERS USERNAMES
+  @Get('username/:id')
+  findBlockedUsername(@Param('id') id: string) {
+    return this.blockedplayerService.findBlockedUsername(+id);
+  }
+
   @Get()
   findAll() {
     return this.blockedplayerService.findAll();
