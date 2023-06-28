@@ -58,6 +58,7 @@ export class PlayerService {
     }
 }
 
+  // UPLOAD AN AVATAR
   async uploadAvatar(id: number, file: File) {
     try {
       const avatarBytes = file.buffer;
@@ -95,6 +96,7 @@ export class PlayerService {
       }
   }
 
+  // FIND ALL ONLINE PLAYERS
   async findAllOnlinePlayers() {
     return prisma.playerStats.findMany({
         select: {
@@ -155,6 +157,7 @@ export class PlayerService {
     }
   }
 
+  // FIND TOTAL AMOUNT OF A PLAYERS ACHIEVEMENTS
   async findAchievementsTotal(id:number) {
     try {
       const allAchievements = await this.findOneAchievements(id);
