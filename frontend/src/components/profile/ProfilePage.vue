@@ -64,8 +64,7 @@ ProfilePage.vue:
       <div class="ModalContent" @click.stop>
         <h2>Profile Picture Change</h2>
         <div v-if="showChangePictureModal" class="show">
-          <ProfileAvatar />
-        </div>
+      <ProfileAvatar @avatarUploaded="handleAvatarUploaded" />        </div>
       </div>
     </div>
 
@@ -88,9 +87,10 @@ ProfilePage.vue:
   const profilePicture = ref("");
   const showChangePictureModal = ref(false);
 
+  const playerId = parseInt(localStorage.getItem('playerId') || '0');
+
   onBeforeMount(async () => {
     try {
-      const playerId = parseInt(localStorage.getItem('playerId') || '0');
       username.value = await fetchUsername(playerId);
       profilePicture.value = await fetchAvatar(playerId);
       status.value = await fetchStatus(playerId);
@@ -125,7 +125,6 @@ ProfilePage.vue:
   const changeUsername = async () => {
   if (newName.value) {
     try {
-      const playerId = parseInt(localStorage.getItem('playerId') || '0');
       const updatedUsername = await axiosInstance.patch(`player/username/${playerId}`, { username: newName.value });
       username.value = updatedUsername.data; // Update the local username value
       if (newName.value != username.value) {
@@ -146,6 +145,11 @@ ProfilePage.vue:
 
   const changeProfilePicture = () => {
     showChangePictureModal.value = true;
+  };
+
+  const handleAvatarUploaded = async (avatarBytes: Uint8Array) => {
+    showChangePictureModal.value = false;
+    profilePicture.value = await fetchAvatar(playerId)
   };
 
   const closeModal = () => {

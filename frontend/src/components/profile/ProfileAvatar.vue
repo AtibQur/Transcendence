@@ -6,10 +6,11 @@
   </template>
   
   <script setup lang="ts">
-  import { ref } from 'vue';
+  import { ref, defineEmits } from 'vue';
   import axiosInstance from '../../axiosConfig';
   
   const file = ref<File | null>(null);
+  const emit = defineEmits(["avatarUploaded"]);
 
   const handleFileChange = (event: Event) => {
     const target = event.target as HTMLInputElement;
@@ -17,18 +18,24 @@
       file.value = target.files[0];
     }
   };
-  
-  const uploadAvatar = async () => {
-    if (file.value) {
-      const playerId = parseInt(localStorage.getItem('playerId') || '0');
-      const formData = new FormData();
-      formData.append('avatar', file.value);
-      await axiosInstance.post('player/avatar/upload/' + playerId.toString(), formData, {
+
+const uploadAvatar = async () => {
+  if (file.value) {
+    const playerId = parseInt(localStorage.getItem('playerId') || '0');
+    const formData = new FormData();
+    formData.append('avatar', file.value);
+
+    try {
+      const response = await axiosInstance.post('player/avatar/upload/' + playerId.toString(), formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
         },
       });
+
+      emit('avatarUploaded', response.data.avatarBytes);
+    } catch (error) {
+      console.error('Avatar upload failed:', error);
     }
-  };
+  }
+};
   </script>
-  
