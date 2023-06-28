@@ -10,7 +10,7 @@ ProfilePage.vue:
           <h1>{{ username }}</h1>
         </div>
         <div class="ProfileStatus">
-          <h3>status: Hardcoded Online</h3>
+          <h3>status: {{ status }}</h3>
         </div>
       </div>
     </div>
@@ -82,6 +82,7 @@ ProfilePage.vue:
   import ProfileAvatar from './ProfileAvatar.vue';
 
   const username = ref("");
+  const status = ref("");
   const selectedOption = ref("Achievements");
   const showChangeNameModal = ref(false);
   const newName = ref('');
@@ -93,6 +94,7 @@ ProfilePage.vue:
       const playerId = 4;
       username.value = await fetchUsername(playerId);
       profilePicture.value = await fetchAvatar(playerId);
+      status.value = await fetchStatus(playerId);
       console.log(username.value);
     } catch (error) {
       console.log("Error occurred profpage");
@@ -101,6 +103,11 @@ ProfilePage.vue:
 
   const fetchUsername = async (player_id: number) => {
     const response = await axiosInstance.get('player/username/' + player_id.toString());
+    return response.data;
+  }
+
+  const fetchStatus = async (player_id: number) => {
+    const response = await axiosInstance.get('player/status/' + player_id.toString());
     return response.data;
   }
 
