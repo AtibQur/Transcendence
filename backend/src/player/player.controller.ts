@@ -70,6 +70,12 @@ export class PlayerController {
     return this.playerService.findPercentageWins(+id);
   }
 
+  // GET STATUS
+  @Get('status/:id')
+  findStatus(@Param('id') id: string) {
+    return this.playerService.findStatus(+id);
+  }
+
   // CHANGE USERNAME
   @Patch('username/:id')
   updateUsername(@Param('id') id: string, @Body() updatePlayerDto: UpdatePlayerDto) {

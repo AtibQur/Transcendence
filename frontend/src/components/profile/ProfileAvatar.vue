@@ -20,10 +20,11 @@
   
   const uploadAvatar = async () => {
     if (file.value) {
+      const playerId = 4; // HARDCODED!!!! VUL PLAYER ID IN DIE JE HEBT IN JE DATABASE
       const formData = new FormData();
       formData.append('avatar', file.value);
       console.log(formData);
-      await axiosInstance.post('player/avatar/upload/4', formData, {
+      await axiosInstance.post('player/avatar/upload/' + playerId.toString(), formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
         },
