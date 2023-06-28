@@ -23,7 +23,6 @@
       const playerId = parseInt(localStorage.getItem('playerId') || '0');
       const formData = new FormData();
       formData.append('avatar', file.value);
-      console.log(formData);
       await axiosInstance.post('player/avatar/upload/' + playerId.toString(), formData, {
         headers: {
           'Content-Type': 'multipart/form-data',

@@ -20,7 +20,6 @@ ProfilePage.vue:
         <ul>
           <li @click="changeUsernameModal">Name change</li>
           <li @click="changeProfilePicture">Picture change</li>
-          <avatar-upload></avatar-upload>
           <li>2FA Authorisation</li>
           <li></li>
         </ul>
