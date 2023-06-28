@@ -11,7 +11,9 @@ export class AuthService {
 
     async generateToken(player: Player): Promise<string> {
         const payload = { sub: player.id };
-        return this.jwtService.sign(payload);
+        const token = await this.jwtService.sign(payload);
+
+        return JSON.stringify({access_token: token});
     }
 
     async validateToken(token: string): Promise<any> {
@@ -22,11 +24,13 @@ export class AuthService {
         }
     }
 
-    async validateUser(accessToken: any, id: any): Promise<boolean> {
+    async validateUser(accessToken: any, intra_username: string): Promise<boolean> {
         const config = {
             headers: { Authorization: 'Bearer ' + accessToken}
         };
-        if (await axios.get('https://api.intra.42.fr/v2/me', config)) {
+        const response = await axios.get('https://api.intra.42.fr/v2/me', config);
+        if (response.data.login === intra_username){
+            console.log('yess');
             return true;
         }
         return false;

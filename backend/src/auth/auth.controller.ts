@@ -4,7 +4,10 @@ import { AuthenticatedGuard } from './local.authguard';
 import { PlayerService } from 'src/player/player.service';
 import * as speakeasy from 'speakeasy';
 import * as qrCode from 'qrcode';
+import { Request, Response } from 'express';
 import { AuthService } from './auth.service';
+import { Verify } from 'crypto';
+import { request } from 'http';
 // import { }
 
 const playerService = new PlayerService();
@@ -21,15 +24,22 @@ export class AuthController {
 
     @UseGuards(LocalAuthGuard)
     @Get('/42/callback')
-    async fortyTwoCallback(@Req() req: any, @Res() res: any, @Session() session: Record<string, any>) {
-        session.authenticated = true;
-        req.session.user = req.user;
-        req.session.jwt = await this.authService.generateToken(req.user);
-        console.log(req.session.jwt);
-        console.log(req.session.user);
-        res.cookie('jwt', req.session.jwt, { httpOnly: true });
-        res.header('Authorization', 'Bearer ' + req.session.jwt);
-        res.redirect('http://localhost:8080/Login?username=' + req.user.intra_username);
+    async fortyTwoCallback(
+        @Req() req: any,
+        @Res( {passthrough: true} ) response: Response
+        ) {
+        console.log(req.user);
+        this.authService.validateUser(req.user.accessToken, req.user.intra_username);
+        const jwt = await this.authService.generateToken(req.user);
+        console.log(jwt);
+
+        // console.log(req.session);
+        response.setHeader(
+            'Set-Cookie',
+            'jwt=' + jwt + '; HttpOnly; Secure; SameSite=Strict',
+        );
+        // console.log(response);
+        response.status(200).redirect('http://localhost:8080/Login');
     }
 
     @Get("session")
@@ -79,8 +89,9 @@ export class AuthController {
 
     // @UseGuards(AuthenticatedGuard)
     @Get('status')
-    async GetAuthStatus(@Req() req: any) {
-        return(req.session.user.intra_username);
+    async GetAuthStatus(@Req() request: Request) {
+        // console.log(request.sessionStore);
+        return("Billie Jean is not my lover Shes just a girl who claims that I am the one But the kid is not my son She says I am the one, but the kid is not my son For forty days and forty nights The law was on her side But who can stand when shes in demand Her schemes and plans Cause we danced on the floor in the round So take my strong advice, just remember to always think twice (Do think twice, do think twice) She told my baby wed danced til three, then she looked at me Then showed a photo my baby cried his eyes were like mine (oh, no) Cause we danced on the floor in the round, baby People always told me be careful of what you do And dont go around breaking young girls hearts She came and stood right by me Just the smell of sweet perfume This happened much too soon She called me to her room Billie Jean is not my lover Shes just a girl who claims that I am the one But the kid is not my son Billie Jean is not my lover Shes just a girl who claims that I am the one But the kid is not my son She says I am the one, but the kid is not my son She says I am the one, but the kid is not my son Billie Jean is not my lover Shes just a girl who claims that I am the one But the kid is not my son She says I am the one, but the kid is not my son She says I am the one You know what you did, (she says he is my son) breaking my heart babe She says I am the one Billie Jean is not my lover Billie Jean is not my lover Billie Jean is not my lover Billie Jean is not my lover (dont Billie Jean) Billie Jean is not my lover Billie Jean is not my lover");
     }
 
     @UseGuards(AuthenticatedGuard)

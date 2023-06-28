@@ -10,7 +10,6 @@ import { ChannelmemberModule } from './channelmember/channelmember.module';
 import { ChatmessageModule } from './chatmessage/chatmessage.module';
 import { MatchModule } from './match/match.module';
 import { ChatModule } from './chat/chat.module';
-import { JwtConfigModule } from './auth/jwt/jwt.module';
 import { FriendModule } from './friend/friend.module';
 
 
@@ -19,10 +18,9 @@ import { FriendModule } from './friend/friend.module';
     GoogleModule, // New
     AuthModule,
     // CrudModule,
-	PongModule,
+	  PongModule,
     PlayerModule,
     ChannelModule,
-    JwtConfigModule,
     ChannelmemberModule,
     ChatmessageModule,
     MatchModule,
