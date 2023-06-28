@@ -58,6 +58,7 @@ export class PlayerService {
     }
 }
 
+  // UPLOAD AN AVATAR
   async uploadAvatar(id: number, file: File) {
     try {
       const avatarBytes = file.buffer;
@@ -95,6 +96,7 @@ export class PlayerService {
       }
   }
 
+  // FIND ALL ONLINE PLAYERS
   async findAllOnlinePlayers() {
     return prisma.playerStats.findMany({
         select: {
@@ -155,6 +157,7 @@ export class PlayerService {
     }
   }
 
+  // FIND TOTAL AMOUNT OF A PLAYERS ACHIEVEMENTS
   async findAchievementsTotal(id:number) {
     try {
       const allAchievements = await this.findOneAchievements(id);
@@ -208,6 +211,24 @@ export class PlayerService {
       const totalGames = playerStats.wins + playerStats.losses;
       return (playerStats.wins / totalGames * 100);
     } catch (error) {
+      console.error('Error occurred:', error);
+    }
+  }
+
+  // GET STATUS
+  async findStatus(id: number) {
+    try {
+      const selectedPlayer = await prisma.playerStats.findUnique({
+        where: {
+          id: id,
+        },
+        select: {
+          status: true
+        }
+      });
+      return selectedPlayer.status;
+    }
+    catch (error) {
       console.error('Error occurred:', error);
     }
   }
