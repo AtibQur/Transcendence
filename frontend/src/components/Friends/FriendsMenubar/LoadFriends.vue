@@ -48,7 +48,7 @@ export default defineComponent({
   methods: {
     async loadFriends() {
       try {
-        const playerId = 4;
+        const playerId = parseInt(localStorage.getItem('playerId') || '0');
         const response = await axiosInstance.get(`friend/username/${playerId}`);
         console.log('Friends:', response.data);
         this.friends = response.data;
@@ -59,7 +59,7 @@ export default defineComponent({
 
     async addFriend() {
       try {
-        const playerId = 4;
+        const playerId = parseInt(localStorage.getItem('playerId') || '0');
         const response = await axiosInstance.post(`friend/add/${playerId}`, {
           friendUsername: this.newFriendName
         });
@@ -79,7 +79,7 @@ export default defineComponent({
 
     async blockPlayer() {
       try {
-        const playerId = 4;
+        const playerId = parseInt(localStorage.getItem('playerId') || '0');
         await axiosInstance.delete(`friend/${playerId}`, {
           data: {
             friendUsername: this.newFriendName

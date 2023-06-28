@@ -21,7 +21,7 @@
 
 onBeforeMount(async () => {
     try {
-      const playerId = 4; // HARDCODED!!!! VUL PLAYER ID IN DIE JE HEBT IN JE DATABASE
+      const playerId = parseInt(localStorage.getItem('playerId') || '0'); // HARDCODED!!!! VUL PLAYER ID IN DIE JE HEBT IN JE DATABASE
       achievements.value = await fetchAchievements(playerId);
     } catch (error) {
       console.log("Error occured");

@@ -19,7 +19,7 @@
 
   onBeforeMount(async () => {
   try {
-    const playerId = 4; // HARDCODED!!!! VUL PLAYER ID IN DIE JE HEBT IN JE DATABASE
+    const playerId = parseInt(localStorage.getItem('playerId') || '0');
     matches.value = await fetchMatches(playerId);
     console.log(matches.value);
   } catch (error) {

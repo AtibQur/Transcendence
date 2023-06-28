@@ -91,7 +91,7 @@ ProfilePage.vue:
 
   onBeforeMount(async () => {
     try {
-      const playerId = 4;
+      const playerId = parseInt(localStorage.getItem('playerId') || '0');
       username.value = await fetchUsername(playerId);
       profilePicture.value = await fetchAvatar(playerId);
       status.value = await fetchStatus(playerId);
@@ -129,7 +129,7 @@ ProfilePage.vue:
   const changeUsername = async () => {
   if (newName.value) {
     try {
-      const playerId = 4;
+      const playerId = parseInt(localStorage.getItem('playerId') || '0');
       const updatedUsername = await axiosInstance.patch(`player/username/${playerId}`, { username: newName.value });
       username.value = updatedUsername.data; // Update the local username value
       if (newName.value != username.value) {
