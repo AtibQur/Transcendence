@@ -74,6 +74,7 @@ export class PongGame {
 		this.ball.dX = Math.random() > 0.5 ? 1 : - 1;
 		this.ball.dY = Math.random() > 0.5 ? 1 : - 1;
 		// this.ball.y = (Math.random() * this.canvasHeight);
+		this.ball.y = Math.min(Math.max((Math.random() * this.canvasHeight), 100), this.canvasHeight - 100);
 	}
 	canvasCollision(){
 		if (this.ball.x + this.ball.radius > this.canvasWidth - 10 || this.ball.x < 0) {

@@ -56,21 +56,26 @@ export class PongService {
 		this.player2.score = 0;
 	}
 
-	handleMovement(client: Socket, data: any): void {
+	handleMoveLeft(client: Socket, data: any): void {
 		this.player1.new = data;
+		this.socket_id = client.id;
+	}
+
+	handleMoveRight(client: Socket, data: any): void {
 		this.player2.new = data;
 		this.socket_id = client.id;
 	}
 
 	tick(client: Socket): void {
 		console.log(this.end.gameEnd)
-		// if (this.end.gameEnd)
-			// return ;
+		if (this.end.gameEnd)
+			return ;
 
 		this.pongGame.updateGame(this.ball);
 
 		client.emit('match', {
 			ball: this.ball,
+			player1: this.player1.new,
 			player2: this.player2.new,
 			socket_id: this.socket_id,
 			score1: this.player1.score,

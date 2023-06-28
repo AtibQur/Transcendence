@@ -10,6 +10,9 @@
 </template>
 
 <script lang="ts">
+export let p1 = ''
+export let p2 = ''
+
 import { onBeforeMount, ref } from 'vue';
 import { useRouter } from 'vue-router';
 import { socket } from '../../socket';
@@ -30,7 +33,7 @@ export default {
 	onBeforeMount(async () => {
 		player.id = 9;
 		player.socket_id = socket.id;
-		socket.emit('joinMatchmaking', player.id, player.socket_id);
+		socket.emit('joinMatchmaking', player.socket_id);
 		// const username = await fetchUsername(9);
 		// dynamicText1.value = username;
 		// socket.emit('joinMatchmaking', 2);
@@ -49,6 +52,8 @@ export default {
 	try {
 		// console.log(socket.id)
 		// console.log(player)
+		p1 = match.p1;
+		p2 = match.p2;
 		console.log(match.p1, 'and', match.p2, 'are in a match');
 		// const username = await fetchUsername(match.player1_id);
 		// const opponent = await fetchUsername(match.player2_id);

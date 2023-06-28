@@ -34,11 +34,19 @@ export class PongGateway {
 		// console.log(this.gameFinished);
 	}
 
-	@SubscribeMessage('movement')
-	handleMovement(
+	@SubscribeMessage('moveLeft')
+	handleMoveLeft(
 		@ConnectedSocket() client: Socket,
 		@MessageBody() data: any): void {
-		this.pongService.handleMovement(client, data)
+		this.pongService.handleMoveLeft(client, data)
+		// this.server.emit('state', data);
+	}
+
+	@SubscribeMessage('moveRight')
+	handleMoveRight(
+		@ConnectedSocket() client: Socket,
+		@MessageBody() data: any): void {
+		this.pongService.handleMoveRight(client, data)
 		// this.server.emit('state', data);
 	}
 
@@ -56,8 +64,8 @@ export class PongGateway {
 
 		if (this.waitingList.length > 1){
 			console.log('two people in waiting list');
-			const p1 = this.waitingList.pop()
 			const p2 = this.waitingList.pop()
+			const p1 = this.waitingList.pop()
 			this.server.emit('startMatch', {p1, p2});
 			this.pongService.resetGame()
 		}

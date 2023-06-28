@@ -67,6 +67,7 @@ html, body {
 
 .player1 {
 	position: absolute;
+	top: 50%;
 	width: 15px;
 	height: 80px;
 	left: 5px;
@@ -75,6 +76,7 @@ html, body {
 }
 .player2 {
 	position: absolute;
+	top: 50%;
 	width: 15px;
 	height: 80px;
 	right: 5px;

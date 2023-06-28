@@ -9,10 +9,12 @@
 import { socket } from '../../socket'
 import GameTools from './GameTools.vue';
 import { defineComponent } from 'vue'
+import {p1, p2} from './MatchMaking.vue'
+import { matchedRouteKey } from 'vue-router';
 
 export default defineComponent({
 	name: "MultiplayerMatch",
-	components: { GameTools },
+	components: { GameTools},
 data() {
 	return {
 		canvas: {
@@ -38,28 +40,41 @@ data() {
 		keysPressed: {
 			w: false,
 			s: false,
+			a: false,
+			d: false,
 		},
 	};
 },
 methods: {
 	keyUp(event) {
-		if (event.key === 'w' || event.key === 's') {
+		if (event.key === 'w' || event.key === 's' || event.key === 'a' || event.key === 'd') {
 			this.keysPressed[event.key] = false;
 		}
 	},
 	keyDown(event) {
-		if (event.key === 'w' || event.key === 's') {
+		if (event.key === 'w' || event.key === 's' || event.key === 'a' || event.key === 'd') {
 			this.keysPressed[event.key] = true;
 		}
 	},
-	movePaddle() {
+
+	moveLeft() {
 		if (this.keysPressed['w'] && this.player1.y > 40){
 			this.player1.y -= 2;
-			socket.emit('movement', this.player1.y);
+			socket.emit('moveLeft', this.player1.y);
 		}
 		if (this.keysPressed['s'] && this.player1.y < this.canvas.height - 40){
 			this.player1.y += 2;
-			socket.emit('movement', this.player1.y);
+			socket.emit('moveLeft', this.player1.y);
+		}
+	},
+	moveRight() {
+		if (this.keysPressed['a'] && this.player2.y > 40){
+			this.player2.y -= 2;
+			socket.emit('moveRight', this.player2.y);
+		}
+		if (this.keysPressed['d'] && this.player2.y < this.canvas.height - 40){
+			this.player2.y += 2;
+			socket.emit('moveRight', this.player2.y);
 		}
 	},
 },
@@ -69,18 +84,23 @@ mounted() {
 		console.log('Socket not connected')
 		return;
 	}
+	console.log("this user:", socket.id)
+	console.log("P1 ID", p1)
+	console.log("P2 ID", p2)
 
 	socket.on('match', (match: {
 		ball: any
-		player1: number;
+		player1: number
 		player2: number
 		socket_id: string
 		score1: number
 		score2: number
 	}) => {
 		this.ball = match.ball;
-		if (match.socket_id !== socket.id)
-			this.player1.y = match.player2
+
+		this.player1.y = match.player1
+		this.player2.y = match.player2
+
 		this.score1 = match.score1
 		this.score2 = match.score2
 		if (this.score1 === 5 || this.score2 === 5){
@@ -94,7 +114,10 @@ mounted() {
 	})
 	window.addEventListener('keyup', this.keyUp);
 	window.addEventListener('keydown', this.keyDown);
-	setInterval(this.movePaddle, 1);
+	if (socket.id === p1)
+		setInterval(this.moveLeft, 1);
+	else if (socket.id === p2)
+		setInterval(this.moveRight, 1);
 	}
 })
 
