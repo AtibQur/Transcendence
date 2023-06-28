@@ -407,4 +407,24 @@ export class PlayerService {
     }
   }
 
+  // CHECK IF PLAYER EXISTS
+  async isExistingPlayer(username: string) {
+    try {
+      const existingPlayer = await prisma.player.findUnique({
+          where: {
+            username: username,
+          },
+      });
+      if (existingPlayer) {
+        return true;
+      }
+      else {
+        return false;
+      }
+    }
+    catch (error) {
+      return false;
+    }
+  }
+
 }

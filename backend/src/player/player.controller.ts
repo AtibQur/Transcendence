@@ -107,5 +107,11 @@ export class PlayerController {
     return this.playerService.achieveAchievement(+id, updatePlayerDto);
   }
 
+  // CHECK IF PLAYER EXISTS
+  @Get('exists/:username')
+  isExistingPlayer(@Param('username') username: string) {
+    return this.playerService.isExistingPlayer(username);
+  }
+
 }
 
