@@ -112,12 +112,9 @@ ProfilePage.vue:
 
   const fetchAvatar = async (player_id: number) => {
     const response = await axiosInstance.get('player/avatar/' + player_id.toString());
-    console.log(response)
     const imageBytes: Uint8Array = new Uint8Array(response.data.data);
     const imageUrl = ref<string | null>(null);
     imageUrl.value = URL.createObjectURL(new Blob([imageBytes]));
-    console.log(imageUrl.value);
-
     return imageUrl.value;
   };
 
