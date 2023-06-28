@@ -19,19 +19,10 @@ export class BlockedplayerController {
     return this.blockedplayerService.findBlockedUsername(+id);
   }
 
-  @Get()
-  findAll() {
-    return this.blockedplayerService.findAll();
-  }
-
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.blockedplayerService.findOne(+id);
-  }
-
   // UNBLOCK A PLAYER
   @Delete('/delete/:id')
   unblockPlayer(@Param('id') id: string, @Body() deleteBlockedplayerDto: DeleteBlockedplayerDto) {
     return this.blockedplayerService.unblockPlayer(+id, deleteBlockedplayerDto);
   }
+
 }
