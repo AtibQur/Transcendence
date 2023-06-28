@@ -19,13 +19,8 @@ export class PlayerController {
   // UPLOAD AN AVATAR
   @Post('avatar/upload/:id')
   @UseInterceptors(FileInterceptor('avatar'))
-  async uploadAvatar(@Param('id') id: number, @UploadedFile() file: File) {
-    try {
-      const avatar = await this.playerService.uploadAvatar(+id, file);
-      return avatar;
-    } catch (error) {
-      console.error(error);
-    }
+  uploadAvatar(@Param('id') id: number, @UploadedFile() file: File) {
+    return this.playerService.uploadAvatar(+id, file);
   }
 
   // GET ALL PLAYER STATS (FOR LEADERBOARD)
