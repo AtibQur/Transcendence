@@ -16,10 +16,10 @@
   import axiosInstance from '../../axiosConfig';
 
   const matches = ref("");
+  const playerId = parseInt(localStorage.getItem('playerId') || '0');
 
   onBeforeMount(async () => {
   try {
-    const playerId = parseInt(localStorage.getItem('playerId') || '0');
     matches.value = await fetchMatches(playerId);
     console.log(matches.value);
   } catch (error) {

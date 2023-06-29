@@ -27,9 +27,10 @@
     { label: "Total Achievements", value: totalAchievements.value },
   ]);
 
+  const playerId = parseInt(localStorage.getItem('playerId') || '0');
+
   onBeforeMount(async () => {
     try {
-      const playerId = parseInt(localStorage.getItem('playerId') || '0');
       totalAchievements.value = await fetchTotalAchievements(playerId);
       playerStats.value = await fetchPlayerStats(playerId);
       percentageWon.value = await fetchPercentageWon(playerId)
