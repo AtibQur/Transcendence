@@ -5,14 +5,12 @@ import { WebSocketGateway,
         WebSocketServer } from '@nestjs/websockets';
 import { PlayerService } from 'src/player/player.service';
 import { ChannelService } from 'src/channel/channel.service';
-import { CreatePlayerDto } from 'src/player/dto/create-player.dto';
 import { Server, Socket } from 'socket.io';
 import { Logger } from '@nestjs/common';
 import { ChannelmemberService } from 'src/channelmember/channelmember.service';
 import { ChatmessageService } from 'src/chatmessage/chatmessage.service';
 import { CreateChatmessageDto } from 'src/chatmessage/dto/create-chatmessage.dto';
 import { CreateChannelDto } from 'src/channel/dto/create-channel.dto';
-import { Channel } from 'src/channel/entities/channel.entity';
 
 @WebSocketGateway({
 	cors: {
