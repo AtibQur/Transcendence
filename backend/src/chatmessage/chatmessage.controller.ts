@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Param } from '@nestjs/common';
+import { Controller, Get, Post, Body, Param, Query } from '@nestjs/common';
 import { ChatmessageService } from './chatmessage.service';
 import { CreateChatmessageDto } from './dto/create-chatmessage.dto';
 
@@ -17,4 +17,11 @@ export class ChatmessageController {
 //   findChannelMsgs(@Param('channel_id') channel_id: string) {
 //     return this.chatmessageService.findChannelMsgs(+channel_id);
 //   }
+
+  // GET ALL CHAT MESSAGES WITHIN ONE CHANNEL FILTERED
+  @Get('filtered/:player_id')
+  findChannelMsgsFiltered(@Param('player_id') player_id: string, @Query('channel_id') channel_id: string) {
+    return this.chatmessageService.findChannelMsgsFiltered(+player_id, +channel_id)
+  }
+  // example: localhost:3000/chatmessage/filtered/40?channel_id=13
 }
