@@ -455,11 +455,11 @@ export class PlayerService {
     else if (allPlayerStats.ladder_level >= 50) {
       updateDto.achieved = 'Reached level 50'
     }
-    else if (allPlayerStats.ladder_level >= 10) {
-      updateDto.achieved = 'Reached level 10'
-    }
     else if (allPlayerStats.ladder_level >= 20) {
       updateDto.achieved = 'Reached level 20'
+    }
+    else if (allPlayerStats.ladder_level >= 10) {
+      updateDto.achieved = 'Reached level 10'
     }
     else if (allPlayerStats.ladder_level >= 5) {
       updateDto.achieved = 'Reached level 5'
