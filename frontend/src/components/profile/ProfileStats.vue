@@ -27,15 +27,16 @@
     { label: "Total Achievements", value: totalAchievements.value },
   ]);
 
+  const playerId = parseInt(localStorage.getItem('playerId') || '0');
+
   onBeforeMount(async () => {
     try {
-      const playerId = 3; // HARDCODED!!!! VUL PLAYER ID IN DIE JE HEBT IN JE DATABASE
       totalAchievements.value = await fetchTotalAchievements(playerId);
       playerStats.value = await fetchPlayerStats(playerId);
       percentageWon.value = await fetchPercentageWon(playerId)
     } catch (error) {
       console.log("Error occured");
-    }
+    } 
   });
 
   const fetchTotalAchievements = async (player_id: number) => {

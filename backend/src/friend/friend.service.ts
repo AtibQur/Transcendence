@@ -69,6 +69,60 @@ export class FriendService {
     return `This action returns a #${id} friend`;
   }
 
+// FIND FRIENDS USERNAME AND STATUS
+async findFriendsUsername(id: number) {
+  try {
+    const friends = await prisma.friend.findMany({
+      where: {
+        OR: [
+          { player_id: id },
+          { friend_id: id }
+        ]
+      },
+      include: {
+        player: {
+          select: {
+            username: true,
+            player_stats: {
+              select: {
+                status: true,
+              },
+            },
+          },
+        },
+        friend: {
+          select: {
+            username: true,
+            player_stats: {
+              select: {
+                status: true,
+              },
+            },
+          },
+        },
+      },
+    });
+
+    const filteredFriends = friends.map((friend) => {
+      if (friend.player_id === id) {
+        return {
+          username: friend.friend.username,
+          status: friend.friend.player_stats.status,
+        };
+      } else {
+        return {
+          username: friend.player.username,
+          status: friend.player.player_stats.status,
+        };
+      }
+    });
+
+    return filteredFriends;
+  } catch (error) {
+    console.error('Error occurred: ', error);
+  }
+}
+
   // DELETE A FRIENDSHIP
   async remove(id: number, updateFriendDto: UpdateFriendDto) {
     try {

@@ -18,16 +18,15 @@
   import axiosInstance from '../../axiosConfig';
 
   const achievements = ref({});
+  const playerId = parseInt(localStorage.getItem('playerId') || '0');
 
-onBeforeMount(async () => {
-    try {
-      const playerId = 3; // HARDCODED!!!! VUL PLAYER ID IN DIE JE HEBT IN JE DATABASE
-      achievements.value = await fetchAchievements(playerId);
-      console.log(achievements)
-    } catch (error) {
-      console.log("Error occured");
-    }
-  });
+  onBeforeMount(async () => {
+      try {
+        achievements.value = await fetchAchievements(playerId);
+      } catch (error) {
+        console.log("Error occured");
+      }
+    });
 
   const fetchAchievements = async (player_id: number) => {
     const response = await axiosInstance.get('player/achievements/' + player_id.toString());
@@ -68,7 +67,7 @@ onBeforeMount(async () => {
   align-items: center;
   border: 1px solid #131780;
   border-radius: 8px;
-  margin-bottom: 10px;
+  margin: 5px;
   padding: 10px;
   margin-left: 2px;
   flex-basis: 30%;

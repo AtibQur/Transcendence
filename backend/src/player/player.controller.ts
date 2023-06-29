@@ -1,7 +1,10 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, UseInterceptors, UploadedFile } from '@nestjs/common';
 import { PlayerService } from './player.service';
 import { CreatePlayerDto } from './dto/create-player.dto';
 import { UpdatePlayerDto } from './dto/update-player.dto';
+import { FileInterceptor } from '@nestjs/platform-express';
+import { File } from 'multer';
+
 
 @Controller('player')
 export class PlayerController {
@@ -11,6 +14,13 @@ export class PlayerController {
   @Post('create')
   create(@Body() createPlayerDto: CreatePlayerDto) {
     return this.playerService.createPlayer(createPlayerDto);
+  }
+
+  // UPLOAD AN AVATAR
+  @Post('avatar/upload/:id')
+  @UseInterceptors(FileInterceptor('avatar'))
+  uploadAvatar(@Param('id') id: number, @UploadedFile() file: File) {
+    return this.playerService.uploadAvatar(+id, file);
   }
 
   // GET ALL PLAYER STATS (FOR LEADERBOARD)
@@ -48,35 +58,41 @@ export class PlayerController {
   findOneAvatar(@Param('id') id: string) {
     return this.playerService.findOneAvatar(+id);
   }
-  
+
   // GET PERCENTAGE WINS
   @Get('percentagewins/:id')
   findPercentageWins(@Param('id') id: string) {
     return this.playerService.findPercentageWins(+id);
   }
 
+  // GET STATUS
+  @Get('status/:id')
+  findStatus(@Param('id') id: string) {
+    return this.playerService.findStatus(+id);
+  }
+
   // CHANGE USERNAME
   @Patch('username/:id')
   updateUsername(@Param('id') id: string, @Body() updatePlayerDto: UpdatePlayerDto) {
-      return this.playerService.updateUsername(+id, updatePlayerDto);
+    return this.playerService.updateUsername(+id, updatePlayerDto);
   }
 
   // +1 WINS
   @Patch('wins/:id')
   updateWins(@Param('id') id: string) {
-      return this.playerService.updateWins(+id);
+    return this.playerService.updateWins(+id);
   }
 
   // +1 LOSSES
   @Patch('losses/:id')
   updateLosses(@Param('id') id: string) {
-      return this.playerService.updateLosses(+id);
+    return this.playerService.updateLosses(+id);
   }
 
   // CHANGE STATUS
   @Patch('status/:id')
   updateStatus(@Param('id') id: string, @Body() updatePlayerDto: UpdatePlayerDto) {
-      return this.playerService.updateStatus(+id, updatePlayerDto);
+    return this.playerService.updateStatus(+id, updatePlayerDto);
   }
 
   // DELETE A PLAYER
@@ -90,4 +106,12 @@ export class PlayerController {
   achieveAchievement(@Param('id') id: string, @Body() updatePlayerDto: UpdatePlayerDto) {
     return this.playerService.achieveAchievement(+id, updatePlayerDto);
   }
+
+  // CHECK IF PLAYER EXISTS
+  @Get('exists/:username')
+  isExistingPlayer(@Param('username') username: string) {
+    return this.playerService.isExistingPlayer(username);
+  }
+
 }
+

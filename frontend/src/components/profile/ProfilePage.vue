@@ -1,75 +1,164 @@
+ProfilePage.vue: 
 <template>
-    <div class="ProfileContainer">
-      <div class="ProfileData">
-        <div class="ProfilePicture">
-          <img src="https://www.w3schools.com/howto/img_avatar.png" alt="Avatar" style="width:100%">
-        </div>
-        <div class="ProfileInfo">
-          <div class="ProfileName">
-            <h1> {{ username }} </h1>
-          </div>
-          <div class="ProfileStatus">
-            <h3>status: Hardcoded Online</h3>
-          </div>
-        </div>
+  <div class="ProfileContainer">
+    <div class="ProfileData">
+      <div class="ProfilePicture">
+        <img :src="profilePicture" alt="Avatar" style="width:100%">
       </div>
-  
-      <div class="ProfileOptions">
-        <div class="ProfileOptionsContainer">
-          <ul>
-            <li><router-link to="Settings">Settings</router-link></li>
-            <li><router-link to="/">Random</router-link></li>
-            <li><router-link to="/">Random</router-link></li>
-            <li><router-link to="/">Random</router-link></li>
-          </ul>
+      <div class="ProfileInfo">
+        <div class="ProfileName">
+          <h1>{{ username }}</h1>
         </div>
-      </div>
-  
-      <div class="ProfileStats">
-        <select v-model="selectedOption">
-          <option value="Achievements">Achievements</option>
-          <option value="Stats">Stats</option>
-          <option value="Match History">Match History</option>
-        </select>
-  
-        <div v-if="selectedOption === 'Achievements'" class="show">
-            <ProfileAchievements />
-        </div>
-        <div v-else-if="selectedOption === 'Stats'" class="show">
-            <ProfileStats />
-        </div>
-        <div v-else-if="selectedOption === 'Match History'" class="show">
-            <ProfileHistory />
+        <div class="ProfileStatus">
+          <h3>status: {{ status }}</h3>
         </div>
       </div>
     </div>
-  </template>
-  
-  <script setup lang="ts">
-  import { onBeforeMount, ref, computed } from 'vue';
+
+    <div class="ProfileOptions">
+      <div class="ProfileOptionsContainer">
+        <ul>
+          <li @click="changeUsernameModal">Name change</li>
+          <li @click="changeProfilePicture">Picture change</li>
+          <li>2FA Authorisation</li>
+          <li></li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="ProfileStats">
+      <select v-model="selectedOption">
+        <option value="Achievements">{{ username }}'s Achievements</option>
+        <option value="Stats">Stats</option>
+        <option value="Match History">Match History</option>
+      </select>
+
+      <div v-if="selectedOption === 'Achievements'" class="show">
+        <ProfileAchievements />
+      </div>
+      <div v-else-if="selectedOption === 'Stats'" class="show">
+        <ProfileStats />
+      </div>
+      <div v-else-if="selectedOption === 'Match History'" class="show">
+        <ProfileHistory />
+      </div>
+    </div>
+
+    <div v-if="showChangeNameModal" class="Modal" @click="closeModal">
+      <div class="ModalContent" @click.stop>
+        <h2>Name Change</h2>
+        <input
+          type="text"
+          v-model="newName"
+          placeholder="Enter a new name"
+          @keydown.enter="changeUsername"
+        />
+        <div class="ModalButtons">
+          <button @click="cancelNameChange">Cancel</button>
+          <button @click="changeUsername">Save</button>
+        </div>
+      </div>
+    </div>
+
+    <div v-if="showChangePictureModal" class="Modal" @click="closeModal">
+      <div class="ModalContent" @click.stop>
+        <h2>Profile Picture Change</h2>
+        <div v-if="showChangePictureModal" class="show">
+      <ProfileAvatar @avatarUploaded="handleAvatarUploaded" />        </div>
+      </div>
+    </div>
+
+  </div>
+</template>
+
+<script setup lang="ts">
+  import { onBeforeMount, ref } from 'vue';
   import axiosInstance from '../../axiosConfig';
   import ProfileAchievements from "./ProfileAchievements.vue";
   import ProfileStats from "./ProfileStats.vue";
   import ProfileHistory from "./ProfileHistory.vue";
+  import ProfileAvatar from './ProfileAvatar.vue';
 
   const username = ref("");
+  const status = ref("");
   const selectedOption = ref("Achievements");
+  const showChangeNameModal = ref(false);
+  const newName = ref('');
+  const profilePicture = ref("");
+  const showChangePictureModal = ref(false);
+
+  const playerId = parseInt(localStorage.getItem('playerId') || '0');
 
   onBeforeMount(async () => {
-  try {
-    const playerId = 3;
-    username.value = await fetchUsername(playerId);
-    console.log(username.value);
-  } catch (error) {
-    console.log("Error occured");
-  }
+    try {
+      username.value = await fetchUsername(playerId);
+      profilePicture.value = await fetchAvatar(playerId);
+      status.value = await fetchStatus(playerId);
+      console.log(username.value);
+    } catch (error) {
+      console.log("Error occurred profpage");
+    }
   });
 
   const fetchUsername = async (player_id: number) => {
     const response = await axiosInstance.get('player/username/' + player_id.toString());
     return response.data;
   }
-  </script>
+
+  const fetchStatus = async (player_id: number) => {
+    const response = await axiosInstance.get('player/status/' + player_id.toString());
+    return response.data;
+  }
+
+  const fetchAvatar = async (player_id: number) => {
+    const response = await axiosInstance.get('player/avatar/' + player_id.toString());
+    const imageBytes: Uint8Array = new Uint8Array(response.data.data);
+    const imageUrl = ref<string | null>(null);
+    imageUrl.value = URL.createObjectURL(new Blob([imageBytes]));
+    return imageUrl.value;
+  };
+
+  const changeUsernameModal = () => {
+    showChangeNameModal.value = true;
+  };
+
+  const changeUsername = async () => {
+  if (newName.value) {
+    try {
+      const updatedUsername = await axiosInstance.patch(`player/username/${playerId}`, { username: newName.value });
+      username.value = updatedUsername.data; // Update the local username value
+      if (newName.value != username.value) {
+        throw new Error("Username already exists");
+      }
+      closeModal();
+    } catch (error) {
+      alert("Username already exists. Please choose a different username.");
+      console.log(error);
+    }
+  }
+};
+
+  const cancelNameChange = () => {
+    showChangeNameModal.value = false;
+    newName.value = '';
+  };
+
+  const changeProfilePicture = () => {
+    showChangePictureModal.value = true;
+  };
+
+  const handleAvatarUploaded = async (avatarBytes: Uint8Array) => {
+    showChangePictureModal.value = false;
+    profilePicture.value = await fetchAvatar(playerId)
+  };
+
+  const closeModal = () => {
+    showChangeNameModal.value = false;
+    showChangePictureModal.value = false;
+    newName.value = '';
+  };
+
+</script>
   
   <style>
 .ProfileContainer {
@@ -85,7 +174,7 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  border: 1px solid black;
+  border: 2px solid black;
 }
   
   .ProfileData {
@@ -94,7 +183,8 @@
     top: 10%;
     width: 20%;
     height: 50%;
-    border: 1px solid black;
+    margin-top: 10px;
+    /* border: 1px solid black; */
   }
   .ProfileData .ProfilePicture {
     position: absolute;
@@ -103,7 +193,7 @@
     transform: translateX(-50%);
     width: 100%;
     height: 60%;
-    border: 1px solid black;
+    /* border: 1px solid black; */
   }
   .ProfileData .ProfilePicture img {
     position: absolute;
@@ -120,7 +210,7 @@
     top: 60%;
     width: 100%;
     height: 40%;
-    border: 1px solid black;
+    /* border: 1px solid black; */
   }
   
   .ProfileOptions {
@@ -129,7 +219,7 @@
     top: 65%;
     width: 25%;
     height: 30%;
-    border: 1px solid black;
+    /* border: 1px solid black; */
   }
   .ProfileOptions .ProfileOptionsContainer {
     position: absolute;
@@ -137,7 +227,7 @@
     top: 15%;
     width: 100%;
     height: 70%;
-    border: 1px solid black;
+    /* border: 1px solid black; */
   }
   .ProfileOptions .ProfileOptionsContainer ul {
     position: absolute;
@@ -146,18 +236,25 @@
     transform: translate(-50%, -50%);
     width: 100%;
     height: 75%;
-    border: 1px solid black;
+    /* border: 1px solid black; */
     list-style-type: none;
     margin: 0;
     padding: 0;
   }
   .ProfileOptions .ProfileOptionsContainer ul li {
-    width: 100%;
-    height: 25%;
-    font-size: 22px;
-    font-weight: 400;
-    text-align: left;
-  }
+  width: 100%;
+  height: 25%;
+  font-size: 22px;
+  font-weight: 400;
+  text-align: left;
+  cursor: pointer; /* Add cursor style to indicate interactivity */
+  transition: color 0.3s, background-color 0.3s; /* Add transition for smooth effect */
+}
+
+.ProfileOptions .ProfileOptionsContainer ul li:hover {
+  color: #1f6091; /* Change color on hover */
+}
+
   .ProfileOptions .ProfileOptionsContainer ul li a {
     color: #134279;
     font-family: JetBrains Mono;
@@ -196,5 +293,48 @@
   .ProfileStats > div.show {
     display: block;
   }
-  </style>
+  .Modal {
+  position: fixed;
+  z-index: 1;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
 
+.ModalContent {
+  background-color: aliceblue; 
+  padding: 20px;
+  border: 1px solid #888;
+  border-radius: 4px;
+  text-align: center;
+  width: 30%; /* Adjust the width as desired */
+}
+
+.ModalContent h2 {
+  margin-top: 0;
+}
+
+.ModalContent input {
+  width: 50%;
+  padding: 10px;
+  margin-bottom: 10px;
+}
+
+.ModalButtons {
+  display: flex;
+  justify-content: center;
+}
+
+.ModalButtons button {
+  margin: 0 5px;
+}
+.ModalContent button:hover {
+  color: #fefefe; /* Change color on hover */
+  background-color: #697b8e;
+}
+  </style>
