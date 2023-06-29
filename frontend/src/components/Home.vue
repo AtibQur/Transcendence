@@ -3,6 +3,9 @@
     <div class="PongLogo">
       <h1>PONG</h1>
     </div>
+    <label> Dit wordt later vervangen door login proces, maar voor nu: vul hier een username in </label>
+      <input v-model="username" placeholder='username'/>
+      <button @click="storePlayerData">Log in</button>
     <div class="PongTable">
       <ul>
         <li><router-link to="/Auth">Auth</router-link></li>
@@ -15,10 +18,46 @@
   </div>
 </template>
 
-<script>
-  export default {
+<script setup lang="ts">
+  import { ref, defineComponent } from 'vue';
+  import axiosInstance from '../axiosConfig';
+
+  const username = ref('');
+
+  const storePlayerData = async () => {
+    if (username.value.trim() === '') {
+      alert('Username cannot be empty');
+      return;
+    }
+    const playerExists = await axiosInstance.get('/player/exists/' + username.value);
+    const playerIdResponse = await axiosInstance.post('/player/create', { username: username.value });
+    const playerId = playerIdResponse.data
+    localStorage.setItem('playerId', playerId);
+    localStorage.setItem('username', username.value);
+    if (!playerExists.data) {
+      setDefaultAvatar();
+    }
+  };
+
+  const setDefaultAvatar = async () => {
+    const playerId = parseInt(localStorage.getItem('playerId') || '0');
+    const defaultAvatarPath = './default_avatar.png';
+
+    // Fetch the default avatar file
+    const defaultAvatarFile = await fetch(defaultAvatarPath);
+    const defaultAvatarBlob = await defaultAvatarFile.blob();
+    const defaultAvatar = new File([defaultAvatarBlob], 'default_avatar.png');
+
+    // Send the default avatar file to the server
+    const formData = new FormData();
+    formData.append('avatar', defaultAvatar);
+
+    await axiosInstance.post('player/avatar/upload/' + playerId.toString(), formData);
+  };
+
+  defineComponent({
     name: 'HomeScreen'
-  }
+  });
 </script>
 
 <style>

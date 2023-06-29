@@ -16,7 +16,7 @@ import FriendsPage from './components/Friends/FriendsPage.vue';
 import PlayerProfile from './components/profile/PlayerProfile.vue';
 
 const routes: RouteRecordRaw[] = [
-    {
+    { 
       path: '/',
       component: Home,
     },
