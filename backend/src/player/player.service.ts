@@ -110,18 +110,27 @@ export class PlayerService {
 
   // GET ALL PLAYER STATS (FOR LEADERBOARD)
   async findAllStats() {
-    return prisma.playerStats.findMany({
-      select: {
-        player: {
-          select: {
-            username: true,
+    try {
+      const leaderboardData = await prisma.playerStats.findMany({
+        select: {
+          player: {
+            select: {
+              username: true,
+            },
           },
+          wins: true,
+          losses: true,
+          ladder_level: true,
         },
-        wins: true,
-        losses: true,
-        ladder_level: true,
-      },
-    });
+        orderBy: {
+          ladder_level: 'desc',
+        },
+      });
+      return leaderboardData;
+    }
+    catch (error) {
+      console.error('Error occurred:', error);
+    }
   }
 
   // GET ALL STATS FOR ONE PLAYER
