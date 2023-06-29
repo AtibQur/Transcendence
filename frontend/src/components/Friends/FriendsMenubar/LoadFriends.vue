@@ -35,6 +35,7 @@ export default defineComponent({
   emits: ['close-menu'],
   data() {
     return {
+      playerId: parseInt(localStorage.getItem('playerId') || '0'),
       friends: [] as Friend[], // Specify the type for the friends property
       hover: false,
       newFriendName: '' // Store the new friend's name entered by the user
@@ -48,8 +49,7 @@ export default defineComponent({
   methods: {
     async loadFriends() {
       try {
-        const playerId = parseInt(localStorage.getItem('playerId') || '0');
-        const response = await axiosInstance.get(`friend/username/${playerId}`);
+        const response = await axiosInstance.get(`friend/username/${this.playerId}`);
         console.log('Friends:', response.data);
         this.friends = response.data;
       } catch (error) {
@@ -59,8 +59,7 @@ export default defineComponent({
 
     async addFriend() {
       try {
-        const playerId = parseInt(localStorage.getItem('playerId') || '0');
-        const response = await axiosInstance.post(`friend/add/${playerId}`, {
+        const response = await axiosInstance.post(`friend/add/${this.playerId}`, {
           friendUsername: this.newFriendName
         });
 
@@ -79,8 +78,7 @@ export default defineComponent({
 
     async blockPlayer() {
       try {
-        const playerId = parseInt(localStorage.getItem('playerId') || '0');
-        await axiosInstance.delete(`friend/${playerId}`, {
+        await axiosInstance.delete(`friend/${this.playerId}`, {
           data: {
             friendUsername: this.newFriendName
           }
