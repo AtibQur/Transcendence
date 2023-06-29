@@ -12,6 +12,26 @@ export class PlayerService {
   // CREATE NEW PLAYER
   async createPlayer(createPlayerDto: CreatePlayerDto) {
     try {
+      const achievements = {
+        'First win': false,
+        '10 wins': false,
+        '50 wins': false,
+        '100 wins': false,
+        '10 consecutive wins': false,
+        '50 consecutive wins': false,
+        'Reached level 5': false,
+        'Reached level 10': false,
+        'Reached level 20': false,
+        'Reached level 50': false,
+        'Reached level 100': false,
+        'First friend': false,
+        '5 friends': false,
+        '10 friends': false,
+        '100 friends': false,
+        'First chat messages sent': false,
+        '10 chat messages sent': false,
+      };
+
       const newPlayer = await prisma.player.create({
         data: {
           username: createPlayerDto.username,
@@ -21,25 +41,7 @@ export class PlayerService {
               wins: 0,
               losses: 0,
               ladder_level: 1,
-              achievements: {
-                'First win': false,
-                '10 wins': false,
-                '50 wins': false,
-                '100 wins': false,
-                '10 consecutive wins': false,
-                '50 consecutive wins': false,
-                'Reached level 5': false,
-                'Reached level 10': false,
-                'Reached level 20': false,
-                'Reached level 50': false,
-                'Reached level 100': false,
-                'First friend': false,
-                '5 friends': false,
-                '10 friends': false,
-                '100 friends': false,
-                'First chat messages sent': false,
-                '10 chat messages sent': false,
-              },
+              achievements: achievements,
               status: 'online',
             },
           },
@@ -278,6 +280,7 @@ export class PlayerService {
         },
       });
       this.calcLadderLevel(id);
+      this.updateAchievementsAfterMatch(id);
     }
     catch (error) {
       console.error('Error occurred:', error);
@@ -300,6 +303,7 @@ export class PlayerService {
         },
       });
       this.calcLadderLevel(id);
+      this.updateAchievementsAfterMatch(id);
     }
     catch (error) {
       console.error('Error occurred:', error);
@@ -375,6 +379,7 @@ export class PlayerService {
           ladder_level: newLevel,
         },
       });
+      this.updateAchievementsAfterMatch(id);
     }
     catch (error) {
       console.error('Error occurred:', error);
@@ -397,6 +402,7 @@ export class PlayerService {
     try {
       let achievements = await this.findOneAchievements(id);
       if (achievements.hasOwnProperty(updatePlayerDto.achieved)) {
+        console.log(`PLAYER ${id} ACHIEVED ${updatePlayerDto.achieved}`)
         achievements[updatePlayerDto.achieved] = true;
       }
       else {
@@ -434,6 +440,44 @@ export class PlayerService {
     catch (error) {
       return false;
     }
+  }
+
+  // CHECK ALL ACHIEVEMENTS, UPDATE IF ANYTHING NEW IS ACHIEVED
+  async updateAchievementsAfterMatch(id: number) {
+    const allPlayerStats = await this.findOneStats(id);
+    const updateDto: UpdatePlayerDto = {
+      achieved: ''
+    };
+
+    if (allPlayerStats.ladder_level >= 100) {
+      updateDto.achieved = 'Reached level 100'
+    }
+    else if (allPlayerStats.ladder_level >= 50) {
+      updateDto.achieved = 'Reached level 50'
+    }
+    else if (allPlayerStats.ladder_level >= 10) {
+      updateDto.achieved = 'Reached level 10'
+    }
+    else if (allPlayerStats.ladder_level >= 20) {
+      updateDto.achieved = 'Reached level 20'
+    }
+    else if (allPlayerStats.ladder_level >= 5) {
+      updateDto.achieved = 'Reached level 5'
+    }
+    await this.achieveAchievement(id, updateDto)
+    if (allPlayerStats.wins >= 100) {
+      updateDto.achieved = '100 wins'
+    }
+    else if (allPlayerStats.wins >= 50) {
+      updateDto.achieved = '50 wins'
+    }
+    else if (allPlayerStats.wins >= 10) {
+      updateDto.achieved = '10 wins'
+    }
+    else if (allPlayerStats.wins == 1) {
+      updateDto.achieved = 'First win'
+    }
+    await this.achieveAchievement(id, updateDto)
   }
 
 }
