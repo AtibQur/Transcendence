@@ -78,10 +78,10 @@ export class PongGateway {
 	@SubscribeMessage('joinMatchmaking')
 	handleMatchmaking(
 		@ConnectedSocket() client: Socket,
-		@MessageBody() socket_id: string): void {
+		@MessageBody() { player_id, socket_id}: { player_id: number; socket_id: string }): void {
 		if (!this.waitingList.includes(socket_id)) {
 			this.waitingList.push(socket_id);
-			console.log('added', socket_id, 'to waitinglist');
+			console.log('added', player_id, socket_id, 'to waitinglist');
 		} else {
 			console.log(socket_id, 'is already in the waiting list');
 		}
@@ -106,23 +106,23 @@ export class PongGateway {
 			setInterval(() => this.pongService.tick(client), 1000 / 60);
 	}
 
-	handleDisconnect(client: Socket): void {
-		const disconnectedId = client.id
+	// handleDisconnect(client: Socket): void {
+	// 	const disconnectedId = client.id
 
-		// const matchId = this.findMatchByPlayer(disconnectedId);
-		// console.log("MatchID", matchId)
-		// if (matchId) {
-		// 		this.server.emit('beforeunload', { id: match.get(matchId)});
-		// 		// this.server.emit('beforeunload', { id: matchId.p2});
-		// 		match.delete(matchId)
-		// }
-		const index = this.waitingList.indexOf(disconnectedId);
-		console.log('player', disconnectedId, 'left the waiting list');
-		console.log('Waiting list:', this.waitingList);
-		if (index !== -1){
-			this.waitingList.splice(index, 1);
-		}
-		this.gameEnded = true;
-		this.server.emit('playerDisconnected', { id: disconnectedId });
-	}
+	// 	// const matchId = this.findMatchByPlayer(disconnectedId);
+	// 	// console.log("MatchID", matchId)
+	// 	// if (matchId) {
+	// 	// 		this.server.emit('beforeunload', { id: match.get(matchId)});
+	// 	// 		// this.server.emit('beforeunload', { id: matchId.p2});
+	// 	// 		match.delete(matchId)
+	// 	// }
+	// 	const index = this.waitingList.indexOf(disconnectedId);
+	// 	console.log('player', disconnectedId, 'left the waiting list');
+	// 	console.log('Waiting list:', this.waitingList);
+	// 	if (index !== -1){
+	// 		this.waitingList.splice(index, 1);
+	// 	}
+	// 	this.gameEnded = true;
+	// 	this.server.emit('playerDisconnected', { id: disconnectedId });
+	// }
 }

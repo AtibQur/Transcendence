@@ -10,14 +10,14 @@
 </template>
 
 <script lang="ts">
-export let p1 = ''
-export let p2 = ''
+	export let p1 = ''
+	export let p2 = ''
 
-import { onBeforeMount, ref } from 'vue'
-import { useRouter } from 'vue-router'
-import { socket } from '../../socket'
-import axiosInstance from '../../axiosConfig'
-  
+	import { onBeforeMount, ref } from 'vue'
+	import { useRouter } from 'vue-router'
+	import { socket } from '../../socket'
+	import axiosInstance from '../../axiosConfig'
+
 export default {
 	name: 'MatchMaking',
 	setup() {
@@ -33,7 +33,7 @@ export default {
 	onBeforeMount(async () => {
 		player.id = 9;
 		player.socket_id = socket.id;
-		socket.emit('joinMatchmaking', player.socket_id);
+		socket.emit('joinMatchmaking', {player_id: player.id, socket_id: player.socket_id});
 		// const username = await fetchUsername(9);
 		// dynamicText1.value = username;
 		// socket.emit('joinMatchmaking', 2);
@@ -74,26 +74,31 @@ export default {
 </script>
   
 <style>
-  .container {
+.container {
 	display: flex;
 	align-items: center;
 	justify-content: center;
   }
-  
-  .text-wrapper {
+
+.text-wrapper {
 	position: absolute;
 	display: flex;
 	align-items: center;
 	/* margin-left: 40%; */
 	/* transform: translate(-50%, -50%); */
-  }
-  
-  .text {
+}
+
+.text {
 	margin: 0 50px;
 	text-align: center;
-  }
+}
 </style>
   
+
+
+
+
+
 
 <!-- <template>
 	<h1>Finding players...</h1>

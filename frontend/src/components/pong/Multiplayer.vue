@@ -3,21 +3,34 @@
 		<h1>PONG</h1>
 	</div>
 		<GameTools :player1="player1" :player2="player2" :ball="ball" :score1="score1" :score2="score2"/>
+	<div class="gameover-container" v-if="win">
+		<h1>VICTORY!</h1>
+	</div>
+	<div class="gameover-container" v-if="lose">
+		<h1>DEFEAT</h1>
+	</div>
+	<div class="gameover-container">
+		<router-link to="/Leaderboard"><button class="gameOverBtn" v-if="end">Leaderboard</button></router-link>
+		<router-link to="/"><button class="gameOverBtn" v-if="end">Exit</button></router-link>
+	</div>
 </template>
 
 <script lang="ts">
-import { socket } from '../../socket'
-import GameTools from './GameTools.vue'
-import { defineComponent } from 'vue'
-import {p1, p2} from './MatchMaking.vue'
-import { useRouter } from 'vue-router'
-import axios from 'axios'
+	import { socket } from '../../socket'
+	import GameTools from './GameTools.vue'
+	import { defineComponent } from 'vue'
+	import {p1, p2} from './MatchMaking.vue'
+	import { useRouter } from 'vue-router'
+	import axios from 'axios'
 
-export default defineComponent({
+	export default defineComponent({
 	name: "MultiplayerMatch",
 	components: { GameTools},
 data() {
 	return {
+		end: false,
+		win: false,
+		lose: false,
 		router: useRouter(),
 		canvas: {
 			width: 858,
@@ -118,8 +131,19 @@ mounted() {
 
 		this.score1 = match.score1
 		this.score2 = match.score2
-		if (this.score1 === 5 || this.score2 === 5){
-			socket.emit('endGame');
+		if (this.score1 === 5){
+			if (socket.id === p2)
+				this.win = true;
+			else
+				this.lose = true;
+			this.end = true;
+		}
+		else if (this.score2 === 5){
+			if (socket.id === p1)
+				this.win = true;
+			else
+				this.lose = true;
+			this.end = true;
 		}
 	})
 	socket.on('playerDisconnected', (data: {id: any }) => 
@@ -141,5 +165,27 @@ mounted() {
 		setInterval(this.moveRight, 1);
 	}
 })
-
 </script>
+
+<style>
+.gameover-container {
+	position: absolute;
+	font-size: 40px;
+	text-align: center;
+	font-weight: bold;
+	color: #134279;
+	text-shadow: -1.5px 2px 1px #2164b480;
+	top: 45%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+}
+.gameOverBtn {
+	color: #134279;
+	font-size: 15px;
+	border: none
+}
+
+.gameOverBtn:hover {
+	color: #79abe6;
+}
+</style>

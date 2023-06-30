@@ -7,7 +7,7 @@
 		<h1>DEFEAT</h1>
 	</div>
 	<div class="gameover-container">
-		<router-link to="/Play"><button class="gameOverBtn" v-if="end" @click="refreshPage">Retry</button></router-link>
+		<!-- <router-link to="/Play"><button class="gameOverBtn" v-if="end" @click="refreshPage">Retry</button></router-link> -->
 		<router-link to="/Leaderboard"><button class="gameOverBtn" v-if="end">Leaderboard</button></router-link>
 		<router-link to="/"><button class="gameOverBtn" v-if="end">Exit</button></router-link>
 	</div>
@@ -15,7 +15,7 @@
 
 <script lang="ts">
 import GameTools from './GameTools.vue'
-import { defineComponent, onBeforeMount } from 'vue'
+import { defineComponent } from 'vue'
 
 export default defineComponent({
 	name: "SoloMatch",
@@ -75,7 +75,7 @@ methods: {
 		this.ball.velocity = 2;
 		this.ball.dX = Math.random() > 0.5 ? 1 : - 1;
 		this.ball.dY = Math.random() > 0.5 ? 1 : - 1;
-		// this.ball.y = (Math.random() * this.canvas.height);
+		this.ball.y = Math.min(Math.max((Math.random() * this.canvas.height), 100), this.canvas.height - 100);
 	},
 	canvasCollision(){
 		if (this.ball.x + this.ball.radius > this.canvas.width - 10 || this.ball.x < 0) {
@@ -186,13 +186,4 @@ mounted() {
 .gameOverBtn:hover {
 	color: #79abe6;
 }
-
 </style>
-
-<!-- onBeforeMount(async () => {
-	try {
-
-	} catch (error) {
-
-	}
-}) -->
