@@ -2,13 +2,14 @@
     <h2> Chat: {{ channelName }} </h2>
     <div>
         <div v-for="message in messages" :key="message.id">
-            {{ getSenderName(message.sender_id) }}: {{ message.content }}
+            {{ message.sender.username }}: {{ message.content }}
         </div>
     </div>
   </template>
 
 <script setup lang="ts">
 import { socket } from '@/socket';
+import axiosInstance from '../../axiosConfig';
 import { onBeforeMount, onUpdated, ref, computed, watch} from 'vue'
 import Message from '@/types/Message';
 
@@ -25,26 +26,22 @@ const props = defineProps({
 
 const channelName = ref('');
 const messages = ref<Message[]>([]);
-const senderNames = ref<Record<number, string>>({}); // Hold the sender names
 const currentChannelId = ref(props.channelId);
 
 onBeforeMount(async () => {
     
-    
-    // FIND CHANNEL MESSAGES
-    const fetchChatMessages = async (channelId) => {
-        socket.emit('findAllChannelMessages', channelId, (response: Message[]) => {
-            try {
-                messages.value = response;
-            } catch (e) {
-                console.log('Error: fetching messages');
-            }
-        });
+    // FIND CHANNEL MESSAGES FILTERED
+    const fetchChatMessagesFiltered = async (player_id: number, channel_id: number) => {
+        const channel_id_query = 'channel_id=' + channel_id.toString();
+        const response = await axiosInstance.get('chatmessage/filtered/' + player_id.toString() + `?${channel_id_query}`);
+        messages.value = response.data;
+        console.log(response.data);
+        // return response.data;
     };
 
     //FIND CHANNEL NAME
     const fetchChannelName = async (channelId: number) => {
-        socket.emit('findOneChannelName', props.channelId, (name: string) => {
+        socket.emit('findOneChannelName', channelId, (name: string) => {
             try {
                 channelName.value = name;
             } catch (e) {
@@ -53,7 +50,7 @@ onBeforeMount(async () => {
         });
     };
 
-    await fetchChatMessages(currentChannelId.value);
+    await fetchChatMessagesFiltered(props.playerId, currentChannelId.value);
     await fetchChannelName(currentChannelId.value);
 
 
@@ -65,7 +62,7 @@ onBeforeMount(async () => {
     //TRACK WHETHER CHANNEL_ID CHANGES
     watch(() => props.channelId, async (newChannelId) => {
         currentChannelId.value = newChannelId;
-        await fetchChatMessages(newChannelId);
+        await fetchChatMessagesFiltered(props.playerId, currentChannelId.value);
         await fetchChannelName(currentChannelId.value);
     });
 
@@ -78,30 +75,6 @@ async function addChatmessage(message: Message) {
         console.log('Error: adding message');
     }
 }
-
-//FETCH NAME FROM DATABASE
-const fetchSenderName = async (sender_id: number) => {
-    return new Promise<string>((resolve) => {
-        socket.emit('findUsername', sender_id, (sender_name: string) => {
-            resolve(sender_name);
-        });
-    });
-};
-
-//UPDATE LIST OF SENDERS
-const updateSenderName = async (sender_id: number) => {
-    const sender_name = await fetchSenderName(sender_id);
-    senderNames.value[sender_id] = sender_name;
-};
-
-//GET NAME OF SENDER BY ID
-const getSenderName = (sender_id: number) => {
-    if (senderNames.value[sender_id]) {
-        return senderNames.value[sender_id];
-    }
-    updateSenderName(sender_id);
-    return computed(() => senderNames.value[sender_id]);
-};
 
 </script>
 
