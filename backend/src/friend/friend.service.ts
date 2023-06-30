@@ -17,7 +17,7 @@ export class FriendService {
     try {
       const friendId = await this.playerService.findIdByUsername(addFriendDto.friendUsername);
       if (id == friendId) {
-        return null;
+        throw new Error("You can not add yourself as a friend");
       }
       const existingFriendship = await prisma.friend.findFirst({
         where: {
@@ -34,7 +34,7 @@ export class FriendService {
         },
       });
       if (existingFriendship) {
-        return null;
+        throw new Error("Player is already your friend");
       }
       const newFriendShip = await prisma.friend.create({
         data: {
@@ -142,7 +142,7 @@ async findFriendsUsername(id: number) {
         },
       });
       if (!existingFriendship) {
-        return null;
+        throw new Error("Friendship does not exist");
       }
       const deletedFriendship = await prisma.friend.delete({
         where: {
