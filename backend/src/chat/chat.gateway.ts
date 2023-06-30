@@ -102,13 +102,19 @@ export class ChatGateway {
         return channel.name;
     }
 
-    //FIND ALL CHANNEL MESSAGES
-    @SubscribeMessage('findAllChannelMessages')
-    findAllChannelMessages(
-        @MessageBody() id: number
-    ){
-        return this.chatmessageService.findChannelMsgs(id);
-    }
+    // //FIND ALL CHANNEL MESSAGES
+    // @SubscribeMessage('findAllChannelMessages')
+    // findAllChannelMessages(
+    //     @MessageBody() id: number
+    // ){
+    //     return this.chatmessageService.findChannelMsgs(id);
+    // }
+
+    // //FIND ALL CHANNEL MESSAGES FILTERED
+    // @SubscribeMessage('findAllChannelMessagesFiltered')
+    // findAllChannelMessagesFiltered(){
+    //     return this.chatmessageService.findChannelMsgsFiltered();
+    // }
 
     //FIND NAME OF MESSAGESENDER
     @SubscribeMessage('findUsername')

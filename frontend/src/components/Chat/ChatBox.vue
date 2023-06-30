@@ -9,6 +9,7 @@
 
 <script setup lang="ts">
 import { socket } from '@/socket';
+import axiosInstance from '../../axiosConfig';
 import { onBeforeMount, onUpdated, ref, computed, watch} from 'vue'
 import Message from '@/types/Message';
 
@@ -30,21 +31,18 @@ const currentChannelId = ref(props.channelId);
 
 onBeforeMount(async () => {
     
-    
-    // FIND CHANNEL MESSAGES
-    const fetchChatMessages = async (channelId) => {
-        socket.emit('findAllChannelMessages', channelId, (response: Message[]) => {
-            try {
-                messages.value = response;
-            } catch (e) {
-                console.log('Error: fetching messages');
-            }
-        });
+    // FIND CHANNEL MESSAGES FILTERED
+    const fetchChatMessagesFiltered = async (player_id: number, channel_id: number) => {
+        const channel_id_query = 'channel_id=' + channel_id.toString();
+        const response = await axiosInstance.get('chatmessage/filtered/' + player_id.toString() + `?${channel_id_query}`);
+        messages.value = response.data;
+        console.log(response.data);
+        // return response.data;
     };
 
     //FIND CHANNEL NAME
     const fetchChannelName = async (channelId: number) => {
-        socket.emit('findOneChannelName', props.channelId, (name: string) => {
+        socket.emit('findOneChannelName', channelId, (name: string) => {
             try {
                 channelName.value = name;
             } catch (e) {
@@ -53,7 +51,7 @@ onBeforeMount(async () => {
         });
     };
 
-    await fetchChatMessages(currentChannelId.value);
+    await fetchChatMessagesFiltered(props.playerId, currentChannelId.value);
     await fetchChannelName(currentChannelId.value);
 
 
@@ -65,7 +63,7 @@ onBeforeMount(async () => {
     //TRACK WHETHER CHANNEL_ID CHANGES
     watch(() => props.channelId, async (newChannelId) => {
         currentChannelId.value = newChannelId;
-        await fetchChatMessages(newChannelId);
+        await fetchChatMessagesFiltered(props.playerId, currentChannelId.value);
         await fetchChannelName(currentChannelId.value);
     });
 
