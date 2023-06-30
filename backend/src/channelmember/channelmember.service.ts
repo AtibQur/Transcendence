@@ -8,7 +8,7 @@ const prisma = PrismaService.getClient();
 @Injectable()
 export class ChannelmemberService {
 
-  // CREATE NEW CHANNEL MEMBER
+  // ADD PLAYER TO EXISTING CHANNEL
   async createChannelmember(createChannelmemberDto: CreateChannelmemberDto) {
     try {
       const data: any = {
@@ -24,54 +24,77 @@ export class ChannelmemberService {
         data.muted_at = new Date();
       }
   
-      await prisma.channelMember.create({
+      const newChannelMember = await prisma.channelMember.create({
         data,
       });
-  
-      return 'Player is added to channel';
-    } catch (error) {
+
+      return newChannelMember;
+    }
+    catch (error) {
         if (error.code === 'P2002') {
-            return 'Player is already member of this channel';
+            console.error('Error occurred: Player is already member of this channel');
         }
-       console.error('Error occurred:', error);
+        else {
+          console.error('Error occurred:', error);
+        }
+      return null;
     }
   }
 
-  findAll() {
-    return `This action returns all channelmember`;
-  }
-  
-  // FIND ALL CHANNELS OF PLAYER
+  // FIND ALL CHANNELS WHERE PLAYER IS MEMBER
+  // TODO: move to channels module?
   async findPlayerChannels(id: number) {
-    return prisma.channelMember.findMany({
-        where: {
-          member_id: id
-        },
-        include: {
-            channel: {
-                select: {
-                    name: true
-                }
-            }
-        },
-      });
+    try {
+      return prisma.channelMember.findMany({
+          where: {
+            member_id: id
+          },
+          include: {
+              channel: {
+                  select: {
+                      name: true
+                  }
+              }
+          },
+        });
+      
+    }
+    catch (error) {
+      console.error('Error occurred:', error);
+      return null;
+    }
   }
   
   // FIND ALL CHANNELMEMBERS OF CHANNEL
   findAllChannelmembers(channel_id: number) {
-    return prisma.channelMember.findMany({
-        where: {
-          channel_id: channel_id
-        },
-        select: {
-            member_id: true
-        }
-      });
+    try {
+      const channelMembers = prisma.channelMember.findMany({
+          where: {
+            channel_id: channel_id
+          },
+          select: {
+              member_id: true,
+              is_admin: true,
+              is_muted: true,
+              is_banned: true,
+              member: {
+                select: {
+                  username: true
+                }
+              }
+          },
+        });
+      return channelMembers;
+    }
+    catch (error) {
+      console.error('Error occurred:', error);
+      return null;
+    }
   }
 
   // FIND ALL CHANNELMEMBERS OF CHANNEL
+  // TODO: use findAllChannelmembers for this?
   findAllChannelmembersNames(channel_id: number) {
-   
     return prisma.channelMember.findMany({
         where: {
             channel_id: channel_id
@@ -86,14 +109,6 @@ export class ChannelmemberService {
       });
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} channelmember`;
-  }
-
-  update(id: number, updateChannelmemberDto: UpdateChannelmemberDto) {
-    return `This action updates a #${id} channelmember`;
-  }
-
   // CHECK IF MEMBER IS ADMIN
   async findIsAdmin(playerId: number, channelId: number) {
     try {
@@ -106,25 +121,27 @@ export class ChannelmemberService {
                 is_admin: true
             }
         })
-
         return selectedChannelmember[0].is_admin;
-    } catch (error) {
-        console.log('Error checking if channelmember is admin: ', error);
+    }
+    catch (error) {
+      console.log('Error checking if channelmember is admin: ', error);
+      return null;
     }
   }
 
-  // DELETE A CHANNELMEMBER
+  // DELETE A PLAYER FROM CHANNEL
   async remove(id: number) {
     try {
-      await prisma.channelMember.delete({
+      const deletedMember = await prisma.channelMember.delete({
         where: {
           id: id,
         },
       });
-      return `This action removes a #${id} channelmember`;
+      return deletedMember;
     }
     catch (error) {
       console.error('Error deleting member:', error);
+      return null;
     }
   }
 
