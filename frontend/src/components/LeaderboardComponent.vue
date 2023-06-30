@@ -290,14 +290,24 @@
   }
 
   .Leaderboard-player-stats {
-    /* Add styles to match Leaderboard-header */
-    position: absolute;
-    top: 18%; /* Adjust as needed */
-    left: 0;
-    width: 100%;
-    height: 72%; /* Adjust as needed */
-    overflow-y: auto; /* Add scrollbars if needed */
-  }
+  /* Add styles to match Leaderboard-header */
+  position: absolute;
+  top: 18%; /* Adjust as needed */
+  left: 0;
+  width: 100%;
+  height: 72%; /* Adjust as needed */
+  overflow-y: auto; /* Add scrollbars if needed */
+
+  /* Hide the scrollbar */
+  scrollbar-width: thin;
+  scrollbar-color: transparent transparent; /* Adjust color if needed */
+}
+
+/* Hide the scrollbar track and thumb */
+.Leaderboard-player-stats::-webkit-scrollbar {
+  width: 0;
+  height: 0;
+}
 
   .Leaderboard-row {
     /* Styles to match Leaderboard-header */
@@ -305,7 +315,7 @@
     align-items: center;
     justify-content: center;
     border-bottom: 2px solid black;
-    height: 8%; /* Adjust as needed */
+    height: 65px; /* Adjust as needed */
   }
 
   .Leaderboard-row .Leaderboard-rank {
@@ -324,17 +334,15 @@
     align-items: center;
     justify-content: center;
     width: 60%;
-    /* min-width: 1047px; */
     height: 100%;
     border-right: 2px solid black;
     justify-content: left;
-    
   }
 
   .Leaderboard-row .Leaderboard-name h2 {
     font-family: 'JetBrains Mono';
     font-style: normal;
-    line-height: 127px;
+    line-height: 145px;
     color: #595959;
     font-weight: 400;
     font-size: 14px;
@@ -365,7 +373,5 @@
     font-size: 14px;
     border-right: none; /* Remove border on the last column */
   }
-
-  
 
   </style>
