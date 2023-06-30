@@ -19,13 +19,8 @@ export class PlayerController {
   // UPLOAD AN AVATAR
   @Post('avatar/upload/:id')
   @UseInterceptors(FileInterceptor('avatar'))
-  async uploadAvatar(@Param('id') id: number, @UploadedFile() file: File) {
-    try {
-      const avatar = await this.playerService.uploadAvatar(+id, file);
-      return avatar;
-    } catch (error) {
-      console.error(error);
-    }
+  uploadAvatar(@Param('id') id: number, @UploadedFile() file: File) {
+    return this.playerService.uploadAvatar(+id, file);
   }
 
   // GET ALL PLAYER STATS (FOR LEADERBOARD)
@@ -70,6 +65,12 @@ export class PlayerController {
     return this.playerService.findPercentageWins(+id);
   }
 
+  // GET STATUS
+  @Get('status/:id')
+  findStatus(@Param('id') id: string) {
+    return this.playerService.findStatus(+id);
+  }
+
   // CHANGE USERNAME
   @Patch('username/:id')
   updateUsername(@Param('id') id: string, @Body() updatePlayerDto: UpdatePlayerDto) {
@@ -104,6 +105,12 @@ export class PlayerController {
   @Patch('achieve/:id')
   achieveAchievement(@Param('id') id: string, @Body() updatePlayerDto: UpdatePlayerDto) {
     return this.playerService.achieveAchievement(+id, updatePlayerDto);
+  }
+
+  // CHECK IF PLAYER EXISTS
+  @Get('exists/:username')
+  isExistingPlayer(@Param('username') username: string) {
+    return this.playerService.isExistingPlayer(username);
   }
 
 }

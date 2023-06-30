@@ -11,6 +11,7 @@ import { ChatmessageModule } from './chatmessage/chatmessage.module';
 import { MatchModule } from './match/match.module';
 import { ChatModule } from './chat/chat.module';
 import { FriendModule } from './friend/friend.module';
+import { BlockedplayerModule } from './blockedplayer/blockedplayer.module';
 
 
 @Module({
@@ -26,6 +27,7 @@ import { FriendModule } from './friend/friend.module';
     MatchModule,
     ChatModule,
     FriendModule,
+    BlockedplayerModule,
   ],
   controllers: [AppController],
   providers: [AppService],
