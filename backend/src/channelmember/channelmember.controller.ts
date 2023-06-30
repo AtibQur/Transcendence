@@ -27,6 +27,13 @@ export class ChannelmemberController {
     return this.channelmemberService.findAllChannelmembers(+channel_id);
   }
 
+  @Get('admin/:id/:channel_id')
+  findIsAdmin(
+    @Param('id') id: string,
+    @Param('channel_id') channel_id: string
+  ) {
+    return this.channelmemberService.findIsAdmin(+id, +channel_id);
+  }
 
   @Get(':id')
   findOne(@Param('id') id: string) {

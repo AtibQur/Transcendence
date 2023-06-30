@@ -1,4 +1,4 @@
-<template>
+<!-- <template>
     <label> What's your name? </label>
     <input v-model="name" placeholder='Write your name'/>
     <button @click="playerStore.initPlayer(name)">Send</button>
@@ -25,4 +25,4 @@ const playerStore = usePlayerStore();
 
 <style>
 
-</style>
+</style> -->

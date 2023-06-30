@@ -28,9 +28,12 @@ export class ChannelmemberService {
         data,
       });
   
-      return `This action adds a new channelmember: ${createChannelmemberDto.member_id}`;
+      return 'Player is added to channel';
     } catch (error) {
-      console.error('Error occurred:', error);
+        if (error.code === 'P2002') {
+            return 'Player is already member of this channel';
+        }
+       console.error('Error occurred:', error);
     }
   }
 
@@ -44,9 +47,13 @@ export class ChannelmemberService {
         where: {
           member_id: id
         },
-        select: {
-            channel_id: true
-        }
+        include: {
+            channel: {
+                select: {
+                    name: true
+                }
+            }
+        },
       });
   }
   
@@ -62,6 +69,23 @@ export class ChannelmemberService {
       });
   }
 
+  // FIND ALL CHANNELMEMBERS OF CHANNEL
+  findAllChannelmembersNames(channel_id: number) {
+   
+    return prisma.channelMember.findMany({
+        where: {
+            channel_id: channel_id
+        },
+        include: {
+            member: {
+              select: {
+                username: true
+              }
+            }
+        }
+      });
+  }
+
   findOne(id: number) {
     return `This action returns a #${id} channelmember`;
   }
@@ -70,23 +94,22 @@ export class ChannelmemberService {
     return `This action updates a #${id} channelmember`;
   }
 
-  // CHECK MEMBERSHIP OF PLAYER
-  async checkMembership(playerId: number, channelId: number) {
+  // CHECK IF MEMBER IS ADMIN
+  async findIsAdmin(playerId: number, channelId: number) {
     try {
-        const selectedChannel = await prisma.channelMember.findMany({
+        const selectedChannelmember = await prisma.channelMember.findMany({
             where: {
                 member_id: playerId,
                 channel_id: channelId
+            },
+            select: {
+                is_admin: true
             }
         })
 
-        if (selectedChannel.length !== 0) {
-            return true;
-        }
-        return false;
-
+        return selectedChannelmember[0].is_admin;
     } catch (error) {
-        console.log('Error checking membersip of player: ', error);
+        console.log('Error checking if channelmember is admin: ', error);
     }
   }
 

@@ -1,42 +1,44 @@
 <template>
     <h4>Channel Members</h4>
     <ul id="channelmemberList">
-        <!-- <button v-for="(channelmember, index) in channelmembers" :key="index" @click="changeChannel(channel.channel_id)">
-            {{ getChannelName(channel.channel_id) }}
-        </button> -->
+        <li v-for="(channelmember, index) in channelmembers" :key="index">
+            {{ channelmember }}
+        </li>
     </ul>
 </template>
 
 <script setup lang="ts">
 import { socket } from '../../socket';
-import { onBeforeMount, ref, computed } from 'vue'
+import { onBeforeMount, ref, watch } from 'vue'
 
-// const props = defineProps({
-//     channelId: {
-//         type: Number,
-//         required: true
-//     }
-// });
+const props = defineProps({
+    channelId: {
+        type: Number,
+        required: true
+    }
+});
 
-// const channelmembers = ref({});
+const channelmembers = ref([]);
+const currentChannelId = ref(props.channelId);
 
-// onBeforeMount(() => {
+onBeforeMount(async () => {
 
-//     // FIND ALL CHANNEL FOR PLAYER
-//     socket.emit('findPlayerChannels', props.playerId, (response) => {
-//         channels.value = response;
-//     });
+    // FIND ALL CHANNEL FOR PLAYER
+    const fetchChannelmembers = async (channelId) => {
+        socket.emit('findAllChannelmembersNames', channelId, (response) => {
+            channelmembers.value = response;
+        });
+    }
 
-//     //LISTEN IF A NEW CHANNEL IS ADDED
-//     socket.on('newChannel', (payload: {channel_id: number}) => {
-//         addChannel(payload.channel_id);
-//     });
+    await fetchChannelmembers(currentChannelId.value);
 
-//     // socket.on('leftChannel', (channel_id) => {
+    //TRACK WHETHER CHANNEL_ID CHANGES
+    watch(() => props.channelId, async (newChannelId) => {
+        currentChannelId.value = newChannelId;
+        await fetchChannelmembers(currentChannelId.value);
+    });
+})
 
-//     // });
-
-// })
 
 </script>
 

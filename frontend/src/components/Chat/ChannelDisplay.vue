@@ -26,15 +26,18 @@ const channelNames = ref<Record<number, string>>({}); // Hold the sender names
 
 onBeforeMount(async () => {
 
-    console.log('hello', props.playerId);
     // FIND ALL CHANNEL FOR PLAYER
     await socket.emit('findPlayerChannels', props.playerId, (response) => {
         channels.value = response;
     });
 
-    //LISTEN IF A NEW CHANNEL IS ADDED
-    socket.on('newChannel', (payload: {channel_id: number}) => {
-        addChannel(payload.channel_id);
+    // LISTEN IF A NEW CHANNEL IS ADDED
+    socket.on('newChannel', (channelId: number) => {
+        console.log('new channel');
+        socket.emit('joinRoom', { player_id: props.playerId, channel_id: channelId}, () => {
+            console.log('joined channel');
+            channels.value.push({channel_id: channelId})
+        })
     });
 
     // socket.on('leftChannel', (channel_id) => {
@@ -42,26 +45,6 @@ onBeforeMount(async () => {
     // });
 
 })
-
-async function addChannel(channelId: number) {
-    try {
-        const isMember = await checkMembership(props.playerId, channelId);
-        if (isMember) {
-            console.log(`player ${props.playerId} is member of ${channelId}`)
-            channels.value.push({channel_id: channelId});
-        }
-    } catch (error) {
-        console.log('Error: adding channel');
-    }
-}
-
-async function checkMembership(playerId: number, channelId: number) {
-    return new Promise<boolean>((resolve) => {
-        socket.emit('checkMembership', {playerId, channelId}, (result: boolean) => {
-            resolve(result);
-        })
-    })
-}
 
 // EVENT TO CHANGE CURRENT CHANNEL
 const changeChannel = (channel_id: number) => {

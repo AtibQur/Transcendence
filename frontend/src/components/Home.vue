@@ -5,7 +5,7 @@
     </div>
     <label> Dit wordt later vervangen door login proces, maar voor nu: vul hier een username in </label>
       <input v-model="username" placeholder='username'/>
-      <button @click="storePlayerData">Log in</button>
+      <button @click="initPlayerData">Log in</button>
     <div class="PongTable">
       <ul>
         <li><router-link to="/Auth">Auth</router-link></li>
@@ -15,16 +15,19 @@
         <li><router-link to="/populatedatabase">Populate Database</router-link></li>
       </ul>
     </div>
+    <button @click="logOut">Log out</button>
   </div>
 </template>
 
 <script setup lang="ts">
   import { ref, defineComponent } from 'vue';
   import axiosInstance from '../axiosConfig';
+  import { socket } from '@/socket';
 
   const username = ref('');
+  const logged = ref(false);
 
-  const storePlayerData = async () => {
+  const initPlayerData = async () => {
     if (username.value.trim() === '') {
       alert('Username cannot be empty');
       return;
@@ -32,11 +35,15 @@
     const playerExists = await axiosInstance.get('/player/exists/' + username.value);
     const playerIdResponse = await axiosInstance.post('/player/create', { username: username.value });
     const playerId = playerIdResponse.data
+    logged.value = true;
+
     localStorage.setItem('playerId', playerId);
     localStorage.setItem('username', username.value);
+    localStorage.setItem('logged', logged.value);
     if (!playerExists.data) {
       setDefaultAvatar();
     }
+    await socket.emit('joinAllRooms', playerId)
   };
 
   const setDefaultAvatar = async () => {
@@ -54,6 +61,12 @@
 
     await axiosInstance.post('player/avatar/upload/' + playerId.toString(), formData);
   };
+
+  const logOut = async () => {
+    localStorage.removeItem('playerId');
+    localStorage.removeItem('username');
+    localStorage.removeItem('logged');
+  }
 
   defineComponent({
     name: 'HomeScreen'
