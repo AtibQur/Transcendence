@@ -112,47 +112,91 @@ export class ChannelmemberService {
       });
   }
 
-// GET A MEMBER'S INFO
-async findChannelmember(member_id: number, channel_id: number) {
-  try {
-    const channelMember = await prisma.channelMember.findFirst({
-      where: {
-        member_id: member_id,
-        channel_id: channel_id
-      },
-      select: {
-        id: true,
-        member_id: true,
-        member: {
-          select: {
-            username: true
-          }
+  // GET A MEMBER'S INFO
+  async findChannelmember(member_id: number, channel_id: number) {
+    try {
+      const channelMember = await prisma.channelMember.findFirst({
+        where: {
+          member_id: member_id,
+          channel_id: channel_id
         },
-        channel: {
-          select: {
-            owner_id: true
-          }
-        },
-        is_admin: true,
-        is_muted: true,
-        is_banned: true,
-      }
-    });
+        select: {
+          id: true,
+          member_id: true,
+          member: {
+            select: {
+              username: true
+            }
+          },
+          channel: {
+            select: {
+              owner_id: true
+            }
+          },
+          is_admin: true,
+          is_muted: true,
+          is_banned: true,
+        }
+      });
 
-    if (channelMember) {
-      const isOwner = channelMember.member_id === channelMember.channel.owner_id;
-      return {
-        ...channelMember,
-        is_owner: isOwner
-      };
-    } else {
+      if (channelMember) {
+        const isOwner = channelMember.member_id === channelMember.channel.owner_id;
+        return {
+          ...channelMember,
+          is_owner: isOwner
+        };
+      } else {
+        return null;
+      }
+    } catch (error) {
+      console.error('Error occurred:', error);
       return null;
     }
-  } catch (error) {
-    console.error('Error occurred:', error);
-    return null;
   }
-}
+
+  // GET A PLAYERS' BLOCK/ADMIN/MUTE/DELETE ANOTHER MEMBER RIGHTS
+  async findRights(player_id: number, member_id: number, channel_id: number) {
+    try {
+      const rights = {
+        memberIsAdmin: false,
+        memberIsOwner: false,
+        memberIsBanned: false,
+        showBlock: true, // player can always block someone
+        showMute: false,
+        showMakeAdmin: false,
+        showBan: false,
+        showDelete: false
+      }
+      const player = await this.findChannelmember(player_id, channel_id);
+      const member =  await this.findChannelmember(member_id, channel_id);
+      if (!player || !member) {
+        throw new Error("Player or member does not exist");
+      }
+      // Define rights of channelmember
+      rights.memberIsAdmin = member.is_admin;
+      rights.memberIsOwner = member.is_owner;
+      rights.memberIsBanned = member.is_banned;
+
+      // Define which options the player will have to do with another channelmember
+      if (player.is_admin && !member.is_admin) {
+        rights.showMakeAdmin = true;
+      }
+      if (player.is_admin && !member.is_owner && !member.is_muted) {
+        rights.showMute = true;
+      }
+      if (player.is_admin && !member.is_owner && !member.is_banned) {
+        rights.showBan = true;
+      }
+      if (player.is_admin && !member.is_owner) {
+        rights.showDelete = true;
+      }
+      return rights;
+    }
+    catch (error) {
+      console.error('Error occurred:', error);
+      return null;
+    }
+  }
 
   // CHECK IF A PLAYER IS ALREADY IN CHANNEL
   async isInChannel(player_id: number, channel_id) {

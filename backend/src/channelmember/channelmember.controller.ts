@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Query, Patch, Param, Delete } from '@nestjs/common';
 import { ChannelmemberService } from './channelmember.service';
 import { CreateChannelmemberDto } from './dto/create-channelmember.dto';
 import { UpdateChannelmemberDto } from './dto/update-channelmember.dto';
@@ -34,6 +34,12 @@ export class ChannelmemberController {
   @Get('info/:member_id/:channel_id')
   findChannelMember(@Param('member_id') member_id: string, @Param('channel_id') channel_id: string) {
     return this.channelmemberService.findChannelmember(+member_id, +channel_id);
+  }
+
+  // GET A PLAYERS' BLOCK/ADMIN/MUTE/DELETE ANOTHER MEMBER RIGHTS
+  @Get('rights/:player_id')
+  findRights(@Param('player_id') player_id: string, @Query('member_id') member_id: string, @Query('channel_id') channel_id: string) {
+    return this.channelmemberService.findRights(+player_id, +member_id, +channel_id)
   }
 
   // CHECK IF MEMBER IS ADMIN
