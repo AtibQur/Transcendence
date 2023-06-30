@@ -16,7 +16,7 @@ export class BlockedplayerService {
   async createBlockedplayer(id: number, createBlockedplayerDto: CreateBlockedplayerDto) {
     try {
       const blockedId = await this.playerService.findIdByUsername(createBlockedplayerDto.blockedUsername);
-      if (blockedId == -1) {
+      if (!blockedId) {
         throw new Error("Player does not exist");
       }
       if (await this.isBlocked(id, createBlockedplayerDto.blockedUsername)) {
@@ -69,7 +69,7 @@ export class BlockedplayerService {
   async unblockPlayer(id: number, deleteBlockedplayerDto: DeleteBlockedplayerDto) {
     try {
       const blockedId = await this.playerService.findIdByUsername(deleteBlockedplayerDto.blockedUsername);
-      if (blockedId == -1) {
+      if (!blockedId) {
         throw new Error("Player does not exist");
       }
       const existingBlock = await this.findBlockedPlayer(id, deleteBlockedplayerDto.blockedUsername)
@@ -95,7 +95,7 @@ export class BlockedplayerService {
   async findBlockedPlayer(id: number, blockedUsername: string) {
     try {
       const blockedId = await this.playerService.findIdByUsername(blockedUsername);
-      if (blockedId == -1) {
+      if (!blockedId) {
         throw new Error("Player does not exist");
       }
       const existingBlock = await prisma.blockedPlayer.findFirst({
