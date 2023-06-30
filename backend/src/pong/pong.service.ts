@@ -50,6 +50,7 @@ export class PongService {
 	// startMatch(player1: number, player2: number){
 	// 	this.socketServer.emit('startMatch', player1, player2);
 	// }
+
 	resetGame(): void {
 		this.end.gameEnd = false;
 		this.player1.score = 0;
@@ -67,7 +68,6 @@ export class PongService {
 	}
 
 	tick(client: Socket): void {
-		console.log(this.end.gameEnd)
 		if (this.end.gameEnd)
 			return ;
 
@@ -84,3 +84,16 @@ export class PongService {
 		);
 	}
 }
+
+// fix game ending
+// save matches
+// fix 
+
+// client.emit('match', {
+// 	ball: this.ball,
+// 	player1: this.player1.new,
+// 	player2: this.player2.new,
+// 	socket_id: this.socket_id,
+// 	score1: this.player1.score,
+// 	score2: this.player2.score,
+// },

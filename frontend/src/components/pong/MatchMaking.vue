@@ -13,10 +13,10 @@
 export let p1 = ''
 export let p2 = ''
 
-import { onBeforeMount, ref } from 'vue';
-import { useRouter } from 'vue-router';
-import { socket } from '../../socket';
-import axiosInstance from '../../axiosConfig';
+import { onBeforeMount, ref } from 'vue'
+import { useRouter } from 'vue-router'
+import { socket } from '../../socket'
+import axiosInstance from '../../axiosConfig'
   
 export default {
 	name: 'MatchMaking',
@@ -55,11 +55,11 @@ export default {
 		p1 = match.p1;
 		p2 = match.p2;
 		console.log(match.p1, 'and', match.p2, 'are in a match');
+
 		// const username = await fetchUsername(match.player1_id);
 		// const opponent = await fetchUsername(match.player2_id);
 		// dynamicText2.value = opponent;
-		
-		router.push('/play/multiplayer');
+			router.push('/play/multiplayer');
 	} catch (error) {
 		console.log('Error starting match')
 	}

@@ -7,16 +7,18 @@
 
 <script lang="ts">
 import { socket } from '../../socket'
-import GameTools from './GameTools.vue';
+import GameTools from './GameTools.vue'
 import { defineComponent } from 'vue'
 import {p1, p2} from './MatchMaking.vue'
-import { matchedRouteKey } from 'vue-router';
+import { useRouter } from 'vue-router'
+import axios from 'axios'
 
 export default defineComponent({
 	name: "MultiplayerMatch",
 	components: { GameTools},
 data() {
 	return {
+		router: useRouter(),
 		canvas: {
 			width: 858,
 			height: 525,
@@ -77,7 +79,18 @@ methods: {
 			socket.emit('moveRight', this.player2.y);
 		}
 	},
+	// async handleUnload(){
+	// 	console.log("you refreshed or left the page")
+	// 	await axios.post('/api/notify-user-leave');
+
+	// },
 },
+// beforeMount() {
+// 	window.addEventListener('unload', this.handleUnload);
+// },
+// beforeUnmount() {
+//   window.removeEventListener('unload', this.handleUnload);
+// },
 mounted() {
 	socket.on('connect', () => console.log('Socket Connected!'));
 	if (!socket) {
@@ -92,6 +105,8 @@ mounted() {
 		ball: any
 		player1: number
 		player2: number
+		player1Id: string
+		player2Id: string
 		socket_id: string
 		score1: number
 		score2: number
@@ -111,7 +126,13 @@ mounted() {
 	{ 
 		console.log(data.id, 'ended the match')
 		socket.emit('endGame');
+		this.$router.push('/play');
 	})
+	window.addEventListener('beforeunload', () => {
+		socket.emit('playerDisconnecting', { id: socket.id });
+		this.$router.push('/play');
+	});
+
 	window.addEventListener('keyup', this.keyUp);
 	window.addEventListener('keydown', this.keyDown);
 	if (socket.id === p1)
