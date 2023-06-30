@@ -1,55 +1,57 @@
 <template>
  <div class="Leaderboard">
-   <div class="Leaderboard-header">
-  <div class="Leaderboard-logo">
-    <img src="../assets/images/pongEmoji.png" alt="Pong-logo">
+    <div class="Leaderboard-header">
+    <div class="Leaderboard-logo">
+      <img src="../assets/images/pongEmoji.png" alt="Pong-logo">
+    </div>
+    <div class="Leaderboard-text">
+      <h1>LEADERBOARD</h1>
+    </div>
+    <div class="Leaderboard-empty">
+      <div class="Leaderboard-emptyspace"></div>
+    </div>
   </div>
-  <div class="Leaderboard-text">
-    <h1>LEADERBOARD</h1>
-  </div>
-  <div class="Leaderboard-empty">
-    <div class="Leaderboard-emptyspace"></div>
-  </div>
-   </div>
 
    <div class="Leaderboard-info">
-  <div class="Leaderboard-rank">
-    <h2>Rank</h2>
-  </div>
-  <div class="Leaderboard-name">
-    <h2>Name</h2>
-  </div>
-  <div class="Leaderboard-games">
-    <h2>Games won</h2>
-  </div>
-   </div>
-   <!-- Leaderboard data -->
-   <div class="Leaderboard-footer">
-  <!-- Render leaderboardData array using v-for directive -->
-  <div v-for="(player, index) in leaderboardData" :key="index" class="Leaderboard-player">
     <div class="Leaderboard-rank">
-    <h2>{{ index + 1 }}</h2>
+      <h2>Rank</h2>
     </div>
     <div class="Leaderboard-name">
-    <h2>{{ player.player.username }}</h2>
+      <h2>Name</h2>
     </div>
     <div class="Leaderboard-games">
-    <h2>{{ player.wins }}</h2>
+      <h2>Games won</h2>
     </div>
   </div>
-   </div>
 
-   <!-- <div class="Leaderboard-footer">
-  <div class="Leaderboard-player-rank">
-    <h2>hardcoded 1</h2>
+  <div class="Leaderboard-player-stats">
+      <!-- Player stats rows -->
+      <div class="Leaderboard-row" v-for="(player, index) in leaderboardData" :key="index">
+        <div class="Leaderboard-rank">
+          <h2>{{ index + 1 }}</h2>
+        </div>
+        <div class="Leaderboard-name">
+          <h2>{{ player.player.username }}</h2>
+        </div>
+        <div class="Leaderboard-games">
+          <h2>{{ player.wins }}</h2>
+        </div>
+      </div>
+    </div>
+
+  <!-- Leaderboard data -->
+   <div class="Leaderboard-footer">
+  <!-- Render leaderboardData array using v-for directive -->
+      <div class="Leaderboard-rank">
+        rank
+      </div>
+      <div class="Leaderboard-name">
+        name
+      </div>
+      <div class="Leaderboard-games">
+        wins
+      </div>
   </div>
-  <div class="Leaderboard-player-name">
-    <h2>Hardcoded name</h2>
-  </div>
-  <div class="Leaderboard-player-games">
-    <h2>Hardercoded games</h2>
-  </div>
-   </div> -->
 
     </div>
 </template>
@@ -286,5 +288,84 @@
     font-size: 14px;
     padding-top: 6%;
   }
+
+  .Leaderboard-player-stats {
+    /* Add styles to match Leaderboard-header */
+    position: absolute;
+    top: 18%; /* Adjust as needed */
+    left: 0;
+    width: 100%;
+    height: 72%; /* Adjust as needed */
+    overflow-y: auto; /* Add scrollbars if needed */
+  }
+
+  .Leaderboard-row {
+    /* Styles to match Leaderboard-header */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-bottom: 2px solid black;
+    height: 8%; /* Adjust as needed */
+  }
+
+  .Leaderboard-row .Leaderboard-rank {
+    /* Styles to match Leaderboard-info */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 20%;
+    height: 100%;
+    border-right: 2px solid black;
+  }
+
+  .Leaderboard-row .Leaderboard-name {
+    /* Styles to match Leaderboard-info */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 60%;
+    /* min-width: 1047px; */
+    height: 100%;
+    border-right: 2px solid black;
+    justify-content: left;
+    
+  }
+
+  .Leaderboard-row .Leaderboard-name h2 {
+    font-family: 'JetBrains Mono';
+    font-style: normal;
+    line-height: 127px;
+    color: #595959;
+    font-weight: 400;
+    font-size: 14px;
+    padding-left: 6%;
+    padding-top: 3%;
+    border-right: none; /* Remove border on the last column */
+  }
+  .Leaderboard-row .Leaderboard-games {
+    /* Styles to match Leaderboard-info */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 20%;
+    height: 100%;
+    border-right: 2px solid black;
+    border-right: none; /* Remove border on the last column */
+  }
+
+  .Leaderboard-row .Leaderboard-rank h2,
+  .Leaderboard-row .Leaderboard-name h2,
+  .Leaderboard-row .Leaderboard-games h2 {
+    /* Styles to match Leaderboard-info */
+    font-family: 'JetBrains Mono';
+    font-style: normal;
+    line-height: 127px;
+    color: #595959;
+    font-weight: 400;
+    font-size: 14px;
+    border-right: none; /* Remove border on the last column */
+  }
+
+  
 
   </style>

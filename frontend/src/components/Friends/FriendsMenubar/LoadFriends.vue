@@ -2,9 +2,9 @@
   <div class="LoadFriendsContainer">
     <div class="LoadFriendsText">
       <div class="box" @click="$emit('close-menu')" @mouseenter="hover = true" @mouseleave="hover = false">
-        <h1 :class="{ 'close': hover }">{{ hover ? 'Exit' : 'Friends' }}</h1>
+        <h1 :class="{ 'close': hover }">{{ hover ? 'Exitoss' : 'Friends' }}</h1>
       </div>
-      <input type="text" v-model="newFriendName" class="friend-input" placeholder="Enter friend's name">
+      <input type="text" v-model="newFriendName" class="friend-input" placeholder="Enter friend's name" @keydown="handleKeyPress">
       <div class="buttonContainer">
         <button class="add-friend-button" @click="addFriend">Add Friend</button>
         <button class="block-player-button" @click="blockPlayer">Block Player</button>
@@ -26,6 +26,8 @@
 import { defineComponent } from 'vue';
 import axiosInstance from '../../../axiosConfig';
 
+const playerId = parseInt(localStorage.getItem('playerId') || '0');
+
 interface Friend {
   username: string;
   status: string;
@@ -35,21 +37,20 @@ export default defineComponent({
   emits: ['close-menu'],
   data() {
     return {
-      playerId: parseInt(localStorage.getItem('playerId') || '0'),
-      friends: [] as Friend[], // Specify the type for the friends property
+      friends: [] as Friend[],
       hover: false,
-      newFriendName: '' // Store the new friend's name entered by the user
+      newFriendName: ''
     };
   },
 
   mounted() {
     this.loadFriends();
   },
-  
+
   methods: {
     async loadFriends() {
       try {
-        const response = await axiosInstance.get(`friend/username/${this.playerId}`);
+        const response = await axiosInstance.get(`friend/username/${playerId}`);
         console.log('Friends:', response.data);
         this.friends = response.data;
       } catch (error) {
@@ -59,18 +60,25 @@ export default defineComponent({
 
     async addFriend() {
       try {
-        const response = await axiosInstance.post(`friend/add/${this.playerId}`, {
+        const response = await axiosInstance.post(`friend/add/${playerId}`, {
           friendUsername: this.newFriendName
         });
 
-        if (typeof response.data === 'string') {
-          console.log('Add friend response:', response.data);
-        } else {
-          console.log('Friend added:', response.data);
-          this.friends = response.data.friends; // Update the friends array
-
-          this.newFriendName = ''; // Clear the input field after adding a friend
+        // Check if the friend already exists in the friends array
+        const existingFriend = this.friends.find(friend => friend.username === this.newFriendName);
+        if (existingFriend) {
+          console.log('Friend already exists:', this.newFriendName);
+          this.newFriendName = '';
+          return;
         }
+
+        const newFriend = {
+          username: this.newFriendName,
+          status: 'online' // NEEDS TO BE CHANGED WITH ACTUAL STATUS
+        };
+
+        this.friends.push(newFriend);
+        this.newFriendName = ''; // Clear the input field after adding a friend
       } catch (error) {
         console.error('Error occurred while adding friend:', error);
       }
@@ -78,18 +86,22 @@ export default defineComponent({
 
     async blockPlayer() {
       try {
-        await axiosInstance.delete(`friend/${this.playerId}`, {
+        await axiosInstance.delete(`friend/${playerId}`, {
           data: {
             friendUsername: this.newFriendName
           }
         });
-
         console.log('Player blocked:', this.newFriendName);
         this.friends = this.friends.filter(friend => friend.username !== this.newFriendName); // Update the friends array
-
         this.newFriendName = ''; // Clear the input field after blocking a player
       } catch (error) {
         console.error('Error occurred while blocking player:', error);
+      }
+    },
+
+    handleKeyPress(event: KeyboardEvent) {
+      if (event.key === 'Enter') {
+        this.addFriend();
       }
     }
   }
