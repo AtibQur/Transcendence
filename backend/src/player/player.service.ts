@@ -92,10 +92,30 @@ export class PlayerService {
         });
         return user.id;
       } catch (error) {
-          console.log(`Player ${username} does not exist`);
-          return -1;
-      }
-  }
+        console.error('Error searching for user:', error);
+        return null;
+    }
+}
+
+// GET INTRANAME BY USERNAME
+async findIntraByUsername(username: string) {
+  try {
+      const user = await prisma.player.findUnique({
+        where: {
+          username: username,
+        },
+        select: {
+          intra_username: true,
+        },
+      });
+
+      return user.intra_username;
+
+    } catch (error) {
+      console.error('Error searching for user:', error);
+      return null;
+    }
+}
 
   // FIND ALL ONLINE PLAYERS
   async findAllOnlinePlayers() {
@@ -193,6 +213,44 @@ export class PlayerService {
     }
     catch (error) {
       console.error('Error occurred:', error);
+    }
+  }
+
+  async findOneIntraUsername(player_id: number) {
+    try {
+      const selectedPlayer = await prisma.player.findUnique({
+        where: {
+          id: player_id,
+        },
+        select: {
+          intra_username: true
+        }
+      });
+      return selectedPlayer.intra_username;
+    }
+    catch (error) {
+      console.error('Error occurred:', error);
+    }
+  }
+
+  async findInfoAddChannelmember(name: string, channelId: number) {
+    try {
+      const selectedPlayer = await prisma.player.findUnique({
+        where: {
+          username: name
+        },
+        select: {
+          intra_username: true,
+          member_of: {
+            where: {
+              channel_id: channelId 
+          }}
+        },
+      });
+      return selectedPlayer;
+    } catch (error) {
+      console.error('Error occurred:', error);
+      return null
     }
   }
 

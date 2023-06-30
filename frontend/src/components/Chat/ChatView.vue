@@ -1,57 +1,57 @@
 <template>
     <div class="chat">
-        <div class="login" v-if="!playerStore.getIsLogged">
-            <!-- Load user -->
-            <AddPlayer/>
+        <div class="login" v-if="!playerId">
+            <h3> Please log in </h3>
         </div>
         <div class="chat-start-page" v-else>
             <div class="left-side-bar">
-                <h3>Welcome {{ playerStore.getUsername }} {{ playerStore.getPlayerId }}!</h3>
+                <h3>Welcome {{ username }} {{ playerId }}!</h3>
                 <ChannelDisplay :playerId="playerId" @changeChannel='changeChannel'/>
-                <AddChannel :playerId="playerStore.getPlayerId"/>
-                <OnlinePlayers :playerId="playerStore.getPlayerId"/> 
+                <AddChannel :playerId="playerId"/>
+                <OnlinePlayers :playerId="playerId"/> 
             </div>
             <div class="chat-box">
                 <div v-if="inChannel">
-                    <ChatBox :playerId="playerStore.getPlayerId" :channelId="channelId"/>
-                    <AddMessage :senderId="playerStore.getPlayerId" :channelId="channelId"/>
+                    <ChatBox :playerId="playerId" :channelId="channelId"/>
+                    <AddMessage :senderId="playerId" :channelId="channelId"/>
                 </div>
             </div>
-            <div class="right-side-bar">
-                <ChannelmemberDisplay/>
+            <div class="right-side-bar" v-if="inChannel">
+                <ChannelmemberDisplay :channelId="channelId" />
+                <div v-if="isAdmin">
+                    <AddChannelmember :channelId="channelId"/>
+                </div>
             </div>
         </div>
     </div>
 </template>
 
 <script setup lang="ts">
-import { socket } from '../../socket';
-import { onBeforeMount, ref, computed } from 'vue';
-import AddPlayer from './AddPlayer.vue'
+import { ref } from 'vue';
 import ChannelDisplay from './ChannelDisplay.vue'
 import AddChannel from './AddChannel.vue';
 import ChatBox from './ChatBox.vue';
 import AddMessage from './AddMessage.vue';
 import OnlinePlayers from './OnlinePlayers.vue';
 import ChannelmemberDisplay from './ChannelmemberDisplay.vue';
-import { usePlayerStore } from '@/stores/player';
+import AddChannelmember from './AddChannelmember.vue';
+import axiosInstance from '../../axiosConfig';
 
-const playerStore = usePlayerStore();
-const logged = ref(false);
+const playerId = parseInt(localStorage.getItem('playerId') || '0');
+const username = localStorage.getItem('username') || '0';
 const inChannel = ref(false);
-const username = ref('');
-const playerId = computed(() => playerStore.getPlayerId);
+const isAdmin = ref(false);
 const channelId = ref(-1); //test
 
-// const logIn = (playerInfo: {username: string, playerId: number}) => {
-//     username.value = playerInfo.username;
-//     playerId.value = playerInfo.playerId;
-//     logged.value = true;
-// }
-
-const changeChannel = (channel_id: number) => {
+const changeChannel = async (channel_id: number) => {
     channelId.value = channel_id;
     inChannel.value = true;
+    isAdmin.value = await fetchIsAdmin(playerId, channel_id);
+}
+
+const fetchIsAdmin = async (player_id: number, channel_id: number) => {
+    const response = await axiosInstance.get('channelmember/admin/' + player_id.toString() + '/' + channel_id.toString());
+    return response.data;
 }
 
 </script>
