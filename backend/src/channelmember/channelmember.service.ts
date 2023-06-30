@@ -11,6 +11,9 @@ export class ChannelmemberService {
   // ADD PLAYER TO EXISTING CHANNEL
   async createChannelmember(createChannelmemberDto: CreateChannelmemberDto) {
     try {
+      if (await this.isInChannel(createChannelmemberDto.member_id, createChannelmemberDto.channel_id)) {
+        throw new Error("Player is already in channel");
+      }
       const data: any = {
         member_id: createChannelmemberDto.member_id,
         channel_id: createChannelmemberDto.channel_id,
@@ -43,11 +46,11 @@ export class ChannelmemberService {
 
   // FIND ALL CHANNELS WHERE PLAYER IS MEMBER
   // TODO: move to channels module?
-  async findPlayerChannels(id: number) {
+  async findPlayerChannels(player_id: number) {
     try {
       return prisma.channelMember.findMany({
           where: {
-            member_id: id
+            member_id: player_id
           },
           include: {
               channel: {
@@ -66,22 +69,22 @@ export class ChannelmemberService {
   }
   
   // FIND ALL CHANNELMEMBERS OF CHANNEL
-  findAllChannelmembers(channel_id: number) {
+  async findAllChannelmembers(channel_id: number) {
     try {
-      const channelMembers = prisma.channelMember.findMany({
+      const channelMembers = await prisma.channelMember.findMany({
           where: {
             channel_id: channel_id
           },
           select: {
+            member: {
+              select: {
+                username: true
+              }
+            },
               member_id: true,
               is_admin: true,
               is_muted: true,
               is_banned: true,
-              member: {
-                select: {
-                  username: true
-                }
-              }
           },
         });
       return channelMembers;
@@ -109,19 +112,83 @@ export class ChannelmemberService {
       });
   }
 
-  // CHECK IF MEMBER IS ADMIN
-  async findIsAdmin(playerId: number, channelId: number) {
+// GET A MEMBER'S INFO
+async findChannelmember(member_id: number, channel_id: number) {
+  try {
+    const channelMember = await prisma.channelMember.findFirst({
+      where: {
+        member_id: member_id,
+        channel_id: channel_id
+      },
+      select: {
+        id: true,
+        member_id: true,
+        member: {
+          select: {
+            username: true
+          }
+        },
+        channel: {
+          select: {
+            owner_id: true
+          }
+        },
+        is_admin: true,
+        is_muted: true,
+        is_banned: true,
+      }
+    });
+
+    if (channelMember) {
+      const isOwner = channelMember.member_id === channelMember.channel.owner_id;
+      return {
+        ...channelMember,
+        is_owner: isOwner
+      };
+    } else {
+      return null;
+    }
+  } catch (error) {
+    console.error('Error occurred:', error);
+    return null;
+  }
+}
+
+  // CHECK IF A PLAYER IS ALREADY IN CHANNEL
+  async isInChannel(player_id: number, channel_id) {
     try {
-        const selectedChannelmember = await prisma.channelMember.findMany({
+      const existingMember = await prisma.channelMember.findMany({
+        where: {
+          member_id: player_id,
+          channel_id: channel_id
+        }
+      });
+      if (existingMember) {
+        return true;
+      }
+      else {
+        return false;
+      }
+    }
+    catch (error) {
+      console.error('Error occurred:', error);
+      return false;
+    }
+  }
+
+  // CHECK IF MEMBER IS ADMIN
+  async findIsAdmin(member_id: number, channel_id: number) {
+    try {
+        const selectedChannelmember = await prisma.channelMember.findFirst({
             where: {
-                member_id: playerId,
-                channel_id: channelId
+                member_id: member_id,
+                channel_id: channel_id
             },
             select: {
                 is_admin: true
             }
         })
-        return selectedChannelmember[0].is_admin;
+        return selectedChannelmember.is_admin;
     }
     catch (error) {
       console.log('Error checking if channelmember is admin: ', error);
@@ -129,21 +196,113 @@ export class ChannelmemberService {
     }
   }
 
-  // DELETE A PLAYER FROM CHANNEL
-  async remove(id: number) {
+  // MAKE ANOTHER PLAYER ADMIN
+  // only possible if done by admin
+  async makeAdmin(player_id: number, updateChannelmemberDto: UpdateChannelmemberDto) {
     try {
-      const deletedMember = await prisma.channelMember.delete({
-        where: {
-          id: id,
-        },
-      });
-      return deletedMember;
+      const updater = await this.findChannelmember(player_id, updateChannelmemberDto.channel_id);
+      const toUpdate = await this.findChannelmember(updateChannelmemberDto.member_id, updateChannelmemberDto.channel_id);
+      if (updater.is_admin) {
+        const updatedMember = await prisma.channelMember.update({
+          where: {
+            id: toUpdate.id
+          },
+          data: {
+            is_admin: true,
+          }
+        });
+        return updatedMember;
+      }
+      else {
+        throw new Error('Player not allowed to make this change')
+      }
+    }
+    catch (error) {
+      console.log('Error occurred: ', error);
+      return null;
+    }
+  }
+
+  // BAN A CHANNELMEMBER
+  // only possible if done by admin
+  // owner can not be banned
+  async banMember(member_id: number, updateChannelmemberDto: UpdateChannelmemberDto) {
+    try {
+      const updater = await this.findChannelmember(member_id, updateChannelmemberDto.channel_id);
+      const toUpdate = await this.findChannelmember(updateChannelmemberDto.member_id, updateChannelmemberDto.channel_id);
+      if (updater.is_admin && !toUpdate.is_owner) {
+        const updatedMember = await prisma.channelMember.update({
+          where: {
+            id: toUpdate.id
+          },
+          data: {
+            is_admin: true,
+          }
+        });
+        return updatedMember;
+      }
+      else {
+        throw new Error('Player not allowed to make this change')
+      }
+    }
+    catch (error) {
+      console.log('Error occurred: ', error);
+      return null;
+    }
+  }
+
+  // MUTE A CHANNELMEMBER
+  // only possible if done by admin
+  // owner can not be muted
+  async muteMember(player_id: number, updateChannelmemberDto: UpdateChannelmemberDto) {
+    try {
+      const updater = await this.findChannelmember(player_id, updateChannelmemberDto.channel_id);
+      const toUpdate = await this.findChannelmember(updateChannelmemberDto.member_id, updateChannelmemberDto.channel_id);
+      if (updater.is_admin && !toUpdate.is_owner) {
+        const updatedMember = await prisma.channelMember.update({
+          where: {
+            id: toUpdate.id
+          },
+          data: {
+            is_muted: true,
+          }
+        });
+        return updatedMember;
+      }
+      else {
+        throw new Error('Player not allowed to make this change')
+      }
+    }
+    catch (error) {
+      console.log('Error occurred: ', error);
+      return null;
+    }
+  }
+
+  // DELETE A PLAYER FROM CHANNEL
+  // owner can not be deleted
+  // only possible if done by admin
+  // returns deleted channelmember on success, nothing on error
+  async remove(player_id: number, updateChannelmemberDto: UpdateChannelmemberDto) {
+    try {
+      const updater = await this.findChannelmember(player_id, updateChannelmemberDto.channel_id);
+      const toUpdate = await this.findChannelmember(updateChannelmemberDto.member_id, updateChannelmemberDto.channel_id);
+      if (updater.is_admin && !toUpdate.is_owner) {
+        const deletedMember = await prisma.channelMember.delete({
+          where: {
+            id: player_id,
+          },
+        });
+        return deletedMember;
+      }
+      else {
+        throw new Error('Player not allowed to delete this member')
+      }
     }
     catch (error) {
       console.error('Error deleting member:', error);
       return null;
     }
   }
-
 
 }
