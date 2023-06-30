@@ -63,9 +63,10 @@
   };
 
   const logOut = async () => {
+    const logged = false; 
     localStorage.removeItem('playerId');
     localStorage.removeItem('username');
-    localStorage.removeItem('logged');
+    localStorage.setItem('logged', logged.toString());
   }
 
   defineComponent({

@@ -24,16 +24,16 @@ export class ChatmessageService {
           sent_at: new Date(),
         },
         include: {
-          channel: {
-            select: {
-              name: true
+            sender: {
+              select: {
+                username: true
+              }
+            },
+            channel: {
+                select: {
+                    name: true
+                }
             }
-          },
-          sender: {
-            select: {
-              username: true
-            }
-          }
         }
       });
       console.log('Chatmessage is created');
@@ -86,4 +86,34 @@ export class ChatmessageService {
       console.error('Error occurred:', error);
     }
   }
+
+  async findTimeMsg(message_id: number) {
+    try {
+        const msgFullDate = await prisma.chatMessage.findUnique({
+            where: {
+                id: message_id
+            },
+            select: {
+                sent_at: true
+            }
+        })
+
+        const date = new Date(msgFullDate.sent_at)
+        const hours = date.getHours().toString().padStart(2, '0');
+        const minutes = date.getMinutes().toString().padStart(2, '0');
+        return `${hours}:${minutes}`;
+    } catch (error) {
+        console.error('Error searching time of message: ', error);
+        return null;
+    }
+  }
+
+
+//   async findDateMsg(message_id: number) {
+//     return prisma.chatMessage.Unique({
+//       where: {
+//         channel_id: channel_id
+//       }
+//     });
+//   }
 }

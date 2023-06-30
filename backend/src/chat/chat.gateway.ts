@@ -61,7 +61,6 @@ export class ChatGateway {
         @ConnectedSocket() client: Socket
     ){
         const chatmessage = await this.chatmessageService.createChatMessage(createChatmessageDto);
-        console.log(this.server.adapter.rooms);
         this.server.to(chatmessage.channel.name).emit('chatmessage', chatmessage);
         return chatmessage;
     }
