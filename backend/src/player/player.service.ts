@@ -48,12 +48,11 @@ export class PlayerService {
         },
         include: { player_stats: true },
       });
-      console.log('User saved in db:', newPlayer.username);
-      console.log('PlayerStats initialized:', newPlayer.player_stats);
       return newPlayer.id;
-    } catch (error) {
+    }
+    catch (error) {
         if (error.code === 'P2002') {
-            console.log('Player already exists');
+            console.error('Player already exists');
             return this.findIdByUsername(createPlayerDto.username);
         }
         console.error('Error occurred:', error);
@@ -64,7 +63,7 @@ export class PlayerService {
   async uploadAvatar(id: number, file: File) {
     try {
       const avatarBytes = file.buffer;
-      const avatar = await prisma.player.update({
+      const updatedPlayer = await prisma.player.update({
         where: {
           id: id,
         },
@@ -72,17 +71,18 @@ export class PlayerService {
           avatar: avatarBytes
         }
       });
-      return avatar;
+      return updatedPlayer.avatar;
     }
     catch (error) {
       console.error(error);
+      return null;
     }
   }
 
   // GET ID BY USERNAME
   async findIdByUsername(username: string) {
     try {
-        const user = await prisma.player.findUnique({
+        const selectedPlayer = await prisma.player.findUnique({
           where: {
             username: username,
           },
@@ -90,7 +90,7 @@ export class PlayerService {
             id: true,
           },
         });
-        return user.id;
+        return selectedPlayer.id;
       } catch (error) {
         console.error('Error searching for user:', error);
         return null;
@@ -100,7 +100,7 @@ export class PlayerService {
 // GET INTRANAME BY USERNAME
 async findIntraByUsername(username: string) {
   try {
-      const user = await prisma.player.findUnique({
+      const selectedPlayer = await prisma.player.findUnique({
         where: {
           username: username,
         },
@@ -108,26 +108,32 @@ async findIntraByUsername(username: string) {
           intra_username: true,
         },
       });
-
-      return user.intra_username;
-
-    } catch (error) {
+      return selectedPlayer.intra_username;
+    }
+    catch (error) {
       console.error('Error searching for user:', error);
       return null;
     }
 }
 
   // FIND ALL ONLINE PLAYERS
+  // TODO: this function is not used/finished
   async findAllOnlinePlayers() {
-    return prisma.playerStats.findMany({
-        select: {
-          player: {
-            select: {
-              username: true,
-            },
-          }
-        },
-    });
+    try {
+      return prisma.playerStats.findMany({
+          select: {
+            player: {
+              select: {
+                username: true,
+              },
+            }
+          },
+      });
+    }
+    catch (error) {
+      console.error('Error occurred:', error);
+      return null;
+    }
   }
 
   // GET ALL PLAYER STATS (FOR LEADERBOARD)
@@ -152,21 +158,29 @@ async findIntraByUsername(username: string) {
     }
     catch (error) {
       console.error('Error occurred:', error);
+      return null;
     }
   }
 
   // GET ALL STATS FOR ONE PLAYER
   findOneStats(id: number) {
-    return prisma.playerStats.findUnique({
-      where: {
-        id: id,
-      },
-      select: {
-        wins: true,
-        losses: true,
-        ladder_level: true,
-      },
-    });
+    try {
+      const playerStats =  prisma.playerStats.findUnique({
+        where: {
+          id: id,
+        },
+        select: {
+          wins: true,
+          losses: true,
+          ladder_level: true,
+        },
+      });
+      return playerStats;
+    }
+    catch (error) {
+      console.error('Error occurred:', error);
+      return null;
+    }
   }
 
   // GET PLAYERS ACHIEVEMENTS
@@ -184,6 +198,7 @@ async findIntraByUsername(username: string) {
     }
     catch (error) {
       console.error('Error occurred:', error);
+      return null;
     }
   }
 
@@ -193,8 +208,10 @@ async findIntraByUsername(username: string) {
       const allAchievements = await this.findOneAchievements(id);
       const trueAchievements = Object.values(allAchievements).filter(value => value === true);
       return trueAchievements.length;
-    } catch (error) {
+    }
+    catch (error) {
       console.error('Error occurred:', error);
+      return null;
     }
   }
 
@@ -213,6 +230,7 @@ async findIntraByUsername(username: string) {
     }
     catch (error) {
       console.error('Error occurred:', error);
+      return null;
     }
   }
 
@@ -230,6 +248,7 @@ async findIntraByUsername(username: string) {
     }
     catch (error) {
       console.error('Error occurred:', error);
+      return null;
     }
   }
 
@@ -250,7 +269,7 @@ async findIntraByUsername(username: string) {
       return selectedPlayer;
     } catch (error) {
       console.error('Error occurred:', error);
-      return null
+      return null;
     }
   }
 
@@ -269,6 +288,7 @@ async findIntraByUsername(username: string) {
     }
     catch (error) {
       console.error('Error occurred:', error);
+      return null;
     }
   }
 
@@ -280,6 +300,7 @@ async findIntraByUsername(username: string) {
       return (playerStats.wins / totalGames * 100);
     } catch (error) {
       console.error('Error occurred:', error);
+      return null;
     }
   }
 
@@ -298,6 +319,7 @@ async findIntraByUsername(username: string) {
     }
     catch (error) {
       console.error('Error occurred:', error);
+      return null;
     }
   }
 
@@ -316,9 +338,11 @@ async findIntraByUsername(username: string) {
     }
     catch (error) {
       if (error.code === 'P2002') {
+        console.error('Error occurred: Username already exists');
         return await this.findOneUsername(id);
-    }
+      }
       console.error('Error occurred:', error);
+      return null;
     }
   }
 
@@ -392,7 +416,7 @@ async findIntraByUsername(username: string) {
   // CHANGE STATUS
   async updateStatus(id: number, updatePlayerDto: UpdatePlayerDto) {
     try {
-      await prisma.player.update({
+      const updatedPlayer = await prisma.player.update({
         where: {
           id: id,
         },
@@ -404,9 +428,11 @@ async findIntraByUsername(username: string) {
           },
         },
       });
+      return updatedPlayer;
     }
     catch (error) {
       console.error('Error occurred:', error);
+      return null;
     }
   }
 
@@ -418,11 +444,11 @@ async findIntraByUsername(username: string) {
           id: id,
         },
       });
-      console.log('Player deleted:', deletedPlayer);
-      return `This action removes a #${id} player`;
+      return deletedPlayer;
     }
     catch (error) {
       console.error('Error deleting player:', error);
+      return null;
     }
   }
 
@@ -460,7 +486,6 @@ async findIntraByUsername(username: string) {
     try {
       let achievements = await this.findOneAchievements(id);
       if (achievements.hasOwnProperty(updatePlayerDto.achieved)) {
-        console.log(`PLAYER ${id} ACHIEVED ${updatePlayerDto.achieved}`)
         achievements[updatePlayerDto.achieved] = true;
       }
       else {
@@ -475,8 +500,10 @@ async findIntraByUsername(username: string) {
         },
       });
       return (achievements);
-    } catch (error) {
+    }
+    catch (error) {
       console.error('Error occurred:', error);
+      return null;
     }
   }
 
