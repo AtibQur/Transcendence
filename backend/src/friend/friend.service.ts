@@ -17,7 +17,7 @@ export class FriendService {
     try {
       const friendId = await this.playerService.findIdByUsername(addFriendDto.friendUsername);
       if (id == friendId) {
-        return false;
+        return null;
       }
       const existingFriendship = await prisma.friend.findFirst({
         where: {
@@ -34,19 +34,19 @@ export class FriendService {
         },
       });
       if (existingFriendship) {
-        return false;
+        return null;
       }
-      await prisma.friend.create({
+      const newFriendShip = await prisma.friend.create({
         data: {
           player_id: id,
           friend_id: friendId,
         },
       });
-      return true;
+      return newFriendShip;
     }
     catch (error) {
       console.error('Error occurred:', error);
-      return false;
+      return null;
     }
   }
 
@@ -142,18 +142,18 @@ async findFriendsUsername(id: number) {
         },
       });
       if (!existingFriendship) {
-        return false;
+        return null;
       }
       const deletedFriendship = await prisma.friend.delete({
         where: {
           id: existingFriendship.id
         },
       })
-      return true;
+      return deletedFriendship;
     }
     catch (error) {
       console.error('Error occured: ', error);
-      return false;
+      return null;
     }
   }
 }

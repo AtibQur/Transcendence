@@ -8,13 +8,13 @@ export class FriendController {
   constructor(private readonly friendService: FriendService) {}
 
   // ADD OTHER PLAYER AS FRIEND
-  // returns true on success, false on failure
+  // returns created friend, nothing on failure
   @Post('add/:id')
   addFriend(@Param('id') id: string, @Body() addFriendDto: AddFriendDto) {
     return this.friendService.addFriend(+id, addFriendDto);
   }
 
-  // GET A PLAYERS FRIENDS
+  // GET A PLAYERS FRIENDS (CAN PROBABLY BE DELETED!!)
   // returns friend list, or nothing on failure
   @Get(':id')
   findFriends(@Param('id') id: string) {
@@ -29,7 +29,7 @@ export class FriendController {
   }
 
   // DELETE A FRIENDSHIP
-  // returns true on success, false on failure
+  // returns deleted friend, nothing on failure
   @Delete(':id')
   remove(@Param('id') id: string, @Body() updateFriendDto: UpdateFriendDto) {
     return this.friendService.remove(+id, updateFriendDto);
