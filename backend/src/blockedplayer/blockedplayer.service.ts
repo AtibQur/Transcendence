@@ -17,10 +17,10 @@ export class BlockedplayerService {
     try {
       const blockedId = await this.playerService.findIdByUsername(createBlockedplayerDto.blockedUsername);
       if (blockedId == -1) {
-        return "Player does not exist"
+        return false;
       }
       if (await this.isBlocked(id, createBlockedplayerDto.blockedUsername)) {
-        return "You already blocked this user.";
+        return false;
       }
       const blockedPlayer = await prisma.blockedPlayer.create({
         data: {
@@ -29,11 +29,11 @@ export class BlockedplayerService {
         },
       });
       console.log('Blocked player added:', blockedPlayer);
-      return "Successfully blocked player"
+      return true;
     }
       catch (error) {
       console.error('Error adding blocked player:', error);
-      return "Error blocking player"
+      return false;
 
     }
   }
@@ -62,7 +62,7 @@ export class BlockedplayerService {
     }
     catch (error) {
       console.error('Error finding blocked players:', error);
-      return "Error finding blocked players"
+      return null;
     }
   }
 
@@ -71,7 +71,7 @@ export class BlockedplayerService {
     try {
       const blockedId = await this.playerService.findIdByUsername(deleteBlockedplayerDto.blockedUsername);
       if (blockedId == -1) {
-        return "Player does not exist"
+        return false;
       }
       const existingBlock = await this.findBlockedPlayer(id, deleteBlockedplayerDto.blockedUsername)
       if (existingBlock) {
@@ -80,31 +80,37 @@ export class BlockedplayerService {
             id: existingBlock.id
           }
         })
-        return "Player unblocked";
+        return true;
       }
       else {
-        return "This player was not blocked";
+        return false;
       }
     }
       catch (error) {
       console.error('Error adding blocked player:', error);
-      return "Error blocking player"
+      return false;
     }
   }
 
   // FIND BLOCKED PLAYER (RETURNS NOTHING IF PLAYER NOT BLOCKED OR DOESNT EXIST)
   async findBlockedPlayer(id: number, blockedUsername: string) {
-    const blockedId = await this.playerService.findIdByUsername(blockedUsername);
-    if (blockedId == -1) {
-      return;
+    try {
+      const blockedId = await this.playerService.findIdByUsername(blockedUsername);
+      if (blockedId == -1) {
+        return null;
+      }
+      const existingBlock = await prisma.blockedPlayer.findFirst({
+        where: {
+              player_id: id,
+              blocked_id: blockedId,
+        },
+      });
+      return existingBlock;
     }
-    const existingBlock = await prisma.blockedPlayer.findFirst({
-      where: {
-            player_id: id,
-            blocked_id: blockedId,
-      },
-    });
-    return existingBlock;
+    catch (error) {
+      console.error('Error finding blocked player:', error);
+      return null;
+    }
   }
 
   // CHECK IF A PLAYER IS BLOCKED BY ANOTHER PLAYER
