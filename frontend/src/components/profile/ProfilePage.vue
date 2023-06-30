@@ -10,7 +10,7 @@ ProfilePage.vue:
           <h1>{{ username }}</h1>
         </div>
         <div class="ProfileStatus">
-          <h3>status: Hardcoded Online</h3>
+          <h3>status: {{ status }}</h3>
         </div>
       </div>
     </div>
@@ -20,7 +20,6 @@ ProfilePage.vue:
         <ul>
           <li @click="changeUsernameModal">Name change</li>
           <li @click="changeProfilePicture">Picture change</li>
-          <avatar-upload></avatar-upload>
           <li>2FA Authorisation</li>
           <li></li>
         </ul>
@@ -65,8 +64,7 @@ ProfilePage.vue:
       <div class="ModalContent" @click.stop>
         <h2>Profile Picture Change</h2>
         <div v-if="showChangePictureModal" class="show">
-          <ProfileAvatar />
-        </div>
+      <ProfileAvatar @avatarUploaded="handleAvatarUploaded" />        </div>
       </div>
     </div>
 
@@ -82,17 +80,20 @@ ProfilePage.vue:
   import ProfileAvatar from './ProfileAvatar.vue';
 
   const username = ref("");
+  const status = ref("");
   const selectedOption = ref("Achievements");
   const showChangeNameModal = ref(false);
   const newName = ref('');
   const profilePicture = ref("");
   const showChangePictureModal = ref(false);
 
+  const playerId = parseInt(localStorage.getItem('playerId') || '0');
+
   onBeforeMount(async () => {
     try {
-      const playerId = 4;
       username.value = await fetchUsername(playerId);
       profilePicture.value = await fetchAvatar(playerId);
+      status.value = await fetchStatus(playerId);
       console.log(username.value);
     } catch (error) {
       console.log("Error occurred profpage");
@@ -104,14 +105,16 @@ ProfilePage.vue:
     return response.data;
   }
 
+  const fetchStatus = async (player_id: number) => {
+    const response = await axiosInstance.get('player/status/' + player_id.toString());
+    return response.data;
+  }
+
   const fetchAvatar = async (player_id: number) => {
     const response = await axiosInstance.get('player/avatar/' + player_id.toString());
-    console.log(response)
     const imageBytes: Uint8Array = new Uint8Array(response.data.data);
     const imageUrl = ref<string | null>(null);
     imageUrl.value = URL.createObjectURL(new Blob([imageBytes]));
-    console.log(imageUrl.value);
-
     return imageUrl.value;
   };
 
@@ -122,7 +125,6 @@ ProfilePage.vue:
   const changeUsername = async () => {
   if (newName.value) {
     try {
-      const playerId = 4;
       const updatedUsername = await axiosInstance.patch(`player/username/${playerId}`, { username: newName.value });
       username.value = updatedUsername.data; // Update the local username value
       if (newName.value != username.value) {
@@ -143,6 +145,11 @@ ProfilePage.vue:
 
   const changeProfilePicture = () => {
     showChangePictureModal.value = true;
+  };
+
+  const handleAvatarUploaded = async (avatarBytes: Uint8Array) => {
+    showChangePictureModal.value = false;
+    profilePicture.value = await fetchAvatar(playerId)
   };
 
   const closeModal = () => {

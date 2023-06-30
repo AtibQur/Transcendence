@@ -1,5 +1,4 @@
 import { createApp } from 'vue';
-import { createPinia } from 'pinia'
 import { createRouter, createWebHistory, RouteRecordRaw } from 'vue-router';
 import axiosInstance from './axiosConfig';
 import App from './App.vue';
@@ -16,7 +15,7 @@ import FriendsPage from './components/Friends/FriendsPage.vue';
 import PlayerProfile from './components/profile/PlayerProfile.vue';
 
 const routes: RouteRecordRaw[] = [
-    {
+    { 
       path: '/',
       component: Home,
     },
@@ -70,9 +69,6 @@ const router = createRouter({
 
 const app = createApp(App).use(router);
 app.use(router);
-
-const pinia = createPinia()
-app.use(pinia);
 
 app.config.globalProperties.$axios = axiosInstance;
 app.mount('#app');

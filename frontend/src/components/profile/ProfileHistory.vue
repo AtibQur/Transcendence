@@ -16,10 +16,10 @@
   import axiosInstance from '../../axiosConfig';
 
   const matches = ref("");
+  const playerId = parseInt(localStorage.getItem('playerId') || '0');
 
   onBeforeMount(async () => {
   try {
-    const playerId = 4; // HARDCODED!!!! VUL PLAYER ID IN DIE JE HEBT IN JE DATABASE
     matches.value = await fetchMatches(playerId);
     console.log(matches.value);
   } catch (error) {
