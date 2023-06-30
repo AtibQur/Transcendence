@@ -8,7 +8,7 @@ export class BlockedplayerController {
   constructor(private readonly blockedplayerService: BlockedplayerService) {}
 
   // BLOCK A PLAYER
-  // returns true on success, false on failure
+  // returns blocked player on success, nothing on failure
   @Post('/add/:id')
   createBlockedplayer(@Param('id') id: string, @Body() createBlockedplayerDto: CreateBlockedplayerDto) {
     return this.blockedplayerService.createBlockedplayer(+id, createBlockedplayerDto);
@@ -22,7 +22,7 @@ export class BlockedplayerController {
   }
 
   // UNBLOCK A PLAYER
-  // returns true on success, false on failure
+  // returns unblocked player on success, nothing on failure
   @Delete('/delete/:id')
   unblockPlayer(@Param('id') id: string, @Body() deleteBlockedplayerDto: DeleteBlockedplayerDto) {
     return this.blockedplayerService.unblockPlayer(+id, deleteBlockedplayerDto);

@@ -17,10 +17,10 @@ export class BlockedplayerService {
     try {
       const blockedId = await this.playerService.findIdByUsername(createBlockedplayerDto.blockedUsername);
       if (blockedId == -1) {
-        return false;
+        return null;
       }
       if (await this.isBlocked(id, createBlockedplayerDto.blockedUsername)) {
-        return false;
+        return null;
       }
       const blockedPlayer = await prisma.blockedPlayer.create({
         data: {
@@ -28,12 +28,11 @@ export class BlockedplayerService {
           blocked_id: blockedId,
         },
       });
-      console.log('Blocked player added:', blockedPlayer);
-      return true;
+      return blockedPlayer;
     }
       catch (error) {
       console.error('Error adding blocked player:', error);
-      return false;
+      return null;
 
     }
   }
@@ -71,7 +70,7 @@ export class BlockedplayerService {
     try {
       const blockedId = await this.playerService.findIdByUsername(deleteBlockedplayerDto.blockedUsername);
       if (blockedId == -1) {
-        return false;
+        return null;
       }
       const existingBlock = await this.findBlockedPlayer(id, deleteBlockedplayerDto.blockedUsername)
       if (existingBlock) {
@@ -80,15 +79,15 @@ export class BlockedplayerService {
             id: existingBlock.id
           }
         })
-        return true;
+        return existingBlock;
       }
       else {
-        return false;
+        return null;
       }
     }
       catch (error) {
       console.error('Error adding blocked player:', error);
-      return false;
+      return null;
     }
   }
 
@@ -117,10 +116,10 @@ export class BlockedplayerService {
   async isBlocked(id: number, blockedUsername: string) {
     const existingBlock = await this.findBlockedPlayer(id, blockedUsername);
     if (existingBlock) {
-      return true;
+      return existingBlock;
     }
     else {
-      return false;
+      return null;
     }
   }
 }
