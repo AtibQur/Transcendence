@@ -17,7 +17,7 @@ export class FriendService {
     try {
       const friendId = await this.playerService.findIdByUsername(addFriendDto.friendUsername);
       if (id == friendId) {
-        return "You can not add yourself as a friend! That's pathetic..";
+        return false;
       }
       const existingFriendship = await prisma.friend.findFirst({
         where: {
@@ -34,19 +34,19 @@ export class FriendService {
         },
       });
       if (existingFriendship) {
-        return "This user is already your friend.";
+        return false;
       }
-      const newFriend = await prisma.friend.create({
+      await prisma.friend.create({
         data: {
           player_id: id,
           friend_id: friendId,
         },
       });
-
-      return `Friend added: ${addFriendDto.friendUsername}`;
+      return true;
     }
     catch (error) {
       console.error('Error occurred:', error);
+      return false;
     }
   }
 
@@ -64,9 +64,8 @@ export class FriendService {
       return friends;
     } catch (error) {
       console.error('Error occurred: ', error);
+      return null;
     }
-
-    return `This action returns a #${id} friend`;
   }
 
 // FIND FRIENDS USERNAME AND STATUS
@@ -120,6 +119,7 @@ async findFriendsUsername(id: number) {
     return filteredFriends;
   } catch (error) {
     console.error('Error occurred: ', error);
+    return null;
   }
 }
 
@@ -142,17 +142,18 @@ async findFriendsUsername(id: number) {
         },
       });
       if (!existingFriendship) {
-        return ('Friendship does not exist');
+        return false;
       }
       const deletedFriendship = await prisma.friend.delete({
         where: {
           id: existingFriendship.id
         },
       })
-      return `This action removes friendship #${deletedFriendship.id}`;
+      return true;
     }
     catch (error) {
       console.error('Error occured: ', error);
+      return false;
     }
   }
 }
