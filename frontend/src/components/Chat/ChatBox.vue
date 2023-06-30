@@ -104,9 +104,11 @@ onBeforeMount(async () => {
 async function addChatmessage(message: Message) {
     try {
         const username_query = 'username=' + message.sender.username;
-        const isBlocked = await axiosInstance.get('blockedplayer/player' + localStorage.getItem('player_id') + `?${username_query}`);
+        const player_id = sessionStorage.getItem('playerId');
+        console.log(player_id);
+        const isBlocked = await axiosInstance.get('blockedplayer/player/' + player_id + `?${username_query}`);
+        // if (!isBlocked)
         messages.value.push(message);
-        console.log(messages.value);
     } catch (error) {
         console.log('Error: adding message');
     }
