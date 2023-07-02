@@ -32,6 +32,11 @@ export class PlayerService {
         '10 chat messages sent': false,
       };
 
+      // TODO: change to intra username later?
+      if (await this.isExistingPlayer(createPlayerDto.username)) {
+        return await this.findIdByUsername(createPlayerDto.username);
+      }
+
       const newPlayer = await prisma.player.create({
         data: {
           username: createPlayerDto.username,
@@ -53,11 +58,11 @@ export class PlayerService {
     catch (error) {
         if (error.code === 'P2002') {
             console.error('Player already exists');
-            return this.findIdByUsername(createPlayerDto.username);
+            return await this.findIdByUsername(createPlayerDto.username);
         }
         console.error('Error occurred:', error);
     }
-}
+  }
 
   // UPLOAD AN AVATAR
   async uploadAvatar(id: number, file: File) {
