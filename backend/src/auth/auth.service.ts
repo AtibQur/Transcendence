@@ -11,7 +11,8 @@ export class AuthService {
 
     async generateToken(player: Player): Promise<string> {
         const payload = { sub: player.id };
-        const token = await this.jwtService.sign(payload);
+        const options = { secret: 'geheim', expiresIn: '1h'}
+        const token = await this.jwtService.signAsync(payload, options);
 
         return JSON.stringify({access_token: token});
     }
@@ -30,7 +31,6 @@ export class AuthService {
         };
         const response = await axios.get('https://api.intra.42.fr/v2/me', config);
         if (response.data.login === intra_username){
-            console.log('yess');
             return true;
         }
         return false;

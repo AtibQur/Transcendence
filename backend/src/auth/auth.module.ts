@@ -28,4 +28,3 @@ import { JwtModule, JwtService } from '@nestjs/jwt';
   })
   
   export class AuthModule {}
-  
