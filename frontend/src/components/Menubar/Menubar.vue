@@ -11,7 +11,6 @@
           <li><router-link to="/leaderboard" @click="closeMenu">Leaderboard</router-link></li>
           <li><router-link to="/chat" @click="closeMenu">Chat</router-link></li>
           <li><router-link to="/profile" @click="closeMenu">Profile</router-link></li>
-          <li><router-link to="/friends" @click="closeMenu">Friends</router-link></li>
         </ul>
       </div>
       <div v-if="isOpen" class="overlay" @click="toggleMenu"></div>

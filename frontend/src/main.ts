@@ -11,7 +11,6 @@ import Leaderboard from './components/LeaderboardComponent.vue';
 import PopulateDatabase from './components/PopulateDatabase.vue';
 import ChatView from './components/Chat/ChatView.vue';
 import Redirect2faVerify from './components/Auth/Redirect2faVerify.vue';
-import FriendsPage from './components/Friends/FriendsPage.vue';
 import PlayerProfile from './components/profile/PlayerProfile.vue';
 
 const routes: RouteRecordRaw[] = [
@@ -46,10 +45,6 @@ const routes: RouteRecordRaw[] = [
     {
       path: '/profile',
       component: ProfilePage,
-    },
-    {
-      path: '/friends',
-      component: FriendsPage,
     },
     {
       path: '/login/redirect2faverify',
