@@ -41,9 +41,9 @@ export class FortyTwoStrategy extends PassportStrategy(Strategy, '42') {
             accessToken: user.accessToken,
             refreshToken: user.refreshToken,
         }
-        if (await this.authService.validateUser(accessToken, player.intra_username))
+        // if (await this.authService.validateUser(accessToken, player.intra_username))
             done(null, player);
-        else
+        // else
             done(null, false);
       }
 }

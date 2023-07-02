@@ -8,6 +8,7 @@ import { Request, Response } from 'express';
 import { AuthService } from './auth.service';
 import { Verify } from 'crypto';
 import { request } from 'http';
+import { userInfo } from 'os';
 // import { }
 
 const playerService = new PlayerService();
@@ -22,23 +23,23 @@ export class AuthController {
         return ('you have entered my king');
     }
 
-    @UseGuards(LocalAuthGuard)
+    // @UseGuards(LocalAuthGuard)
     @Get('/42/callback')
     async fortyTwoCallback(
-        @Req() req: any,
+        @Req() request: Request,
         @Res( {passthrough: true} ) response: Response
         ) {
-        console.log(req.user);
-        this.authService.validateUser(req.user.accessToken, req.user.intra_username);
-        const jwt = await this.authService.generateToken(req.user);
-        console.log(jwt);
+        // console.log(request.query);
+        const intra = await this.authService.validateUser(request.query.code);
+        const userData = await this.authService.getIntraDatabyToken(intra.access_token);
 
-        // console.log(req.session);
+        const jwt = await this.authService.generateToken(userData.id, userData.login);
         response.setHeader(
-            'Set-Cookie',
-            'jwt=' + jwt + '; HttpOnly; Secure; SameSite=Strict',
-        );
-        // console.log(response);
+			'Set-Cookie',
+			'session_cookie=' +
+				jwt +
+				'; HttpOnly; Secure; SameSite=Strict',
+		);
         response.status(200).redirect('http://localhost:8080/Login');
     }
 
@@ -91,7 +92,7 @@ export class AuthController {
     @Get('status')
     async GetAuthStatus(@Req() request: Request) {
         console.log(request);
-
+        // return (req.user.intra_username);
     }
 
     @UseGuards(AuthenticatedGuard)
