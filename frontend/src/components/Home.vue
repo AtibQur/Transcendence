@@ -63,10 +63,10 @@
   };
 
   const logOut = async () => {
-    const logged = false; 
+    logged.value = false; 
     sessionStorage.removeItem('playerId');
     sessionStorage.removeItem('username');
-    sessionStorage.setItem('logged', logged.toString());
+    sessionStorage.setItem('logged', logged.value.toString());
   }
 
   defineComponent({
