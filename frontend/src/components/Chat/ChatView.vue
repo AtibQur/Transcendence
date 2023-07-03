@@ -37,8 +37,8 @@ import ChannelmemberDisplay from './ChannelmemberDisplay.vue';
 import AddChannelmember from './AddChannelmember.vue';
 import axiosInstance from '../../axiosConfig';
 
-const playerId = parseInt(localStorage.getItem('playerId') || '0');
-const username = localStorage.getItem('username') || '0';
+const playerId = parseInt(sessionStorage.getItem('playerId') || '0');
+const username = sessionStorage.getItem('username') || '0';
 const inChannel = ref(false);
 const isAdmin = ref(false);
 const channelId = ref(-1); //test

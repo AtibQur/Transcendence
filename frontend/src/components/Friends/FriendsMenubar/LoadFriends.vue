@@ -35,7 +35,7 @@ export default defineComponent({
   emits: ['close-menu'],
   data() {
     return {
-      playerId: parseInt(localStorage.getItem('playerId') || '0'),
+      playerId: parseInt(sessionStorage.getItem('playerId') || '0'),
       friends: [] as Friend[], // Specify the type for the friends property
       hover: false,
       newFriendName: '' // Store the new friend's name entered by the user
