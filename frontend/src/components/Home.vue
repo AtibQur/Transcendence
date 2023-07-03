@@ -37,9 +37,9 @@
     const playerId = playerIdResponse.data
     logged.value = true;
 
-    localStorage.setItem('playerId', playerId);
-    localStorage.setItem('username', username.value);
-    localStorage.setItem('logged', logged.value);
+    sessionStorage.setItem('playerId', playerId);
+    sessionStorage.setItem('username', username.value);
+    sessionStorage.setItem('logged', logged.value);
     if (!playerExists.data) {
       setDefaultAvatar();
     }
@@ -47,7 +47,7 @@
   };
 
   const setDefaultAvatar = async () => {
-    const playerId = parseInt(localStorage.getItem('playerId') || '0');
+    const playerId = parseInt(sessionStorage.getItem('playerId') || '0');
     const defaultAvatarPath = './default_avatar.png';
 
     // Fetch the default avatar file
@@ -63,9 +63,9 @@
   };
 
   const logOut = async () => {
-    localStorage.removeItem('playerId');
-    localStorage.removeItem('username');
-    localStorage.removeItem('logged');
+    sessionStorage.removeItem('playerId');
+    sessionStorage.removeItem('username');
+    sessionStorage.removeItem('logged');
   }
 
   defineComponent({
