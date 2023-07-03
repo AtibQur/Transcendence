@@ -2,6 +2,11 @@
 	<div class="PongLogo">
 		<h1>PONG</h1>
 	</div>
+	<div class="text-wrapper">
+			<h1 class="text">{{ dynamicText1 }}</h1>
+			<h1 class="text">VS</h1>
+			<h1 class="text">{{ dynamicText2 }}</h1>
+	</div>
 		<GameTools :player1="player1" :player2="player2" :ball="ball" :score1="score1" :score2="score2"/>
 	<div class="gameover-container" v-if="win">
 		<h1>VICTORY!</h1>
@@ -19,7 +24,7 @@
 	import { socket } from '../../socket'
 	import GameTools from './GameTools.vue'
 	import { defineComponent } from 'vue'
-	import {p1, p2} from './MatchMaking.vue'
+	import {p1, p2, username1, username2} from './MatchMaking.vue'
 	import { useRouter } from 'vue-router'
 	import axios from 'axios'
 
@@ -28,6 +33,8 @@
 	components: { GameTools},
 data() {
 	return {
+		dynamicText1: '',
+		dynamicText2: '',
 		end: false,
 		win: false,
 		lose: false,
@@ -110,6 +117,8 @@ mounted() {
 		console.log('Socket not connected')
 		return;
 	}
+	this.dynamicText1 = username1;
+	this.dynamicText2 = username2;
 	console.log("this user:", socket.id)
 	console.log("P1 ID", p1)
 	console.log("P2 ID", p2)

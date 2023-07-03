@@ -12,6 +12,8 @@
 <script lang="ts">
 	export let p1 = ''
 	export let p2 = ''
+	export let username1 = ''
+	export let username2 = ''
 
 	import { onBeforeMount, ref } from 'vue'
 	import { useRouter } from 'vue-router'
@@ -31,10 +33,13 @@ export default {
 		};
 
 	onBeforeMount(async () => {
-		player.id = 9; // hier player id
+		player.id = parseInt(localStorage.getItem('playerId') || '0');
+		console.log("Player ID", player.id)
 		player.socket_id = socket.id;
+		localStorage.setItem('socketID', player.socket_id);
 		socket.emit('joinMatchmaking', {player_id: player.id, socket_id: player.socket_id});
-		// const username = await fetchUsername(9);
+		const username = await fetchUsername(player.id);
+		username1 = username;
 		// dynamicText1.value = username;
 		// socket.emit('joinMatchmaking', 2);
 	});
@@ -57,8 +62,8 @@ export default {
 		console.log(match.p1, 'and', match.p2, 'are in a match');
 
 		// const username = await fetchUsername(match.player1_id);
-		// const opponent = await fetchUsername(match.player2_id);
-		// dynamicText2.value = opponent;
+		// const opponent = await fetchUsername(p2);
+		// username2 = opponent;
 
 		// hier wordt match gestart
 			router.push('/play/multiplayer');

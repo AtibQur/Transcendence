@@ -34,7 +34,7 @@ export class PongGateway {
 		@ConnectedSocket() client: Socket): void {
 		// this.pongService.resetGame()
 		this.gameEnded = true;
-		console.log('Game has ended')
+		// console.log('Game has ended')
 	}
 
 	@SubscribeMessage('moveLeft')
@@ -106,8 +106,8 @@ export class PongGateway {
 			setInterval(() => this.pongService.tick(client), 1000 / 60);
 	}
 
-	// handleDisconnect(client: Socket): void {
-	// 	const disconnectedId = client.id
+	handleDisconnect(client: Socket): void {
+		const disconnectedId = client.id
 
 	// 	// const matchId = this.findMatchByPlayer(disconnectedId);
 	// 	// console.log("MatchID", matchId)
@@ -116,13 +116,13 @@ export class PongGateway {
 	// 	// 		// this.server.emit('beforeunload', { id: matchId.p2});
 	// 	// 		match.delete(matchId)
 	// 	// }
-	// 	const index = this.waitingList.indexOf(disconnectedId);
-	// 	console.log('player', disconnectedId, 'left the waiting list');
-	// 	console.log('Waiting list:', this.waitingList);
-	// 	if (index !== -1){
-	// 		this.waitingList.splice(index, 1);
-	// 	}
-	// 	this.gameEnded = true;
-	// 	this.server.emit('playerDisconnected', { id: disconnectedId });
-	// }
+		const index = this.waitingList.indexOf(disconnectedId);
+		console.log('player', disconnectedId, 'left the waiting list');
+		console.log('Waiting list:', this.waitingList);
+		if (index !== -1){
+			this.waitingList.splice(index, 1);
+		}
+		this.gameEnded = true;
+		this.server.emit('playerDisconnected', { id: disconnectedId });
+	}
 }

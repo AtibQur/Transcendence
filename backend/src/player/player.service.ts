@@ -203,7 +203,7 @@ async findIntraByUsername(username: string) {
     try {
       const selectedPlayer = await prisma.player.findUnique({
         where: {
-          id: 4,
+          id: id,
         },
         select: {
           username: true
