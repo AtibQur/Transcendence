@@ -23,7 +23,7 @@ export class ChannelService {
         owner_id: createChannelDto.owner_id,
       };
 
-      if (createChannelDto.is_private) {
+      if (createChannelDto.password) {
         channelData.password = createChannelDto.password;
       }
 
@@ -41,23 +41,26 @@ export class ChannelService {
       channelMemberDto.muted_at = new Date();
       this.channelmemberService.createChannelmember(channelMemberDto);
       return newChannel.id;
-    } catch (error) {
+    }
+    catch (error) {
       console.error('Error occurred:', error);
+      return null;
     }
   }
 
+  // GET CHANNEL INFO (name, is_private, owner_id)
   async findOneChannel(id: number) {
     try {
-        const selectedChannel = await prisma.channel.findUnique({
-            where: {
-              id: id,
-            },
-          });
-  
-          return selectedChannel;
+      const selectedChannel = await prisma.channel.findUnique({
+          where: {
+            id: id,
+          },
+        });
+        return selectedChannel;
     }
     catch (error) {
         console.error('Error occurred:', error);
+        return null;
     }
   }
 
