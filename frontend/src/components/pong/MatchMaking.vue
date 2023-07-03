@@ -31,7 +31,7 @@ export default {
 		};
 
 	onBeforeMount(async () => {
-		player.id = 9;
+		player.id = 9; // hier player id
 		player.socket_id = socket.id;
 		socket.emit('joinMatchmaking', {player_id: player.id, socket_id: player.socket_id});
 		// const username = await fetchUsername(9);
@@ -59,6 +59,8 @@ export default {
 		// const username = await fetchUsername(match.player1_id);
 		// const opponent = await fetchUsername(match.player2_id);
 		// dynamicText2.value = opponent;
+
+		// hier wordt match gestart
 			router.push('/play/multiplayer');
 	} catch (error) {
 		console.log('Error starting match')

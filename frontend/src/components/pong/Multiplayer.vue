@@ -131,6 +131,8 @@ mounted() {
 
 		this.score1 = match.score1
 		this.score2 = match.score2
+
+		// hier eindigt match
 		if (this.score1 === 5){
 			if (socket.id === p2)
 				this.win = true;
