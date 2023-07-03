@@ -24,6 +24,18 @@ export class MatchService {
           opponent_points: 0,
           timestamp: new Date(),
         },
+        include: {
+          player: {
+            select: {
+              username: true
+            }
+          },
+          opponent: {
+            select: {
+              username: true
+            }
+          }
+        },
       });
       return newMatch;
     }
