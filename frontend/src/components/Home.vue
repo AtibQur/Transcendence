@@ -4,8 +4,10 @@
       <h1>PONG</h1>
     </div>
     <label> Dit wordt later vervangen door login proces, maar voor nu: vul hier een username in </label>
-      <input v-model="username" placeholder='username'/>
-      <button @click="initPlayerData">Log in</button>
+    <form @submit.prevent="initPlayerData">
+            <input v-model="username" placeholder='Enter username'/>
+            <button type="submit">Log in</button>
+    </form>  
     <div class="PongTable">
       <ul>
         <li><router-link to="/Auth">Auth</router-link></li>
@@ -47,6 +49,7 @@
       setDefaultAvatar();
     }
     await socket.emit('joinAllRooms', playerId)
+    username.value = '';
   };
 
   const setDefaultAvatar = async () => {
