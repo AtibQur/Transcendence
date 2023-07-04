@@ -2,9 +2,9 @@
     <h4>Available Channels</h4>
     <h3> hello  {{ props.playerId }}</h3>
     <ul id="channelList">
-        <button v-for="(channel, index) in channels" :key="index" @click="changeChannel(channel.channel_id)">
-            {{ getChannelName(channel.channel_id) }}
-        </button>
+        <li v-for="(channel, index) in channels" :key="index">
+            <button class="channel-display-button" @click="changeChannel(channel.channel_id)"> {{ getChannelName(channel.channel_id) }} </button>
+        </li>
     </ul>
 </template>
 
@@ -77,3 +77,20 @@ const getChannelName = (channel_id: number) => {
 };
 
 </script>
+
+<style>
+.channel-display-button {
+  background-color: transparent;
+  border: none;
+  cursor: pointer;
+  color: #000;
+  text-decoration: underline;
+  transition: color 0.3s;
+  padding: 0;
+  margin: 0;
+}
+
+.channel-display-button {
+  color: rgb(79, 76, 76);
+}
+</style>
