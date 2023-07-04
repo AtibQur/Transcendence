@@ -11,6 +11,7 @@ import { ChannelmemberService } from 'src/channelmember/channelmember.service';
 import { ChatmessageService } from 'src/chatmessage/chatmessage.service';
 import { CreateChatmessageDto } from 'src/chatmessage/dto/create-chatmessage.dto';
 import { CreateChannelDto } from 'src/channel/dto/create-channel.dto';
+import { CreateChannelmemberDto } from 'src/channelmember/dto/create-channelmember.dto';
 
 @WebSocketGateway({
 	cors: {
@@ -31,10 +32,11 @@ export class ChatGateway {
     private logger = new Logger('ChatGateway');
 
     afterInit(client: Socket) {
+        
         this.logger.log('After init!!');
     }
 
-    handleConnection(@ConnectedSocket() client: Socket){
+    async handleConnection(@ConnectedSocket() client: Socket){
         this.logger.log(`client ${client.handshake.auth.playerId} (${client.handshake.auth.username._value}) connected at ${client.id}`);
     }
 
@@ -75,14 +77,28 @@ export class ChatGateway {
         @MessageBody() payload: {channelmember_name: string, channel_id: number}
     ) {
         try {
-            const data = await this.playerService.findInfoAddChannelmember(payload.channelmember_name, payload.channel_id);
-            if (!data)
-                throw new Error;
-            this.server.to(data.intra_username).emit('newChannel', payload.channel_id);
+            const id = await this.playerService.findIdByUsername(payload.channelmember_name);
+            if (!id)
+                throw new Error('Player does not exist');
+            console.log(payload.channelmember_name, id);
+
+            const member: CreateChannelmemberDto = {
+                member_id: id,
+                channel_id: payload.channel_id,
+                is_admin: false,
+                is_muted: false,
+                is_banned: false
+            }
+
+            const newChannelmember = await this.channelmemberService.createChannelmember(member);
+            if (!newChannelmember)
+                throw new Error('Player is already member of this channel');
+
+            const intra_username = await this.playerService.findIntraByUsername(payload.channelmember_name);
+            this.server.to(intra_username).emit('newChannel', payload.channel_id);
             return ;
         } catch (error) {
-            console.log('Error adding channelmember: ', error);
-            return 'Player does not exist';
+            console.log('Error: ', error);
         }
     }
 
@@ -168,28 +184,6 @@ export class ChatGateway {
         } catch (error) {
             console.log('Error finding channel members: ', error);
         }
-    }
-
-    // //FIND ALL CHANNEL MESSAGES
-    // @SubscribeMessage('findAllChannelMessages')
-    // findAllChannelMessages(
-    //     @MessageBody() id: number
-    // ){
-    //     return this.chatmessageService.findChannelMsgs(id);
-    // }
-
-    // //FIND ALL CHANNEL MESSAGES FILTERED
-    // @SubscribeMessage('findAllChannelMessagesFiltered')
-    // findAllChannelMessagesFiltered(){
-    //     return this.chatmessageService.findChannelMsgsFiltered();
-    // }
-
-    //FIND NAME OF MESSAGESENDER
-    @SubscribeMessage('findUsername')
-    findUserName(
-        @MessageBody() id: number
-    ){
-        return this.playerService.findOneUsername(id);
     }
 }
 

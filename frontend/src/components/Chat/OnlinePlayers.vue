@@ -11,10 +11,11 @@
 
 <script setup lang="ts">
 import { socket } from '../../socket';
+import axiosInstance from '../../axiosConfig';
 import { onBeforeMount, ref, computed } from 'vue'
 
 const onlinePlayers = ref([]);
-const currentPlayer = ref('');
+const currentPlayer = sessionStorage.getItem('username');
 
 const props = defineProps({
     playerId: {
@@ -24,18 +25,6 @@ const props = defineProps({
 });
 
 onBeforeMount(async () => {
-    
-    const fetchUsername = async (playerId) => {
-        socket.emit('findUsername', props.playerId, (name: string) => {
-            try {
-                currentPlayer.value = name;
-            } catch (e) {
-                console.log('Error: fetching messages');
-            }
-        });
-    }
-
-    await fetchUsername(props.playerId);
 
     // FIND ALL CHANNEL FOR PLAYER
     socket.emit('findAllOnlinePlayers', (response) => {

@@ -49,7 +49,7 @@
       setDefaultAvatar();
     }
     await socket.emit('joinAllRooms', playerId)
-    username.value = '';
+    // username.value = '';
   };
 
   const setDefaultAvatar = async () => {
@@ -73,6 +73,7 @@
     sessionStorage.removeItem('playerId');
     sessionStorage.removeItem('username');
     sessionStorage.setItem('logged', logged.value.toString());
+    socket.disconnect();
   }
 
   defineComponent({

@@ -125,7 +125,8 @@ export class ChannelmemberService {
           member_id: true,
           member: {
             select: {
-              username: true
+              username: true,
+              intra_username: true
             }
           },
           channel: {
@@ -199,9 +200,9 @@ export class ChannelmemberService {
   }
 
   // CHECK IF A PLAYER IS ALREADY IN CHANNEL
-  async isInChannel(player_id: number, channel_id) {
+  async isInChannel(player_id: number, channel_id: number) {
     try {
-      const existingMember = await prisma.channelMember.findMany({
+      const existingMember = await prisma.channelMember.findFirst({
         where: {
           member_id: player_id,
           channel_id: channel_id

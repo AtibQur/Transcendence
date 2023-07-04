@@ -21,6 +21,7 @@ const props = defineProps({
 const channelmemberName = ref('');
 
 const addChannelmember = () => {
+    console.log(channelmemberName.value);
     socket.emit('addChannelmember', { channelmember_name: channelmemberName.value, channel_id: props.channelId }, () => {
         channelmemberName.value = '';
     })
