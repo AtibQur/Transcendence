@@ -14,7 +14,7 @@
           <div class="status-circle" :class="{ 'online': friend.status === 'online', 'offline': friend.status !== 'online' }"></div>
           <div class="name">{{ friend.username }}</div>
           <div class="profile-box">
-            <router-link v-if="friend.username" :to="{ name: 'profile', params: { playerName: friend.username } }" class="profile-link">Profile</router-link>
+            <router-link v-if="friend.username" :to="{ name: 'friends', params: { playerName: friend.username } }" class="profile-link">Profile</router-link>
           </div>
         </div>
       </div>
@@ -51,7 +51,6 @@ export default defineComponent({
     async loadFriends() {
       try {
         const response = await axiosInstance.get(`friend/username/${playerId}`);
-        console.log('Friends:', response.data);
         this.friends = response.data;
       } catch (error) {
         console.error('Error occurred while loading friends:', error);
@@ -64,10 +63,8 @@ export default defineComponent({
           friendUsername: this.newFriendName
         });
 
-        // Check if the friend already exists in the friends array
         const existingFriend = this.friends.find(friend => friend.username === this.newFriendName);
         if (existingFriend) {
-          console.log('Friend already exists:', this.newFriendName);
           this.newFriendName = '';
           return;
         }
@@ -78,7 +75,7 @@ export default defineComponent({
         };
 
         this.friends.push(newFriend);
-        this.newFriendName = ''; // Clear the input field after adding a friend
+        this.newFriendName = '';
       } catch (error) {
         console.error('Error occurred while adding friend:', error);
       }
@@ -91,9 +88,8 @@ export default defineComponent({
             friendUsername: this.newFriendName
           }
         });
-        console.log('Player blocked:', this.newFriendName);
         this.friends = this.friends.filter(friend => friend.username !== this.newFriendName); // Update the friends array
-        this.newFriendName = ''; // Clear the input field after blocking a player
+        this.newFriendName = '';
       } catch (error) {
         console.error('Error occurred while blocking player:', error);
       }
@@ -215,4 +211,5 @@ export default defineComponent({
   color: white;
   cursor: pointer;
 }
+
 </style>

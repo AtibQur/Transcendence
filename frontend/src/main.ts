@@ -11,7 +11,7 @@ import Leaderboard from './components/LeaderboardComponent.vue';
 import PopulateDatabase from './components/PopulateDatabase.vue';
 import ChatView from './components/Chat/ChatView.vue';
 import Redirect2faVerify from './components/Auth/Redirect2faVerify.vue';
-import PlayerProfile from './components/profile/PlayerProfile.vue';
+import FriendsPage from './components/Friends/FriendsMenubar/FriendsPage.vue';
 
 const routes: RouteRecordRaw[] = [
     { 
@@ -51,9 +51,9 @@ const routes: RouteRecordRaw[] = [
       component: Redirect2faVerify,
     },
     {
-      path: '/profile/:playerName',
-      name: 'profile',
-      component: ProfilePage, // Replace "ProfilePage" with the component for the profile page
+      name: 'friends',
+      path: '/friendsPage',
+      component: FriendsPage
     }
 ];
 
