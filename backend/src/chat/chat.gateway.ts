@@ -2,7 +2,7 @@ import { WebSocketGateway,
         SubscribeMessage,
         MessageBody,
         ConnectedSocket,
-        WebSocketServer } from '@nestjs/websockets';
+        WebSocketServer} from '@nestjs/websockets';
 import { PlayerService } from 'src/player/player.service';
 import { ChannelService } from 'src/channel/channel.service';
 import { Server, Socket } from 'socket.io';
@@ -30,12 +30,16 @@ export class ChatGateway {
 
     private logger = new Logger('ChatGateway');
 
+    afterInit(client: Socket) {
+        this.logger.log('After init!!');
+    }
+
     handleConnection(@ConnectedSocket() client: Socket){
-      this.logger.log(`client connected ${client.id}`)
+        this.logger.log(`client ${client.handshake.auth.playerId} (${client.handshake.auth.username._value}) connected at ${client.id}`);
     }
 
     handleDisconnect(@ConnectedSocket() client: Socket){
-      this.logger.log(`client disconnected ${client.id}`)
+      this.logger.log(`client disconnected ${client.id}`);
     }
 
     //ADD MESSAGE
@@ -113,7 +117,8 @@ export class ChatGateway {
               });
             const intra_username = await this.playerService.findOneIntraUsername(player_id);
             client.join(intra_username);
-            console.log('client joined to intraname: ', intra_username);
+            console.log('client joined all rooms');
+            console.log(client.rooms);
         } catch (error) {
             console.log('Error joining channels: ', error);
         }

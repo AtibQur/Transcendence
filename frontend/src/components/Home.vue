@@ -22,7 +22,7 @@
 <script setup lang="ts">
   import { ref, defineComponent } from 'vue';
   import axiosInstance from '../axiosConfig';
-  import { socket } from '@/socket';
+  import { socket } from '../socket'
 
   const username = ref('');
   const logged = ref(false);
@@ -36,6 +36,9 @@
     const playerIdResponse = await axiosInstance.post('/player/create', { username: username.value });
     const playerId = playerIdResponse.data
     logged.value = true;
+    socket.auth = { playerId, username };
+    console.log(socket);
+    socket.connect();
 
     sessionStorage.setItem('playerId', playerId);
     sessionStorage.setItem('username', username.value);
