@@ -80,7 +80,6 @@ export class ChatGateway {
             const id = await this.playerService.findIdByUsername(payload.channelmember_name);
             if (!id)
                 throw new Error('Player does not exist');
-            console.log(payload.channelmember_name, id);
 
             const member: CreateChannelmemberDto = {
                 member_id: id,
@@ -95,10 +94,14 @@ export class ChatGateway {
                 throw new Error('Player is already member of this channel');
 
             const intra_username = await this.playerService.findIntraByUsername(payload.channelmember_name);
-            this.server.to(intra_username).emit('newChannel', payload.channel_id);
-            return ;
+            this.server.to(intra_username).emit('newChannel', member.channel_id);
+            
+            const channel = await this.channelService.findOneChannel(member.channel_id);
+            this.server.to(channel.name).emit('newChannelmember', payload.channelmember_name);
+            return member;
         } catch (error) {
             console.log('Error: ', error);
+            return null
         }
     }
 

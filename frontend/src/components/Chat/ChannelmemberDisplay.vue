@@ -32,6 +32,12 @@ onBeforeMount(async () => {
 
     await fetchChannelmembers(currentChannelId.value);
 
+    //ADD NEW CHANNELMEMBER
+    socket.on('newChannelmember', (channelmember_name: string) => {
+        console.log("new channel member");
+        channelmembers.value.push(channelmember_name);
+    });
+
     //TRACK WHETHER CHANNEL_ID CHANGES
     watch(() => props.channelId, async (newChannelId) => {
         currentChannelId.value = newChannelId;
