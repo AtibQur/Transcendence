@@ -11,17 +11,11 @@
 import { socket } from '../../socket';
 import { ref } from 'vue';
 
-const props = defineProps({
-    playerId: {
-        type: Number,
-        required: true
-    }
-});
-
+const playerId = parseInt(sessionStorage.getItem('playerId') || '0');
 const newChannelName = ref('');
 
 const createChannel = () => {
-    socket.emit('addChannel', {name: newChannelName.value, is_private: false, owner_id: props.playerId}, () => {
+    socket.emit('addChannel', {name: newChannelName.value, is_private: false, owner_id: playerId}, () => {
         newChannelName.value = '';
     });
 }

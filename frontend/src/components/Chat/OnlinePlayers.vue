@@ -15,14 +15,8 @@ import axiosInstance from '../../axiosConfig';
 import { onBeforeMount, ref, computed } from 'vue'
 
 const onlinePlayers = ref([]);
+const playerId = parseInt(sessionStorage.getItem('playerId') || '0');
 const currentPlayer = sessionStorage.getItem('username');
-
-const props = defineProps({
-    playerId: {
-        type: Number,
-        required: true
-    }
-});
 
 onBeforeMount(async () => {
 

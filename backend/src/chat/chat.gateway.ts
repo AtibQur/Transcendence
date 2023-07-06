@@ -32,7 +32,6 @@ export class ChatGateway {
     private logger = new Logger('ChatGateway');
 
     afterInit(client: Socket) {
-        
         this.logger.log('After init!!');
     }
 
@@ -66,9 +65,13 @@ export class ChatGateway {
         @MessageBody() createChatmessageDto: CreateChatmessageDto,
         @ConnectedSocket() client: Socket
     ){
-        const chatmessage = await this.chatmessageService.createChatMessage(createChatmessageDto);
-        this.server.to(chatmessage.channel.name).emit('chatmessage', chatmessage);
-        return chatmessage;
+        try {
+            const chatmessage = await this.chatmessageService.createChatMessage(createChatmessageDto);
+            this.server.to(chatmessage.channel.name).emit('chatmessage', chatmessage);
+            return chatmessage;
+        } catch (error) {
+            console.log('Error creating message: ', error);
+        }
     }
 
     //ADD CHANNELMEMBER
@@ -93,9 +96,11 @@ export class ChatGateway {
             if (!newChannelmember)
                 throw new Error('Player is already member of this channel');
 
+            //notify player of new channel
             const intra_username = await this.playerService.findIntraByUsername(payload.channelmember_name);
             this.server.to(intra_username).emit('newChannel', member.channel_id);
             
+            //notify channelmembers of new member
             const channel = await this.channelService.findOneChannel(member.channel_id);
             this.server.to(channel.name).emit('newChannelmember', payload.channelmember_name);
             return member;
@@ -148,45 +153,4 @@ export class ChatGateway {
     findAllOnlinePlayers(){
         return this.playerService.findAllOnlinePlayers();
     }
-
-    //FIND ALL CHANNEL NAMES OF PLAYER
-    @SubscribeMessage('findPlayerChannels')
-    findPlayerChannels(
-        @MessageBody() id: number
-    ){
-        return this.channelmemberService.findPlayerChannels(id);
-    }
-
-    //FIND ONE CHANNEL NAME
-    @SubscribeMessage('findOneChannelName')
-    async findOneChannelName (
-        @MessageBody() channelId: number
-    ){
-        try {
-            const channel = await this.channelService.findOneChannel(channelId);
-            return channel.name;
-        } catch (error) {
-            console.log('Error finding channel name: ', error);
-        }
-    }
-
-    // FIND ALL MEMBERS OF CHANNEL
-    @SubscribeMessage('findAllChannelmembersNames')
-    async findAllChannelmembers (
-        @MessageBody() channelId: number
-    ) {
-        try {
-            const channelmembers = await this.channelmemberService.findAllChannelmembersNames(channelId);
-            const names = [];
-
-            channelmembers.forEach(function(channelmember) {
-                names.push(channelmember.member.username);
-              });
-            
-            return names;
-        } catch (error) {
-            console.log('Error finding channel members: ', error);
-        }
-    }
 }
-

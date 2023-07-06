@@ -15,10 +15,6 @@ import { onBeforeMount, onUpdated, ref, computed, watch} from 'vue'
 import Message from '@/types/Message';
 
 const props = defineProps({
-    playerId: {
-        type: Number,
-        required: true
-    },
     channelId: {
         type: Number,
         required: true
@@ -29,6 +25,7 @@ const channelName = ref('');
 const messages = ref<Message[]>([]);
 const currentChannelId = ref(props.channelId);
 // const newDate = ref(true);
+const playerId = parseInt(sessionStorage.getItem('playerId') || '0');
 const dates = ref<string>([]);
 
 onBeforeMount(async () => {
@@ -52,7 +49,7 @@ onBeforeMount(async () => {
         });
     };
 
-    await fetchChatMessagesFiltered(props.playerId, currentChannelId.value);
+    await fetchChatMessagesFiltered(playerId, currentChannelId.value);
     await fetchChannelName(currentChannelId.value);
 
 
@@ -65,7 +62,7 @@ onBeforeMount(async () => {
     //TRACK WHETHER CHANNEL_ID CHANGES
     watch(() => props.channelId, async (newChannelId) => {
         currentChannelId.value = newChannelId;
-        await fetchChatMessagesFiltered(props.playerId, currentChannelId.value);
+        await fetchChatMessagesFiltered(playerId, currentChannelId.value);
         await fetchChannelName(currentChannelId.value);
     });
 

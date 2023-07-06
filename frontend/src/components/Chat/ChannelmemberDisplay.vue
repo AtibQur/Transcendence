@@ -2,16 +2,15 @@
     <h4>Channel Members</h4>
     <ul id="channelmemberList">
         <li v-for="(channelmember, index) in channelmembers" :key="index">
-            <button class="channelmember-button" @click="openUserOptionsPopup"> {{ channelmember }} </button>
+            <button class="channelmember-button"> {{ channelmember }} </button>
         </li>
-        <OptionsPopup v-if="showPopup" />
     </ul>
 </template>
 
 <script setup lang="ts">
 import { socket } from '../../socket';
+import axiosInstance from '../../axiosConfig';
 import { onBeforeMount, ref, watch } from 'vue'
-import OptionsPopup from './OptionsPopup.vue';
 
 const props = defineProps({
     channelId: {
@@ -26,11 +25,10 @@ const showPopup = ref(false);
 
 onBeforeMount(async () => {
 
-    // FIND ALL CHANNEL FOR PLAYER
+    // FIND ALL MEMBERS OF CHANNEL
     const fetchChannelmembers = async (channelId: number) => {
-        socket.emit('findAllChannelmembersNames', channelId, (response) => {
-            channelmembers.value = response;
-        });
+        const response = await axiosInstance.get('channelmember/allmembers/' + channelId.toString());
+        channelmembers.value = response.data.map((item) => item.member.username);
     }
 
     await fetchChannelmembers(currentChannelId.value);

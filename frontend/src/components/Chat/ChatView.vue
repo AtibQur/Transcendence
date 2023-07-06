@@ -6,14 +6,14 @@
         <div class="chat-start-page" v-else>
             <div class="left-side-bar">
                 <h3>Welcome {{ username }} {{ playerId }}!</h3>
-                <ChannelDisplay :playerId="playerId" @changeChannel='changeChannel'/>
-                <AddChannel :playerId="playerId"/>
-                <OnlinePlayers :playerId="playerId"/> 
+                <ChannelDisplay @changeChannel='changeChannel'/>
+                <AddChannel/>
+                <OnlinePlayers/> 
             </div>
-            <div class="chat-box">
+            <!-- <div class="chat-box">
                 <div v-if="inChannel">
-                    <ChatBox :playerId="playerId" :channelId="channelId"/>
-                    <AddMessage :senderId="playerId" :channelId="channelId"/>
+                    <ChatBox :channelId="channelId"/>
+                    <AddMessage :channelId="channelId"/>
                 </div>
             </div>
             <div class="right-side-bar" v-if="inChannel">
@@ -21,7 +21,7 @@
                 <div v-if="isAdmin">
                     <AddChannelmember :channelId="channelId"/>
                 </div>
-            </div>
+            </div> -->
         </div>
     </div>
 </template>
@@ -41,12 +41,12 @@ const playerId = parseInt(sessionStorage.getItem('playerId') || '0');
 const username = sessionStorage.getItem('username') || '0';
 const inChannel = ref(false);
 const isAdmin = ref(false);
-const channelId = ref(-1); //test
+const channelId = ref(null);
 
 const changeChannel = async (channel_id: number) => {
     channelId.value = channel_id;
     inChannel.value = true;
-    isAdmin.value = await fetchIsAdmin(playerId, channel_id);
+    // isAdmin.value = await fetchIsAdmin(playerId, channel_id);
 }
 
 const fetchIsAdmin = async (player_id: number, channel_id: number) => {
