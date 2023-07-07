@@ -29,7 +29,7 @@ export class AuthController {
         @Req() request: Request,
         @Res( {passthrough: true} ) response: Response
         ) {
-        // console.log(request.query);
+
         const intra = await this.authService.validateUser(request.query.code);
         const userData = await this.authService.getIntraDatabyToken(intra.access_token);
 
@@ -40,6 +40,7 @@ export class AuthController {
 				jwt +
 				'; HttpOnly; Secure; SameSite=Strict',
 		);
+        console.log(jwt)
         response.status(200).redirect('http://localhost:8080/Login');
     }
 
@@ -91,7 +92,7 @@ export class AuthController {
     // @UseGuards(AuthenticatedGuard)
     @Get('status')
     async GetAuthStatus(@Req() request: Request) {
-        console.log(request);
+        // console.log(request);
         // return (req.user.intra_username);
     }
 

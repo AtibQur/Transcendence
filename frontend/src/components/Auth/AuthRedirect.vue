@@ -12,7 +12,7 @@
             <handleSubmit />
         </form>
         <div>
-            user: {{ user }}
+            <CookieComponent />
         </div>
     </div>
 </template>
@@ -22,6 +22,7 @@
     import { onMounted ,ref } from 'vue';
     import ImageComponent from './ImageComponent.vue';
     import handleSubmit from './SubmitButtonComponent.vue'
+import CookieComponent from './cookieComponent.vue';
     
     const name = ref("");
     const user  = ref("");

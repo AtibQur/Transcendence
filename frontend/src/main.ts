@@ -13,6 +13,7 @@ import ChatView from './components/Chat/ChatView.vue';
 import Redirect2faVerify from './components/Auth/Redirect2faVerify.vue';
 import FriendsPage from './components/Friends/FriendsPage.vue';
 import PlayerProfile from './components/profile/PlayerProfile.vue';
+import createCookies from 'vue3-cookies';
 
 const routes: RouteRecordRaw[] = [
     { 
@@ -69,6 +70,8 @@ const router = createRouter({
 
 const app = createApp(App).use(router);
 app.use(router);
+
+app.use(createCookies)
 
 app.config.globalProperties.$axios = axiosInstance;
 app.mount('#app');
