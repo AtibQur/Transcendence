@@ -40,13 +40,9 @@ onBeforeMount(async () => {
 
     //FIND CHANNEL NAME
     const fetchChannelName = async (channelId: number) => {
-        socket.emit('findOneChannelName', channelId, (name: string) => {
-            try {
-                channelName.value = name;
-            } catch (e) {
-                console.log('Error: fetching channel name');
-            }
-        });
+        const response = await axiosInstance.get('channel/' + channelId.toString());
+        console.log('fetch channel name: ', response.data);
+        channelName.value = response.data.name;
     };
 
     await fetchChatMessagesFiltered(playerId, currentChannelId.value);

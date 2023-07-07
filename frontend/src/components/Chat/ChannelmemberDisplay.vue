@@ -1,8 +1,16 @@
 <template>
     <h4>Channel Members</h4>
     <ul id="channelmemberList">
+        <div class="card flex justify-content-center">
+            <Sidebar v-model:visible="visible" position="right">
+                <!-- <UserOptionsMenu :channelmemberId="channelmember.member_id"/> -->
+                <button>HELLO</button>
+                <button>HELLO</button>
+                <button>HELLO</button>
+            </Sidebar>
+        </div>
         <li v-for="(channelmember, index) in channelmembers" :key="index">
-            <button class="channelmember-button"> {{ channelmember }} </button>
+            <button class="channelmember-button" @click="visible = true"> {{ channelmember.member.username }} </button>
         </li>
     </ul>
 </template>
@@ -11,6 +19,7 @@
 import { socket } from '../../socket';
 import axiosInstance from '../../axiosConfig';
 import { onBeforeMount, ref, watch } from 'vue'
+import Sidebar from 'primevue/sidebar';
 
 const props = defineProps({
     channelId: {
@@ -21,14 +30,15 @@ const props = defineProps({
 
 const channelmembers = ref([]);
 const currentChannelId = ref(props.channelId);
-const showPopup = ref(false);
+const visible = ref(false);
 
 onBeforeMount(async () => {
 
     // FIND ALL MEMBERS OF CHANNEL
     const fetchChannelmembers = async (channelId: number) => {
         const response = await axiosInstance.get('channelmember/allmembers/' + channelId.toString());
-        channelmembers.value = response.data.map((item) => item.member.username);
+        channelmembers.value = response.data;
+        console.log(channelmembers.value);
     }
 
     await fetchChannelmembers(currentChannelId.value);
@@ -46,12 +56,12 @@ onBeforeMount(async () => {
     });
 })
 
-const openUserOptionsPopup = async () => {
-    showPopup.value = true;
-    setTimeout(() => {
-        showPopup.value = false;
-    }, 5000); 
-}
+// const openUserOptionsPopup = async () => {
+//     showPopup.value = true;
+//     setTimeout(() => {
+//         showPopup.value = false;
+//     }, 5000); 
+// }
 
 
 </script>

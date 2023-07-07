@@ -3,7 +3,7 @@
     <h3> hello  {{ playerId }}</h3>
     <ul id="channelList">
         <li v-for="(channel, index) in channels" :key="index">
-            <button class="channel-display-button" @click="changeChannel(channel.id)"> {{ channel.channel.name }} </button>
+            <button class="channel-display-button" @click="changeChannel(channel.channel_id)"> {{ channel.channel.name }} </button>
         </li>
     </ul>
 </template>
@@ -31,6 +31,7 @@ onBeforeMount(async () => {
     const fetchChannels = async (playerId: number) => {
         const response = await axiosInstance.get('channelmember/allchannels/' + playerId.toString());
         channels.value = response.data;
+        console.log('channels: ', channels.value);
     }
 
     await fetchChannels(playerId);

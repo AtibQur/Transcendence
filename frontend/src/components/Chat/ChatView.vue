@@ -10,7 +10,7 @@
                 <AddChannel/>
                 <OnlinePlayers/> 
             </div>
-            <!-- <div class="chat-box">
+            <div class="chat-box">
                 <div v-if="inChannel">
                     <ChatBox :channelId="channelId"/>
                     <AddMessage :channelId="channelId"/>
@@ -18,10 +18,10 @@
             </div>
             <div class="right-side-bar" v-if="inChannel">
                 <ChannelmemberDisplay :channelId="channelId" />
-                <div v-if="isAdmin">
+                <!-- <div v-if="isAdmin"> -->
                     <AddChannelmember :channelId="channelId"/>
-                </div>
-            </div> -->
+                <!-- </div> -->
+            </div>
         </div>
     </div>
 </template>

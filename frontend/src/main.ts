@@ -1,3 +1,8 @@
+import "primeflex/primeflex.css";
+import "primevue/resources/themes/lara-light-blue/theme.css";
+import "primevue/resources/primevue.min.css";
+import "primeicons/primeicons.css";
+
 import { createApp } from 'vue';
 import { createRouter, createWebHistory, RouteRecordRaw } from 'vue-router';
 import axiosInstance from './axiosConfig';
@@ -13,6 +18,12 @@ import ChatView from './components/Chat/ChatView.vue';
 import Redirect2faVerify from './components/Auth/Redirect2faVerify.vue';
 import FriendsPage from './components/Friends/FriendsPage.vue';
 import PlayerProfile from './components/profile/PlayerProfile.vue';
+import PrimeVue from 'primevue/config';
+// import Button from 'primevue/button';
+// import Menu from 'primevue/menu';
+// import Toast from 'primevue/toast';
+import ToastService from 'primevue/toastservice';
+
 
 const routes: RouteRecordRaw[] = [
     { 
@@ -20,7 +31,7 @@ const routes: RouteRecordRaw[] = [
       component: Home,
     },
     {
-      path: '/play',
+      path: '/play', 
       component: Play,
     },
     {
@@ -69,6 +80,12 @@ const router = createRouter({
 
 const app = createApp(App).use(router);
 app.use(router);
+app.use(PrimeVue);
+app.use(ToastService);
+
+// app.component('Button', Button);
+// app.component('Menu', Menu);
+// app.component('Toast', Toast);
 
 app.config.globalProperties.$axios = axiosInstance;
 app.mount('#app');
