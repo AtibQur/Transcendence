@@ -22,6 +22,7 @@
     import { onMounted ,ref } from 'vue';
     import ImageComponent from './ImageComponent.vue';
     import handleSubmit from './SubmitButtonComponent.vue'
+import { updateAuthHeader } from './utils';
     
     const name = ref("");
     const user  = ref("");
@@ -32,7 +33,7 @@
             const response = await axios.get('http://localhost:3000/auth/status');
             user.value = (response.data);
             answerLoaded.value = true;
-            console.log(user);
+            updateAuthHeader(response.headers);
             return user.value;
         } catch (error) {
             console.log("Error: Could not fetch user");

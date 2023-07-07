@@ -10,6 +10,7 @@
 <script setup lang="ts">
 
 	import axios from 'axios';
+	import  { API } from './utils';
 
 	// async function login() {
 	// 	try {
@@ -24,9 +25,13 @@
 	// }
 	async function StartAuth() {
 	try {
-		window.location.assign('https://api.intra.42.fr/oauth/authorize' + '?client_id=u-s4t2ud-1f5d67cb202d54f32ab27a0d8d47faa94081df9fc3e7da31b097a09fb7707578' + '&redirect_uri=http://localhost:3000/auth/42/callback' + '&response_type=code');
+		// window.location.replace("")
+		const route = await axios.get('http://localhost:3000/auth/login');
+		console.log(route.data)
+		const data = await API.get<string>(route.data);
+		console.log(data);
 	} catch (error) {
-		console.log('Error occurred');
+		// console.log('Error occurred');
 	}
 }
 

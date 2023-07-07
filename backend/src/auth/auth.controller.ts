@@ -9,6 +9,7 @@ import { AuthService } from './auth.service';
 import { Verify } from 'crypto';
 import { request } from 'http';
 import { userInfo } from 'os';
+import Axios from 'axios';
 // import { }
 
 const playerService = new PlayerService();
@@ -17,10 +18,25 @@ const playerService = new PlayerService();
 @Controller('auth')
 export class AuthController {
     constructor(private readonly authService: AuthService) {}
-    @UseGuards(LocalAuthGuard)
+
     @Get('/login')
-    async fortyTwoLogin() {
-        return ('you have entered my king');
+    fortyTwoLogin() {
+        interface AuthServiceParams {
+            client_id: string;
+            redirect_uri: string;
+            // state: string;
+            response_type: string;
+          }
+          const url: string = "https://api.intra.42.fr/oauth/authorize";
+          const params: AuthServiceParams = {
+            
+            client_id: "u-s4t2ud-1f5d67cb202d54f32ab27a0d8d47faa94081df9fc3e7da31b097a09fb7707578",
+            redirect_uri: "http://localhost:auth/42/callback",
+            // state: "",
+            response_type: "code"
+          };
+          const redirectUrl: string = Axios.getUri({ url, params });    
+          return redirectUrl;
     }
 
     // @UseGuards(LocalAuthGuard)
@@ -34,6 +50,7 @@ export class AuthController {
         const userData = await this.authService.getIntraDatabyToken(intra.access_token);
 
         const jwt = await this.authService.generateToken(userData.id, userData.login);
+        console.log(jwt)
         response.setHeader(
 			'Set-Cookie',
 			'session_cookie=' +
@@ -91,11 +108,10 @@ export class AuthController {
     // @UseGuards(AuthenticatedGuard)
     @Get('status')
     async GetAuthStatus(@Req() request: Request) {
-        console.log(request);
         // return (req.user.intra_username);
     }
 
-    @UseGuards(AuthenticatedGuard)
+    // @UseGuards(AuthenticatedGuard)
     @Get('id')
     async GetAuthId(@Req() req: any) {
         return(req.session);
