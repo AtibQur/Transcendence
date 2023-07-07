@@ -14,7 +14,7 @@ import Redirect2faVerify from './components/Auth/Redirect2faVerify.vue';
 import FriendsPage from './components/Friends/FriendsMenubar/FriendsPage.vue';
 
 const routes: RouteRecordRaw[] = [
-    { 
+    {
       path: '/',
       component: Home,
     },
@@ -52,8 +52,8 @@ const routes: RouteRecordRaw[] = [
     },
     {
       name: 'friends',
-      path: '/friendsPage',
-      component: FriendsPage
+      path: '/profile/:playerName',
+      component: FriendsPage,
     }
 ];
 
