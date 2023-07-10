@@ -1,7 +1,5 @@
 <template>
-
   <div class="ProfileContainer">
-
     <div class="ProfileData">
       <div class="ProfilePicture">
         <img :src="profilePicture" alt="Avatar" style="width:100%">
@@ -15,7 +13,6 @@
         </div>
       </div>
     </div>
-
   </div>
 </template>
 
@@ -30,25 +27,8 @@ export default defineComponent({
     const route = useRoute();
 
     const playerName = computed(() => route.params.playerName || '');
-    const profilePicture = ref('');
-    const status = ref('');
-
-    // Fetch the profile information on component mount
-    onMounted(() => {
-      fetchProfileData();
-    });
-
-    const fetchProfileData = async () => {
-      try {
-        const response = await axiosInstance.get(`friend/username/3`);
-        const { profilePicture: picture, status: userStatus } = response.data;
-        // profilePicture.value = picture;
-        status.value = userStatus;
-        console.log(response.data);
-      } catch (error) {
-        console.error('Error occurred while fetching profile data:', error);
-      }
-    };
+    const profilePicture = computed(() => route.params.profilePicture || '');
+    const status = computed(() => route.params.status || '');
 
     return {
       playerName,

@@ -14,7 +14,7 @@
           <div class="status-circle" :class="{ 'online': friend.status === 'online', 'offline': friend.status !== 'online' }"></div>
           <div class="name">{{ friend.username }}</div>
           <div class="profile-box">
-            <router-link v-if="friend.username" :to="{ name: 'friends', params: { playerName: friend.username } }" class="profile-link">Profile</router-link>
+            <router-link v-if="friend.username" :to="{ name: 'friends', params: { playerName: friend.username, profilePicture: friend.profilePicture, status: friend.status } }" class="profile-link">Profile</router-link>
           </div>
         </div>
       </div>
