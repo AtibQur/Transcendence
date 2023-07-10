@@ -39,7 +39,6 @@
     const playerId = playerIdResponse.data
     logged.value = true;
     socket.auth = { playerId, username };
-    console.log(socket);
     socket.connect();
 
     sessionStorage.setItem('playerId', playerId);
@@ -49,7 +48,6 @@
       setDefaultAvatar();
     }
     await socket.emit('joinAllRooms', playerId)
-    // username.value = '';
   };
 
   const setDefaultAvatar = async () => {
