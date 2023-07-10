@@ -19,28 +19,39 @@ import { CreateChannelmemberDto } from 'src/channelmember/dto/create-channelmemb
 	},
 })
 export class ChatGateway {
-  @WebSocketServer()
-  server: Server;
-
+    @WebSocketServer() server: Server;
+    
     constructor(
         private readonly playerService: PlayerService,
         private readonly channelmemberService: ChannelmemberService,
         private readonly channelService: ChannelService,
         private readonly chatmessageService: ChatmessageService
-    ) {}
-
+        ) {}
+        
     private logger = new Logger('ChatGateway');
-
-    afterInit(client: Socket) {
-        this.logger.log('After init!!');
-    }
+    private connectedSockets: Map<string, string> = new Map<string, string>();
 
     async handleConnection(@ConnectedSocket() client: Socket){
+        if (!client.handshake.auth.username._value) //if nobody is logged in
+            client.disconnect();
+    
+        this.connectedSockets.set(client.handshake.auth.username._value, client.id)
+        
+        const channels = await this.channelmemberService.findPlayerChannels(client.handshake.auth.playerId);
+        channels.forEach(function(channel) {
+            client.join(channel.channel.name);
+          });
+        const intra_username = await this.playerService.findOneIntraUsername(client.handshake.auth.playerId);
+        client.join(intra_username);
+        console.log('connected sockets:', this.connectedSockets);
         this.logger.log(`client ${client.handshake.auth.playerId} (${client.handshake.auth.username._value}) connected at ${client.id}`);
     }
 
     handleDisconnect(@ConnectedSocket() client: Socket){
-      this.logger.log(`client disconnected ${client.id}`);
+        if (client.handshake.auth.username._value)
+            this.connectedSockets.delete(client.handshake.auth.username._value);
+        
+        this.logger.log(`client disconnected ${client.id}`);
     }
 
     //ADD MESSAGE
@@ -146,11 +157,5 @@ export class ChatGateway {
         } catch (error) {
             console.log('Error joining channels: ', error);
         }
-    }
-
-    //FIND ALL ONLINE PLAYERS
-    @SubscribeMessage('findAllOnlinePlayers')
-    findAllOnlinePlayers(){
-        return this.playerService.findAllOnlinePlayers();
     }
 }
