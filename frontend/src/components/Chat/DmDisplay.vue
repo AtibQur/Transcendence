@@ -1,6 +1,6 @@
 <template>
     <div class="users-container">
-        <h4>Online Players</h4>
+        <h4>Direct Messages</h4>
         <ul id="userList">
             <li v-for="(playerName, index) in onlinePlayers" :key="index">
                 {{ playerName === currentPlayer ? playerName + ' (You)' : playerName }}
@@ -22,8 +22,8 @@ onBeforeMount(async () => {
 
     // FIND ALL ONLINE Players
     const fetchOnlinePlayers = async () => {
-    const response = await axiosInstance.get('player/online');
-    onlinePlayers.value = response.data.map(item => item.player.username);
+        const response = await axiosInstance.get('player/online');
+        onlinePlayers.value = response.data.map(item => item.player.username);
     }
 
     await fetchOnlinePlayers();

@@ -1,6 +1,5 @@
 <template>
     <h4>Available Channels</h4>
-    <h3> hello  {{ playerId }}</h3>
     <ul id="channelList">
         <li v-for="(channel, index) in channels" :key="index">
             <button class="channel-display-button" @click="changeChannel(channel.channel_id)"> {{ channel.channel.name }} </button>

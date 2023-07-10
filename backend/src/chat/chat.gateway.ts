@@ -44,13 +44,17 @@ export class ChatGateway {
         const intra_username = await this.playerService.findOneIntraUsername(client.handshake.auth.playerId);
         client.join(intra_username);
         console.log('connected sockets:', this.connectedSockets);
+        
+        this.playerService.updateStatus(client.handshake.auth.playerId, { status: "online" });
+        
         this.logger.log(`client ${client.handshake.auth.playerId} (${client.handshake.auth.username._value}) connected at ${client.id}`);
     }
-
+    
     handleDisconnect(@ConnectedSocket() client: Socket){
         if (client.handshake.auth.username._value)
-            this.connectedSockets.delete(client.handshake.auth.username._value);
+        this.connectedSockets.delete(client.handshake.auth.username._value);
         
+        this.playerService.updateStatus(client.handshake.auth.playerId, { status: "offline" });
         this.logger.log(`client disconnected ${client.id}`);
     }
 

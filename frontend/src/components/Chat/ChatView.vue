@@ -8,7 +8,7 @@
                 <h3>Welcome {{ username }} {{ playerId }}!</h3>
                 <ChannelDisplay @changeChannel='changeChannel'/>
                 <AddChannel/>
-                <OnlinePlayers/> 
+                <DmDisplay/> 
             </div>
             <div class="chat-box">
                 <div v-if="inChannel">
@@ -32,10 +32,10 @@ import ChannelDisplay from './ChannelDisplay.vue'
 import AddChannel from './AddChannel.vue';
 import ChatBox from './ChatBox.vue';
 import AddMessage from './AddMessage.vue';
-import OnlinePlayers from './OnlinePlayers.vue';
 import ChannelmemberDisplay from './ChannelmemberDisplay.vue';
 import AddChannelmember from './AddChannelmember.vue';
 import axiosInstance from '../../axiosConfig';
+import DmDisplay from './DmDisplay.vue';
 
 const playerId = parseInt(sessionStorage.getItem('playerId') || '0');
 const username = sessionStorage.getItem('username') || '0';

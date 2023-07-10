@@ -3,10 +3,14 @@
     <ul id="channelmemberList">
         <div class="card flex justify-content-center">
             <Sidebar v-model:visible="visible" position="right">
-                <!-- <UserOptionsMenu :channelmemberId="channelmember.member_id"/> -->
-                <button>HELLO</button>
-                <button>HELLO</button>
-                <button>HELLO</button>
+                <button>View Profile</button>
+                <button>Send Message</button>
+                <button>Invite To Play Pong</button>
+                <button>Block</button>
+                <button>Mute</button>
+                <button>Ban</button>
+                <button>Delete</button>
+                <button>Add Friend</button>
             </Sidebar>
         </div>
         <li v-for="(channelmember, index) in channelmembers" :key="index">
@@ -55,14 +59,6 @@ onBeforeMount(async () => {
         await fetchChannelmembers(currentChannelId.value);
     });
 })
-
-// const openUserOptionsPopup = async () => {
-//     showPopup.value = true;
-//     setTimeout(() => {
-//         showPopup.value = false;
-//     }, 5000); 
-// }
-
 
 </script>
 
