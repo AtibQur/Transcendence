@@ -40,7 +40,7 @@ export class AuthController {
 				jwt +
 				'; HttpOnly; Secure; SameSite=Strict',
 		);
-        console.log(jwt)
+        console.log(jwt);
         response.status(200).redirect('http://localhost:8080/Login');
     }
 

@@ -16,7 +16,7 @@
       const { cookies } = useCookies();
   
       const setCookie = () => {
-        cookies.set('myCookie', 'Hello World');
+        cookies.set('Tessa', 'isawesome');
       };
   
       const getCookie = () => {
