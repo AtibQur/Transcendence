@@ -87,7 +87,7 @@ ProfilePage.vue:
   const profilePicture = ref("");
   const showChangePictureModal = ref(false);
 
-  const playerId = parseInt(localStorage.getItem('playerId') || '0');
+  const playerId = parseInt(sessionStorage.getItem('playerId') || '0');
 
   onBeforeMount(async () => {
     try {
