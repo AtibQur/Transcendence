@@ -1,6 +1,4 @@
 import { Controller, Get, Header, Req, Res, Session, UseGuards } from '@nestjs/common';
-import { LocalAuthGuard } from './local.authguard';
-import { AuthenticatedGuard } from './local.authguard';
 import { PlayerService } from 'src/player/player.service';
 import * as speakeasy from 'speakeasy';
 import * as qrCode from 'qrcode';
@@ -24,10 +22,7 @@ export class UserController {
     async GetAuthId(@Req() req: any) {
         const token = req.header('Authorization').split(' ')[1];
         const payload = await this.authService.validateToken(token as string);
-        // const id = await this.playerService.findIdByUsername(payload.username);
-        // console.log(id);
-        // return id;
-        return payload.playerId;
+        return payload.id;
     }
 
     @Get('intraId')

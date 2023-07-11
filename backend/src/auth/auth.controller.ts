@@ -1,6 +1,4 @@
 import { Controller, Get, Header, Req, Res, Session, UseGuards } from '@nestjs/common';
-import { LocalAuthGuard } from './local.authguard';
-import { AuthenticatedGuard } from './local.authguard';
 import { PlayerService } from 'src/player/player.service';
 import * as speakeasy from 'speakeasy';
 import * as qrCode from 'qrcode';
@@ -11,20 +9,13 @@ import { request } from 'http';
 import { userInfo } from 'os';
 import { ENHANCER_TOKEN_TO_SUBTYPE_MAP } from '@nestjs/core/constants';
 import { CreatePlayerDto } from 'src/player/dto/create-player.dto';
-// import { }
 
 
 @Controller('auth')
 export class AuthController {
     constructor(private readonly authService: AuthService,
         private readonly playerService: PlayerService) {}
-    @UseGuards(LocalAuthGuard)
-    @Get('/login')
-    async fortyTwoLogin() {
-        return ('you have entered my king');
-    }
 
-    // @UseGuards(LocalAuthGuard)
     @Get('/42/callback')
     async fortyTwoCallback(
         @Req() request: Request,
@@ -42,16 +33,10 @@ export class AuthController {
         response.status(200).redirect('http://localhost:8080/Login');
     }
 
-    @Get("session")
-    async session(@Session() session: Record<string, any>) {
-        console.log(session);
-        console.log(session.id);
-    }
-
     @Get('/logout')
-    async fortyTwoLogout(@Req() req: any, @Res() res: any) {
-        req.logout();
-        res.redirect('http://localhost:3000/');
+    async fortyTwoLogout(@Req() request: Request, @Res({passthrough: true}) response: Response) {
+        response.clearCookie('auth');
+        response.redirect('http://localhost:8080/');
     }
     
     // @UseGuards(AuthenticatedGuard)
