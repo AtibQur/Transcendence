@@ -4,19 +4,20 @@ import { AuthenticatedGuard } from './local.authguard';
 import { PlayerService } from 'src/player/player.service';
 import * as speakeasy from 'speakeasy';
 import * as qrCode from 'qrcode';
-import { Request, Response } from 'express';
+import e, { Request, Response } from 'express';
 import { AuthService } from './auth.service';
 import { Verify } from 'crypto';
 import { request } from 'http';
 import { userInfo } from 'os';
+import { ENHANCER_TOKEN_TO_SUBTYPE_MAP } from '@nestjs/core/constants';
+import { CreatePlayerDto } from 'src/player/dto/create-player.dto';
 // import { }
-
-const playerService = new PlayerService();
 
 
 @Controller('auth')
 export class AuthController {
-    constructor(private readonly authService: AuthService) {}
+    constructor(private readonly authService: AuthService,
+        private readonly playerService: PlayerService) {}
     @UseGuards(LocalAuthGuard)
     @Get('/login')
     async fortyTwoLogin() {
@@ -32,15 +33,12 @@ export class AuthController {
 
         const intra = await this.authService.validateUser(request.query.code);
         const userData = await this.authService.getIntraDatabyToken(intra.access_token);
+        const createPlayerDto = new CreatePlayerDto();
+        createPlayerDto.username = userData.login;
+        const playerId = await this.playerService.createPlayer(createPlayerDto);
 
-        const jwt = await this.authService.generateToken(userData.id, userData.login);
-        response.setHeader(
-			'Set-Cookie',
-			'session_cookie=' +
-				jwt +
-				'; HttpOnly; Secure; SameSite=Strict',
-		);
-        console.log(jwt);
+        const jwt = await this.authService.generateToken(userData.id, userData.login, playerId);
+        response.cookie('auth', jwt)
         response.status(200).redirect('http://localhost:8080/Login');
     }
 
@@ -87,25 +85,6 @@ export class AuthController {
             console.log('incorrect code');
             res.send('incorrect code');
         }
-    }
-
-    // @UseGuards(AuthenticatedGuard)
-    @Get('status')
-    async GetAuthStatus(@Req() request: Request) {
-        // console.log(request);
-        // return (req.user.intra_username);
-    }
-
-    @UseGuards(AuthenticatedGuard)
-    @Get('id')
-    async GetAuthId(@Req() req: any) {
-        return(req.session);
-    }
-
-    @UseGuards(AuthenticatedGuard)
-    @Get('user')
-    async GetAuthUser(@Req() req: any) {
-        return req.session.passport.user;
     }
 
 }

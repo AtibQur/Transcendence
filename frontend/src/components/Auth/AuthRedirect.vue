@@ -1,6 +1,6 @@
 <template>
         <h1>Login Successfull!</h1>
-        <h2>Welcome {{ name }}</h2>
+        <h2>Welcome {{ intraName }}</h2>
     <div>
         <div>
             Your 2FA code is:
@@ -12,36 +12,76 @@
             <handleSubmit />
         </form>
         <div>
-            <CookieComponent />
+            id: {{ playerId }}
+            username: {{ intraName }}
+            intraId: {{ intraId }}
         </div>
+
     </div>
 </template>
 
 <script setup lang="ts">
     import axios from 'axios';
+    import { instance, setDefaultAuthHeader } from './axiosinstance';
     import { onMounted ,ref } from 'vue';
     import ImageComponent from './ImageComponent.vue';
     import handleSubmit from './SubmitButtonComponent.vue'
-import CookieComponent from './cookieComponent.vue';
+    import CookieComponent from './cookieComponent.vue';
+    import { getCookie, setCookie } from './cookie_utils';
     
-    const name = ref("");
-    const user  = ref("");
-    const answerLoaded = ref(false);
+    let accesstoken:string;
+    const intraName = ref("");
+    const intraId = ref("");
+    const playerId = ref("");
     
-    async function fetchUser() {
+    async function getAccessToken() {
         try {
-            const response = await axios.get('http://localhost:3000/auth/status');
-            user.value = (response.data);
-            answerLoaded.value = true;
-            console.log(user);
-            return user.value;
+            accesstoken = getCookie('auth')
+            setDefaultAuthHeader(accesstoken);
         } catch (error) {
-            console.log("Error: Could not fetch user");
+            console.log("Error retrieving cookie");
+        }
+    }
+
+    async function fetchUsername() {
+        try {
+            const response = await instance.get('/user/username');
+            intraName.value = (response.data);
+            console.log(intraName.value)
+            return intraName.value;
+        } catch (error) {
+            console.log("Error: Could not fetch username");
+        }
+    }
+
+    async function fetchIntraId() {
+        try {
+            const response = await instance.get('http://localhost:3000/user/intraId');
+            intraId.value = (response.data);
+            console.log(intraId.value)
+            return intraId.value;
+        } catch (error) {
+            console.log("Error: Could not fetch intra id");
+        }
+    }
+
+    async function fetchPlayerId() {
+        try {
+            const response = await instance.get('http://localhost:3000/user/id');
+            playerId.value = (response.data);
+            console.log(playerId.value)
+            setCookie('playerId', playerId.value);
+            return playerId.value;
+        } catch (error) {
+            console.log("Error: Could not fetch player id");
         }
     }
 
     onMounted(() => {
-        fetchUser();
+        getAccessToken();
+        fetchUsername();
+        fetchIntraId();
+        fetchPlayerId();
     })
 
 </script>

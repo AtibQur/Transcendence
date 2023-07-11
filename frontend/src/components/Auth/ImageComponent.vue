@@ -1,4 +1,4 @@
-<template>
+w<template>
     <div>
       <img :src="imageData" alt="Image" v-if="imageData" />
     </div>

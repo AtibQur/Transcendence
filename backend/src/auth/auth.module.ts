@@ -4,6 +4,9 @@ import { PassportModule } from '@nestjs/passport';
 import { AuthController } from './auth.controller';
 import { AuthService } from './auth.service';
 import { JwtStrategy } from './jwt/jwt.strategy';
+import { UserController } from './auth.endpoint.controller';
+import { Player } from 'src/player/entities/player.entity';
+import { PlayerService } from 'src/player/player.service';
 
 @Module({
 	imports: [
@@ -14,7 +17,7 @@ import { JwtStrategy } from './jwt/jwt.strategy';
 		}),
 		PassportModule.register({ defaultStrategy: 'jwt' }),
 	],
-	controllers: [AuthController],
-	providers: [AuthService, JwtStrategy],
+	controllers: [AuthController, UserController],
+	providers: [AuthService, JwtStrategy, PlayerService],
 })
 export class AuthModule {}

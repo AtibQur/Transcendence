@@ -9,20 +9,22 @@ import { sign } from 'crypto';
 export class AuthService {
     constructor(private readonly jwtService: JwtService) {}
 
-    async generateToken(id: string, login: string): Promise<string> {
+    async generateToken(id: string, login: string, playerId: number): Promise<string> {
         const payload = { 
             sub: id,
             username: login, 
+            id: playerId,
         };
         const options = { secret: 'geheim', expiresIn: '1h'}
         const token = await this.jwtService.signAsync(payload, options);
 
-        return JSON.stringify({access_token: token});
+        return token;
     }
 
     async validateToken(token: string): Promise<any> {
         try {
-            return this.jwtService.verify(token);
+            const options = { secret: 'geheim', expiresIn: '1h'}
+            return this.jwtService.verify(token, options);
         } catch (error) {
             throw 'invalid token';
         }
