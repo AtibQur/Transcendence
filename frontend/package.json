@@ -16,7 +16,6 @@
     "primevue": "^3.29.2",
     "socket.io": "^4.6.2",
     "socket.io-client": "^4.6.2",
-    "vee-validate": "^4.10.6",
     "vue": "^3.2.36",
     "vue-router": "^4.0.13"
   },
