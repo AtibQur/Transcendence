@@ -19,9 +19,6 @@ import Redirect2faVerify from './components/Auth/Redirect2faVerify.vue';
 import FriendsPage from './components/Friends/FriendsPage.vue';
 import PlayerProfile from './components/profile/PlayerProfile.vue';
 import PrimeVue from 'primevue/config';
-// import Button from 'primevue/button';
-// import Menu from 'primevue/menu';
-// import Toast from 'primevue/toast';
 import ToastService from 'primevue/toastservice';
 
 
@@ -82,10 +79,6 @@ const app = createApp(App).use(router);
 app.use(router);
 app.use(PrimeVue);
 app.use(ToastService);
-
-// app.component('Button', Button);
-// app.component('Menu', Menu);
-// app.component('Toast', Toast);
 
 app.config.globalProperties.$axios = axiosInstance;
 app.mount('#app');
