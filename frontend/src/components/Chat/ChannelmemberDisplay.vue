@@ -14,7 +14,7 @@
             </Sidebar>
         </div>
         <li v-for="(channelmember, index) in channelmembers" :key="index">
-            <button class="channelmember-button" @click="visible = true"> {{ channelmember.member.username }} </button>
+            <button class="channelmember-button" @click="visible = true"> {{ channelmember }} </button>
         </li>
     </ul>
 </template>
@@ -41,15 +41,13 @@ onBeforeMount(async () => {
     // FIND ALL MEMBERS OF CHANNEL
     const fetchChannelmembers = async (channelId: number) => {
         const response = await axiosInstance.get('channelmember/allmembers/' + channelId.toString());
-        channelmembers.value = response.data;
-        console.log(channelmembers.value);
+        channelmembers.value = response.data.map(member => member.member.username);
     }
 
     await fetchChannelmembers(currentChannelId.value);
 
     //ADD NEW CHANNELMEMBER
     socket.on('newChannelmember', (channelmember_name: string) => {
-        console.log("new channel member");
         channelmembers.value.push(channelmember_name);
     });
 

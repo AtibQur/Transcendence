@@ -37,8 +37,7 @@ onBeforeMount(async () => {
 
     // LISTEN IF A NEW CHANNEL IS ADDED
     socket.on('newChannel', (channelId: number) => {
-        console.log('new channel');
-        socket.emit('joinRoom', { player_id: playerId, channel_id: channelId}, () => {
+        socket.emit('joinRoom', { playerId, channelId }, () => {
             console.log('joined channel');
             channels.value.push({channel_id: channelId})
         })

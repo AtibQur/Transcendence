@@ -34,7 +34,7 @@ export class ChatGateway {
     async handleConnection(@ConnectedSocket() client: Socket){
         if (!client.handshake.auth.username._value) //if nobody is logged in
             client.disconnect();
-    
+        console.log('server username: ', client.handshake.auth.username._value);
         this.connectedSockets.set(client.handshake.auth.username._value, client.id)
         
         const channels = await this.channelmemberService.findPlayerChannels(client.handshake.auth.playerId);
@@ -67,7 +67,7 @@ export class ChatGateway {
         try {
             const channel_id = await this.channelService.createChannel(createChannelDto);
             client.join(createChannelDto.name);
-            this.server.emit('newChannel', { channel_id: channel_id } );
+            this.server.emit('newChannel', channel_id );
             return channel_id;
         } catch (error) {
             console.log('Error creating channel: ', error);
@@ -133,6 +133,7 @@ export class ChatGateway {
     ) {
         try {
             //!!! now able to create identical channelmembers.. should be unique?!
+            console.log('Test!!', payload.channel_id);
             await this.channelmemberService.createChannelmember({ member_id: payload.player_id, channel_id: payload.channel_id});
             const channel = await this.channelService.findOneChannel(payload.channel_id);
             client.join(channel.name);

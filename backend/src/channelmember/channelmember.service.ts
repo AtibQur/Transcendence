@@ -11,6 +11,7 @@ export class ChannelmemberService {
   // ADD PLAYER TO EXISTING CHANNEL
   async createChannelmember(createChannelmemberDto: CreateChannelmemberDto) {
     try {
+      console.log('channel_id!!', createChannelmemberDto.channel_id);
       if (await this.isInChannel(createChannelmemberDto.member_id, createChannelmemberDto.channel_id)) {
         throw new Error("Player is already in channel");
       }

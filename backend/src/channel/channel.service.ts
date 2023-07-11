@@ -33,6 +33,7 @@ export class ChannelService {
       // add channel owner as a member
       const channelMemberDto: CreateChannelmemberDto = new CreateChannelmemberDto();
       channelMemberDto.member_id = createChannelDto.owner_id;
+      console.log('HERE ', newChannel.id);
       channelMemberDto.channel_id = newChannel.id;
       channelMemberDto.is_admin = true;
       channelMemberDto.is_muted = false;
