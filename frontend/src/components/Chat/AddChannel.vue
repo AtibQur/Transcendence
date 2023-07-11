@@ -9,15 +9,17 @@
                 </div>
                 <div class="flex flex-wrap gap-3">
                     <div v-for="option in securityOptions" :key="option.type" class="flex align-items-center">
-                        <RadioButton @click="log()" v-model="securityType" :inputId="option.type" :value="option.name" />
+                        <RadioButton @click="selectedSecurityType = option.type" v-model="securityType" :inputId="option.type.toString()" :value="option.name" />
                         <label :for="option.type" class="ml-2">{{ option.name }}</label>
                     </div>
                 </div>
                 <div class="p-field">
-                    <Password v-if="selectedSecurityType === SecurityLevel.PUBLIC" disabled placeholder="Disabled" />
-                    <Password v-else v-model="password" toggleMask :feedback="false" />
+                    <label for="password">Password</label>
+                    <Password id="password" v-if="selectedSecurityType === SecurityLevel.PUBLIC" disabled placeholder="Disabled" />
+                    <Password id="password" v-else v-model="password" toggleMask :feedback="false" />
                 </div>
-                <!-- <small id="text-error" class="p-error">{{ errorMessage || '&nbsp;' }}</small> -->
+                <small id="text-error" class="p-error">{{ errorMessage }}</small>
+                <Toast/>
                 <button type="submit">Create</button>
             </form>
         </Dialog>
@@ -32,55 +34,76 @@ import InputText from 'primevue/inputtext'
 import Password from 'primevue/password'
 import PrimeButton from 'primevue/button'
 import RadioButton from 'primevue/radiobutton'
+import Toast from 'primevue/toast';
 import { useToast } from 'primevue/usetoast';
 
 enum SecurityLevel {
-    PUBLIC = '0',
-    PRIVATE = '1',
-    PROTECTED = '2'
+    PUBLIC,
+    PRIVATE,
+    PROTECTED
 }
 
 const toast = useToast();
-const visible = ref(false);
+const visible = ref<boolean>(false);
 const playerId = parseInt(sessionStorage.getItem('playerId') || '0');
-const newChannelName = ref('');
+const newChannelName = ref<string>('');
 
-const securityType = ref('');
-const selectedSecurityType = ref('');
+const securityType = ref<number>(-1);
+const selectedSecurityType = ref<number>(-1);
 const securityOptions = ref([
     { name: 'Public', type: SecurityLevel.PUBLIC },
     { name: 'Private', type: SecurityLevel.PRIVATE },
     { name: 'Protected', type: SecurityLevel.PROTECTED }
 ]);
-const password = ref(null);
+
+const password = ref<string>('');
+const errorMessage = ref<string>('');
+const isPrivate = ref<boolean>(false);
 
 
-const createChannel = () => {
-    socket.emit('addChannel', {name: newChannelName.value, is_private: false, owner_id: playerId}, () => {
-        newChannelName.value = '';
-    });
-}
-
-function validateField(value) {
-    if (!value) {
-        return 'Value is required.';
+function validateFields() {
+    if (!newChannelName.value)
+    {
+        errorMessage.value = 'Channel name required.';
+        return false;
     }
-
+    if (selectedSecurityType.value == -1)
+    {
+        errorMessage.value = 'Security type required.';
+        return false;
+    }
+    if (selectedSecurityType.value === SecurityLevel.PROTECTED && !password.value)
+    {
+        errorMessage.value = 'Password required.';
+        return false;
+    }
+    errorMessage.value = '';
     return true;
 }
 
-function log() {
-    console.log('clicked: ', securityType.value);
+function resetFields() {
+    newChannelName.value = '';
+    selectedSecurityType.value = '';
+    password.value = '';
 }
 
 const onSubmit = () => {
     console.log(selectedSecurityType.value);
-    toast.add({ severity: 'info', summary: 'Form Submitted', detail: '', life: 3000 });
-    // console.log('values: ', values);
-    // console.log('values.value: ', values.value);
-    // if (values.value && values.value.length > 0) {
-    // }
-    visible.value = false;
+    if (validateFields())
+    {
+        if (selectedSecurityType.value == SecurityLevel.PRIVATE)
+            isPrivate.value = true;
+        try {
+            socket.emit('addChannel', {name: newChannelName.value, is_private: isPrivate.value, owner_id: playerId, password: password.value}, () => {
+                resetFields();
+                visible.value = false;
+                toast.add({ severity: 'info', summary: 'New Channel Created', detail: 'hello', life: 3000 });
+            });
+        } catch (e) {
+            console.log('hello');
+            toast.add({ severity: 'error', summary: 'Error Channel not Created', detail: 'hello', life: 3000 });
+        }
+    }
 };
 
 </script>
