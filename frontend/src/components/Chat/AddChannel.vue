@@ -1,6 +1,7 @@
 <template>
     <div class="card flex justify-content-center p-fluid">
         <button @click="visible = true" >Create New Channel</button>
+        <Toast/>
         <Dialog v-model:visible="visible" modal header="New Channel" :style="{ width: '50vw' }">
             <form @submit.prevent="onSubmit">
                 <div class="p-field">
@@ -19,7 +20,6 @@
                     <Password id="password" v-else v-model="password" toggleMask :feedback="false" />
                 </div>
                 <small id="text-error" class="p-error">{{ errorMessage }}</small>
-                <Toast/>
                 <button type="submit">Create</button>
             </form>
         </Dialog>
@@ -81,10 +81,11 @@ function validateFields() {
     return true;
 }
 
-function resetFields() {
+function resetForm() {
     newChannelName.value = '';
     selectedSecurityType.value = '';
     password.value = '';
+    visible.value = false;
 }
 
 const onSubmit = () => {
@@ -95,13 +96,11 @@ const onSubmit = () => {
             isPrivate.value = true;
         try {
             socket.emit('addChannel', {name: newChannelName.value, is_private: isPrivate.value, owner_id: playerId, password: password.value}, () => {
-                resetFields();
-                visible.value = false;
-                toast.add({ severity: 'info', summary: 'New Channel Created', detail: 'hello', life: 3000 });
+                resetForm();
+                toast.add({ severity: 'info', summary: 'New Channel Created', detail: '', life: 3000 });
             });
         } catch (e) {
-            console.log('hello');
-            toast.add({ severity: 'error', summary: 'Error Channel not Created', detail: 'hello', life: 3000 });
+            toast.add({ severity: 'error', summary: 'Error Channel not Created', detail: '', life: 3000 });
         }
     }
 };
