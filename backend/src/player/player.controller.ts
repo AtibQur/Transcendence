@@ -113,5 +113,10 @@ export class PlayerController {
     return this.playerService.isExistingPlayer(username);
   }
 
+  // GET ID BY USERNAME
+  @Get('profile/:username')
+  findIdByUsername(@Param('username') username: string) {
+    return this.playerService.findIdByUsername(username);
+  }
 }
 

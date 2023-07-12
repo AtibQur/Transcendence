@@ -6,38 +6,90 @@
       </div>
       <div class="ProfileInfo">
         <div class="ProfileName">
-          <h1>{{ playerName }}</h1>
+          <h1> {{ playerName }} </h1>
         </div>
         <div class="ProfileStatus">
-          <h3>status: {{ status }}</h3>
+          <h3>status: {{ friendStatus }}</h3>
         </div>
       </div>
     </div>
   </div>
+
+  <div class="ProfileStats">
+      <select v-model="selectedOption">
+        <option value="Achievements">{{ playerName }}'s Achievements</option>
+        <option value="Stats">Stats</option>
+        <option value="Match History">Match History</option>
+      </select>
+
+      <div v-if="selectedOption === 'Achievements'" class="show">
+        <FriendsAchievements />
+      </div>
+      <div v-else-if="selectedOption === 'Stats'" class="show">
+        <ProfileStats />
+      </div>
+      <div v-else-if="selectedOption === 'Match History'" class="show">
+        <ProfileHistory />
+      </div>
+    </div>
+
 </template>
 
 <script lang="ts">
-import { defineComponent, computed, ref, onMounted } from 'vue';
+import { onBeforeMount, ref, computed } from 'vue';
 import axiosInstance from '../../../axiosConfig';
 import { useRoute } from 'vue-router';
+import FriendsAchievements from './FriendsAchievements.vue';
 
-export default defineComponent({
-  name: 'FriendsPage',
+export default {
   setup() {
+    
     const route = useRoute();
-
-    const playerName = computed(() => route.params.playerName || '');
-    const profilePicture = computed(() => route.params.profilePicture || '');
-    const status = computed(() => route.params.status || '');
-
-    return {
-      playerName,
-      profilePicture,
-      status,
+    const playerName = computed(() => route.params.playerName || ''); // recieve the player name from router redirect
+    const friendId = ref("");
+    const profilePicture = ref("");
+    const friendStatus = ref("");
+    
+    const fetchFriendId = async () => {
+      const response = await axiosInstance.get(`player/profile/${playerName.value}`);
+      friendId.value = response.data;
+      return friendId.value;
     };
-  },
-});
+    
+    const fetchProfilePicture = async () => {
+      const response = await axiosInstance.get(`player/avatar/${friendId.value}`);
+      const imageBytes: Uint8Array = new Uint8Array(response.data.data);
+      const imageUrl = ref<string | null>(null);
+      imageUrl.value = URL.createObjectURL(new Blob([imageBytes]));
+      return imageUrl.value;
+    };
+    
+    const fetchFriendStatus = async () => {
+      const response = await axiosInstance.get(`player/status/${friendId.value}`);
+      return response.data;
+    };
+    
+    onBeforeMount(async () => {
+      try {
+        friendId.value = await fetchFriendId();
+        profilePicture.value = await fetchProfilePicture();
+        friendStatus.value = await fetchFriendStatus();
+      } catch (error) {
+        console.log("Error occurred:", error);
+      }
+    });
+  
+    return {
+      profilePicture,
+      friendStatus,
+      playerName,
+      FriendsAchievements,
+    };
+  }
+};
+
 </script>
+
 
 <style scoped>
 .ProfileContainer {
@@ -91,4 +143,6 @@ export default defineComponent({
     height: 40%;
     /* border: 1px solid black; */
   }
+
+  
 </style>
