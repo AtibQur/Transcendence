@@ -41,7 +41,7 @@
         console.log("Error retrieving auth cookie");
       }
     }
-  };
+  }; 
 
   const greetPlayer = async () => {
     try {

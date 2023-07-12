@@ -28,4 +28,10 @@ export class UserController {
         const payload = await this.authService.validateToken(token as string);
         return payload.sub;
     }
+
+    @Get('logout')
+    async Logout(@Req() req: any, @Res() res: Response) {
+        res.clearCookie('token');
+        res.redirect('/');
+    }
 }

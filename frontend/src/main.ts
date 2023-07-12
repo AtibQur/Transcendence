@@ -14,6 +14,7 @@ import Redirect2faVerify from './components/Auth/Redirect2faVerify.vue';
 import FriendsPage from './components/Friends/FriendsPage.vue';
 import PlayerProfile from './components/profile/PlayerProfile.vue';
 import createCookies from 'vue3-cookies';
+import Logout from './components/LogoutPlayer.vue';
 
 const routes: RouteRecordRaw[] = [
     { 
@@ -61,6 +62,11 @@ const routes: RouteRecordRaw[] = [
       path: '/profile/:playerName',
       name: 'profile',
       component: ProfilePage, // Replace "ProfilePage" with the component for the profile page
+    },
+    {
+      path: '/logout',
+      name: 'logout',
+      component: Logout,
     }
 ];
 
