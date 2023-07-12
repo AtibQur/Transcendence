@@ -1,8 +1,9 @@
 <template>
     <div class="card flex justify-content-center p-fluid">
-        <button @click="visible = true" >Create New Channel</button>
+        <ConfirmDialog />
+        <button @click="isVisible = true">Create New Channel</button>
         <Toast/>
-        <Dialog v-model:visible="visible" modal header="New Channel" :style="{ width: '50vw' }">
+        <Dialog v-model:visible="isVisible" modal header="New Channel" :style="{ width: '50vw' }" :closeButtonProps="handleCloseButton">
             <form @submit.prevent="onSubmit">
                 <div class="p-field">
                     <label for="channelName">Channel Name</label>
@@ -35,7 +36,9 @@ import Password from 'primevue/password'
 import PrimeButton from 'primevue/button'
 import RadioButton from 'primevue/radiobutton'
 import Toast from 'primevue/toast';
+import ConfirmDialog from 'primevue/confirmdialog';
 import { useToast } from 'primevue/usetoast';
+import { useConfirm } from "primevue/useconfirm";
 
 enum SecurityLevel {
     PUBLIC,
@@ -44,9 +47,11 @@ enum SecurityLevel {
 }
 
 const toast = useToast();
-const visible = ref<boolean>(false);
+const confirm = useConfirm();
+const isVisible = ref<boolean>(false);
 const playerId = parseInt(sessionStorage.getItem('playerId') || '0');
 const newChannelName = ref<string>('');
+const showConfirmation = ref<boolean>(false);
 
 const securityType = ref<number>(-1);
 const selectedSecurityType = ref<number>(-1);
@@ -60,6 +65,25 @@ const password = ref<string>('');
 const errorMessage = ref<string>('');
 const isPrivate = ref<boolean>(false);
 
+const openConfirmDialog = () => {
+    confirm.require({
+        message: 'Are you sure you want to proceed?',
+        header: 'Confirmation',
+        accept: () => {
+            resetForm();
+        },
+        onShow: () => {
+            isVisible.value = true;
+        }
+    });
+};
+
+const handleCloseButton = {
+    'aria-label': 'Close Dialog',
+    onClick: () => {
+        openConfirmDialog()
+    },
+};
 
 function validateFields() {
     if (!newChannelName.value)
@@ -85,7 +109,7 @@ function resetForm() {
     newChannelName.value = '';
     selectedSecurityType.value = '';
     password.value = '';
-    visible.value = false;
+    isVisible.value = false;
 }
 
 const onSubmit = () => {

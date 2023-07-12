@@ -3,18 +3,23 @@
     <ul id="channelmemberList">
         <div class="card flex justify-content-center">
             <Sidebar v-model:visible="visible" position="right">
-                <button>View Profile</button>
-                <button>Send Message</button>
-                <button>Invite To Play Pong</button>
-                <button>Block</button>
-                <button>Mute</button>
-                <button>Ban</button>
-                <button>Delete</button>
-                <button>Add Friend</button>
+                <div v-if="selectedChannelmember != playerUsername">
+                    <button>View Profile</button>
+                    <button>Send Message</button>
+                    <button>Invite To Play Pong</button>
+                    <button>Block</button>
+                    <button>Mute</button>
+                    <button>Ban</button>
+                    <button>Delete</button>
+                    <button>Add Friend</button>
+                </div>
+                <div v-else>
+                    <button>Edit Profile</button>
+                </div>
             </Sidebar>
         </div>
         <li v-for="(channelmember, index) in channelmembers" :key="index">
-            <button class="channelmember-button" @click="visible = true"> {{ channelmember }} </button>
+            <button class="channelmember-button" @click="showOptionPanel(channelmember)"> {{ channelmember }} </button>
         </li>
     </ul>
 </template>
@@ -32,9 +37,11 @@ const props = defineProps({
     }
 });
 
+const playerUsername = sessionStorage.getItem('username') || '0';
 const channelmembers = ref([]);
-const currentChannelId = ref(props.channelId);
-const visible = ref(false);
+const currentChannelId = ref<number>(props.channelId);
+const selectedChannelmember = ref<string>('')
+const visible = ref<boolean>(false);
 
 onBeforeMount(async () => {
 
@@ -57,6 +64,11 @@ onBeforeMount(async () => {
         await fetchChannelmembers(currentChannelId.value);
     });
 })
+
+function showOptionPanel(channelmember: string) {
+    selectedChannelmember.value = channelmember;
+    visible.value = true;
+}
 
 </script>
 

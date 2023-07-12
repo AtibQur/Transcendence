@@ -57,7 +57,6 @@ export class ChannelService {
             id: id,
           },
         });
-        console.log('in findOneChannel:', selectedChannel);
         return selectedChannel;
     }
     catch (error) {

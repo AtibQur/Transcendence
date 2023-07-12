@@ -20,6 +20,7 @@ import FriendsPage from './components/Friends/FriendsPage.vue';
 import PlayerProfile from './components/profile/PlayerProfile.vue';
 import PrimeVue from 'primevue/config';
 import ToastService from 'primevue/toastservice';
+import ConfirmationService from 'primevue/confirmationservice';
 
 
 const routes: RouteRecordRaw[] = [
@@ -79,6 +80,7 @@ const app = createApp(App).use(router);
 app.use(router);
 app.use(PrimeVue);
 app.use(ToastService);
+app.use(ConfirmationService);
 
 app.config.globalProperties.$axios = axiosInstance;
 app.mount('#app');
