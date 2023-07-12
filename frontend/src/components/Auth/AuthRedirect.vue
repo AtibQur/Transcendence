@@ -22,7 +22,8 @@
 
 <script setup lang="ts">
     import axios from 'axios';
-    import { instance, setDefaultAuthHeader } from './axiosinstance';
+    import AxiosInstance  from '../../axiosConfig';
+    import { setDefaultAuthHeader } from '../../axiosConfig';
     import { onMounted ,ref } from 'vue';
     import ImageComponent from './ImageComponent.vue';
     import handleSubmit from './SubmitButtonComponent.vue'
@@ -45,7 +46,7 @@
 
     async function fetchUsername() {
         try {
-            const response = await instance.get('/user/username');
+            const response = await AxiosInstance.get('/user/username');
             intraName.value = (response.data);
             console.log(intraName.value)
             return intraName.value;
@@ -56,7 +57,7 @@
 
     async function fetchIntraId() {
         try {
-            const response = await instance.get('http://localhost:3000/user/intraId');
+            const response = await AxiosInstance.get('http://localhost:3000/user/intraId');
             intraId.value = (response.data);
             console.log(intraId.value)
             return intraId.value;
@@ -67,7 +68,7 @@
 
     async function fetchPlayerId() {
         try {
-            const response = await instance.get('http://localhost:3000/user/id');
+            const response = await AxiosInstance.get('http://localhost:3000/user/id');
             playerId.value = (response.data);
             console.log(playerId.value)
             setCookie('playerId', playerId.value);
