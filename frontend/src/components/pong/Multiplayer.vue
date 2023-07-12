@@ -1,11 +1,11 @@
 <template>
 	<div class="PongLogo">
 		<h1>PONG</h1>
-	</div>
-	<div class="text-wrapper">
-			<h1 class="text">{{ dynamicText1 }}</h1>
-			<h1 class="text">VS</h1>
-			<h1 class="text">{{ dynamicText2 }}</h1>
+		<div class="text-wrapper">
+			<h1 class="dynamic-text">{{ dynamicText1 }}</h1>
+			<!-- <h1 class="vs-text">VS</h1> -->
+			<h1 class="dynamic-text">{{ dynamicText2 }}</h1>
+		</div>
 	</div>
 		<GameTools :player1="player1" :player2="player2" :ball="ball" :score1="score1" :score2="score2"/>
 	<div class="gameover-container" v-if="win">
@@ -24,9 +24,9 @@
 	import { socket } from '../../socket'
 	import GameTools from './GameTools.vue'
 	import { defineComponent } from 'vue'
-	import {p1, p2, username1, username2} from './MatchMaking.vue'
+	import {p1_id, p2_id, p1_socket_id, p2_socket_id, username1, username2, match_id} from './MatchMaking.vue'
 	import { useRouter } from 'vue-router'
-	import axios from 'axios'
+	import axiosInstance from '../../axiosConfig'
 
 	export default defineComponent({
 	name: "MultiplayerMatch",
@@ -117,19 +117,19 @@ mounted() {
 		console.log('Socket not connected')
 		return;
 	}
+	console.log("p1: ", username1, "p2:", username2)
 	this.dynamicText1 = username1;
 	this.dynamicText2 = username2;
 	console.log("this user:", socket.id)
-	console.log("P1 ID", p1)
-	console.log("P2 ID", p2)
+	console.log("Player1 ID: ", p1_socket_id)
+	console.log("Player2 ID: ", p2_socket_id)
 
-	socket.on('match', (match: {
+	socket.on('match',async (match: {
 		ball: any
 		player1: number
 		player2: number
 		player1Id: string
 		player2Id: string
-		socket_id: string
 		score1: number
 		score2: number
 	}) => {
@@ -142,37 +142,46 @@ mounted() {
 		this.score2 = match.score2
 
 		// hier eindigt match
-		if (this.score1 === 5){
-			if (socket.id === p2)
-				this.win = true;
-			else
-				this.lose = true;
-			this.end = true;
-		}
-		else if (this.score2 === 5){
-			if (socket.id === p1)
-				this.win = true;
-			else
-				this.lose = true;
+		if (this.score1 === 5 || this.score2 === 5){
+			if (this.score1 === 5){
+				if (socket.id === p1_socket_id)
+					this.win = true;
+				else
+					this.lose = true;
+			}
+			else if (this.score2 === 5){
+				if (socket.id === p2_socket_id)
+					this.win = true;
+				else
+					this.lose = true;
+				}
+			console.log("match_id: ", match_id)
+			console.log("this.score1: ", this.score1)
+			console.log("this.score2: ", this.score2)
+			let finished_match_res;
+			if (match_id){
+				finished_match_res = await axiosInstance.patch('match/finish/' + match_id.toString(), {player_points: this.score1, opponent_points: this.score2});
+				console.log(finished_match_res.data)
+			}
 			this.end = true;
 		}
 	})
 	socket.on('playerDisconnected', (data: {id: any }) => 
 	{ 
 		console.log(data.id, 'ended the match')
-		socket.emit('endGame');
+		// socket.emit('endGame');
 		this.$router.push('/play');
 	})
-	window.addEventListener('beforeunload', () => {
-		socket.emit('playerDisconnecting', { id: socket.id });
-		this.$router.push('/play');
-	});
+	// window.addEventListener('beforeunload', () => {
+	// 	socket.emit('playerDisconnecting', { id: socket.id });
+	// 	this.$router.push('/play');
+	// });
 
 	window.addEventListener('keyup', this.keyUp);
 	window.addEventListener('keydown', this.keyDown);
-	if (socket.id === p1)
+	if (socket.id === p1_socket_id)
 		setInterval(this.moveLeft, 1);
-	else if (socket.id === p2)
+	else if (socket.id === p2_socket_id)
 		setInterval(this.moveRight, 1);
 	}
 })
@@ -199,4 +208,28 @@ mounted() {
 .gameOverBtn:hover {
 	color: #79abe6;
 }
+
+.text-wrapper {
+	display: flex;
+	position: absolute;
+	align-items: center;
+	/* margin-left: 40%; */
+	justify-content: center;
+	transform: translate(-50%, -50%);
+	position: absolute;
+	top: 75%;
+	left: 50%;
+	z-index: 9999;
+	font-size: 12px;
+	text-shadow: none;
+}
+
+.dynamic-text {
+  margin: 250px;
+}
+
+.vs-text {
+  margin: 0 100px; /* Adjust the spacing around the "VS" text */
+}
+
 </style>

@@ -1,3 +1,3 @@
 export interface End {
-	gameEnd: boolean;
+	end: boolean;
 }

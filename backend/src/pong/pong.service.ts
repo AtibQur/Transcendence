@@ -13,7 +13,8 @@ export class PongService {
 	private player1: Player = this.pongGame.player1;
 	private player2: Player = this.pongGame.player2;
 	private end: End = this.pongGame.end;
-	private socket_id: string;
+	// private p1_socket_id: string;
+	// private p2_socket_id: string;
 
 	constructor(private socketServer: Socket) {}
 	
@@ -52,32 +53,39 @@ export class PongService {
 	// }
 
 	resetGame(): void {
-		this.end.gameEnd = false;
+		this.end.end = false;
 		this.player1.score = 0;
 		this.player2.score = 0;
 	}
 
 	handleMoveLeft(client: Socket, data: any): void {
 		this.player1.new = data;
-		this.socket_id = client.id;
+		// this.p1_socket_id = client.id;
 	}
 
 	handleMoveRight(client: Socket, data: any): void {
 		this.player2.new = data;
-		this.socket_id = client.id;
+		// this.p2_socket_id = client.id;
 	}
 
-	tick(client: Socket): void {
-		if (this.end.gameEnd)
+	tick(client: Socket, p1_socket_id: string, p2_socket_id: string): void {
+		if (this.end.end)
 			return ;
 
 		this.pongGame.updateGame(this.ball);
 
-		client.emit('match', {
+		client.to(p1_socket_id).emit('match', {
 			ball: this.ball,
 			player1: this.player1.new,
 			player2: this.player2.new,
-			socket_id: this.socket_id,
+			score1: this.player1.score,
+			score2: this.player2.score,
+		},
+		);
+		client.to(p2_socket_id).emit('match', {
+			ball: this.ball,
+			player1: this.player1.new,
+			player2: this.player2.new,
 			score1: this.player1.score,
 			score2: this.player2.score,
 		},

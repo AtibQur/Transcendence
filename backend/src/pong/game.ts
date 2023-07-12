@@ -26,7 +26,7 @@ export class PongGame {
 		velocity: 1,
 	};
 	private _end: End = {
-		gameEnd: false,
+		end: false,
 	};
 
 	get ball(): Ball {
@@ -73,7 +73,6 @@ export class PongGame {
 		this.ball.velocity = 2;
 		this.ball.dX = Math.random() > 0.5 ? 1 : - 1;
 		this.ball.dY = Math.random() > 0.5 ? 1 : - 1;
-		// this.ball.y = (Math.random() * this.canvasHeight);
 		this.ball.y = Math.min(Math.max((Math.random() * this.canvasHeight), 100), this.canvasHeight - 100);
 	}
 	canvasCollision(){
@@ -117,9 +116,6 @@ export class PongGame {
 		for (let i = 0; i < this.ball.velocity; i++)
 			this.moveBall(ball);
 		if (this.player1.score === 5 || this.player2.score === 5)
-			this.end.gameEnd = true;
-		// this.paddleMovement(player1)
-		// this.checkPaddleCollision();
-		// this.checkScore();
+			this.end.end = true;
 	}
 }
