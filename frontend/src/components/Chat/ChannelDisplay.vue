@@ -30,17 +30,13 @@ onBeforeMount(async () => {
     const fetchChannels = async (playerId: number) => {
         const response = await axiosInstance.get('channelmember/allchannels/' + playerId.toString());
         channels.value = response.data;
-        console.log('channels: ', channels.value);
     }
 
     await fetchChannels(playerId);
 
     // LISTEN IF A NEW CHANNEL IS ADDED
-    socket.on('newChannel', (channelId: number) => {
-        socket.emit('joinRoom', { playerId, channelId }, () => {
-            console.log('joined channel');
-            channels.value.push({channel_id: channelId})
-        })
+    socket.on('newChannel', (channel) => {
+        channels.value.push(channel);
     });
 
     // socket.on('leftChannel', (channel_id) => {

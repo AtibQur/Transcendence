@@ -33,14 +33,14 @@ export class ChannelService {
       // add channel owner as a member
       const channelMemberDto: CreateChannelmemberDto = new CreateChannelmemberDto();
       channelMemberDto.member_id = createChannelDto.owner_id;
-      console.log('HERE ', newChannel.id);
       channelMemberDto.channel_id = newChannel.id;
       channelMemberDto.is_admin = true;
       channelMemberDto.is_muted = false;
       channelMemberDto.is_banned = false;
       channelMemberDto.added_at = new Date();
       channelMemberDto.muted_at = new Date();
-      this.channelmemberService.createChannelmember(channelMemberDto);
+      await this.channelmemberService.createChannelmember(channelMemberDto);
+      console.log('channel & channelmember created: ', newChannel);
       return newChannel.id;
     }
     catch (error) {
@@ -57,6 +57,7 @@ export class ChannelService {
             id: id,
           },
         });
+        console.log('in findOneChannel:', selectedChannel);
         return selectedChannel;
     }
     catch (error) {

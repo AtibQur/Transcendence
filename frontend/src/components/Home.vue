@@ -47,7 +47,6 @@
     if (!playerExists.data) {
       setDefaultAvatar();
     }
-    await socket.emit('joinAllRooms', playerId)
   };
 
   const setDefaultAvatar = async () => {

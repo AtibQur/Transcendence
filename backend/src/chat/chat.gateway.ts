@@ -34,7 +34,6 @@ export class ChatGateway {
     async handleConnection(@ConnectedSocket() client: Socket){
         if (!client.handshake.auth.username._value) //if nobody is logged in
             client.disconnect();
-        console.log('server username: ', client.handshake.auth.username._value);
         this.connectedSockets.set(client.handshake.auth.username._value, client.id)
         
         const channels = await this.channelmemberService.findPlayerChannels(client.handshake.auth.playerId);
@@ -43,6 +42,9 @@ export class ChatGateway {
           });
         const intra_username = await this.playerService.findOneIntraUsername(client.handshake.auth.playerId);
         client.join(intra_username);
+        console.log('client joined all rooms');
+        console.log(client.rooms);
+
         console.log('connected sockets:', this.connectedSockets);
         
         this.playerService.updateStatus(client.handshake.auth.playerId, { status: "online" });
@@ -54,8 +56,10 @@ export class ChatGateway {
         if (client.handshake.auth.username._value)
         this.connectedSockets.delete(client.handshake.auth.username._value);
         
+        console.log('connected sockets:', this.connectedSockets);
+
         this.playerService.updateStatus(client.handshake.auth.playerId, { status: "offline" });
-        this.logger.log(`client disconnected ${client.id}`);
+        this.logger.log(`client ${client.handshake.auth.playerId} (${client.handshake.auth.username._value}) disconnected ${client.id}`);
     }
 
     //ADD MESSAGE
@@ -67,7 +71,10 @@ export class ChatGateway {
         try {
             const channel_id = await this.channelService.createChannel(createChannelDto);
             client.join(createChannelDto.name);
-            this.server.emit('newChannel', channel_id );
+
+            // this is needed because of the format of the channel display array (channels are fetch through channelmemberservice)
+            const newChannel = await this.channelmemberService.findChannelmember(createChannelDto.owner_id, channel_id);
+            this.server.emit('newChannel', newChannel);
             return channel_id;
         } catch (error) {
             console.log('Error creating channel: ', error);
@@ -128,14 +135,14 @@ export class ChatGateway {
     //JOIN A ROOM
     @SubscribeMessage('joinRoom')
     async joinRoom(
-        @MessageBody() payload: {player_id: number, channel_id: number},
+        @MessageBody() payload: {playerId: number, channelId: number},
         @ConnectedSocket() client: Socket
     ) {
         try {
             //!!! now able to create identical channelmembers.. should be unique?!
-            console.log('Test!!', payload.channel_id);
-            await this.channelmemberService.createChannelmember({ member_id: payload.player_id, channel_id: payload.channel_id});
-            const channel = await this.channelService.findOneChannel(payload.channel_id);
+            console.log('Test!!', payload.channelId);
+            await this.channelmemberService.createChannelmember({ member_id: payload.playerId, channel_id: payload.channelId});
+            const channel = await this.channelService.findOneChannel(payload.channelId);
             client.join(channel.name);
             console.log('joined');
             return ;

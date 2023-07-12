@@ -11,7 +11,6 @@ export class ChannelmemberService {
   // ADD PLAYER TO EXISTING CHANNEL
   async createChannelmember(createChannelmemberDto: CreateChannelmemberDto) {
     try {
-      console.log('channel_id!!', createChannelmemberDto.channel_id);
       if (await this.isInChannel(createChannelmemberDto.member_id, createChannelmemberDto.channel_id)) {
         throw new Error("Player is already in channel");
       }
@@ -54,9 +53,16 @@ export class ChannelmemberService {
             member_id: player_id
           },
           include: {
-              channel: {
+                member: {
                   select: {
-                      name: true
+                    username: true,
+                    intra_username: true
+                  }
+                },
+                channel: {
+                  select: {
+                      name: true,
+                      owner_id: true
                   }
               }
           },
@@ -116,30 +122,34 @@ export class ChannelmemberService {
   // GET A MEMBER'S INFO
   async findChannelmember(member_id: number, channel_id: number) {
     try {
-      const channelMember = await prisma.channelMember.findFirst({
-        where: {
-          member_id: member_id,
-          channel_id: channel_id
-        },
-        select: {
-          id: true,
-          member_id: true,
-          member: {
+        const channelMember = await prisma.channelMember.findFirst({
+            where: {
+            member_id: member_id,
+            channel_id: channel_id
+            },
             select: {
-              username: true,
-              intra_username: true
+            id: true,
+            member_id: true,
+            channel_id: true,
+            member: {
+                select: {
+                username: true,
+                intra_username: true
+                }
+            },
+            channel: {
+                select: {
+                    name: true,
+                    owner_id: true
+                }
+            },
+            is_admin: true,
+            is_muted: true,
+            is_banned: true,
+            added_at: true,
+            muted_at: true
             }
-          },
-          channel: {
-            select: {
-              owner_id: true
-            }
-          },
-          is_admin: true,
-          is_muted: true,
-          is_banned: true,
-        }
-      });
+        });
 
       if (channelMember) {
         const isOwner = channelMember.member_id === channelMember.channel.owner_id;
