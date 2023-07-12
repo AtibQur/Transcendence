@@ -18,7 +18,8 @@ import { BlockedplayerModule } from './blockedplayer/blockedplayer.module';
   imports: [
     GoogleModule,
     AuthModule,
-    PongModule,
+    // CrudModule,
+	  PongModule,
     PlayerModule,
     ChannelModule,
     ChannelmemberModule,
