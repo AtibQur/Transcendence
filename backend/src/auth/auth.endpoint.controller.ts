@@ -5,12 +5,9 @@ import * as qrCode from 'qrcode';
 import e, { Request, Response } from 'express';
 import { AuthService } from './auth.service';
 
-const playerService = new PlayerService();
-
 @Controller('user')
 export class UserController {
-    constructor(private readonly authService: AuthService,
-        private readonly playerService: PlayerService) {}
+    constructor(private readonly authService: AuthService) {}
     @Get('username')
     async GetAuthStatus(@Req() request: Request) {
         const token = request.header('Authorization').split(' ')[1];

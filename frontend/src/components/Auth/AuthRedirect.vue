@@ -28,7 +28,7 @@
     import ImageComponent from './ImageComponent.vue';
     import handleSubmit from './SubmitButtonComponent.vue'
     import CookieComponent from './cookieComponent.vue';
-    import { getCookie, setCookie } from './cookie_utils';
+    import { getCookie, setCookie } from '../../components/cookie_utils';
     
     let accesstoken:string;
     const intraName = ref("");
@@ -48,7 +48,6 @@
         try {
             const response = await AxiosInstance.get('/user/username');
             intraName.value = (response.data);
-            console.log(intraName.value)
             return intraName.value;
         } catch (error) {
             console.log("Error: Could not fetch username");
@@ -59,7 +58,6 @@
         try {
             const response = await AxiosInstance.get('http://localhost:3000/user/intraId');
             intraId.value = (response.data);
-            console.log(intraId.value)
             return intraId.value;
         } catch (error) {
             console.log("Error: Could not fetch intra id");
@@ -70,8 +68,6 @@
         try {
             const response = await AxiosInstance.get('http://localhost:3000/user/id');
             playerId.value = (response.data);
-            console.log(playerId.value)
-            setCookie('playerId', playerId.value);
             return playerId.value;
         } catch (error) {
             console.log("Error: Could not fetch player id");

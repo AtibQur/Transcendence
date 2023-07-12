@@ -30,7 +30,7 @@ export class AuthController {
 
         const jwt = await this.authService.generateToken(userData.id, userData.login, playerId);
         response.cookie('auth', jwt)
-        response.status(200).redirect('http://localhost:8080/home');
+        response.status(200).redirect('http://localhost:8080');
     }
 
     @Get('/logout')

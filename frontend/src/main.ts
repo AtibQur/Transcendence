@@ -17,7 +17,7 @@ import createCookies from 'vue3-cookies';
 
 const routes: RouteRecordRaw[] = [
     { 
-      path: '/home',
+      path: '/',
       component: Home,
     },
     {
@@ -25,7 +25,8 @@ const routes: RouteRecordRaw[] = [
       component: Play,
     },
     {
-      path: '/',
+      path: '/auth',
+      name: 'auth',
       component: Auth,
     },
     {

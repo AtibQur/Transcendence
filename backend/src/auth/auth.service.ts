@@ -15,7 +15,7 @@ export class AuthService {
             username: login, 
             id: playerId,
         };
-        const options = { secret: 'geheim', expiresIn: '1h'}
+        const options = { secret: 'geheim', expiresIn: '7d'}
         const token = await this.jwtService.signAsync(payload, options);
 
         return token;
@@ -23,7 +23,7 @@ export class AuthService {
 
     async validateToken(token: string): Promise<any> {
         try {
-            const options = { secret: 'geheim', expiresIn: '1h'}
+            const options = { secret: 'geheim', expiresIn: '7d'}
             return this.jwtService.verify(token, options);
         } catch (error) {
             throw 'invalid token';
