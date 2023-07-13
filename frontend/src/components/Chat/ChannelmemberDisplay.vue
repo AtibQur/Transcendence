@@ -3,19 +3,7 @@
     <ul id="channelmemberList">
         <div class="card flex justify-content-center">
             <Sidebar v-model:visible="visible" position="right">
-                <div v-if="selectedChannelmember != playerUsername">
-                    <button>View Profile</button>
-                    <button>Send Message</button>
-                    <button>Invite To Play Pong</button>
-                    <button>Block</button>
-                    <button>Mute</button>
-                    <button>Ban</button>
-                    <button>Delete</button>
-                    <button>Add Friend</button>
-                </div>
-                <div v-else>
-                    <button>Edit Profile</button>
-                </div>
+                <UserOptionsMenu :channelId="currentChannelId" :channelmemberId="selectedChannelmember"/>
             </Sidebar>
         </div>
         <li v-for="(channelmember, index) in channelmembers" :key="index">
@@ -29,6 +17,7 @@ import { socket } from '../../socket';
 import axiosInstance from '../../axiosConfig';
 import { onBeforeMount, ref, watch } from 'vue'
 import Sidebar from 'primevue/sidebar';
+import UserOptionsMenu from './UserOptionsMenu.vue';
 
 const props = defineProps({
     channelId: {
@@ -37,10 +26,9 @@ const props = defineProps({
     }
 });
 
-const playerUsername = sessionStorage.getItem('username') || '0';
-const channelmembers = ref([]);
+const channelmembers = ref(new Map<number, string>());
 const currentChannelId = ref<number>(props.channelId);
-const selectedChannelmember = ref<string>('')
+const selectedChannelmember = ref<string>('');
 const visible = ref<boolean>(false);
 
 onBeforeMount(async () => {
@@ -48,7 +36,12 @@ onBeforeMount(async () => {
     // FIND ALL MEMBERS OF CHANNEL
     const fetchChannelmembers = async (channelId: number) => {
         const response = await axiosInstance.get('channelmember/allmembers/' + channelId.toString());
-        channelmembers.value = response.data.map(member => member.member.username);
+        // console.log('channelmembers', response.data);
+        // channelmembers.value = response.data.map(member => member.member.username);
+        response.data.forEach((member) => {
+            channelmembers.value.set(member.member_id, member.member.username);
+        });
+        console.log(channelmembers.value);
     }
 
     await fetchChannelmembers(currentChannelId.value);
@@ -63,6 +56,7 @@ onBeforeMount(async () => {
         currentChannelId.value = newChannelId;
         await fetchChannelmembers(currentChannelId.value);
     });
+
 })
 
 function showOptionPanel(channelmember: string) {
