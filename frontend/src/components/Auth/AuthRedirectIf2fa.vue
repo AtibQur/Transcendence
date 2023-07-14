@@ -28,50 +28,50 @@
     const intraId = ref("");
     const playerId = ref("");
     
-    async function getAccessToken() {
-        try {
-            accesstoken = getCookie('auth')
-            setDefaultAuthHeader(accesstoken);
-        } catch (error) {
-            console.log("Error retrieving cookie");
-        }
-    }
+    // async function getAccessToken() {
+    //     try {
+    //         accesstoken = getCookie('auth')
+    //         setDefaultAuthHeader(accesstoken);
+    //     } catch (error) {
+    //         console.log("Error retrieving cookie");
+    //     }
+    // }
 
-    async function fetchUsername() {
-        try {
-            const response = await AxiosInstance.get('/user/username');
-            intraName.value = (response.data);
-            return intraName.value;
-        } catch (error) {
-            console.log("Error: Could not fetch username");
-        }
-    }
+    // async function fetchUsername() {
+    //     try {
+    //         const response = await AxiosInstance.get('/user/username');
+    //         intraName.value = (response.data);
+    //         return intraName.value;
+    //     } catch (error) {
+    //         console.log("Error: Could not fetch username");
+    //     }
+    // }
 
-    async function fetchIntraId() {
-        try {
-            const response = await AxiosInstance.get('http://localhost:3000/user/intraId');
-            intraId.value = (response.data);
-            return intraId.value;
-        } catch (error) {
-            console.log("Error: Could not fetch intra id");
-        }
-    }
+    // async function fetchIntraId() {
+    //     try {
+    //         const response = await AxiosInstance.get('http://localhost:3000/user/intraId');
+    //         intraId.value = (response.data);
+    //         return intraId.value;
+    //     } catch (error) {
+    //         console.log("Error: Could not fetch intra id");
+    //     }
+    // }
 
-    async function fetchPlayerId() {
-        try {
-            const response = await AxiosInstance.get('http://localhost:3000/user/id');
-            playerId.value = (response.data);
-            return playerId.value;
-        } catch (error) {
-            console.log("Error: Could not fetch player id");
-        }
-    }
+    // async function fetchPlayerId() {
+    //     try {
+    //         const response = await AxiosInstance.get('http://localhost:3000/user/id');
+    //         playerId.value = (response.data);
+    //         return playerId.value;
+    //     } catch (error) {
+    //         console.log("Error: Could not fetch player id");
+    //     }
+    // }
 
     onMounted(() => {
-        getAccessToken();
-        fetchUsername();
-        fetchIntraId();
-        fetchPlayerId();
+        // getAccessToken();
+        // fetchUsername();
+        // fetchIntraId();
+        // fetchPlayerId();
     })
 
 </script>

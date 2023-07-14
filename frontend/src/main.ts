@@ -10,7 +10,7 @@ import ProfilePage from './components/profile/ProfilePage.vue';
 import Leaderboard from './components/LeaderboardComponent.vue';
 import PopulateDatabase from './components/PopulateDatabase.vue';
 import ChatView from './components/Chat/ChatView.vue';
-import Redirect2faVerify from './components/Auth/Redirect2faVerify.vue';
+import Redirect2faVerify from './components/Auth/AuthRedirectIf2fa.vue';
 import FriendsPage from './components/Friends/FriendsPage.vue';
 import PlayerProfile from './components/profile/PlayerProfile.vue';
 import createCookies from 'vue3-cookies';
@@ -55,7 +55,7 @@ const routes: RouteRecordRaw[] = [
       component: FriendsPage,
     },
     {
-      path: '/login/redirect2faverify',
+      path: '/redirect2faverify',
       component: Redirect2faVerify,
     },
     {

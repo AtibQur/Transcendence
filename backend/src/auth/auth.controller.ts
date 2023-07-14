@@ -28,9 +28,15 @@ export class AuthController {
         createPlayerDto.username = userData.login;
         const playerId = await this.playerService.createPlayer(createPlayerDto);
 
-        const jwt = await this.authService.generateToken(userData.id, userData.login, playerId);
-        response.cookie('auth', jwt)
-        response.status(200).redirect('http://localhost:8080');
+        if (await this.playerService.findOne2FA(playerId) == false) {
+            const jwt = await this.authService.generateToken(userData.id, userData.login, playerId);
+
+            response.cookie('auth', jwt)
+            response.status(200).redirect('http://localhost:8080');
+        } else {
+            response.cookie('playerId', playerId);
+            response.redirect('http://localhost:8080/redirect2faverify')
+        }
     }
 
     @Get('/logout')
@@ -45,7 +51,6 @@ export class AuthController {
         var secret = speakeasy.generateSecret({ 
             name: 'trance',
         });
-        // console.log(req.session.passport.user);
         qrCode.toDataURL(secret.otpauth_url, (err, data) => {
             if (err)
             return res.send('Error occured');
@@ -55,7 +60,7 @@ export class AuthController {
     
     // @UseGuards(AuthenticatedGuard)
     @Get('2fa/verify')
-    async twoFactorAuthVerify(@Req() req: any, @Res() res: any, @Session() session: Record<string, any>) {
+    async twoFactorAuthVerify(@Req() req: any, @Res() res: Response) {
         const token = req.query.token;
         const secret = req.query.secret;
         const verified = speakeasy.totp.verify({
