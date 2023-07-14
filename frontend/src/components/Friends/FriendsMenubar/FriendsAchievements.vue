@@ -1,5 +1,4 @@
 <template>
-    <h1>hoi</h1>
     <div class="scrollable-container">
       <div class="content">
         <ul class="item-list">
@@ -14,29 +13,41 @@
     </div>
   </template>
 
-<script setup lang="ts">
-import { onBeforeMount, ref } from 'vue';
+<script lang="ts">
+import { onBeforeMount, ref, SetupContext } from 'vue';
 import axiosInstance from '../../../axiosConfig';
 
-const achievements = ref({});
-const playerId = parseInt(localStorage.getItem('playerId') || '0');
+export default {
+  props: { // props are passed from FriendsPage.vue
+    friendId: {
+      type: String,
+      required: true
+    },
+  },
+  setup(props: any, context: SetupContext) 
+  {
+    const achievements = ref({});
 
-onBeforeMount(async () => {
-    try {
-      achievements.value = await fetchAchievements(playerId);
-      console.log("Achievements: ");
-    } catch (error) {
-      console.log("Error occured");
-    }
-  });
+    onBeforeMount(async () => {
+      try {
+        achievements.value = await fetchAchievements(props.friendId);
+      } catch (error) {
+        console.log("Error occurred");
+      }
+    });
 
-const fetchAchievements = async (player_id: number) => {
-  const response = await axiosInstance.get('player/achievements/' + player_id.toString());
-  return response.data;
-}
+    const fetchAchievements = async (friendId: string) => {
+      const response = await axiosInstance.get(`player/achievements/${friendId}`);
+      return response.data;
+    };
+
+    return {
+      achievements
+    };
+  }
+};
 
 </script>
-
 
 <style>
 .scrollable-container {
