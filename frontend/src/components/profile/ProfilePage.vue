@@ -20,7 +20,7 @@ ProfilePage.vue:
         <ul>
           <li @click="changeUsernameModal">Name change</li>
           <li @click="changeProfilePicture">Picture change</li>
-          <li>2FA Authorisation</li>
+          <li @click="changeTfaStatus">2FA Authorisation</li>
           <li></li>
         </ul>
       </div>
@@ -68,6 +68,17 @@ ProfilePage.vue:
       </div>
     </div>
 
+    <div v-if="showChangeTfaModal" class="Modal" @click="closeModal">
+      <div class="ModalContent" @click.stop>
+        <h2>Change 2FA Status</h2>
+        <div>
+          <p>2FA Status: </p>
+          <button @click="enableTFA">Enable</button>
+          <button @click="disableTFA">Disable</button>
+        </div>
+      </div>
+    </div>
+
   </div>
 </template>
 
@@ -86,6 +97,7 @@ ProfilePage.vue:
   const newName = ref('');
   const profilePicture = ref("");
   const showChangePictureModal = ref(false);
+  const showChangeTfaModal = ref(false);
 
   const playerId = parseInt(sessionStorage.getItem('playerId') || '0');
 
@@ -122,6 +134,10 @@ ProfilePage.vue:
     showChangeNameModal.value = true;
   };
 
+  const changeTfaStatus = () => {
+    showChangeTfaModal.value = true;
+  };
+
   const changeUsername = async () => {
   if (newName.value) {
     try {
@@ -145,6 +161,26 @@ ProfilePage.vue:
 
   const changeProfilePicture = () => {
     showChangePictureModal.value = true;
+  };
+
+  const enableTFA = async () => {
+    showChangeTfaModal.value = false;
+    try {
+      await axiosInstance.get('user/enable2fa');
+      alert("Two Factor Authorization enabled");
+    } catch (error) {
+      alert("Two Factor Authorization could not be enabled");
+    }
+  };
+
+  const disableTFA = async () => {
+    showChangeTfaModal.value = false;
+    try {
+      await axiosInstance.get('user/disable2fa');
+      alert("Two Factor Authorization disabled");
+    } catch (error) {
+      alert("Two Factor Authorization could not be disabled");
+    }
   };
 
   const handleAvatarUploaded = async (avatarBytes: Uint8Array) => {

@@ -12,7 +12,7 @@ export default defineComponent({
     handleSubmit(event: Event) {
       event.preventDefault();
 
-      window.location.href = "http://localhost:8080/login/redirect2faverify";
+      window.location.assign("http://localhost:8080/login/redirect2faverify");
     },
   },
 });

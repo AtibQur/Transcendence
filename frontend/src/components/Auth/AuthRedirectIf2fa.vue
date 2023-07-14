@@ -1,6 +1,5 @@
 <template>
-        <h1>Login Successfull!</h1>
-        <h2>Welcome {{ intraName }}</h2>
+        <h1>Welcome {{ intraName }}</h1>
     <div>
         <div>
             Your 2FA code is:
@@ -11,12 +10,6 @@
             <input type="number" id="digitInput" name="digitInput" maxlength="6" minlength="6">
             <handleSubmit />
         </form>
-        <div>
-            id: {{ playerId }}
-            username: {{ intraName }}
-            intraId: {{ intraId }}
-        </div>
-
     </div>
 </template>
 
