@@ -7,7 +7,6 @@
         </div>
         <form>
             <label for="digitInput">Enter your verification code: </label>
-            <input type="number" id="digitInput" name="digitInput" maxlength="6" minlength="6">
             <handleSubmit />
         </form>
     </div>
