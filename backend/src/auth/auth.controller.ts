@@ -34,6 +34,11 @@ export class AuthController {
             sub: userData.id,
         };
 
+        response.setHeader(
+            'Access-Control-Allow-Origin'
+            , 'http://localhost:8080'
+        )
+
         if (await this.playerService.findOne2FA(playerId) == false) {
             const jwt = await this.authService.generateToken(payload);
 
@@ -77,10 +82,8 @@ export class AuthController {
 
             response.clearCookie('payload')
             response.cookie('auth', jwt)
-            response.status(200).redirect('http://localhost:8080');
-        } else {
-            response.redirect('http://localhost:8080/wrong2fa');
         }
+        return verified;
     }
 
 }

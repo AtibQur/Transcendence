@@ -13,6 +13,7 @@ import ChatView from './components/Chat/ChatView.vue';
 import Redirect2faVerify from './components/Auth/AuthRedirectIf2fa.vue';
 import FriendsPage from './components/Friends/FriendsPage.vue';
 import PlayerProfile from './components/profile/PlayerProfile.vue';
+import WrongTfa from './components/Auth/WrongTfa.vue';
 import createCookies from 'vue3-cookies';
 import Logout from './components/LogoutPlayer.vue';
 
@@ -57,6 +58,10 @@ const routes: RouteRecordRaw[] = [
     {
       path: '/redirect2faverify',
       component: Redirect2faVerify,
+    },
+    {
+      path: '/wrong2fa',
+      component: WrongTfa
     },
     {
       path: '/profile/:playerName',

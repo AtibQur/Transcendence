@@ -20,7 +20,7 @@
 
 <script setup lang="ts">
   import { ref, defineComponent, onMounted } from 'vue';
-  import axiosInstance from '../axiosConfig';
+  import axiosInstance, { setDefaultCorsHeader } from '../axiosConfig';
   import { setDefaultAuthHeader } from '../axiosConfig';
   import { getCookie } from './cookie_utils';
   import { socket } from '@/socket';
@@ -31,6 +31,7 @@
   const logged = ref(false);
 
   const checkLoggedIn = async () =>  {
+    setDefaultCorsHeader();
     const accesstoken = getCookie('auth');
     if (accesstoken === undefined) {
       window.location.replace('http://localhost:8080/auth')

@@ -7,7 +7,7 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import AxiosInstance  from '../../axiosConfig';
+import AxiosInstance, { sendVerifyToken }  from '../../axiosConfig';
 import { getCookie } from '../cookie_utils';
 
 export default defineComponent({
@@ -22,7 +22,7 @@ export default defineComponent({
 
       const payload = getCookie('payload');
       const submittedValue = this.inputValue;
-      AxiosInstance.post('/auth/2fa/verify', { payload, submittedValue });
+      sendVerifyToken(payload, submittedValue);
     },
   }
 });
