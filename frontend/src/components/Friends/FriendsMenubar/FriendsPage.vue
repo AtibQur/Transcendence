@@ -6,21 +6,21 @@
       </div>
       <div class="ProfileInfo">
         <div class="ProfileName">
-          <h1> {{ playerName }} </h1>
+          <h1>{{ playerName }}</h1>
         </div>
         <div class="ProfileStatus">
           <h3>status: {{ friendStatus }}</h3>
         </div>
       </div>
     </div>
-    
+
     <div class="ProfileStats">
       <select v-model="selectedOption">
         <option value="Achievements">{{ playerName }}'s Achievements</option>
         <option value="Stats">Stats</option>
         <option value="Match History">Match History</option>
       </select>
-      
+
       <div v-if="selectedOption === 'Achievements'" class="show">
         <FriendsAchievements :friendId="friendId" />
       </div>
@@ -28,11 +28,10 @@
         <FriendsStats :friendId="friendId" />
       </div>
       <div v-else-if="selectedOption === 'Match History'" class="show">
-        <FriendsHistory />
+        <FriendsHistory :friendId="friendId" />
       </div>
     </div>
   </div>
-    
 </template>
 
 <script lang="ts">
@@ -50,20 +49,19 @@ export default {
     FriendsStats,
   },
   setup() {
-    
     const route = useRoute();
-    const playerName = computed(() => route.params.playerName || ''); // recieve the player name from router redirect
-    const friendId = ref("");
-    const friendStatus = ref("");
-    const profilePicture = ref("");
-    const selectedOption = ref("Achievements");
-    
+    const playerName = computed(() => route.params.playerName || '');
+    const friendId = ref('');
+    const friendStatus = ref('');
+    const profilePicture = ref('');
+    const selectedOption = ref('Achievements');
+
     const fetchFriendId = async () => {
       const response = await axiosInstance.get(`player/profile/${playerName.value}`);
       friendId.value = response.data;
       return friendId.value;
     };
-    
+
     const fetchProfilePicture = async () => {
       const response = await axiosInstance.get(`player/avatar/${friendId.value}`);
       const imageBytes: Uint8Array = new Uint8Array(response.data.data);
@@ -71,12 +69,12 @@ export default {
       imageUrl.value = URL.createObjectURL(new Blob([imageBytes]));
       return imageUrl.value;
     };
-    
+
     const fetchFriendStatus = async () => {
       const response = await axiosInstance.get(`player/status/${friendId.value}`);
       return response.data;
     };
-    
+
     onBeforeMount(async () => {
       try {
         friendId.value = await fetchFriendId();
@@ -86,7 +84,7 @@ export default {
         console.log("Error occurred:", error);
       }
     });
-  
+
     return {
       friendId,
       profilePicture,
@@ -97,7 +95,7 @@ export default {
       FriendsHistory,
       FriendsStats,
     };
-  }
+  },
 };
 </script>
 

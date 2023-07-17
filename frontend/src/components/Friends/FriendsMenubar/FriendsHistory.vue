@@ -1,37 +1,57 @@
 <template>
-    <div class="border-container">
-      <div class="border">
+  <div class="border-container">
+    <div class="border">
       <div class="border-text">
         <div v-for="(match, index) in matches" :key="index" class="border-row">
-          <div class="border-value">{{ match.player.username }} {{ match.player_points }} </div>
-          <div class="border-value">{{ match.opponent_points }} {{ match.opponent.username }} </div>
+          <div class="border-value">{{ match.player.username }} {{ match.player_points }}</div>
+          <div class="border-value">{{ match.opponent_points }} {{ match.opponent.username }}</div>
         </div>
       </div>
     </div>
   </div>
 </template>
 
-<script setup lang="ts">
-  import { onBeforeMount, ref } from 'vue';
-  import axiosInstance from '../../../axiosConfig';
+<script lang="ts">
+import { ref, onBeforeMount } from 'vue';
+import axiosInstance from '../../../axiosConfig';
 
-  const matches = ref("");
-  const playerId = parseInt(localStorage.getItem('playerId') || '0');
-  
+export default {
+  props: {
+    friendId: {
+      type: String,
+      required: true
+    },
+  },
+  setup(props) {
+    const { matches } = useFriendsHistory(props.friendId);
+
+    return {
+      matches
+    };
+  }
+};
+
+const useFriendsHistory = (friendId) => {
+  const matches = ref('');
 
   onBeforeMount(async () => {
-  try {
-    matches.value = await fetchMatches(playerId);
-    console.log(matches.value);
-  } catch (error) {
-    console.log("Error occured");
-  }
+    try {
+      matches.value = await fetchMatches(friendId);
+    } catch (error) {
+      console.log("Error occurred");
+    }
   });
 
-  const fetchMatches = async (player_id: number) => {
-    const response = await axiosInstance.get('match/history/' + player_id.toString());
+  const fetchMatches = async (friendId) => {
+    const response = await axiosInstance.get(`match/history/${friendId}`);
     return response.data;
-  }
+  };
+
+  return {
+    matches
+  };
+};
+
 </script>
 
 <style>
