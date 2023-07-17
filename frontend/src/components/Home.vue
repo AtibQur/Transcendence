@@ -31,7 +31,6 @@
   const logged = ref(false);
 
   const checkLoggedIn = async () =>  {
-    setDefaultCorsHeader();
     const accesstoken = getCookie('auth');
     if (accesstoken === undefined) {
       window.location.replace('http://localhost:8080/auth')
