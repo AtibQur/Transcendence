@@ -17,7 +17,7 @@ import axiosInstance from '../../../axiosConfig';
 
 const props = defineProps({
   friendId: {
-    type: String,
+    type: Number,
     required: true
   }
 });
@@ -45,17 +45,17 @@ onBeforeMount(async () => {
 });
 
 const fetchTotalAchievements = async (friendId: string) => {
-  const response = await axiosInstance.get(`player/totalachievements/${friendId}`);
+  const response = await axiosInstance.get(`player/totalachievements/` + friendId.toString());
   return response.data;
 }
 
 const fetchPlayerStats = async (friendId: string) => {
-  const response = await axiosInstance.get(`player/stats/${friendId}`);
+  const response = await axiosInstance.get(`player/stats/` + friendId.toString());
   return response.data;
 }
 
 const fetchPercentageWon = async (friendId: string) => {
-  const response = await axiosInstance.get(`player/percentagewins/${friendId}`);
+  const response = await axiosInstance.get(`player/percentagewins/` + friendId.toString());
   let percentageWon = parseFloat(response.data).toFixed(1);
   return percentageWon;
 }

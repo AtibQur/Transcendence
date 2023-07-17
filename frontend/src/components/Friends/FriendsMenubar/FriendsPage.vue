@@ -22,7 +22,7 @@
       </select>
 
       <div v-if="selectedOption === 'Achievements'" class="show">
-        <FriendsAchievements :friendId="friendId" />
+        <FriendsAchievements :friendId="Number(friendId)" />
       </div>
       <div v-else-if="selectedOption === 'Stats'" class="show">
         <FriendsStats :friendId="friendId" />

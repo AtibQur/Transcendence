@@ -18,7 +18,7 @@ import axiosInstance from '../../../axiosConfig';
 export default {
   props: {
     friendId: {
-      type: String,
+      type: Number,
       required: true
     },
   },
@@ -43,7 +43,7 @@ const useFriendsHistory = (friendId) => {
   });
 
   const fetchMatches = async (friendId) => {
-    const response = await axiosInstance.get(`match/history/${friendId}`);
+    const response = await axiosInstance.get(`match/history/` + friendId.toString());
     return response.data;
   };
 
