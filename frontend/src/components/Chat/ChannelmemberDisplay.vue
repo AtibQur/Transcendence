@@ -3,11 +3,11 @@
     <ul id="channelmemberList">
         <div class="card flex justify-content-center">
             <Sidebar v-model:visible="visible" position="right">
-                <UserOptionsMenu :channelId="currentChannelId" :channelmemberId="selectedChannelmember"/>
+                <UserOptionsMenu :channelId="currentChannelId" :channelmember="selectedChannelmember"/>
             </Sidebar>
         </div>
         <li v-for="(channelmember, index) in channelmembers" :key="index">
-            <button class="channelmember-button" @click="showOptionPanel(channelmember)"> {{ channelmember }} </button>
+            <button class="channelmember-button" @click="showOptionPanel(channelmember)"> {{ channelmember.username }} </button>
         </li>
     </ul>
 </template>
@@ -26,9 +26,9 @@ const props = defineProps({
     }
 });
 
-const channelmembers = ref(new Map<number, string>());
+const channelmembers = ref([]);
 const currentChannelId = ref<number>(props.channelId);
-const selectedChannelmember = ref<string>('');
+const selectedChannelmember = ref({});
 const visible = ref<boolean>(false);
 
 onBeforeMount(async () => {
@@ -36,19 +36,23 @@ onBeforeMount(async () => {
     // FIND ALL MEMBERS OF CHANNEL
     const fetchChannelmembers = async (channelId: number) => {
         const response = await axiosInstance.get('channelmember/allmembers/' + channelId.toString());
-        // console.log('channelmembers', response.data);
-        // channelmembers.value = response.data.map(member => member.member.username);
-        response.data.forEach((member) => {
-            channelmembers.value.set(member.member_id, member.member.username);
-        });
+
+        channelmembers.value = response.data.map((item) => ({
+            username: item.member.username,
+            id: item.member_id,
+        }));
+
         console.log(channelmembers.value);
+
     }
 
     await fetchChannelmembers(currentChannelId.value);
 
     //ADD NEW CHANNELMEMBER
-    socket.on('newChannelmember', (channelmember_name: string) => {
-        channelmembers.value.push(channelmember_name);
+    socket.on('newChannelmember', (channelmember: object) => {
+        console.log(channelmember);
+        channelmembers.value.push(channelmember);
+        console.log(channelmembers.value);
     });
 
     //TRACK WHETHER CHANNEL_ID CHANGES
@@ -59,7 +63,7 @@ onBeforeMount(async () => {
 
 })
 
-function showOptionPanel(channelmember: string) {
+function showOptionPanel(channelmember: object) {
     selectedChannelmember.value = channelmember;
     visible.value = true;
 }

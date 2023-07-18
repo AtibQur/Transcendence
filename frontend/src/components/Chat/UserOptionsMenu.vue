@@ -1,8 +1,8 @@
 <template>
     <div>
-        <h3> {{ props.channelmemberId }}</h3>
+        <h3> {{ currentChannelmemberUsername }}</h3>
     </div>
-    <div v-if="props.channelmemberId != playerUsername">
+    <div v-if="currentChannelmemberUsername != playerUsername">
         <div>
             <button>View Profile</button>
         </div>
@@ -12,12 +12,21 @@
         <div>
             <button>Invite To Play Pong</button>
         </div>
-        <div>
+        <div v-if="currentChannelmemberInfo.showBlock">
+            <!-- if the current player is admin and the current member not owner -->
             <button>Block</button>
+        </div>
+        <div v-if="currentChannelmemberInfo.showMute">
             <button>Mute</button>
+        </div>
+        <div v-if="currentChannelmemberInfo.showMakeAdmin">
+            <button>Make Admin</button>
+        </div>
+        <div v-if="currentChannelmemberInfo.showBan">
             <button>Ban</button>
         </div>
         <div>
+            <!-- the current player is not friends yet with the current member -->
             <button>Add Friend</button>
         </div>
     </div>
@@ -35,35 +44,39 @@ const props = defineProps({
         type: Number,
         required: true
     },
-    channelmemberId: {
-        type: Number,
+    channelmember: {
+        type: Object,
         required: true
     }
 });
 
 const playerUsername = sessionStorage.getItem('username') || '0';
 const playerId = sessionStorage.getItem('playerId') || '0';
-const currentChannelmemberId = ref<number>(props.channelmemberId);
+const currentChannelmemberInfo = ref({});
+const currentChannelmemberId = ref<number>(props.channelmember.id);
+const currentChannelmemberUsername  = ref<string>(props.channelmember.username);
 const currentChannelId = ref<number>(props.channelId);
 
 onBeforeMount(async () => {
 
     // FIND ALL MEMBERS OF CHANNEL
-    const fetchChannelmemberInfo = async (channelId: number) => {
-        const channelmemberQuery = 'member_id=' + currentChannelmemberId.value.toString;
-        const channelQuery = 'channel_id=' + currentChannelId.value.toString;
+    const fetchChannelmemberInfo = async (channelmemberId: number) => {
+        const channelmemberQuery = 'member_id=' + channelmemberId.toString();
+        const channelQuery = 'channel_id=' + currentChannelId.value.toString();
         const response = await axiosInstance.get('channelmember/rights/' + playerId + `?${channelmemberQuery}&${channelQuery}`);
-        console.log(response.data);
+        return response.data;
         // channelmembers.value = response.data.map(member => member.member.username);
     }
 
-    await fetchChannelmemberInfo(currentChannelmemberId.value);
+    currentChannelmemberInfo.value = await fetchChannelmemberInfo(currentChannelmemberId.value);
+    console.log('channelmember info: ', currentChannelmemberInfo.value);
 
 
     //TRACK WHETHER CHANNELMEMBER_ID CHANGES
-    watch(() => props.channelmemberId, async (newChannelmemberId: number) => {
-        currentChannelmemberId.value = newChannelmemberId;
-        await fetchChannelmemberInfo(currentChannelmemberId.value);
+    watch(() => props.channelmember, async (newChannelmember: {username: string, id: number}) => {
+        currentChannelmemberId.value = newChannelmember.id;
+        currentChannelmemberUsername.value = newChannelmember.username;
+        currentChannelmemberInfo.value = await fetchChannelmemberInfo(currentChannelmemberId.value);
     });
 
 })
