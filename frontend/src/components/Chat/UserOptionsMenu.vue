@@ -2,7 +2,10 @@
     <Toast/>
     <div>
         <h3> {{ currentChannelmemberUsername }}</h3>
-        <h6> {{ ( currentChannelmemberStatus ) }}</h6>
+        <h4> {{ ( currentChannelmemberStatus ) }}</h4>
+        <div v-if="!currentChannelmemberInfo.showMute">
+            <h5>[MUTED]</h5>
+        </div>
     </div>
     <div v-if="currentChannelmemberUsername != playerUsername">
         <div>
@@ -15,17 +18,11 @@
         <div v-else>
             <button @click="addFriend()">Add Friend</button>
         </div>
-        <div v-if="currentChannelmemberInfo.showBlock">
-            <!-- this func is probably reused in friends page? maybe make reusable component? -->
-            <button @click="blockPlayer()">Block</button>
-        </div>
         <div v-if="currentChannelmemberInfo.showMute">
-            <button>Mute</button>
-            <!-- <button @click="muteChannelmember()">Mute</button> -->
+            <button @click="muteChannelmember()">Mute</button>
         </div>
         <div v-if="currentChannelmemberInfo.showMakeAdmin">
-            <button>Make Admin</button>
-            <!-- <button @click="makeAdmin()">Make Admin</button> -->
+            <button @click="makeAdmin()">Make Admin</button>
         </div>
         <div v-if="currentChannelmemberInfo.showBan">
             <button>Ban</button>
@@ -100,26 +97,38 @@ const addFriend = async () => {
         toast.add({ severity: 'error', summary: 'Error Friend not Added', detail: '', life: 3000 });
 }
 
-// BLOCK PLAYER
-const blockPlayer = async () => {
-    const response = await axiosInstance.post(`blockedplayer/add/${playerId}`, { blockedUsername: currentChannelmemberUsername.value });
+// // MUTE CHANNELMEMBER
+const muteChannelmember = async () => {
+    const response = await axiosInstance.patch(`channelmember/mute/${playerId}`, {
+        channel_id: currentChannelId.value,
+        member_id: currentChannelmemberId.value,
+        is_muted: true
+    });
+
     if (response.data) {
-        toast.add({ severity: 'info', summary: 'Blocked Player Successfully', detail: '', life: 3000 });
-        currentChannelmemberInfo.value.showBlock = false;
+        toast.add({ severity: 'info', summary: 'Muted Channelmember Successfully', detail: '', life: 3000 });
+        currentChannelmemberInfo.value.showMute = false;
     }
     else
-        toast.add({ severity: 'error', summary: 'Error Player not Blocked', detail: '', life: 3000 });
+        toast.add({ severity: 'error', summary: 'Error Channelmember not Muted', detail: '', life: 3000 });
 }
 
-// // MUTE CHANNELMEMBER
-// const muteChannelmember = async () => {
-
-// }
-
 // // MAKE CHANNELMEMBER ADMIN
-// const makeAdmin = async () => {
-    
-// }
+const makeAdmin = async () => {
+    const response = await axiosInstance.patch(`channelmember/makeadmin/${playerId}`, {
+        channel_id: currentChannelId.value,
+        member_id: currentChannelmemberId.value,
+        is_admin: true
+    });
+
+    if (response.data) {
+        toast.add({ severity: 'info', summary: 'Channelmember is Admin', detail: '', life: 3000 });
+        currentChannelmemberInfo.value.memberIsAdmin = true;
+        currentChannelmemberInfo.value.showMakeAdmin = false;
+    }
+    else
+        toast.add({ severity: 'error', summary: 'Error Channelmember is not made Admin', detail: '', life: 3000 });
+}
 
 // // BAN CHANNELMEMBER
 // const banChannelmember = async () => {
