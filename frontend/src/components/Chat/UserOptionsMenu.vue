@@ -16,16 +16,20 @@
             <button @click="addFriend()">Add Friend</button>
         </div>
         <div v-if="currentChannelmemberInfo.showBlock">
-            <button>Block</button>
+            <!-- this func is probably reused in friends page? maybe make reusable component? -->
+            <button @click="blockPlayer()">Block</button>
         </div>
         <div v-if="currentChannelmemberInfo.showMute">
             <button>Mute</button>
+            <!-- <button @click="muteChannelmember()">Mute</button> -->
         </div>
         <div v-if="currentChannelmemberInfo.showMakeAdmin">
             <button>Make Admin</button>
+            <!-- <button @click="makeAdmin()">Make Admin</button> -->
         </div>
         <div v-if="currentChannelmemberInfo.showBan">
             <button>Ban</button>
+            <!-- <button @click="banChannelmember()">Ban</button> -->
         </div>
     </div>
     <div v-else>
@@ -72,9 +76,7 @@ onBeforeMount(async () => {
         return responseRights.data;
     }
 
-
     currentChannelmemberInfo.value = await fetchChannelmemberInfo(currentChannelmemberId.value);
-
 
     //TRACK WHETHER CHANNELMEMBER_ID CHANGES
     watch(() => props.channelmember, async (newChannelmember: {username: string, id: number}) => {
@@ -83,20 +85,46 @@ onBeforeMount(async () => {
         currentChannelmemberInfo.value = await fetchChannelmemberInfo(currentChannelmemberId.value);
     });
 
+    //TRACK WHETHER CHANNELMEMBERS BECOME OFFLINE/ONLINE??
+
 })
 
 // ADD FRIEND (http post or socket?)
 const addFriend = async () => {
-    console.log(currentChannelmemberUsername.value);
     const response = await axiosInstance.post(`friend/add/${playerId}`, { friendUsername: currentChannelmemberUsername.value });
-    console.log('response: ', response.data);
     if (response.data) {
         toast.add({ severity: 'info', summary: 'Added Friend Successfully', detail: '', life: 3000 });
         currentChannelmemberInfo.value.memberIsFriend = true;
     }
     else
         toast.add({ severity: 'error', summary: 'Error Friend not Added', detail: '', life: 3000 });
-
 }
+
+// BLOCK PLAYER
+const blockPlayer = async () => {
+    const response = await axiosInstance.post(`blockedplayer/add/${playerId}`, { blockedUsername: currentChannelmemberUsername.value });
+    if (response.data) {
+        toast.add({ severity: 'info', summary: 'Blocked Player Successfully', detail: '', life: 3000 });
+        currentChannelmemberInfo.value.showBlock = false;
+    }
+    else
+        toast.add({ severity: 'error', summary: 'Error Player not Blocked', detail: '', life: 3000 });
+}
+
+// // MUTE CHANNELMEMBER
+// const muteChannelmember = async () => {
+
+// }
+
+// // MAKE CHANNELMEMBER ADMIN
+// const makeAdmin = async () => {
+    
+// }
+
+// // BAN CHANNELMEMBER
+// const banChannelmember = async () => {
+
+// }
+
 
 </script>
