@@ -50,6 +50,56 @@ export class FriendService {
     }
   }
 
+    // CHECK IF FRIENDSCHIP EXISTS
+    async isExistingFriendship(id: number, friendId: number) {
+        try {
+            const existingFriendship = await prisma.friend.findFirst( {
+                where: {
+                    OR: [
+                        {
+                            player_id: id,
+                            friend_id: friendId,
+                        },
+                        {
+                            player_id: friendId,
+                            friend_id: id,
+                        },
+                    ],
+                },
+            });
+            
+            if (existingFriendship) 
+                return true;
+            else
+                return false;
+        } catch (error) {
+            return false;
+        }
+    }
+
+  // GET A FRIENDSHIP ID
+  async findFriendshipId(id: number, friendId: number) {
+    try {
+        const friendshipId = await prisma.friend.findFirst( {
+            where: {
+                OR: [
+                    {
+                        player_id: id,
+                        friend_id: friendId,
+                    },
+                    {
+                        player_id: friendId,
+                        friend_id: id,
+                    },
+                ],
+            },
+        });
+      return friendshipId;
+    } catch (error) {
+        throw new Error("Friendship does not exist");
+    }
+  }
+
   // GET A PLAYERS FRIENDS
   async findFriends(id: number) {
     try {
@@ -126,34 +176,26 @@ async findFriendsUsername(id: number) {
   // DELETE A FRIENDSHIP
   async remove(id: number, updateFriendDto: UpdateFriendDto) {
     try {
-      const friendId = await this.playerService.findIdByUsername(updateFriendDto.friendUsername);
-      const existingFriendship = await prisma.friend.findFirst({
-        where: {
-          OR: [
-            {
-              player_id: id,
-              friend_id: friendId,
+        const friendId = await this.playerService.findIdByUsername(updateFriendDto.friendUsername);
+      
+        const isExistingFriendship = await this.isExistingFriendship(id, friendId);
+        if (!isExistingFriendship)
+            throw new Error("Friendship does not exist");
+        
+        const friendshipId = await this.findFriendshipId(id, friendId);
+
+        const deletedFriendship = await prisma.friend.delete({
+            where: {
+                id: friendshipId.id
             },
-            {
-              player_id: friendId,
-              friend_id: id,
-            },
-          ],
-        },
-      });
-      if (!existingFriendship) {
-        throw new Error("Friendship does not exist");
-      }
-      const deletedFriendship = await prisma.friend.delete({
-        where: {
-          id: existingFriendship.id
-        },
-      })
-      return deletedFriendship;
+        })
+        return deletedFriendship;
     }
     catch (error) {
-      console.error('Error occured: ', error);
-      return null;
+        console.error('Error occured: ', error);
+        return null;
     }
   }
+  
+
 }
