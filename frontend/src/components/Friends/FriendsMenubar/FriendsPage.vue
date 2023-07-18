@@ -25,19 +25,19 @@
         <FriendsAchievements :friendId="Number(friendId)" />
       </div>
       <div v-else-if="selectedOption === 'Stats'" class="show">
-        <FriendsStats :friendId="friendId" />
+        <FriendsStats :friendId="Number(friendId)" />
       </div>
       <div v-else-if="selectedOption === 'Match History'" class="show">
-        <FriendsHistory :friendId="friendId" />
+        <FriendsHistory :friendId="Number(friendId)" />
       </div>
     </div>
   </div>
 </template>
 
 <script lang="ts">
-import { onBeforeMount, ref, computed } from 'vue';
+import { onMounted, watch, ref } from 'vue';
 import axiosInstance from '../../../axiosConfig';
-import { useRoute } from 'vue-router';
+import { useRoute, useRouter } from 'vue-router';
 import FriendsStats from './FriendsStats.vue';
 import FriendsHistory from './FriendsHistory.vue';
 import FriendsAchievements from './FriendsAchievements.vue';
@@ -50,46 +50,56 @@ export default {
   },
   setup() {
     const route = useRoute();
-    const playerName = computed(() => route.params.playerName || '');
+    const router = useRouter();
+    const playerName = ref('');
     const friendId = ref('');
     const friendStatus = ref('');
     const profilePicture = ref('');
     const selectedOption = ref('Achievements');
 
-    const fetchFriendId = async () => {
-      const response = await axiosInstance.get(`player/profile/${playerName.value}`);
-      friendId.value = response.data;
-      return friendId.value;
-    };
-
-    const fetchProfilePicture = async () => {
-      const response = await axiosInstance.get(`player/avatar/${friendId.value}`);
-      const imageBytes: Uint8Array = new Uint8Array(response.data.data);
-      const imageUrl = ref<string | null>(null);
-      imageUrl.value = URL.createObjectURL(new Blob([imageBytes]));
-      return imageUrl.value;
-    };
-
-    const fetchFriendStatus = async () => {
-      const response = await axiosInstance.get(`player/status/${friendId.value}`);
-      return response.data;
-    };
-
-    onBeforeMount(async () => {
+    const fetchFriendData = async () => {
+      const params = route.params;
       try {
-        friendId.value = await fetchFriendId();
-        profilePicture.value = await fetchProfilePicture();
-        friendStatus.value = await fetchFriendStatus();
+        const idResponse = await axiosInstance.get(`player/profile/${params.playerName}`);
+        const avatarResponse = await axiosInstance.get(`player/avatar/${idResponse.data}`);
+        const statusResponse = await axiosInstance.get(`player/status/${idResponse.data}`);
+
+        playerName.value = params.playerName;
+        friendId.value = idResponse.data;
+        profilePicture.value = URL.createObjectURL(new Blob([new Uint8Array(avatarResponse.data.data)]));
+        friendStatus.value = statusResponse.data;
+        selectedOption.value = 'Achievements'; // Set selectedOption to 'Achievements' whenever a new profile is loaded
       } catch (error) {
-        console.log("Error occurred:", error);
+        console.log('Error occurred:', error);
       }
+    };
+
+    // Watch for changes in route params and fetch friend data
+    watch(route, () => {
+      fetchFriendData();
+    });
+
+    // Watch for changes in playerName and navigate to the current profile page
+    watch(playerName, () => {
+      router.push({
+        name: 'friends',
+        params: {
+          playerName: playerName.value,
+          profilePicture: profilePicture.value,
+          status: friendStatus.value
+        }
+      });
+    });
+
+    onMounted(() => {
+      fetchFriendData();
     });
 
     return {
+      playerName,
       friendId,
       profilePicture,
       friendStatus,
-      playerName,
       selectedOption,
       FriendsAchievements,
       FriendsHistory,
@@ -98,6 +108,7 @@ export default {
   },
 };
 </script>
+
 
 <style>
 .ProfileContainer {
@@ -186,12 +197,12 @@ export default {
   font-size: 22px;
   font-weight: 400;
   text-align: left;
-  cursor: pointer; /* Add cursor style to indicate interactivity */
-  transition: color 0.3s, background-color 0.3s; /* Add transition for smooth effect */
+  cursor: pointer;
+  transition: color 0.3s, background-color 0.3s;
 }
 
 .ProfileOptions .ProfileOptionsContainer ul li:hover {
-  color: #1f6091; /* Change color on hover */
+  color: #1f6091;
 }
 
   .ProfileOptions .ProfileOptionsContainer ul li a {
