@@ -304,7 +304,7 @@ export class ChannelmemberService {
             id: toUpdate.id
           },
           data: {
-            is_admin: true,
+            is_banned: true,
           }
         });
         return updatedMember;

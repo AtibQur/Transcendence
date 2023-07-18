@@ -6,6 +6,9 @@
         <div v-if="!currentChannelmemberInfo.showMute">
             <h5>[MUTED]</h5>
         </div>
+        <div v-if="!currentChannelmemberInfo.showBan">
+            <h5>[BANNED]</h5>
+        </div>
     </div>
     <div v-if="currentChannelmemberUsername != playerUsername">
         <div>
@@ -25,8 +28,7 @@
             <button @click="makeAdmin()">Make Admin</button>
         </div>
         <div v-if="currentChannelmemberInfo.showBan">
-            <button>Ban</button>
-            <!-- <button @click="banChannelmember()">Ban</button> -->
+            <button @click="banChannelmember()">Ban</button>
         </div>
     </div>
     <div v-else>
@@ -127,13 +129,24 @@ const makeAdmin = async () => {
         currentChannelmemberInfo.value.showMakeAdmin = false;
     }
     else
-        toast.add({ severity: 'error', summary: 'Error Channelmember is not made Admin', detail: '', life: 3000 });
+        toast.add({ severity: 'error', summary: 'Error Channelmember not made Admin', detail: '', life: 3000 });
 }
 
 // // BAN CHANNELMEMBER
-// const banChannelmember = async () => {
-
-// }
+const banChannelmember = async () => {
+    const response = await axiosInstance.patch(`channelmember/ban/${playerId}`, {
+        channel_id: currentChannelId.value,
+        member_id: currentChannelmemberId.value,
+        is_banned: true
+    });
+    console.log(response.data);
+    if (response.data) {
+        toast.add({ severity: 'info', summary: 'Banned Channelmember successfully', detail: '', life: 3000 });
+        currentChannelmemberInfo.value.showBan = false;
+    }
+    else
+        toast.add({ severity: 'error', summary: 'Error Channelmember not Banned', detail: '', life: 3000 });
+}
 
 
 </script>
