@@ -16,6 +16,8 @@ export class FriendService {
   async addFriend(id: number, addFriendDto: AddFriendDto) {
     try {
       const friendId = await this.playerService.findIdByUsername(addFriendDto.friendUsername);
+      if (!friendId)
+        throw new Error("Cannot become friend because player does not exist");
       if (id == friendId) {
         throw new Error("You can not add yourself as a friend");
       }
