@@ -78,6 +78,7 @@ export class ChatGateway {
             return channel_id;
         } catch (error) {
             console.log('Error creating channel: ', error);
+            return null;
         }
     }
 

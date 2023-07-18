@@ -51,6 +51,7 @@ const confirm = useConfirm();
 const isVisible = ref<boolean>(false);
 const playerId = parseInt(sessionStorage.getItem('playerId') || '0');
 const newChannelName = ref<string>('');
+const newChannelId = ref<number>(0);
 const showConfirmation = ref<boolean>(false);
 
 const securityType = ref<number>(-1);
@@ -113,19 +114,19 @@ function resetForm() {
 }
 
 const onSubmit = () => {
-    console.log(selectedSecurityType.value);
     if (validateFields())
     {
         if (selectedSecurityType.value == SecurityLevel.PRIVATE)
             isPrivate.value = true;
-        try {
-            socket.emit('addChannel', {name: newChannelName.value, is_private: isPrivate.value, owner_id: playerId, password: password.value}, () => {
-                resetForm();
-                toast.add({ severity: 'info', summary: 'New Channel Created', detail: '', life: 3000 });
-            });
-        } catch (e) {
+        
+        socket.emit('addChannel', {name: newChannelName.value, is_private: isPrivate.value, owner_id: playerId, password: password.value}, (channel_id: number) => {
+            newChannelId.value = channel_id;
+            resetForm();
+            toast.add({ severity: 'info', summary: 'New Channel Created Successfully!', detail: '', life: 3000 });
+        });
+        if (!newChannelId.value)
             toast.add({ severity: 'error', summary: 'Error Channel not Created', detail: '', life: 3000 });
-        }
+        newChannelId.value = 0;
     }
 };
 
