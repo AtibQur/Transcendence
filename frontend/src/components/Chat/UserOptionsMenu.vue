@@ -3,10 +3,11 @@
     <div>
         <h3> {{ currentChannelmemberUsername }}</h3>
         <h4> {{ ( currentChannelmemberStatus ) }}</h4>
-        <div v-if="!currentChannelmemberInfo.showMute">
+        <!-- for testing purposes -->
+        <div v-if="!currentChannelmemberInfo.memberIsOwner && !currentChannelmemberInfo.showMute">
             <h5>[MUTED]</h5>
         </div>
-        <div v-if="!currentChannelmemberInfo.showBan">
+        <div v-if="!currentChannelmemberInfo.memberIsOwner && !currentChannelmemberInfo.showBan">
             <h5>[BANNED]</h5>
         </div>
     </div>
@@ -30,6 +31,9 @@
         <div v-if="currentChannelmemberInfo.showBan">
             <button @click="banChannelmember()">Ban</button>
         </div>
+        <div v-if="currentChannelmemberInfo.showDelete">
+            <button @click="removeChannelmember()">Remove from Channel</button>
+        </div>
     </div>
     <div v-else>
         <button>Edit Profile</button>
@@ -37,7 +41,6 @@
 </template>
 
 <script setup lang="ts">
-import { socket } from '@/socket';
 import axiosInstance from '../../axiosConfig';
 import { onBeforeMount, ref, watch } from 'vue'
 import Toast from 'primevue/toast';
@@ -99,7 +102,7 @@ const addFriend = async () => {
         toast.add({ severity: 'error', summary: 'Error Friend not Added', detail: '', life: 3000 });
 }
 
-// // MUTE CHANNELMEMBER
+// MUTE CHANNELMEMBER
 const muteChannelmember = async () => {
     const response = await axiosInstance.patch(`channelmember/mute/${playerId}`, {
         channel_id: currentChannelId.value,
@@ -115,7 +118,7 @@ const muteChannelmember = async () => {
         toast.add({ severity: 'error', summary: 'Error Channelmember not Muted', detail: '', life: 3000 });
 }
 
-// // MAKE CHANNELMEMBER ADMIN
+// MAKE CHANNELMEMBER ADMIN
 const makeAdmin = async () => {
     const response = await axiosInstance.patch(`channelmember/makeadmin/${playerId}`, {
         channel_id: currentChannelId.value,
@@ -132,7 +135,7 @@ const makeAdmin = async () => {
         toast.add({ severity: 'error', summary: 'Error Channelmember not made Admin', detail: '', life: 3000 });
 }
 
-// // BAN CHANNELMEMBER
+// BAN CHANNELMEMBER
 const banChannelmember = async () => {
     const response = await axiosInstance.patch(`channelmember/ban/${playerId}`, {
         channel_id: currentChannelId.value,
@@ -146,6 +149,14 @@ const banChannelmember = async () => {
     }
     else
         toast.add({ severity: 'error', summary: 'Error Channelmember not Banned', detail: '', life: 3000 });
+}
+
+// DELETE CHANNELMEMBER
+const removeChannelmember = async () => {
+    const response = await axiosInstance.delete(`channelmember/${playerId}`, {
+        channel_id: currentChannelId.value,
+        member_id: currentChannelmemberId.value
+    })
 }
 
 
