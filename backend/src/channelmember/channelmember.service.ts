@@ -2,11 +2,16 @@ import { Injectable } from '@nestjs/common';
 import { CreateChannelmemberDto } from './dto/create-channelmember.dto';
 import { UpdateChannelmemberDto } from './dto/update-channelmember.dto';
 import { PrismaService } from '../../prisma/prisma.service';
+import { FriendService } from 'src/friend/friend.service';
 
 const prisma = PrismaService.getClient();
 
 @Injectable()
 export class ChannelmemberService {
+
+  constructor(
+    private readonly friendService: FriendService
+  ) {}
 
   // ADD PLAYER TO EXISTING CHANNEL
   async createChannelmember(createChannelmemberDto: CreateChannelmemberDto) {
@@ -173,6 +178,7 @@ export class ChannelmemberService {
         memberIsAdmin: false,
         memberIsOwner: false,
         memberIsBanned: false,
+        memberIsFriend: false,
         showBlock: true, // player can always block someone
         showMute: false,
         showMakeAdmin: false,
@@ -184,10 +190,16 @@ export class ChannelmemberService {
       if (!player || !member) {
         throw new Error("Player or member does not exist");
       }
+
       // Define rights of channelmember
       rights.memberIsAdmin = member.is_admin;
       rights.memberIsOwner = member.is_owner;
       rights.memberIsBanned = member.is_banned;
+      
+      // Define if player and channelmember are friends
+      const existingFriendship = await this.friendService.isExistingFriendship(player_id, member_id);
+      if (existingFriendship)
+        rights.memberIsFriend = true;
 
       // Define which options the player will have to do with another channelmember
       if (player.is_admin && !member.is_admin) {

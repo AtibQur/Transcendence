@@ -19,23 +19,11 @@ export class FriendService {
       if (id == friendId) {
         throw new Error("You can not add yourself as a friend");
       }
-      const existingFriendship = await prisma.friend.findFirst({
-        where: {
-          OR: [
-            {
-              player_id: id,
-              friend_id: friendId,
-            },
-            {
-              player_id: friendId,
-              friend_id: id,
-            },
-          ],
-        },
-      });
+      const existingFriendship = await this.isExistingFriendship(id, friendId);
       if (existingFriendship) {
         throw new Error("Player is already your friend");
       }
+      
       const newFriendShip = await prisma.friend.create({
         data: {
           player_id: id,
