@@ -3,7 +3,7 @@
     <ul id="channelmemberList">
         <div class="card flex justify-content-center">
             <Sidebar v-model:visible="visible" position="right">
-                <UserOptionsMenu :channelId="currentChannelId" :channelmember="selectedChannelmember"/>
+                <UserOptionsMenu @removeChannelmember="removeChannelmember" :channelId="currentChannelId" :channelmember="selectedChannelmember"/>
             </Sidebar>
         </div>
         <li v-for="(channelmember, index) in channelmembers" :key="index">
@@ -49,7 +49,7 @@ onBeforeMount(async () => {
     await fetchChannelmembers(currentChannelId.value);
 
     //ADD NEW CHANNELMEMBER
-    socket.on('newChannelmember', (channelmember: object) => {
+    socket.on('newChannelmember', (channelmember: {username: string, id: number}) => {
         console.log(channelmember);
         channelmembers.value.push(channelmember);
         console.log(channelmembers.value);
@@ -63,9 +63,13 @@ onBeforeMount(async () => {
 
 })
 
-function showOptionPanel(channelmember: object) {
+function showOptionPanel(channelmember: {username: string, id: number}) {
     selectedChannelmember.value = channelmember;
     visible.value = true;
+}
+
+const removeChannelmember = async (username: string) => {
+
 }
 
 </script>
