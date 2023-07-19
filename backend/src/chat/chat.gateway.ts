@@ -100,7 +100,7 @@ export class ChatGateway {
     //ADD CHANNELMEMBER
     @SubscribeMessage('addChannelmember')
     async addChannelmember(
-        @MessageBody() payload: {channelmember_name: string, channel_id: number}
+        @MessageBody() payload: {channelmember_name: string, channel_id: number, is_admin: boolean}
     ) {
         try {
             const id = await this.playerService.findIdByUsername(payload.channelmember_name);
@@ -110,12 +110,13 @@ export class ChatGateway {
             const member: CreateChannelmemberDto = {
                 member_id: id,
                 channel_id: payload.channel_id,
-                is_admin: false,
+                is_admin: payload.is_admin,
                 is_muted: false,
                 is_banned: false
             }
 
             const newChannelmember = await this.channelmemberService.createChannelmember(member);
+            console.log('member added: ', newChannelmember);
             if (!newChannelmember)
                 throw new Error('Player is already member of this channel');
 
@@ -126,7 +127,7 @@ export class ChatGateway {
             //notify channelmembers of new member
             const channel = await this.channelService.findOneChannel(member.channel_id);
             this.server.to(channel.name).emit('newChannelmember', {username: payload.channelmember_name, id: member.member_id});
-            return member;
+            return newChannelmember;
         } catch (error) {
             console.log('Error: ', error);
             return null

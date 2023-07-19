@@ -61,11 +61,13 @@ onBeforeMount(async () => {
 
 })
 
+//ACTIVATE OPTION PANEL
 function showOptionPanel(channelmember: {username: string, id: number}) {
     selectedChannelmember.value = channelmember;
     visible.value = true;
 }
 
+//LISTENER FUNCTION FOR EVENT FROM OPTIONS MENU COMPONENT
 const removeChannelmember = async (member_id: number) => {
     const index = channelmembers.value.findIndex((item) => item.id === member_id);
 

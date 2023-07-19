@@ -29,11 +29,11 @@
 
 <script setup lang="ts">
 import { socket } from '../../socket';
-import { ref, reactive } from 'vue';
+import { ref } from 'vue';
 import Dialog from 'primevue/dialog';
 import InputText from 'primevue/inputtext'
 import Password from 'primevue/password'
-import PrimeButton from 'primevue/button'
+// import PrimeButton from 'primevue/button'
 import RadioButton from 'primevue/radiobutton'
 import Toast from 'primevue/toast';
 import ConfirmDialog from 'primevue/confirmdialog';
@@ -51,8 +51,6 @@ const confirm = useConfirm();
 const isVisible = ref<boolean>(false);
 const playerId = parseInt(sessionStorage.getItem('playerId') || '0');
 const newChannelName = ref<string>('');
-const newChannelId = ref<number>(0);
-const showConfirmation = ref<boolean>(false);
 
 const securityType = ref<number>(-1);
 const selectedSecurityType = ref<number>(-1);
@@ -66,6 +64,7 @@ const password = ref<string>('');
 const errorMessage = ref<string>('');
 const isPrivate = ref<boolean>(false);
 
+//CONFIRM DIALOG BUTTON
 const openConfirmDialog = () => {
     confirm.require({
         message: 'Are you sure you want to proceed?',
@@ -79,6 +78,8 @@ const openConfirmDialog = () => {
     });
 };
 
+//HANDLE CLOSE BUTTON
+//when clicked confirm dialog is shown
 const handleCloseButton = {
     'aria-label': 'Close Dialog',
     onClick: () => {
@@ -86,6 +87,7 @@ const handleCloseButton = {
     },
 };
 
+//VALIDATE FIELDS
 function validateFields() {
     if (!newChannelName.value)
     {
@@ -106,6 +108,7 @@ function validateFields() {
     return true;
 }
 
+//RESET FORM
 function resetForm() {
     newChannelName.value = '';
     selectedSecurityType.value = '';
@@ -113,6 +116,7 @@ function resetForm() {
     isVisible.value = false;
 }
 
+//SUMBIT FORM
 const onSubmit = () => {
     if (validateFields())
     {
@@ -120,13 +124,12 @@ const onSubmit = () => {
             isPrivate.value = true;
         
         socket.emit('addChannel', {name: newChannelName.value, is_private: isPrivate.value, owner_id: playerId, password: password.value}, (channel_id: number) => {
-            newChannelId.value = channel_id;
             resetForm();
             toast.add({ severity: 'info', summary: 'New Channel Created Successfully!', detail: '', life: 3000 });
         });
-        if (!newChannelId.value)
+
+        if (!newChannelName.value)
             toast.add({ severity: 'error', summary: 'Error Channel not Created', detail: '', life: 3000 });
-        newChannelId.value = 0;
     }
 };
 
