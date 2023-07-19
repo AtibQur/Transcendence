@@ -32,7 +32,7 @@
             <button @click="banChannelmember()">Ban</button>
         </div>
         <div v-if="currentChannelmemberInfo.showDelete">
-            <button @click="removeChannelmember()">Remove from Channel</button>
+            <button @click="openConfirmDialog(Actions.REMOVE);">Remove from Channel</button>
         </div>
     </div>
     <div v-else>
@@ -45,6 +45,13 @@ import axiosInstance from '../../axiosConfig';
 import { onBeforeMount, ref, watch } from 'vue'
 import Toast from 'primevue/toast';
 import { useToast } from 'primevue/usetoast';
+import { useConfirm } from "primevue/useconfirm";
+
+enum Actions {
+    MUTE,
+    BAN,
+    REMOVE
+}
 
 const props = defineProps({
     channelId: {
@@ -60,6 +67,7 @@ const props = defineProps({
 const emit = defineEmits(['removeChannelmember']);
 
 const toast = useToast();
+const confirm = useConfirm();
 const playerUsername = sessionStorage.getItem('username') || '0';
 const playerId = sessionStorage.getItem('playerId') || '0';
 const currentChannelmemberInfo = ref({});
@@ -92,6 +100,23 @@ onBeforeMount(async () => {
     //TRACK WHETHER CHANNELMEMBERS BECOME OFFLINE/ONLINE??
 
 })
+
+//CONFIRM DIALOG BUTTON
+const openConfirmDialog = (selectedAction: Actions) => {
+    confirm.require({
+        message: 'Are you sure you want to proceed?',
+        header: 'Confirmation',
+        accept: () => {
+            if (selectedAction == Actions.BAN)
+                banChannelmember();
+            else if (selectedAction == Actions.MUTE)
+                muteChannelmember();
+            else if (selectedAction == Actions.REMOVE) {
+                removeChannelmember();
+            }
+        }
+    });
+};
 
 // ADD FRIEND (http post or socket?)
 const addFriend = async () => {
