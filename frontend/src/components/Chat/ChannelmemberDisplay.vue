@@ -50,9 +50,7 @@ onBeforeMount(async () => {
 
     //ADD NEW CHANNELMEMBER
     socket.on('newChannelmember', (channelmember: {username: string, id: number}) => {
-        console.log(channelmember);
         channelmembers.value.push(channelmember);
-        console.log(channelmembers.value);
     });
 
     //TRACK WHETHER CHANNEL_ID CHANGES
@@ -68,8 +66,15 @@ function showOptionPanel(channelmember: {username: string, id: number}) {
     visible.value = true;
 }
 
-const removeChannelmember = async (username: string) => {
+const removeChannelmember = async (member_id: number) => {
+    const index = channelmembers.value.findIndex((item) => item.id === member_id);
 
+    if (index == -1)
+        console.log(`Member not found in channelmembers`);
+    else {
+        channelmembers.value.splice(index, 1);
+        visible.value = false;
+    }
 }
 
 </script>

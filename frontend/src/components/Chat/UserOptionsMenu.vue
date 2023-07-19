@@ -57,6 +57,8 @@ const props = defineProps({
     }
 });
 
+const emit = defineEmits(['removeChannelmember']);
+
 const toast = useToast();
 const playerUsername = sessionStorage.getItem('username') || '0';
 const playerId = sessionStorage.getItem('playerId') || '0';
@@ -142,7 +144,7 @@ const banChannelmember = async () => {
         member_id: currentChannelmemberId.value,
         is_banned: true
     });
-    console.log(response.data);
+
     if (response.data) {
         toast.add({ severity: 'info', summary: 'Banned Channelmember successfully', detail: '', life: 3000 });
         currentChannelmemberInfo.value.showBan = false;
@@ -153,10 +155,17 @@ const banChannelmember = async () => {
 
 // DELETE CHANNELMEMBER
 const removeChannelmember = async () => {
-    const response = await axiosInstance.delete(`channelmember/${playerId}`, {
+    const response = await axiosInstance.delete(`channelmember/${playerId}`, { data: {
         channel_id: currentChannelId.value,
         member_id: currentChannelmemberId.value
-    })
+    }})
+
+    if (response.data) {
+        toast.add({ severity: 'info', summary: 'Removed Channelmember successfully', detail: '', life: 3000 });
+        emit('removeChannelmember', currentChannelmemberId.value);
+    }
+    else
+        toast.add({ severity: 'error', summary: 'Error Channelmember not removed', detail: '', life: 3000 });
 }
 
 

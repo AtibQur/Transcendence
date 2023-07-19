@@ -353,12 +353,8 @@ export class ChannelmemberService {
   // returns deleted channelmember on success, nothing on error
   async remove(player_id: number, updateChannelmemberDto: UpdateChannelmemberDto) {
     try {
-      console.log('player: ', player_id);
-      console.log('member: ', updateChannelmemberDto.member_id);
       const updater = await this.findChannelmember(player_id, updateChannelmemberDto.channel_id);
       const toUpdate = await this.findChannelmember(updateChannelmemberDto.member_id, updateChannelmemberDto.channel_id);
-      console.log('updater: ', updater);
-      console.log('toUpdate: ', toUpdate);
       if (updater.is_admin && !toUpdate.is_owner) {
         const deletedMember = await prisma.channelMember.delete({
           where: {
