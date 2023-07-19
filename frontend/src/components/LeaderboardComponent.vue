@@ -1,6 +1,6 @@
 <template>
   <div class="Leaderboard">
-    <!-- Leaderboard header -->
+    
     <div class="Leaderboard-header">
       <div class="Leaderboard-logo">
         <img src="../assets/images/pongEmoji.png" alt="Pong-logo">
@@ -13,7 +13,6 @@
       </div>
     </div>
 
-    <!-- Leaderboard info -->
     <div class="Leaderboard-info">
       <div class="Leaderboard-rank">
         <h2>Rank</h2>
@@ -26,9 +25,7 @@
       </div>
     </div>
 
-    <!-- Leaderboard player stats -->
     <div class="Leaderboard-player-stats">
-      <!-- Player stats rows -->
       <div class="Leaderboard-row" v-for="(player, index) in limitedLeaderboardData" :key="index">
         <div class="Leaderboard-rank">
           <h2>{{ index + 1 }}</h2>
@@ -39,12 +36,10 @@
         <div class="Leaderboard-games">
           <h2>{{ player.wins }}</h2>
         </div>
-        <!-- Add the following line to save the rank in playerRankIndex -->
         <div style="display: none;">{{ playerRankIndex = index + 1 }}</div>
       </div>
     </div>
 
-    <!-- Leaderboard footer -->
     <div class="Leaderboard-footer"></div>
   </div>
 </template>
@@ -95,10 +90,9 @@
   const playerRankIndex = computed(() => {
     if (!leaderboardData.value || leaderboardData.value.length === 0) {
       console.log("No leaderboard data");
-      return -1; // Return -1 if leaderboard data is not available
+      return -1;
     }
 
-    // Find the index of the player in the leaderboardData array
     const playerIndex = leaderboardData.value.findIndex(
       (player) => player.player.id === playerId
     );
@@ -106,7 +100,6 @@
     return playerIndex >= 0 ? playerIndex + 1 : -1; // Return the rank/index if found, otherwise -1
   });
 
-  // Fetch player wins and name
   onMounted(async () => {
     try {
       playerWins.value = await fetchPlayerWins(playerId);

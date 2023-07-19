@@ -103,7 +103,6 @@
 .bold-black {
   font-weight: bold;
   font-size: large;
-
   color: black;
 }
 
