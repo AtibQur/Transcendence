@@ -7,10 +7,10 @@
       <input type="text" v-model="newFriendName" class="friend-input" placeholder="Enter friend's name" @keydown="handleKeyPress">
       <div class="buttonContainer">
         <button class="add-friend-button" @click="addFriend">Add Friend</button>
-        <button class="block-player-button" @click="blockPlayer">Block Player</button>
+        <button class="block-player-button" @click="blockPlayer">Delete Friend</button>
       </div>
       <div class="friend-list">
-        <div v-for="friend in friends" :key="friend.username" class="name-container">
+        <div v-for="friend in friends" :key="friend.username" class="name-container aliceblue-bg">
           <div class="status-circle" :class="{ 'online': friend.status === 'online', 'offline': friend.status !== 'online' }"></div>
           <div class="name">{{ friend.username }}</div>
           <div class="profile-box">
@@ -138,14 +138,28 @@ export default defineComponent({
   overflow-y: auto; /* Enable vertical scrolling */
 }
 
+.friend-input {
+  margin-top: 20px;
+  padding: 7px 25px;
+  font-size: 18px;
+}
+
 .name-container {
-  border: 1px solid #000;
+  /* border: 1px solid #000; */
   margin-bottom: 5px;
   display: flex;
   align-items: center;
   margin-top: 20px;
+  transition: background-color 0.3s;
 }
 
+.name-container:hover {
+    background-color: #abd0dd;
+  }
+
+.name-container:hover .profile-box {
+  background-color: #abd0dd;
+}
 .name {
   margin-left: 5px;
   font-size: 25px;
@@ -160,6 +174,7 @@ export default defineComponent({
   height: 15px;
   border-radius: 50%;
   margin-right: 10px;
+  margin-left: 5px;
 }
 
 .online {
@@ -175,26 +190,35 @@ export default defineComponent({
   align-items: center;
   margin-left: auto;
   padding: 5px;
-  background-color: #abd0dd;
-  border-radius: 5px;
-  border: 1px solid #1f6091;
   transition: background-color 0.3s, border-color 0.3s;
+  background-color: aliceblue;
+  border: none;
+  color: #1f6091;
+}
+.profile-box:hover {
+  background-color: red;
+  border-color: #abd0dd;
 }
 
-.profile-box:hover {
-  background-color: #1f6091;
-  border-color: #abd0dd;
+.profile-box:hover .profile-link {
+  color: #204a6b;
 }
 
 .profile-link {
   font-size: 15px;
-  color: blue;
+  color: #1f6091;
+  transition: color 0.3s;
   text-decoration: none;
   margin-left: 5px;
 }
+
+.profile-link:hover {
+    color: #abd0dd;
+  }
 .buttonContainer {
   display: flex;
-  justify-content: space-between;  
+  justify-content: space-between;
+  margin-top: -50px;
 }
 
 .add-friend-button,
@@ -204,13 +228,19 @@ export default defineComponent({
   font-size: 18px;
   transition: background-color 0.3s;
   margin-top: 70px;
+  background-color: aliceblue;
+  color: #1f6091;
+  border: none;
 }
 
 .add-friend-button:hover,
 .block-player-button:hover {
-  background-color: #1f6091;
-  color: white;
+  background-color: #abd0dd;;
   cursor: pointer;
 }
+
+.aliceblue-bg {
+    background-color: aliceblue;
+  }
 
 </style>
