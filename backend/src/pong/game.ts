@@ -1,17 +1,19 @@
-import { Player } from './interfaces/player.interface';
+import { User } from './interfaces/user.interface';
 import { Ball } from './interfaces/ball.interface';
-import { End } from './interfaces/end.interface';
+import { Game } from './interfaces/state.interface';
 
 export class PongGame {
 	private canvasWidth = 858;
 	private canvasHeight = 525;
-	private _player1: Player = {
+	private _player1: User = {
+		user: null,
 		x: 80,
 		y: 120,
 		score: 0,
 		new: 0,
 	};
-	private _player2: Player = {
+	private _player2: User = {
+		user: null,
 		x: 80,
 		y: 120,
 		score: 0,
@@ -25,97 +27,76 @@ export class PongGame {
 		dY: 1,
 		velocity: 1,
 	};
-	private _end: End = {
-		end: false,
+	private _game: Game = {
+		state: 'start',
 	};
 
 	get ball(): Ball {
 		return this._ball;
 	}
-	get player1(): Player {
+	get player1(): User {
 		return (this._player1);
 	}
-	get player2(): Player {
+	get player2(): User {
 		return (this._player2);
 	}
-	get end(): End {
-		return (this._end);
+	get game(): Game {
+		return (this._game);
 	}
-	// checkPaddleCollision() {
-	// 	const paddleTop = this.player1.y - 40;
-	// 	const paddleBottom = this.player1.y + 40;
-	// 	const ballCenter = this.ball.y + (this.ball.radius / 2);
-	// 	if (this.ball.x < 15 && this.ball.x > 10 && ballCenter >= paddleTop && ballCenter <= paddleBottom) {
-	// 		this.ball.velocity += 0.5;
-	// 		this.ball.dirX =- this.ball.dirX;
-	// 	}
-	// 	if (this.ball.x < this.canvasWidth - 10 && this.ball.x > this.canvasWidth - 30 && ballCenter >= this.player1.y - 40 && ballCenter <= this.player1.y + 40) {
-	// 		this.ball.velocity += 0.5;
-	// 		this.ball.dirX =- this.ball.dirX;
-	// 	}
-	// };
-	// resetBall() {
-	// 	this.ball.x = this.canvasWidth / 2;
-	// 	this.ball.y = this.canvasHeight / 2;
-	// }
-	// checkScore() {
-	// 	if (this.ball.x < 0){
-	// 		this.player1.score++;
-	// 	}
-	// 	if (this.ball.x + this.ball.radius > this.canvasWidth - 10){
-	// 		this.player2.score++;
-	// 	}
-	// 	this.resetBall();
-	// };
-	resetBall() {
-		this.ball.x = 422;
-		this.ball.y = 251;
-		this.ball.velocity = 2;
-		this.ball.dX = Math.random() > 0.5 ? 1 : - 1;
-		this.ball.dY = Math.random() > 0.5 ? 1 : - 1;
-		this.ball.y = Math.min(Math.max((Math.random() * this.canvasHeight), 100), this.canvasHeight - 100);
+
+	resetBall(ball) {
+		ball.x = 422;
+		ball.y = 251;
+		ball.velocity = 2;
+		ball.dX = Math.random() > 0.5 ? 1 : - 1;
+		ball.dY = Math.random() > 0.5 ? 1 : - 1;
+		ball.y = Math.min(Math.max((Math.random() * this.canvasHeight), 100), 
+		this.canvasHeight - 100);
 	}
-	canvasCollision(){
-		if (this.ball.x + this.ball.radius > this.canvasWidth - 10 || this.ball.x < 0) {
-			this.ball.dX =- this.ball.dX;
+	canvasCollision(player1, player2, ball) {
+		if (ball.x + this.ball.radius > this.canvasWidth - 10 || ball.x < 0) {
+			ball.dX =- ball.dX;
 		}
-		if (this.ball.y + this.ball.radius > this.canvasHeight - 10 || this.ball.y < 0) {
-			this.ball.dY =- this.ball.dY;
+		if (ball.y + this.ball.radius > this.canvasHeight - 10 || ball.y < 0) {
+			ball.dY =- ball.dY;
 		}
-		if (this.ball.x < 0){
-			this.player2.score++;
-			this.resetBall();
+		if (ball.x < 0){
+			player2.score++;
+			this.resetBall(ball);
 		}
-		if (this.ball.x + this.ball.radius > 848){
-			this.player1.score++;
-			this.resetBall();
+		if (ball.x + this.ball.radius > 848){
+			player1.score++;
+			this.resetBall(ball);
 		}
 	}
-	paddleCollision(){
-		const paddleTop = this.player1.y - 40;
-		const paddleBottom = this.player1.y + 40;
-		const ballCenter = this.ball.y + (this.ball.radius / 2);
-		if (this.ball.x < 20 && this.ball.x > 15 && ballCenter >= paddleTop && ballCenter <= paddleBottom) {
-			this.ball.dX =- this.ball.dX;
-			this.ball.velocity += 0.01;
+	paddleCollision(player1, player2, ball) {
+		const paddleTop = player1.y - 40;
+		const paddleBottom = player1.y + 40;
+		const ballCenter = ball.y + (this.ball.radius / 2);
+		if (ball.x < 20 && ball.x > 15 && ballCenter >= paddleTop && 
+			ballCenter <= paddleBottom) {
+			ball.dX =- ball.dX;
+			ball.velocity += 0.01;
 		}
-		if (this.ball.x < this.canvasWidth - 20 && this.ball.x > this.canvasWidth - 40 && ballCenter >= this.player2.y - 40 && ballCenter <= this.player2.y + 40) {
-			this.ball.dX =- this.ball.dX;
-			this.ball.velocity += 0.01;
+		if (ball.x < this.canvasWidth - 20 && ball.x > this.canvasWidth - 40 && 
+			ballCenter >= player2.y - 40 && ballCenter <= player2.y + 40) {
+			ball.dX =- ball.dX;
+			ball.velocity += 0.01;
 		}
 	}
-	moveBall(ball): typeof ball {
-		this.ball.x += this.ball.dX * this.ball.velocity;
-		this.ball.y += this.ball.dY * this.ball.velocity;
-		this.player2.y = this.player2.new;
-		this.player1.y = this.player1.new;
-		this.canvasCollision();
-		this.paddleCollision();
+	moveBall(player1, player2, ball) {
+		ball.x += ball.dX * ball.velocity;
+		ball.y += ball.dY * ball.velocity;
+		player2.y = player2.new;
+		player1.y = player1.new;
+
+		this.canvasCollision(player1, player2, ball);
+		this.paddleCollision(player1, player2, ball);
 	}
-	updateGame(ball) {
-		for (let i = 0; i < this.ball.velocity; i++)
-			this.moveBall(ball);
-		if (this.player1.score === 5 || this.player2.score === 5)
-			this.end.end = true;
+	updateGame(player1, player2, ball) {
+		for (let i = 0; i < ball.velocity; i++)
+			this.moveBall(player1, player2, ball);
+		if (player1.score === 5 || player2.score === 5)
+			this.game.state = 'end'
 	}
 }

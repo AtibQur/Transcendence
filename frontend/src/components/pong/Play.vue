@@ -22,6 +22,9 @@
 <script lang="ts">
 import SoloMatch from './SoloMatch.vue'
 import MatchMaking from './MatchMaking.vue'
+import { socket } from '../../socket'
+import { Socket } from 'socket.io';
+import { useRouter } from 'vue-router'
 import { defineComponent } from 'vue'
 
 export default defineComponent({
@@ -33,6 +36,7 @@ data() {
 			selectedDifficulty: 'easy',
 			startSolo: false,
 			startMatch: false,
+			router: useRouter(1),
 		};
 	},
 methods: {
@@ -40,6 +44,16 @@ methods: {
 		this.startMatch = true;
 	},
 	selectDifficulty(difficulty){
+
+		socket.emit('soloMatchStarted', socket.id)
+
+		socket.on('alreadyInMatch', () => {
+			console.log("you are already in a match, redirecting...")
+			this.router.push('/play/multiplayer');
+			this.startSolo = false;
+			return ;
+		});
+
 		console.log("Solo match started");
 		this.selectedDifficulty = difficulty;
 		console.log('difficulty:', difficulty);

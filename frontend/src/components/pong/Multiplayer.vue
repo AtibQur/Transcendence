@@ -3,7 +3,6 @@
 		<h1>PONG</h1>
 		<div class="text-wrapper">
 			<h1 class="dynamic-text">{{ dynamicText1 }}</h1>
-			<!-- <h1 class="vs-text">VS</h1> -->
 			<h1 class="dynamic-text">{{ dynamicText2 }}</h1>
 		</div>
 	</div>
@@ -24,7 +23,7 @@
 	import { socket } from '../../socket'
 	import GameTools from './GameTools.vue'
 	import { defineComponent } from 'vue'
-	import {p1_id, p2_id, p1_socket_id, p2_socket_id, username1, username2, match_id} from './MatchMaking.vue'
+	import {socket_match_id, p1_id, p2_id, p1_socket_id, p2_socket_id, username1, username2, match_id} from './MatchMaking.vue'
 	import { useRouter } from 'vue-router'
 	import axiosInstance from '../../axiosConfig'
 
@@ -62,69 +61,55 @@ data() {
 		keysPressed: {
 			w: false,
 			s: false,
-			a: false,
-			d: false,
 		},
+		moveInfo: {
+			socket_match_id: 0,
+			move: 0,
+		}
 	};
 },
 methods: {
 	keyUp(event) {
-		if (event.key === 'w' || event.key === 's' || event.key === 'a' || event.key === 'd') {
+		if (event.key === 'w' || event.key === 's') {
 			this.keysPressed[event.key] = false;
 		}
 	},
 	keyDown(event) {
-		if (event.key === 'w' || event.key === 's' || event.key === 'a' || event.key === 'd') {
+		if (event.key === 'w' || event.key === 's') {
 			this.keysPressed[event.key] = true;
 		}
 	},
 
-	moveLeft() {
-		if (this.keysPressed['w'] && this.player1.y > 40){
-			this.player1.y -= 2;
-			socket.emit('moveLeft', this.player1.y);
+	move() {
+		if (this.keysPressed['w'] &&this.moveInfo.move > 40){
+			this.moveInfo.move -= 2;
+			socket.emit('move', this.moveInfo);
 		}
-		if (this.keysPressed['s'] && this.player1.y < this.canvas.height - 40){
-			this.player1.y += 2;
-			socket.emit('moveLeft', this.player1.y);
+		if (this.keysPressed['s'] && this.moveInfo.move < this.canvas.height - 40){
+			this.moveInfo.move += 2;
+			socket.emit('move', this.moveInfo);
 		}
-	},
-	moveRight() {
-		if (this.keysPressed['a'] && this.player2.y > 40){
-			this.player2.y -= 2;
-			socket.emit('moveRight', this.player2.y);
-		}
-		if (this.keysPressed['d'] && this.player2.y < this.canvas.height - 40){
-			this.player2.y += 2;
-			socket.emit('moveRight', this.player2.y);
-		}
-	},
-	// async handleUnload(){
-	// 	console.log("you refreshed or left the page")
-	// 	await axios.post('/api/notify-user-leave');
-
-	// },
+	}
 },
-// beforeMount() {
-// 	window.addEventListener('unload', this.handleUnload);
-// },
-// beforeUnmount() {
-//   window.removeEventListener('unload', this.handleUnload);
-// },
+
 mounted() {
 	socket.on('connect', () => console.log('Socket Connected!'));
 	if (!socket) {
 		console.log('Socket not connected')
 		return;
 	}
+	this.moveInfo.socket_match_id = socket_match_id;
 	console.log("p1: ", username1, "p2:", username2)
 	this.dynamicText1 = username1;
 	this.dynamicText2 = username2;
 	console.log("this user:", socket.id)
+	if (socket.id === undefined)
+		this.$router.push('/play');
 	console.log("Player1 ID: ", p1_socket_id)
 	console.log("Player2 ID: ", p2_socket_id)
 
 	socket.on('match',async (match: {
+		state: string
 		ball: any
 		player1: number
 		player2: number
@@ -134,10 +119,8 @@ mounted() {
 		score2: number
 	}) => {
 		this.ball = match.ball;
-
 		this.player1.y = match.player1
 		this.player2.y = match.player2
-
 		this.score1 = match.score1
 		this.score2 = match.score2
 
@@ -155,35 +138,26 @@ mounted() {
 				else
 					this.lose = true;
 				}
-			console.log("match_id: ", match_id)
+			console.log("match_id: ", socket_match_id)
 			console.log("this.score1: ", this.score1)
 			console.log("this.score2: ", this.score2)
-			let finished_match_res;
-			if (match_id){
-				finished_match_res = await axiosInstance.patch('match/finish/' + match_id.toString(), {player_points: this.score1, opponent_points: this.score2});
-				console.log(finished_match_res.data)
-			}
+
+			// let finished_match_res;
+			// if (match_id){
+				// finished_match_res = await axiosInstance.patch('match/finish/' + match_id.toString(), {player_points: this.score1, opponent_points: this.score2});
+				// console.log(finished_match_res.data)
+			// }
 			this.end = true;
 		}
+		if (match.state === 'stop')
+			this.$router.push('/play');
 	})
-	socket.on('playerDisconnected', (data: {id: any }) => 
-	{ 
-		console.log(data.id, 'ended the match')
-		// socket.emit('endGame');
-		this.$router.push('/play');
-	})
-	// window.addEventListener('beforeunload', () => {
-	// 	socket.emit('playerDisconnecting', { id: socket.id });
-	// 	this.$router.push('/play');
-	// });
 
 	window.addEventListener('keyup', this.keyUp);
 	window.addEventListener('keydown', this.keyDown);
-	if (socket.id === p1_socket_id)
-		setInterval(this.moveLeft, 1);
-	else if (socket.id === p2_socket_id)
-		setInterval(this.moveRight, 1);
+	setInterval(this.move, 1)
 	}
+
 })
 </script>
 
