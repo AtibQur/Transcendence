@@ -355,7 +355,7 @@ export class ChannelmemberService {
     try {
       const updater = await this.findChannelmember(player_id, updateChannelmemberDto.channel_id);
       const toUpdate = await this.findChannelmember(updateChannelmemberDto.member_id, updateChannelmemberDto.channel_id);
-      if (updater.is_admin && !toUpdate.is_owner) {
+      if ((updater.is_admin && !toUpdate.is_owner) || updater.member_id === toUpdate.member_id) {
         const deletedMember = await prisma.channelMember.delete({
           where: {
             id: toUpdate.id,

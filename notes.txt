@@ -1,4 +1,0 @@
-============== 7 JULI 2023 ===============
-
-1. chats kunnen niet dezelde namen hebben want anders wordt er alleen maar aan 1 chat gejoined -> want joined by name
-2. delete channel function?
