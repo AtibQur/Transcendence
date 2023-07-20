@@ -3,14 +3,13 @@
     <div class="PongLogo">
       <h1>PONG</h1>
     </div>
-    <label> Dit wordt later vervangen door login proces, maar voor nu: vul hier een username in </label>
+    <label> Welcome {{ intraName }}!</label>
     <form @submit.prevent="initPlayerData">
             <input v-model="username" placeholder='Enter username'/>
-            <button type="submit">Log in</button>
+            <!-- <button type="submit">Log in</button> -->
     </form>  
     <div class="PongTable">
       <ul>
-        <li><router-link to="/Auth">Auth</router-link></li>
         <li><router-link to="/play">Play</router-link></li>
         <li><router-link to="/leaderboard">Leaderboard</router-link></li>
         <li><router-link to="/chat">Chat</router-link></li>
@@ -22,17 +21,27 @@
 </template>
 
 <script setup lang="ts">
-  import { ref, defineComponent } from 'vue';
+  import { ref, defineComponent, onMounted } from 'vue';
   import axiosInstance from '../axiosConfig';
-  import { socket } from '../socket'
+  import { setDefaultAuthHeader } from '../axiosConfig';
+  import { getCookie } from './cookie_utils';
+  import { socket } from '@/socket';
+  import router from '@/router';
 
   const username = ref('');
+  const intraName = ref("");
   const logged = ref(false);
 
-  const initPlayerData = async () => {
-    if (username.value.trim() === '') {
-      alert('Username cannot be empty');
-      return;
+  const checkLoggedIn = async () =>  {
+    const accesstoken = getCookie('auth');
+    if (accesstoken === undefined) {
+      window.location.replace('http://localhost:8080/auth')
+    } else {
+      try {
+        setDefaultAuthHeader(accesstoken);
+      } catch (error) {
+        console.log("Error retrieving auth cookie");
+      }
     }
     const playerExists = await axiosInstance.get('/player/exists/' + username.value);
     const playerIdResponse = await axiosInstance.post('/player/create', { username: username.value });
@@ -41,12 +50,14 @@
     socket.auth = { playerId, username };
     socket.connect();
 
-    sessionStorage.setItem('playerId', playerId);
-    sessionStorage.setItem('username', username.value);
-    sessionStorage.setItem('logged', logged.value);
-    if (!playerExists.data) {
-      setDefaultAvatar();
-    }
+  const greetPlayer = async () => {
+    try {
+            const response = await axiosInstance.get('/user/username');
+            intraName.value = (response.data);
+            return intraName.value;
+        } catch (error) {
+            console.log("Error: Could not fetch username");
+        }
   };
 
   const setDefaultAvatar = async () => {
@@ -76,6 +87,11 @@
   defineComponent({
     name: 'HomeScreen'
   });
+
+  onMounted(() => {
+    checkLoggedIn();
+    greetPlayer();
+  })
 </script>
 
 <style>

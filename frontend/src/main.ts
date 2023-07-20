@@ -22,6 +22,8 @@ import PrimeVue from 'primevue/config';
 import ToastService from 'primevue/toastservice';
 import ConfirmationService from 'primevue/confirmationservice';
 
+import createCookies from 'vue3-cookies';
+import Logout from './components/LogoutPlayer.vue';
 
 const routes: RouteRecordRaw[] = [
     { 
@@ -34,6 +36,7 @@ const routes: RouteRecordRaw[] = [
     },
     {
       path: '/auth',
+      name: 'auth',
       component: Auth,
     },
     {
@@ -68,6 +71,11 @@ const routes: RouteRecordRaw[] = [
       path: '/profile/:playerName',
       name: 'profile',
       component: ProfilePage, // Replace "ProfilePage" with the component for the profile page
+    },
+    {
+      path: '/logout',
+      name: 'logout',
+      component: Logout,
     }
 ];
 
@@ -81,6 +89,9 @@ app.use(router);
 app.use(PrimeVue);
 app.use(ToastService);
 app.use(ConfirmationService);
+
+app.use(createCookies)
+
 
 app.config.globalProperties.$axios = axiosInstance;
 app.mount('#app');

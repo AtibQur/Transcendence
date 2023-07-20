@@ -239,6 +239,18 @@ async findIntraByUsername(username: string) {
     }
   }
 
+  async findOnePlayerByUsername(id: number) {
+      const selectedPlayer = await prisma.player.findUnique({
+        where: {
+          id: id,
+        },
+        select: {
+          username: true
+        }
+      });
+      return selectedPlayer;
+    };
+
   async findOneIntraUsername(player_id: number) {
     try {
       const selectedPlayer = await prisma.player.findUnique({
@@ -548,5 +560,4 @@ async findIntraByUsername(username: string) {
     }
     await this.achieveAchievement(id, updateDto)
   }
-
 }

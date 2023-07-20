@@ -32,22 +32,10 @@ const selectedChannelmember = ref({});
 const visible = ref<boolean>(false);
 
 onBeforeMount(async () => {
-
-    // FIND ALL MEMBERS OF CHANNEL
-    const fetchChannelmembers = async (channelId: number) => {
-        const response = await axiosInstance.get('channelmember/allmembers/' + channelId.toString());
-
-        channelmembers.value = response.data.map((item) => ({
-            username: item.member.username,
-            id: item.member_id,
-        }));
-
-        console.log(channelmembers.value);
-
-    }
-
+k
+    
     await fetchChannelmembers(currentChannelId.value);
-
+    
     //ADD NEW CHANNELMEMBER
     socket.on('newChannelmember', (channelmember: {username: string, id: number}) => {
         channelmembers.value.push(channelmember);
@@ -60,6 +48,16 @@ onBeforeMount(async () => {
     });
 
 })
+
+// FIND ALL MEMBERS OF CHANNEL
+const fetchChannelmembers = async (channelId: number) => {
+    const response = await axiosInstance.get('channelmember/allmembers/' + channelId.toString());
+
+    channelmembers.value = response.data.map((item) => ({
+        username: item.member.username,
+        id: item.member_id,
+    }));
+}
 
 //ACTIVATE OPTION PANEL
 function showOptionPanel(channelmember: {username: string, id: number}) {

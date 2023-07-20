@@ -127,7 +127,7 @@ export class ChatGateway {
             //notify channelmembers of new member
             const channel = await this.channelService.findOneChannel(member.channel_id);
             this.server.to(channel.name).emit('newChannelmember', {username: payload.channelmember_name, id: member.member_id});
-            return newChannelmember;
+            return newChannelmember.id;
         } catch (error) {
             console.log('Error: ', error);
             return null

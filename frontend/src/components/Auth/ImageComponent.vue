@@ -1,10 +1,10 @@
-<template>
+w<template>
     <div>
       <img :src="imageData" alt="Image" v-if="imageData" />
     </div>
 </template>
 
-  <script lang="ts">
+<script lang="ts">
   import { defineComponent, ref } from 'vue';
   import axios from 'axios';
   
@@ -30,6 +30,6 @@
     mounted() {
       this.fetchImage();
     }
-  });
-  </script>
+});
+</script>
   
