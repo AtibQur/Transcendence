@@ -111,7 +111,7 @@ function validateFields() {
 //RESET FORM
 function resetForm() {
     newChannelName.value = '';
-    selectedSecurityType.value = '';
+    selectedSecurityType.value = -1;
     password.value = '';
     isVisible.value = false;
 }
