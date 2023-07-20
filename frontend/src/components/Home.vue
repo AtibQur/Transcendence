@@ -21,15 +21,15 @@
 </template>
 
 <script setup lang="ts">
-  import { ref, defineComponent, onMounted } from 'vue';
+  import { ref, defineComponent } from 'vue';
   import axiosInstance from '../axiosConfig';
-  import { setDefaultAuthHeader } from '../axiosConfig';
-  import { getCookie } from './cookie_utils';
+//   import { setDefaultAuthHeader } from '../axiosConfig';
+//   import { getCookie } from './cookie_utils';
   import { socket } from '@/socket';
-  import router from '@/router';
+//   import router from '@/router';
 
   const username = ref('');
-  const intraName = ref("");
+//   const intraName = ref("");
   const logged = ref(false);
   
   const initPlayerData = async () => {

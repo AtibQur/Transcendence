@@ -18,9 +18,10 @@
             </div>
             <div class="right-side-bar" v-if="inChannel">
                 <ChannelmemberDisplay :channelId="channelId" />
-                <!-- <div v-if="isAdmin"> -->
+                <div v-if="isAdmin">
                     <AddChannelmember :channelId="channelId"/>
-                <!-- </div> -->
+                </div>
+                <!-- <button @click="leaveChat">Leave Chat</button> -->
             </div>
         </div>
     </div>
@@ -46,13 +47,17 @@ const channelId = ref(null);
 const changeChannel = async (channel_id: number) => {
     channelId.value = channel_id;
     inChannel.value = true;
-    // isAdmin.value = await fetchIsAdmin(playerId, channel_id);
+    isAdmin.value = await fetchIsAdmin();
 }
 
-const fetchIsAdmin = async (player_id: number, channel_id: number) => {
-    const response = await axiosInstance.get('channelmember/admin/' + player_id.toString() + '/' + channel_id.toString());
+const fetchIsAdmin = async () => {
+    const response = await axiosInstance.get('channelmember/admin/' + playerId.toString() + '/' + channelId.value.toString());
     return response.data;
 }
+
+// const leaveChat = async () => {
+
+// }
 
 </script>
 
