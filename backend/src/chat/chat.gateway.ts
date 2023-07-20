@@ -218,7 +218,7 @@ export class ChatGateway {
             client.leave(channel.name);
 
             //notify other channelmembers that a channelmember has left the channel
-            this.server.to(channel.name).emit('removeChannelmember', deletedMember.member_id);
+            this.server.to(channel.name).emit('removeChannelmember', deletedMember.member_id, deletedMember.channel_id);
 
             return deletedMember.member_id;
         } catch (error) {

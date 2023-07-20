@@ -44,16 +44,13 @@ onBeforeMount(async () => {
     });
 
     // UPDATE CHANNELMEMBER DISPLAY IF A MEMBER HAS LEFT A CHANNEL
-    socket.on('removeChannelmember', async (member_id: number) => {
+    socket.on('removeChannelmember', (member_id: number, channel_name: string) => {
         const index = channelmembers.value.findIndex((item) => item.id === member_id);
 
         if (index == -1)
             console.log(`channel not found in channels`);
         else {
             const channelmember = channelmembers.value[index];
-            const response = await axiosInstance.get('channel/' + currentChannelId.value.toString());
-            const channel = response.data;
-            toast.add({ severity: 'info', summary: `${channelmember.username} left ${channel.name}`, detail: '', life: 3000 });
             channelmembers.value.splice(index, 1);
         }
     });

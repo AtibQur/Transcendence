@@ -1,4 +1,5 @@
 <template>
+    <Toast :stacked="false"/>
     <div class="chat">
         <div class="login" v-if="!playerId">
             <h3> Please log in </h3>
@@ -32,6 +33,7 @@ import { ref } from 'vue';
 import { socket } from '@/socket';
 import ChannelDisplay from './ChannelDisplay.vue'
 import AddChannel from './AddChannel.vue';
+import Toast from 'primevue/toast';
 import ChatBox from './ChatBox.vue';
 import AddMessage from './AddMessage.vue';
 import ChannelmemberDisplay from './ChannelmemberDisplay.vue';

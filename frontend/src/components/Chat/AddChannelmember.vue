@@ -1,7 +1,7 @@
 <template>
     <div class="card flex justify-content-center p-fluid">
         <button @click="isVisible = true">Add Channelmember</button>
-        <Toast/>
+        <!-- <Toast/> -->
         <Dialog v-model:visible="isVisible" modal header="New Channelmember" :style="{ width: '50vw' }" :closeButtonProps="handleCloseButton">
             <form @submit.prevent="onSubmit">
                 <div class="p-field">
@@ -23,7 +23,7 @@ import { socket } from '../../socket';
 import axiosInstance from '../../axiosConfig';
 import { ref, onMounted } from 'vue';
 import Dialog from 'primevue/dialog';
-import Toast from 'primevue/toast';
+// import Toast from 'primevue/toast';
 import AutoComplete from 'primevue/autocomplete';
 import { useToast } from 'primevue/usetoast';
 import { useConfirm } from "primevue/useconfirm";

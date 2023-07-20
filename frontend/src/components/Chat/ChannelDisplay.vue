@@ -24,10 +24,8 @@ onBeforeMount(async () => {
     await fetchChannels(playerId);
     
     // LISTEN IF A NEW CHANNEL IS ADDED
-    await socket.on('newChannel', (channel) => {
+    socket.on('newChannel', (channel) => {
         channels.value.push(channel);
-        if (channel.channel.owner_id != playerId)
-            toast.add({ severity: 'info', summary: `You are added to ${channel.channel.name}!`, detail: '', life: 3000 });
     });
     
     // UPDATE CHANNEL DISPLAY IF PLAYER LEAVE A CHANNEL

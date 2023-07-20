@@ -1,5 +1,5 @@
 <template>
-    <Toast/>
+    <!-- <Toast/> -->
     <div>
         <h3> {{ currentChannelmemberUsername }}</h3>
         <h4> {{ ( currentChannelmemberStatus ) }}</h4>
@@ -43,7 +43,7 @@
 <script setup lang="ts">
 import axiosInstance from '../../axiosConfig';
 import { onBeforeMount, ref, watch } from 'vue'
-import Toast from 'primevue/toast';
+// import Toast from 'primevue/toast';
 import { useToast } from 'primevue/usetoast';
 import { useConfirm } from "primevue/useconfirm";
 

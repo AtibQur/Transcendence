@@ -2,7 +2,7 @@
     <div class="card flex justify-content-center p-fluid">
         <ConfirmDialog />
         <button @click="isVisible = true">Create New Channel</button>
-        <Toast/>
+        <!-- <Toast/> -->
         <Dialog v-model:visible="isVisible" modal header="New Channel" :style="{ width: '50vw' }" :closeButtonProps="handleCloseButton">
             <form @submit.prevent="onSubmit">
                 <div class="p-field">
@@ -35,7 +35,7 @@ import InputText from 'primevue/inputtext'
 import Password from 'primevue/password'
 // import PrimeButton from 'primevue/button'
 import RadioButton from 'primevue/radiobutton'
-import Toast from 'primevue/toast';
+// import Toast from 'primevue/toast';
 import ConfirmDialog from 'primevue/confirmdialog';
 import { useToast } from 'primevue/usetoast';
 import { useConfirm } from "primevue/useconfirm";
