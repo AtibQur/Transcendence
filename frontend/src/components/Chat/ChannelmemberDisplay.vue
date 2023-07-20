@@ -32,7 +32,6 @@ const selectedChannelmember = ref({});
 const visible = ref<boolean>(false);
 
 onBeforeMount(async () => {
-k
     
     await fetchChannelmembers(currentChannelId.value);
     

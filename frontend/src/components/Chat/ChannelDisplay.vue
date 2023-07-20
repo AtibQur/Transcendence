@@ -10,7 +10,7 @@
 <script setup lang="ts">
 import { socket } from '../../socket';
 import axiosInstance from '../../axiosConfig';
-import { onBeforeMount, ref, computed } from 'vue'
+import { onBeforeMount, ref} from 'vue'
 
 // const props = defineProps({
 //     playerId: {

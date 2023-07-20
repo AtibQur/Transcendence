@@ -23,13 +23,13 @@
             <button @click="addFriend()">Add Friend</button>
         </div>
         <div v-if="currentChannelmemberInfo.showMute">
-            <button @click="muteChannelmember()">Mute</button>
+            <button @click="openConfirmDialog(Actions.MUTE)">Mute</button>
         </div>
         <div v-if="currentChannelmemberInfo.showMakeAdmin">
             <button @click="makeAdmin()">Make Admin</button>
         </div>
         <div v-if="currentChannelmemberInfo.showBan">
-            <button @click="banChannelmember()">Ban</button>
+            <button @click="openConfirmDialog(Actions.BAN)">Ban</button>
         </div>
         <div v-if="currentChannelmemberInfo.showDelete">
             <button @click="openConfirmDialog(Actions.REMOVE);">Remove from Channel</button>
