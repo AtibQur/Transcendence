@@ -21,7 +21,7 @@
                 <div v-if="isAdmin">
                     <AddChannelmember :channelId="channelId"/>
                 </div>
-                <!-- <button @click="leaveChat">Leave Chat</button> -->
+                <button @click="openConfirmDialog">Leave Chat</button>
             </div>
         </div>
     </div>
@@ -29,6 +29,7 @@
 
 <script setup lang="ts">
 import { ref } from 'vue';
+import { socket } from '@/socket';
 import ChannelDisplay from './ChannelDisplay.vue'
 import AddChannel from './AddChannel.vue';
 import ChatBox from './ChatBox.vue';
@@ -37,7 +38,11 @@ import ChannelmemberDisplay from './ChannelmemberDisplay.vue';
 import AddChannelmember from './AddChannelmember.vue';
 import axiosInstance from '../../axiosConfig';
 import DmDisplay from './DmDisplay.vue';
+import { useToast } from 'primevue/usetoast';
+import { useConfirm } from "primevue/useconfirm";
 
+const toast = useToast();
+const confirm = useConfirm();
 const playerId = parseInt(sessionStorage.getItem('playerId') || '0');
 const username = sessionStorage.getItem('username') || '0';
 const inChannel = ref(false);
@@ -55,9 +60,29 @@ const fetchIsAdmin = async () => {
     return response.data;
 }
 
-// const leaveChat = async () => {
+//CONFIRM DIALOG BUTTON
+const openConfirmDialog = () => {
+    confirm.require({
+        message: 'Are you sure you want to proceed?',
+        header: 'Confirmation',
+        accept: () => {
+            leaveChat();
+        }
+    });
+};
 
-// }
+const leaveChat = async () => {
+
+    await socket.emit('leaveRoom', {player_id: playerId, channel_id: channelId.value}, (response) => {
+        if (response)
+        {
+            inChannel.value = false;
+            toast.add({ severity: 'info', summary: 'Left Channel Succesfully', detail: '', life: 3000 });
+        }
+        else 
+            toast.add({ severity: 'error', summary: 'Error you did not leave the Channel', detail: '', life: 3000 });
+    })
+}
 
 </script>
 

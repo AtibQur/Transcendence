@@ -349,7 +349,7 @@ export class ChannelmemberService {
 
   // DELETE A PLAYER FROM CHANNEL
   // owner can not be deleted
-  // only possible if done by admin
+  // only possible if done by admin or if player wants to leave chat
   // returns deleted channelmember on success, nothing on error
   async remove(player_id: number, updateChannelmemberDto: UpdateChannelmemberDto) {
     try {

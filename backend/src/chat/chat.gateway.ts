@@ -31,6 +31,9 @@ export class ChatGateway {
     private logger = new Logger('ChatGateway');
     private connectedSockets: Map<string, string> = new Map<string, string>();
 
+    //HANDLES NEW INCOMING SOCKET CONNECTION,
+    // ADDS USER AND ID TO MAP
+    // AND JOINS IT TO ALL SUBSCRIBED ROOMS
     async handleConnection(@ConnectedSocket() client: Socket){
         if (!client.handshake.auth.username._value) //if nobody is logged in
             client.disconnect();
@@ -52,6 +55,7 @@ export class ChatGateway {
         this.logger.log(`client ${client.handshake.auth.playerId} (${client.handshake.auth.username._value}) connected at ${client.id}`);
     }
     
+    //HANDLES DISCONNECTION OF SOCKET AND REMOVES IT FROM MAP
     handleDisconnect(@ConnectedSocket() client: Socket){
         if (client.handshake.auth.username._value)
         this.connectedSockets.delete(client.handshake.auth.username._value);
@@ -63,6 +67,8 @@ export class ChatGateway {
     }
 
     //ADD MESSAGE
+    // returns channel_id on success
+    // returns null on failure
     @SubscribeMessage('addChannel')
     async addChannel(
         @MessageBody() createChannelDto: CreateChannelDto,
@@ -83,6 +89,8 @@ export class ChatGateway {
     }
 
     //ADD MESSAGE
+    // returns chatmessage object on success
+    // returns null on failure
     @SubscribeMessage('addChatmessage')
     async addMessage(
         @MessageBody() createChatmessageDto: CreateChatmessageDto,
@@ -94,10 +102,13 @@ export class ChatGateway {
             return chatmessage;
         } catch (error) {
             console.log('Error creating message: ', error);
+            return null;
         }
     }
 
     //ADD CHANNELMEMBER
+    // returns channelmember_id on success
+    // returns null on failure
     @SubscribeMessage('addChannelmember')
     async addChannelmember(
         @MessageBody() payload: {channelmember_name: string, channel_id: number, is_admin: boolean}
@@ -135,6 +146,8 @@ export class ChatGateway {
     }
 
     //JOIN A ROOM
+    // returns true on success
+    // returns false on failure
     @SubscribeMessage('joinRoom')
     async joinRoom(
         @MessageBody() payload: {playerId: number, channelId: number},
@@ -147,13 +160,16 @@ export class ChatGateway {
             const channel = await this.channelService.findOneChannel(payload.channelId);
             client.join(channel.name);
             console.log('joined');
-            return ;
+            return true;
         } catch (error) {
             console.log('Error joining channels: ', error);
+            return false;
         }
     }
 
     //JOIN ALL ROOMS OF PLAYER
+    // returns true on success
+    // returns false on failure
     @SubscribeMessage('joinAllRooms')
     async joinAllRooms(
         @MessageBody() player_id: number,
@@ -168,8 +184,46 @@ export class ChatGateway {
             client.join(intra_username);
             console.log('client joined all rooms');
             console.log(client.rooms);
+            return true;
         } catch (error) {
             console.log('Error joining channels: ', error);
+            return false;
+        }
+    }
+
+    //LEAVE ROOM
+    // returns deleted channelmember id on succes
+    // returns null on failure
+    @SubscribeMessage('leaveRoom')
+    async leaveRoom(
+        @MessageBody() payload: {player_id: number, channel_id: number},
+        @ConnectedSocket() client: Socket
+    ) {
+        try {
+            const member: CreateChannelmemberDto = {
+                member_id: payload.player_id,
+                channel_id: payload.channel_id,
+            }
+            
+            const deletedMember = await this.channelmemberService.remove(payload.player_id, member);
+            if (!deletedMember)
+                throw new Error();
+            console.log(`player left the channel`);
+
+            const channel = await this.channelService.findOneChannel(payload.channel_id);
+            console.log('CHANNEL:', channel);
+            //update channel display for player
+            this.server.to(client.id).emit('leftChannel', channel.name);
+
+            //disconnect socket from room
+            client.leave(channel.name);
+
+            //notify channelmembers of new member
+            // this.server.to(channel.name).emit('removeChannelmember', deletedMember.member_id);
+            return deletedMember.member_id;
+        } catch (error) {
+            console.log('Error leaving room: ', error);
+            return null;
         }
     }
 }

@@ -12,76 +12,51 @@ import { socket } from '../../socket';
 import axiosInstance from '../../axiosConfig';
 import { onBeforeMount, ref} from 'vue'
 
-// const props = defineProps({
-//     playerId: {
-//         type: Number,
-//         required: true
-//     }
-// });
-
 const emit = defineEmits(['changeChannel']);
 
 const playerId = parseInt(sessionStorage.getItem('playerId') || '0');
 const channels = ref([]);
 
 onBeforeMount(async () => {
+    
+    await fetchChannels(playerId);
+    
+    // LISTEN IF A NEW CHANNEL IS ADDED
+    socket.on('newChannel', (channel) => {
+        channels.value.push(channel);
+    });
+    
+    // UPDATE CHANNEL DISPLAY IF PLAYER LEAVE A CHANNEL
+    socket.on('leftChannel', (channelName: string) => {
+        const index = channels.value.findIndex((item) => item.channel.name === channelName);
 
+        if (index == -1)
+            console.log(`channel not found in channels`);
+        else 
+            channels.value.splice(index, 1);
+    });
+
+})
+    
     // FIND ALL CHANNEL FOR PLAYER
     const fetchChannels = async (playerId: number) => {
         const response = await axiosInstance.get('channelmember/allchannels/' + playerId.toString());
         channels.value = response.data;
     }
 
-    await fetchChannels(playerId);
-
-    // LISTEN IF A NEW CHANNEL IS ADDED
-    socket.on('newChannel', (channel) => {
-        channels.value.push(channel);
-    });
-
-    // socket.on('leftChannel', (channel_id) => {
-
-    // });
-
-})
-
-// EVENT TO CHANGE CURRENT CHANNEL
-const changeChannel = (channel_id: number) => {
-    emit('changeChannel', channel_id);
-}
-
-// //FETCH NAME FROM DATABASE
-// const fetchChannelName = async (channel_id: number) => {
-
-//     return new Promise<string>((resolve) => {
-//         socket.emit('findOneChannelName', channel_id, (channel_name: string) => {
-//             resolve(channel_name);
-//         });
-//     });
-// };
-
-// //UPDATE LIST OF CHANNELS
-// const updateChannelName = async (channel_id: number) => {
-//     const channel_name = await fetchChannelName(channel_id);
-//     channelNames.value[channel_id] = channel_name;
-// };
-
-// //GET NAME OF CHANNEL BY ID
-// const getChannelName = (channel_id: number) => {
-//     if (channelNames.value[channel_id]) {
-//         return channelNames.value[channel_id];
-//     }
-//     updateChannelName(channel_id);
-//     return computed(() => channelNames.value[channel_id]);
-// };
+    // EVENT TO CHANGE CURRENT CHANNEL
+    const changeChannel = (channel_id: number) => {
+        emit('changeChannel', channel_id);
+    }
+    
 
 </script>
 
 <style>
 .channel-display-button {
-  background-color: transparent;
-  border: none;
-  cursor: pointer;
+    background-color: transparent;
+    border: none;
+    cursor: pointer;
   color: #000;
   text-decoration: underline;
   transition: color 0.3s;
