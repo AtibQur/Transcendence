@@ -4,10 +4,10 @@
         <h3> {{ currentChannelmemberUsername }}</h3>
         <h4> {{ ( currentChannelmemberStatus ) }}</h4>
         <!-- for testing purposes -->
-        <div v-if="!currentChannelmemberInfo.memberIsOwner && !currentChannelmemberInfo.showMute">
+        <div v-if="currentChannelmemberInfo.memberIsMuted">
             <h5>[MUTED]</h5>
         </div>
-        <div v-if="!currentChannelmemberInfo.memberIsOwner && !currentChannelmemberInfo.showBan">
+        <div v-if="currentChannelmemberInfo.memberIsBanned">
             <h5>[BANNED]</h5>
         </div>
     </div>

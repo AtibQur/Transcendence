@@ -80,7 +80,7 @@ export class ChatGateway {
 
             // this is needed because of the format of the channel display array (channels are fetch through channelmemberservice)
             const newChannel = await this.channelmemberService.findChannelmember(createChannelDto.owner_id, channel_id);
-            this.server.emit('newChannel', newChannel);
+            this.server.to(client.id).emit('newChannel', newChannel);
             return channel_id;
         } catch (error) {
             console.log('Error creating channel: ', error);
@@ -127,17 +127,16 @@ export class ChatGateway {
             }
 
             const newChannelmember = await this.channelmemberService.createChannelmember(member);
-            console.log('member added: ', newChannelmember);
             if (!newChannelmember)
                 throw new Error('Player is already member of this channel');
 
+            const channel = await this.channelmemberService.findChannelmember(newChannelmember.member_id, newChannelmember.channel_id);
+        
             //notify player of new channel
-            const intra_username = await this.playerService.findIntraByUsername(payload.channelmember_name);
-            this.server.to(intra_username).emit('newChannel', member.channel_id);
+            this.server.to(channel.member.intra_username).emit('newChannel', channel);
             
             //notify channelmembers of new member
-            const channel = await this.channelService.findOneChannel(member.channel_id);
-            this.server.to(channel.name).emit('newChannelmember', {username: payload.channelmember_name, id: member.member_id});
+            this.server.to(channel.channel.name).emit('newChannelmember', {username: payload.channelmember_name, id: member.member_id});
             return newChannelmember.id;
         } catch (error) {
             console.log('Error: ', error);
@@ -211,15 +210,16 @@ export class ChatGateway {
             console.log(`player left the channel`);
 
             const channel = await this.channelService.findOneChannel(payload.channel_id);
-            console.log('CHANNEL:', channel);
+
             //update channel display for player
             this.server.to(client.id).emit('leftChannel', channel.name);
 
             //disconnect socket from room
             client.leave(channel.name);
 
-            //notify channelmembers of new member
-            // this.server.to(channel.name).emit('removeChannelmember', deletedMember.member_id);
+            //notify other channelmembers that a channelmember has left the channel
+            this.server.to(channel.name).emit('removeChannelmember', deletedMember.member_id);
+
             return deletedMember.member_id;
         } catch (error) {
             console.log('Error leaving room: ', error);

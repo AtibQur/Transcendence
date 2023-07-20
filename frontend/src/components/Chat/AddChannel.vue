@@ -12,7 +12,7 @@
                 <div class="flex flex-wrap gap-3">
                     <div v-for="option in securityOptions" :key="option.type" class="flex align-items-center">
                         <RadioButton @click="selectedSecurityType = option.type" v-model="securityType" :inputId="option.type.toString()" :value="option.name" />
-                        <label :for="option.type" class="ml-2">{{ option.name }}</label>
+                        <label :for="option.type.toString" class="ml-2">{{ option.name }}</label>
                     </div>
                 </div>
                 <div class="p-field">
@@ -111,9 +111,11 @@ function validateFields() {
 //RESET FORM
 function resetForm() {
     newChannelName.value = '';
+    securityType.value = -1;
     selectedSecurityType.value = -1;
     password.value = '';
     isVisible.value = false;
+    errorMessage.value = '';
 }
 
 //SUMBIT FORM

@@ -18,6 +18,9 @@ import axiosInstance from '../../axiosConfig';
 import { onBeforeMount, ref, watch } from 'vue'
 import Sidebar from 'primevue/sidebar';
 import UserOptionsMenu from './UserOptionsMenu.vue';
+import { useToast } from 'primevue/usetoast';
+
+const toast = useToast();
 
 const props = defineProps({
     channelId: {
@@ -40,12 +43,26 @@ onBeforeMount(async () => {
         channelmembers.value.push(channelmember);
     });
 
+    // UPDATE CHANNELMEMBER DISPLAY IF A MEMBER HAS LEFT A CHANNEL
+    socket.on('removeChannelmember', async (member_id: number) => {
+        const index = channelmembers.value.findIndex((item) => item.id === member_id);
+
+        if (index == -1)
+            console.log(`channel not found in channels`);
+        else {
+            const channelmember = channelmembers.value[index];
+            const response = await axiosInstance.get('channel/' + currentChannelId.value.toString());
+            const channel = response.data;
+            toast.add({ severity: 'info', summary: `${channelmember.username} left ${channel.name}`, detail: '', life: 3000 });
+            channelmembers.value.splice(index, 1);
+        }
+    });
+
     //TRACK WHETHER CHANNEL_ID CHANGES
-    watch(() => props.channelId, async (newChannelId) => {
+    watch(() => props.channelId, async (newChannelId: number) => {
         currentChannelId.value = newChannelId;
         await fetchChannelmembers(currentChannelId.value);
     });
-
 })
 
 // FIND ALL MEMBERS OF CHANNEL

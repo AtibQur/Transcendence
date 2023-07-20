@@ -11,7 +11,9 @@
 import { socket } from '../../socket';
 import axiosInstance from '../../axiosConfig';
 import { onBeforeMount, ref} from 'vue'
+import { useToast } from 'primevue/usetoast';
 
+const toast = useToast();
 const emit = defineEmits(['changeChannel']);
 
 const playerId = parseInt(sessionStorage.getItem('playerId') || '0');
@@ -22,12 +24,14 @@ onBeforeMount(async () => {
     await fetchChannels(playerId);
     
     // LISTEN IF A NEW CHANNEL IS ADDED
-    socket.on('newChannel', (channel) => {
+    await socket.on('newChannel', (channel) => {
         channels.value.push(channel);
+        if (channel.channel.owner_id != playerId)
+            toast.add({ severity: 'info', summary: `You are added to ${channel.channel.name}!`, detail: '', life: 3000 });
     });
     
     // UPDATE CHANNEL DISPLAY IF PLAYER LEAVE A CHANNEL
-    socket.on('leftChannel', (channelName: string) => {
+    await socket.on('leftChannel', (channelName: string) => {
         const index = channels.value.findIndex((item) => item.channel.name === channelName);
 
         if (index == -1)

@@ -114,6 +114,7 @@ function resetForm() {
     newChannelmember.value = '';
     isAdmin.value = false;
     isVisible.value = false;
+    errorMessage.value = '';
 }
 
 //SUMBIT FORM
