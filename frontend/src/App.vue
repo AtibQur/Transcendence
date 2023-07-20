@@ -21,21 +21,6 @@
 	const answerLoaded = ref(false);
 
 	//functions
-	async function fetchAnswer() {
-		try {
-			const response = await axios.get('http://localhost:3000');
-			answer.value = response.data;
-			answerLoaded.value = true
-			return answer.value;
-		} catch (error) {
-			console.log("Error occured");
-		}
-	}
-
-	onBeforeMount(() => {
-		fetchAnswer();
-	})
-
 </script>
 
 <style>

@@ -25,7 +25,7 @@ export class PongGame {
 		radius: 10,
 		dX: 1,
 		dY: 1,
-		velocity: 1,
+		velocity: 2,
 	};
 	private _game: Game = {
 		state: 'start',

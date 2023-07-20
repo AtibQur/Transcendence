@@ -23,7 +23,7 @@
 	import { socket } from '../../socket'
 	import GameTools from './GameTools.vue'
 	import { defineComponent } from 'vue'
-	import {socket_match_id, p1_id, p2_id, p1_socket_id, p2_socket_id, username1, username2, match_id} from './MatchMaking.vue'
+	import {socket_match_id, p1_id, p2_id, p1_socket_id, p2_socket_id, username1, username2} from './MatchMaking.vue'
 	import { useRouter } from 'vue-router'
 	import axiosInstance from '../../axiosConfig'
 

@@ -19,6 +19,9 @@ export class MatchInstance {
 		this.match = match;
 	}
 
+	getMatchId() {
+		return (this.match)
+	}
 	getPlayerSocketId(nb: number): string{
 		if (nb == 1)
 			return (this.match.player1.socket_id)
@@ -68,6 +71,7 @@ export class MatchInstance {
 			return ;
 
 		this.pongGame.updateGame(this.player1, this.player2, this.ball);
+		this.match.updateScore(this.player1.score, this.player2.score)
 
 		client.to(this.player1.user.socket_id).emit('match', {
 			state: this.game.state,
