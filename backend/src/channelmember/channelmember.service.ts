@@ -178,6 +178,7 @@ export class ChannelmemberService {
         memberIsAdmin: false,
         memberIsOwner: false,
         memberIsBanned: false,
+        memberIsMuted: false,
         memberIsFriend: false,
         showBlock: true, // player can always block someone
         showMute: false,
@@ -195,6 +196,7 @@ export class ChannelmemberService {
       rights.memberIsAdmin = member.is_admin;
       rights.memberIsOwner = member.is_owner;
       rights.memberIsBanned = member.is_banned;
+      rights.memberIsMuted = member.is_muted;
       
       // Define if player and channelmember are friends
       const existingFriendship = await this.friendService.isExistingFriendship(player_id, member_id);
