@@ -5,7 +5,7 @@
 </template>
 
 <script lang="ts">
-import { socket } from '../../socket'
+// import { socket } from '../../socket'
 import { defineComponent } from 'vue'
 
 export default defineComponent({

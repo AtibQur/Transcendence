@@ -30,6 +30,11 @@ export class ChannelmemberController {
     return this.channelmemberService.findAllChannelmembers(+channel_id);
   }
 
+  @Get('channel/:channel_id/:member_id')
+  findIsInChannel(@Param('member_id') member_id: string, @Param('channel_id') channel_id: string) {
+    return this.channelmemberService.isInChannel(+member_id, +channel_id);
+  }
+
   // GET A MEMBERS INFO (is_admin, is_muted etc)
   @Get('info/:member_id/:channel_id')
   findChannelMember(@Param('member_id') member_id: string, @Param('channel_id') channel_id: string) {

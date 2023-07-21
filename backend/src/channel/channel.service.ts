@@ -39,7 +39,8 @@ export class ChannelService {
       channelMemberDto.is_banned = false;
       channelMemberDto.added_at = new Date();
       channelMemberDto.muted_at = new Date();
-      this.channelmemberService.createChannelmember(channelMemberDto);
+      await this.channelmemberService.createChannelmember(channelMemberDto);
+      console.log('channel & channelmember created: ', newChannel);
       return newChannel.id;
     }
     catch (error) {

@@ -3,9 +3,11 @@
     <div class="PongLogo">
       <h1>PONG</h1>
     </div>
-    <label> Welcome {{ intraName }}!</label>
-      <input v-model="username" placeholder='username'/>
-      <!-- <button @click="initPlayerData">Log in</button> -->
+    <!-- <label> Welcome {{ intraName }}!</label> -->
+    <form @submit.prevent="initPlayerData">
+            <input v-model="username" placeholder='Enter username'/>
+            <button type="submit">Log in</button>
+    </form>  
     <div class="PongTable">
       <ul>
         <li><router-link to="/play">Play</router-link></li>
@@ -29,7 +31,29 @@
   const username = ref('');
   const intraName = ref("");
   const router = useRouter();
+//   import router from '@/router';
+
+//   const intraName = ref("");
   const logged = ref(false);
+  
+  const initPlayerData = async () => {
+    if (username.value.trim() === '') {
+      alert('Username cannot be empty');
+      return;
+    }
+    const playerExists = await axiosInstance.get('/player/exists/' + username.value);
+    const playerIdResponse = await axiosInstance.post('/player/create', { username: username.value });
+    const playerId = playerIdResponse.data
+    logged.value = true;
+    socket.auth = { playerId, username };
+    socket.connect();
+    sessionStorage.setItem('playerId', playerId);
+    sessionStorage.setItem('username', username.value);
+    sessionStorage.setItem('logged', logged.value.toString());
+    if (!playerExists.data) {
+      setDefaultAvatar();
+    }
+  };
 
   const checkLoggedIn = async () =>  {
     const accesstoken = getCookie('auth');
@@ -64,6 +88,7 @@
         }
     }
 
+
   const setDefaultAvatar = async () => {
     const playerId = parseInt(sessionStorage.getItem('playerId') || '0');
     const defaultAvatarPath = './default_avatar.png';
@@ -81,9 +106,11 @@
   };
 
   const logOut = async () => {
+    logged.value = false; 
     sessionStorage.removeItem('playerId');
     sessionStorage.removeItem('username');
-    sessionStorage.removeItem('logged');
+    sessionStorage.setItem('logged', logged.value.toString());
+    socket.disconnect();
   }
 
   defineComponent({

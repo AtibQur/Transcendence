@@ -289,27 +289,6 @@ async findIntraByUsername(username: string) {
     }
   }
 
-  async findInfoAddChannelmember(name: string, channelId: number) {
-    try {
-      const selectedPlayer = await prisma.player.findUnique({
-        where: {
-          username: name
-        },
-        select: {
-          intra_username: true,
-          member_of: {
-            where: {
-              channel_id: channelId 
-          }}
-        },
-      });
-      return selectedPlayer;
-    } catch (error) {
-      console.error('Error occurred:', error);
-      return null;
-    }
-  }
-
   // GET AVATAR
   async findOneAvatar(id: number) {
     try {
