@@ -1,3 +1,8 @@
+import "primeflex/primeflex.css";
+import "primevue/resources/themes/lara-light-blue/theme.css";
+import "primevue/resources/primevue.min.css";
+import "primeicons/primeicons.css";
+
 import { createApp } from 'vue';
 import { createRouter, createWebHistory, RouteRecordRaw } from 'vue-router';
 import axiosInstance from './axiosConfig';
@@ -12,6 +17,13 @@ import PopulateDatabase from './components/PopulateDatabase.vue';
 import ChatView from './components/Chat/ChatView.vue';
 import Redirect2faVerify from './components/Auth/Redirect2faVerify.vue';
 import FriendsPage from './components/Friends/FriendsMenubar/FriendsPage.vue';
+import PlayerProfile from './components/profile/PlayerProfile.vue';
+import PrimeVue from 'primevue/config';
+import ToastService from 'primevue/toastservice';
+import ConfirmationService from 'primevue/confirmationservice';
+
+import createCookies from 'vue3-cookies';
+import Logout from './components/LogoutPlayer.vue';
 
 const routes: RouteRecordRaw[] = [
     {
@@ -19,11 +31,12 @@ const routes: RouteRecordRaw[] = [
       component: Home,
     },
     {
-      path: '/play',
+      path: '/play', 
       component: Play,
     },
     {
       path: '/auth',
+      name: 'auth',
       component: Auth,
     },
     {
@@ -54,6 +67,11 @@ const routes: RouteRecordRaw[] = [
       name: 'friends',
       path: '/profile/:playerName',
       component: FriendsPage,
+    },
+    {
+      path: '/logout',
+      name: 'logout',
+      component: Logout,
     }
 ];
 
@@ -64,6 +82,12 @@ const router = createRouter({
 
 const app = createApp(App).use(router);
 app.use(router);
+app.use(PrimeVue);
+app.use(ToastService);
+app.use(ConfirmationService);
+
+app.use(createCookies)
+
 
 app.config.globalProperties.$axios = axiosInstance;
 app.mount('#app');

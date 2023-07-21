@@ -11,6 +11,7 @@ export class PlayerController {
   constructor(private readonly playerService: PlayerService) {}
 
   // CREATE NEW PLAYER
+  // returns player id of either existing player or new player
   @Post('create')
   create(@Body() createPlayerDto: CreatePlayerDto) {
     return this.playerService.createPlayer(createPlayerDto);
@@ -54,6 +55,7 @@ export class PlayerController {
   }
 
   // GET AVATAR
+  // returns avatar as bytes
   @Get('avatar/:id')
   findOneAvatar(@Param('id') id: string) {
     return this.playerService.findOneAvatar(+id);
@@ -72,42 +74,35 @@ export class PlayerController {
   }
 
   // CHANGE USERNAME
+  // returns new username on success, old username on error
   @Patch('username/:id')
   updateUsername(@Param('id') id: string, @Body() updatePlayerDto: UpdatePlayerDto) {
     return this.playerService.updateUsername(+id, updatePlayerDto);
   }
 
-  // +1 WINS
-  @Patch('wins/:id')
-  updateWins(@Param('id') id: string) {
-    return this.playerService.updateWins(+id);
-  }
-
-  // +1 LOSSES
-  @Patch('losses/:id')
-  updateLosses(@Param('id') id: string) {
-    return this.playerService.updateLosses(+id);
-  }
-
   // CHANGE STATUS
+  // returns updated player on success, nothing on error
   @Patch('status/:id')
   updateStatus(@Param('id') id: string, @Body() updatePlayerDto: UpdatePlayerDto) {
     return this.playerService.updateStatus(+id, updatePlayerDto);
   }
 
   // DELETE A PLAYER
+  // returns deleted player on success, nothing on error
   @Delete('delete/:id')
   deletePlayer(@Param('id') id: string) {
     return this.playerService.deletePlayer(+id);
   }
 
   // ACHIEVE AN ACHIEVEMENT
+  // TODO: delete this if never used, probably wont be used
   @Patch('achieve/:id')
   achieveAchievement(@Param('id') id: string, @Body() updatePlayerDto: UpdatePlayerDto) {
     return this.playerService.achieveAchievement(+id, updatePlayerDto);
   }
 
   // CHECK IF PLAYER EXISTS
+  // returns true or false
   @Get('exists/:username')
   isExistingPlayer(@Param('username') username: string) {
     return this.playerService.isExistingPlayer(username);
@@ -118,5 +113,11 @@ export class PlayerController {
   findIdByUsername(@Param('username') username: string) {
     return this.playerService.findIdByUsername(username);
   }
+  // GET ALL ONLINE PLAYERS
+  @Get('online')
+  findAllOnlinePlayers() {
+    return this.playerService.findAllOnlinePlayers();
+  }
+
 }
 

@@ -3,12 +3,13 @@
     <div class="PongLogo">
       <h1>PONG</h1>
     </div>
-    <label> Dit wordt later vervangen door login proces, maar voor nu: vul hier een username in </label>
-      <input v-model="username" placeholder='username'/>
-      <button @click="initPlayerData">Log in</button>
+    <!-- <label> Welcome {{ intraName }}!</label> -->
+    <form @submit.prevent="initPlayerData">
+            <input v-model="username" placeholder='Enter username'/>
+            <button type="submit">Log in</button>
+    </form>  
     <div class="PongTable">
       <ul>
-        <li><router-link to="/Auth">Auth</router-link></li>
         <li><router-link to="/play">Play</router-link></li>
         <li><router-link to="/leaderboard">Leaderboard</router-link></li>
         <li><router-link to="/chat">Chat</router-link></li>
@@ -22,11 +23,15 @@
 <script setup lang="ts">
   import { ref, defineComponent } from 'vue';
   import axiosInstance from '../axiosConfig';
+//   import { setDefaultAuthHeader } from '../axiosConfig';
+//   import { getCookie } from './cookie_utils';
   import { socket } from '@/socket';
+//   import router from '@/router';
 
   const username = ref('');
+//   const intraName = ref("");
   const logged = ref(false);
-
+  
   const initPlayerData = async () => {
     if (username.value.trim() === '') {
       alert('Username cannot be empty');
@@ -36,18 +41,41 @@
     const playerIdResponse = await axiosInstance.post('/player/create', { username: username.value });
     const playerId = playerIdResponse.data
     logged.value = true;
+    socket.auth = { playerId, username };
+    socket.connect();
 
-    localStorage.setItem('playerId', playerId);
-    localStorage.setItem('username', username.value);
-    localStorage.setItem('logged', logged.value);
+    sessionStorage.setItem('playerId', playerId);
+    sessionStorage.setItem('username', username.value);
+    sessionStorage.setItem('logged', logged.value);
     if (!playerExists.data) {
       setDefaultAvatar();
     }
-    await socket.emit('joinAllRooms', playerId)
   };
 
+//   const checkLoggedIn = async () =>  {
+//     const accesstoken = getCookie('auth');
+//     if (accesstoken === undefined) {
+//       window.location.replace('http://localhost:8080/auth')
+//     } else {
+//       try {
+//         setDefaultAuthHeader(accesstoken);
+//       } catch (error) {
+//         console.log("Error retrieving auth cookie");
+//       }
+//     }};
+
+//   const greetPlayer = async () => {
+//     try {
+//             const response = await axiosInstance.get('/user/username');
+//             intraName.value = (response.data);
+//             return intraName.value;
+//         } catch (error) {
+//             console.log("Error: Could not fetch username");
+//         }
+//   };
+
   const setDefaultAvatar = async () => {
-    const playerId = parseInt(localStorage.getItem('playerId') || '0');
+    const playerId = parseInt(sessionStorage.getItem('playerId') || '0');
     const defaultAvatarPath = './default_avatar.png';
 
     // Fetch the default avatar file
@@ -63,14 +91,22 @@
   };
 
   const logOut = async () => {
-    localStorage.removeItem('playerId');
-    localStorage.removeItem('username');
-    localStorage.removeItem('logged');
+    logged.value = false; 
+    sessionStorage.removeItem('playerId');
+    sessionStorage.removeItem('username');
+    sessionStorage.setItem('logged', logged.value.toString());
+    socket.disconnect();
   }
 
   defineComponent({
     name: 'HomeScreen'
   });
+
+//   onMounted(() => {
+//     checkLoggedIn();
+//     greetPlayer();
+//   })
+
 </script>
 
 <style>

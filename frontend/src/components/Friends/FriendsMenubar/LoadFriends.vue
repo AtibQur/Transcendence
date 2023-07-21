@@ -38,7 +38,8 @@ export default defineComponent({
   emits: ['close-menu'],
   data() {
     return {
-      friends: [] as Friend[],
+      playerId: parseInt(sessionStorage.getItem('playerId') || '0'),
+      friends: [] as Friend[], // Specify the type for the friends property
       hover: false,
       newFriendName: ''
     };
