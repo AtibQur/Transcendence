@@ -52,7 +52,7 @@ export default defineComponent({
   methods: {
     async loadFriends() {
       try {
-        const response = await axiosInstance.get(`friend/username/${playerId}`);
+        const response = await axiosInstance.get(`friend/username/${this.playerId}`);
         this.friends = response.data;
       } catch (error) {
         console.error('Error occurred while loading friends:', error);
@@ -61,7 +61,7 @@ export default defineComponent({
 
     async addFriend() {
       try {
-        const response = await axiosInstance.post(`friend/add/${playerId}`, {
+        const response = await axiosInstance.post(`friend/add/${this.playerId}`, {
           friendUsername: this.newFriendName
         });
 
@@ -85,7 +85,7 @@ export default defineComponent({
 
     async blockPlayer() {
       try {
-        await axiosInstance.delete(`friend/${playerId}`, {
+        await axiosInstance.delete(`friend/${this.playerId}`, {
           data: {
             friendUsername: this.newFriendName
           }
