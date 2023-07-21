@@ -1,4 +1,5 @@
 <template>
+    <Toast :stacked="false"/>
     <div class="chat">
         <div class="login" v-if="!playerId">
             <h3> Please log in </h3>
@@ -6,14 +7,14 @@
         <div class="chat-start-page" v-else>
             <div class="left-side-bar">
                 <h3>Welcome {{ username }} {{ playerId }}!</h3>
-                <ChannelDisplay :playerId="playerId" @changeChannel='changeChannel'/>
-                <AddChannel :playerId="playerId"/>
-                <OnlinePlayers :playerId="playerId"/> 
+                <ChannelDisplay @changeChannel='changeChannel'/>
+                <AddChannel/>
+                <DmDisplay/> 
             </div>
             <div class="chat-box">
                 <div v-if="inChannel">
-                    <ChatBox :playerId="playerId" :channelId="channelId"/>
-                    <AddMessage :senderId="playerId" :channelId="channelId"/>
+                    <ChatBox :channelId="channelId"/>
+                    <AddMessage :channelId="channelId"/>
                 </div>
             </div>
             <div class="right-side-bar" v-if="inChannel">
@@ -21,6 +22,7 @@
                 <div v-if="isAdmin">
                     <AddChannelmember :channelId="channelId"/>
                 </div>
+                <button @click="openConfirmDialog">Leave Chat</button>
             </div>
         </div>
     </div>
@@ -28,30 +30,60 @@
 
 <script setup lang="ts">
 import { ref } from 'vue';
+import { socket } from '@/socket';
 import ChannelDisplay from './ChannelDisplay.vue'
 import AddChannel from './AddChannel.vue';
+import Toast from 'primevue/toast';
 import ChatBox from './ChatBox.vue';
 import AddMessage from './AddMessage.vue';
-import OnlinePlayers from './OnlinePlayers.vue';
 import ChannelmemberDisplay from './ChannelmemberDisplay.vue';
 import AddChannelmember from './AddChannelmember.vue';
 import axiosInstance from '../../axiosConfig';
+import DmDisplay from './DmDisplay.vue';
+import { useToast } from 'primevue/usetoast';
+import { useConfirm } from "primevue/useconfirm";
 
+const toast = useToast();
+const confirm = useConfirm();
 const playerId = parseInt(sessionStorage.getItem('playerId') || '0');
 const username = sessionStorage.getItem('username') || '0';
 const inChannel = ref(false);
 const isAdmin = ref(false);
-const channelId = ref(-1); //test
+const channelId = ref(null);
 
 const changeChannel = async (channel_id: number) => {
     channelId.value = channel_id;
     inChannel.value = true;
-    isAdmin.value = await fetchIsAdmin(playerId, channel_id);
+    isAdmin.value = await fetchIsAdmin();
 }
 
-const fetchIsAdmin = async (player_id: number, channel_id: number) => {
-    const response = await axiosInstance.get('channelmember/admin/' + player_id.toString() + '/' + channel_id.toString());
+const fetchIsAdmin = async () => {
+    const response = await axiosInstance.get('channelmember/admin/' + playerId.toString() + '/' + channelId.value.toString());
     return response.data;
+}
+
+//CONFIRM DIALOG BUTTON
+const openConfirmDialog = () => {
+    confirm.require({
+        message: 'Are you sure you want to proceed?',
+        header: 'Confirmation',
+        accept: () => {
+            leaveChat();
+        }
+    });
+};
+
+const leaveChat = async () => {
+
+    await socket.emit('leaveRoom', {player_id: playerId, channel_id: channelId.value}, (response) => {
+        if (response)
+        {
+            inChannel.value = false;
+            toast.add({ severity: 'info', summary: 'Left Channel Succesfully', detail: '', life: 3000 });
+        }
+        else 
+            toast.add({ severity: 'error', summary: 'Error you did not leave the Channel', detail: '', life: 3000 });
+    })
 }
 
 </script>

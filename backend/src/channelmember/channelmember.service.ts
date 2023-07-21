@@ -2,11 +2,16 @@ import { Injectable } from '@nestjs/common';
 import { CreateChannelmemberDto } from './dto/create-channelmember.dto';
 import { UpdateChannelmemberDto } from './dto/update-channelmember.dto';
 import { PrismaService } from '../../prisma/prisma.service';
+import { FriendService } from 'src/friend/friend.service';
 
 const prisma = PrismaService.getClient();
 
 @Injectable()
 export class ChannelmemberService {
+
+  constructor(
+    private readonly friendService: FriendService
+  ) {}
 
   // ADD PLAYER TO EXISTING CHANNEL
   async createChannelmember(createChannelmemberDto: CreateChannelmemberDto) {
@@ -53,9 +58,16 @@ export class ChannelmemberService {
             member_id: player_id
           },
           include: {
-              channel: {
+                member: {
                   select: {
-                      name: true
+                    username: true,
+                    intra_username: true
+                  }
+                },
+                channel: {
+                  select: {
+                      name: true,
+                      owner_id: true
                   }
               }
           },
@@ -115,29 +127,34 @@ export class ChannelmemberService {
   // GET A MEMBER'S INFO
   async findChannelmember(member_id: number, channel_id: number) {
     try {
-      const channelMember = await prisma.channelMember.findFirst({
-        where: {
-          member_id: member_id,
-          channel_id: channel_id
-        },
-        select: {
-          id: true,
-          member_id: true,
-          member: {
+        const channelMember = await prisma.channelMember.findFirst({
+            where: {
+            member_id: member_id,
+            channel_id: channel_id
+            },
             select: {
-              username: true
+            id: true,
+            member_id: true,
+            channel_id: true,
+            member: {
+                select: {
+                username: true,
+                intra_username: true
+                }
+            },
+            channel: {
+                select: {
+                    name: true,
+                    owner_id: true
+                }
+            },
+            is_admin: true,
+            is_muted: true,
+            is_banned: true,
+            added_at: true,
+            muted_at: true
             }
-          },
-          channel: {
-            select: {
-              owner_id: true
-            }
-          },
-          is_admin: true,
-          is_muted: true,
-          is_banned: true,
-        }
-      });
+        });
 
       if (channelMember) {
         const isOwner = channelMember.member_id === channelMember.channel.owner_id;
@@ -161,6 +178,7 @@ export class ChannelmemberService {
         memberIsAdmin: false,
         memberIsOwner: false,
         memberIsBanned: false,
+        memberIsFriend: false,
         showBlock: true, // player can always block someone
         showMute: false,
         showMakeAdmin: false,
@@ -172,10 +190,16 @@ export class ChannelmemberService {
       if (!player || !member) {
         throw new Error("Player or member does not exist");
       }
+
       // Define rights of channelmember
       rights.memberIsAdmin = member.is_admin;
       rights.memberIsOwner = member.is_owner;
       rights.memberIsBanned = member.is_banned;
+      
+      // Define if player and channelmember are friends
+      const existingFriendship = await this.friendService.isExistingFriendship(player_id, member_id);
+      if (existingFriendship)
+        rights.memberIsFriend = true;
 
       // Define which options the player will have to do with another channelmember
       if (player.is_admin && !member.is_admin) {
@@ -199,9 +223,9 @@ export class ChannelmemberService {
   }
 
   // CHECK IF A PLAYER IS ALREADY IN CHANNEL
-  async isInChannel(player_id: number, channel_id) {
+  async isInChannel(player_id: number, channel_id: number) {
     try {
-      const existingMember = await prisma.channelMember.findMany({
+      const existingMember = await prisma.channelMember.findFirst({
         where: {
           member_id: player_id,
           channel_id: channel_id
@@ -280,7 +304,7 @@ export class ChannelmemberService {
             id: toUpdate.id
           },
           data: {
-            is_admin: true,
+            is_banned: true,
           }
         });
         return updatedMember;
@@ -325,16 +349,16 @@ export class ChannelmemberService {
 
   // DELETE A PLAYER FROM CHANNEL
   // owner can not be deleted
-  // only possible if done by admin
+  // only possible if done by admin or if player wants to leave chat
   // returns deleted channelmember on success, nothing on error
   async remove(player_id: number, updateChannelmemberDto: UpdateChannelmemberDto) {
     try {
       const updater = await this.findChannelmember(player_id, updateChannelmemberDto.channel_id);
       const toUpdate = await this.findChannelmember(updateChannelmemberDto.member_id, updateChannelmemberDto.channel_id);
-      if (updater.is_admin && !toUpdate.is_owner) {
+      if ((updater.is_admin && !toUpdate.is_owner) || updater.member_id === toUpdate.member_id) {
         const deletedMember = await prisma.channelMember.delete({
           where: {
-            id: player_id,
+            id: toUpdate.id,
           },
         });
         return deletedMember;

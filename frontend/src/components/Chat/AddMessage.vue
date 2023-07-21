@@ -13,16 +13,13 @@ import { onBeforeMount, ref } from 'vue';
 // import Message from '@/types/Message';
 
 const props = defineProps({
-    senderId: {
-        type: Number,
-        required: true
-    },
     channelId: {
         type: Number,
         required: true
     }
 });
 
+const playerId = parseInt(sessionStorage.getItem('playerId') || '0');
 const content = ref('');
 
 
@@ -31,7 +28,7 @@ const content = ref('');
 // })
 
 const sendMessage = () => {
-    socket.emit('addChatmessage', { content: content.value, sender_id: props.senderId, channel_id: props.channelId }, () => {
+    socket.emit('addChatmessage', { content: content.value, sender_id: playerId, channel_id: props.channelId }, () => {
         content.value = '';
     })
 }

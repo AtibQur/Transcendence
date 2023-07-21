@@ -34,4 +34,18 @@ export class FriendController {
   remove(@Param('id') id: string, @Body() updateFriendDto: UpdateFriendDto) {
     return this.friendService.remove(+id, updateFriendDto);
   }
+
+  // CHECK IF FRIENDSHIP EXISTS
+  // returns true or false
+  @Get('exists/:id/:friendId')
+  isExistingPlayer(@Param('id') id: string, @Param('friendId') friendId: string) {
+    return this.friendService.isExistingFriendship(+id, +friendId);
+  }
+
+  // CHECK IF FRIENDSHIP EXISTS
+  // returns true or false
+  @Get('id/:id/:friendId')
+  findFriendshipId(@Param('id') id: string, @Param('friendId') friendId: string) {
+    return this.friendService.findFriendshipId(+id, +friendId);
+  }
 }

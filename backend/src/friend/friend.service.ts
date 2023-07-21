@@ -16,26 +16,16 @@ export class FriendService {
   async addFriend(id: number, addFriendDto: AddFriendDto) {
     try {
       const friendId = await this.playerService.findIdByUsername(addFriendDto.friendUsername);
+      if (!friendId)
+        throw new Error("Cannot become friend because player does not exist");
       if (id == friendId) {
         throw new Error("You can not add yourself as a friend");
       }
-      const existingFriendship = await prisma.friend.findFirst({
-        where: {
-          OR: [
-            {
-              player_id: id,
-              friend_id: friendId,
-            },
-            {
-              player_id: friendId,
-              friend_id: id,
-            },
-          ],
-        },
-      });
+      const existingFriendship = await this.isExistingFriendship(id, friendId);
       if (existingFriendship) {
         throw new Error("Player is already your friend");
       }
+      
       const newFriendShip = await prisma.friend.create({
         data: {
           player_id: id,
@@ -47,6 +37,56 @@ export class FriendService {
     catch (error) {
       console.error('Error occurred:', error);
       return null;
+    }
+  }
+
+    // CHECK IF FRIENDSCHIP EXISTS
+    async isExistingFriendship(id: number, friendId: number) {
+        try {
+            const existingFriendship = await prisma.friend.findFirst( {
+                where: {
+                    OR: [
+                        {
+                            player_id: id,
+                            friend_id: friendId,
+                        },
+                        {
+                            player_id: friendId,
+                            friend_id: id,
+                        },
+                    ],
+                },
+            });
+            
+            if (existingFriendship) 
+                return true;
+            else
+                return false;
+        } catch (error) {
+            return false;
+        }
+    }
+
+  // GET A FRIENDSHIP ID
+  async findFriendshipId(id: number, friendId: number) {
+    try {
+        const friendshipId = await prisma.friend.findFirst( {
+            where: {
+                OR: [
+                    {
+                        player_id: id,
+                        friend_id: friendId,
+                    },
+                    {
+                        player_id: friendId,
+                        friend_id: id,
+                    },
+                ],
+            },
+        });
+      return friendshipId;
+    } catch (error) {
+        throw new Error("Friendship does not exist");
     }
   }
 
@@ -126,34 +166,26 @@ async findFriendsUsername(id: number) {
   // DELETE A FRIENDSHIP
   async remove(id: number, updateFriendDto: UpdateFriendDto) {
     try {
-      const friendId = await this.playerService.findIdByUsername(updateFriendDto.friendUsername);
-      const existingFriendship = await prisma.friend.findFirst({
-        where: {
-          OR: [
-            {
-              player_id: id,
-              friend_id: friendId,
+        const friendId = await this.playerService.findIdByUsername(updateFriendDto.friendUsername);
+      
+        const isExistingFriendship = await this.isExistingFriendship(id, friendId);
+        if (!isExistingFriendship)
+            throw new Error("Friendship does not exist");
+        
+        const friendshipId = await this.findFriendshipId(id, friendId);
+
+        const deletedFriendship = await prisma.friend.delete({
+            where: {
+                id: friendshipId.id
             },
-            {
-              player_id: friendId,
-              friend_id: id,
-            },
-          ],
-        },
-      });
-      if (!existingFriendship) {
-        throw new Error("Friendship does not exist");
-      }
-      const deletedFriendship = await prisma.friend.delete({
-        where: {
-          id: existingFriendship.id
-        },
-      })
-      return deletedFriendship;
+        })
+        return deletedFriendship;
     }
     catch (error) {
-      console.error('Error occured: ', error);
-      return null;
+        console.error('Error occured: ', error);
+        return null;
     }
   }
+  
+
 }

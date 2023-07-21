@@ -108,5 +108,11 @@ export class PlayerController {
     return this.playerService.isExistingPlayer(username);
   }
 
+  // GET ALL ONLINE PLAYERS
+  @Get('online')
+  findAllOnlinePlayers() {
+    return this.playerService.findAllOnlinePlayers();
+  }
+
 }
 

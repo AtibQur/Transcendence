@@ -9,13 +9,16 @@ import { ChannelModule } from 'src/channel/channel.module';
 import { ChannelService } from 'src/channel/channel.service';
 import { ChannelmemberService } from 'src/channelmember/channelmember.service';
 import { ChannelmemberModule } from 'src/channelmember/channelmember.module';
+import { FriendModule } from 'src/friend/friend.module';
+import { FriendService } from 'src/friend/friend.service';
 
 @Module({
   imports: [
     BlockedplayerModule,
     PlayerModule,
     ChannelModule,
-    ChannelmemberModule
+    ChannelmemberModule,
+    FriendModule
   ],
   controllers: [
     ChatmessageController
@@ -25,7 +28,8 @@ import { ChannelmemberModule } from 'src/channelmember/channelmember.module';
     BlockedplayerService,
     PlayerService,
     ChannelService,
-    ChannelmemberService
+    ChannelmemberService,
+    FriendService
   ]
 })
 export class ChatmessageModule {}

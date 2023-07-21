@@ -115,6 +115,7 @@ export class BlockedplayerService {
   // CHECK IF A PLAYER IS BLOCKED BY ANOTHER PLAYER
   async isBlocked(id: number, blockedUsername: string) {
     try {
+        // console.log("player id: ", id);
       const existingBlock = await this.findBlockedPlayer(id, blockedUsername);
       if (existingBlock) {
         return true;
