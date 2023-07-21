@@ -23,6 +23,9 @@
                     <AddChannelmember :channelId="channelId"/>
                 </div>
                 <button @click="openConfirmDialog">Leave Chat</button>
+                <div v-if="isOwner">
+                    <PasswordSettings :channelId="channelId"/>
+                </div>
             </div>
         </div>
     </div>
@@ -40,6 +43,7 @@ import ChannelmemberDisplay from './ChannelmemberDisplay.vue';
 import AddChannelmember from './AddChannelmember.vue';
 import axiosInstance from '../../axiosConfig';
 import DmDisplay from './DmDisplay.vue';
+import PasswordSettings from './PasswordSettings.vue'
 import { useToast } from 'primevue/usetoast';
 import { useConfirm } from "primevue/useconfirm";
 
@@ -49,17 +53,25 @@ const playerId = parseInt(sessionStorage.getItem('playerId') || '0');
 const username = sessionStorage.getItem('username') || '0';
 const inChannel = ref(false);
 const isAdmin = ref(false);
+const isOwner = ref(false);
 const channelId = ref(null);
 
 const changeChannel = async (channel_id: number) => {
     channelId.value = channel_id;
     inChannel.value = true;
-    isAdmin.value = await fetchIsAdmin();
+    await fetchPlayerInfo();
 }
 
-const fetchIsAdmin = async () => {
-    const response = await axiosInstance.get('channelmember/admin/' + playerId.toString() + '/' + channelId.value.toString());
-    return response.data;
+const fetchPlayerInfo = async () => {
+    const response = await axiosInstance.get('channelmember/info/' + playerId.toString() + '/' + channelId.value.toString());
+    if (response.data)
+    {
+        isAdmin.value = response.data.is_admin;
+        isOwner.value = response.data.is_owner;
+    }
+    else {
+        console.log("Error could not fetch player info");
+    }
 }
 
 //CONFIRM DIALOG BUTTON
