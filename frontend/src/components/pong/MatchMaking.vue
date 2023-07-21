@@ -90,10 +90,13 @@ export default {
 		username1 = await fetchUsername(p1_id);
 		username2 = await fetchUsername(p2_id);
 
-		// match saves here
-		// const match_id_response = await axiosInstance.post('match/create', {player_id: p1_id, opponent_id: p2_id});
-		// match_id = match_id_response.data.id;
-		// console.log("MATCH ID", match_id)
+		// starting match saves here
+		if (socket.id == p1_socket_id){
+			const match_id_response = await axiosInstance.post('match/create', {player_id: p1_id, opponent_id: p2_id});
+			match_id = match_id_response.data.id;
+			console.log("match Database ID: ", match_id)
+		}
+		//
 
 		router.push('/play/multiplayer');
 	} catch (error) {

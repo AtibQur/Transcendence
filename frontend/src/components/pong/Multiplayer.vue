@@ -23,7 +23,7 @@
 	import { socket } from '../../socket'
 	import GameTools from './GameTools.vue'
 	import { defineComponent } from 'vue'
-	import {socket_match_id, p1_id, p2_id, p1_socket_id, p2_socket_id, username1, username2} from './MatchMaking.vue'
+	import {socket_match_id, p1_id, p2_id, p1_socket_id, p2_socket_id, username1, username2, match_id} from './MatchMaking.vue'
 	import { useRouter } from 'vue-router'
 	import axiosInstance from '../../axiosConfig'
 
@@ -89,6 +89,21 @@ methods: {
 			this.moveInfo.move += 2;
 			socket.emit('move', this.moveInfo);
 		}
+	},
+
+	async saveFinishedMatch(match_id: number, socket_match_id: number, score1: number, score2: number) {
+
+		console.log("match_id: ", socket_match_id)
+		console.log("this.score1: ", this.score1)
+		console.log("this.score2: ", this.score2)
+
+		// finished match saves here
+		let finished_match_res;
+		if (match_id){
+			finished_match_res = await axiosInstance.patch('match/finish/' + match_id.toString(), {player_points: this.score1, opponent_points: this.score2});
+			console.log("Finished match data:", finished_match_res.data)
+		}
+		//
 	}
 },
 
@@ -124,7 +139,6 @@ mounted() {
 		this.score1 = match.score1
 		this.score2 = match.score2
 
-		// hier eindigt match
 		if (this.score1 === 5 || this.score2 === 5){
 			if (this.score1 === 5){
 				if (socket.id === p1_socket_id)
@@ -138,15 +152,10 @@ mounted() {
 				else
 					this.lose = true;
 				}
-			console.log("match_id: ", socket_match_id)
-			console.log("this.score1: ", this.score1)
-			console.log("this.score2: ", this.score2)
 
-			// let finished_match_res;
-			// if (match_id){
-				// finished_match_res = await axiosInstance.patch('match/finish/' + match_id.toString(), {player_points: this.score1, opponent_points: this.score2});
-				// console.log(finished_match_res.data)
-			// }
+			if (socket.id === p1_socket_id)
+				this.saveFinishedMatch(match_id, socket_match_id, this.score1, this.score2);
+
 			this.end = true;
 		}
 		if (match.state === 'stop')
