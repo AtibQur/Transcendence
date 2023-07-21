@@ -19,13 +19,10 @@ limited time) other users, but not the channel owners."   ----------------> kan 
 
 2. handle mute channelmembers -> messages
 3. handle blocked channelmembers -> messages
-4. als owner, password instellen, veranderen, uitzetten
-5. display foto in UserOptionsMenu ------------> DONE
+5. als owner de chat verlaten? wie wordt de owner?
 7. mute/ban/remove actions misschien toch wel via socket?? om zo de andere members op de hoogte
    te brengen
 8. mute member voor een bepaalde tijd
-9. als een member wordt gemute moet ook de tijd daarvan worden opgesalgen ---------> DONE
-10. join channel.id to string ipv naam!!! ---------> DONE
 11. voeg logs voor alle activiteiten
 12. overview van alle public/Protected channels die een player kan joinen & enter password dialog
 
@@ -34,12 +31,10 @@ limited time) other users, but not the channel owners."   ----------------> kan 
 1. persistent socket wanneer pagina wordt refreshed
 2. Direct messages -> channel?? wat voor channel name dan?
 3. channelmembers voor een bepaalde tijd muten.
-5. als owner de chat verlaten? wie wordt de owner?
-
+4. in gateways een onderscheid kunnen maken tussen chat en game
 6.   "Think about network issues, like unexpected disconnection or lag.
         You have to offer the best user experience possible." ----------------> denk hierover na
 
-7. wachtwoorden moeten hashed worden
 
 
 ===================== EXTRA TASKS =======================
