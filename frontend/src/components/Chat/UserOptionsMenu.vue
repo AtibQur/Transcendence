@@ -79,9 +79,24 @@ const currentChannelmemberId = ref<number>(props.channelmember.id);
 const currentChannelmemberStatus = ref<string>('');
 const currentChannelmemberUsername  = ref<string>(props.channelmember.username);
 const currentChannelId = ref<number>(props.channelId);
-const profilePicture = ref("");
+const profilePicture = ref('');
 
 onBeforeMount(async () => {
+
+    currentChannelmemberInfo.value = await fetchChannelmemberInfo(currentChannelmemberId.value);
+    profilePicture.value = await fetchAvatar(currentChannelmemberId.value);
+    
+    //TRACK WHETHER CHANNELMEMBER_ID CHANGES
+    watch(() => props.channelmember, async (newChannelmember: {username: string, id: number}) => {
+        currentChannelmemberId.value = newChannelmember.id;
+        currentChannelmemberUsername.value = newChannelmember.username;
+        currentChannelmemberInfo.value = await fetchChannelmemberInfo(currentChannelmemberId.value);
+        profilePicture.value = await fetchAvatar(currentChannelmemberId.value);
+    });
+
+    //TRACK WHETHER CHANNELMEMBERS BECOME OFFLINE/ONLINE??
+
+})
 
     // FIND ALL MEMBERS OF CHANNEL
     const fetchChannelmemberInfo = async (channelmemberId: number) => {
@@ -93,30 +108,17 @@ onBeforeMount(async () => {
         return responseRights.data;
     }
 
-    currentChannelmemberInfo.value = await fetchChannelmemberInfo(currentChannelmemberId.value);
-
-    //TRACK WHETHER CHANNELMEMBER_ID CHANGES
-    watch(() => props.channelmember, async (newChannelmember: {username: string, id: number}) => {
-        currentChannelmemberId.value = newChannelmember.id;
-        currentChannelmemberUsername.value = newChannelmember.username;
-        currentChannelmemberInfo.value = await fetchChannelmemberInfo(currentChannelmemberId.value);
-    });
-
-    //TRACK WHETHER CHANNELMEMBERS BECOME OFFLINE/ONLINE??
-
-})
-
-const fetchAvatar = async (player_id: number) => {
-    const response = await axiosInstance.get('player/avatar/' + player_id.toString());
+const fetchAvatar = async (channelmemberId: number) => {
+    const response = await axiosInstance.get('player/avatar/' + channelmemberId.toString());
     
     if (response.data) {
         const imageBytes: Uint8Array = new Uint8Array(response.data.data);
         const imageUrl = ref<string | null>(null);
         imageUrl.value = URL.createObjectURL(new Blob([imageBytes]));
-        profilePicture.value = imageUrl.value;
+        return imageUrl.value;
     }
     else
-        console
+        console.log("Error could not fetch avatar");
   };
 
 //CONFIRM DIALOG BUTTON
