@@ -20,20 +20,21 @@
 
 <script setup lang="ts">
   import { ref, defineComponent, onMounted } from 'vue';
-  import axiosInstance, { setDefaultCorsHeader } from '../axiosConfig';
+  import axiosInstance from '../axiosConfig';
   import { setDefaultAuthHeader } from '../axiosConfig';
   import { getCookie } from './cookie_utils';
   import { socket } from '@/socket';
-  import router from '@/router';
+  import { useRouter } from 'vue-router';
 
   const username = ref('');
   const intraName = ref("");
+  const router = useRouter();
   const logged = ref(false);
 
   const checkLoggedIn = async () =>  {
     const accesstoken = getCookie('auth');
     if (accesstoken === undefined) {
-      window.location.replace('http://localhost:8080/auth')
+      router.push( { name: 'auth' } )
     } else {
       try {
         setDefaultAuthHeader(accesstoken);
@@ -41,17 +42,27 @@
         console.log("Error retrieving auth cookie");
       }
     }
-  }; 
+  };
 
-  const greetPlayer = async () => {
-    try {
+  async function fetchUsername() {
+        try {
             const response = await axiosInstance.get('/user/username');
+            sessionStorage.setItem('intraUsername', response.data);
             intraName.value = (response.data);
             return intraName.value;
         } catch (error) {
             console.log("Error: Could not fetch username");
         }
-  };
+    }
+
+    async function fetchPlayerId() {
+        try {
+            const response = await axiosInstance.get('/user/id');
+            sessionStorage.setItem('playerId', response.data);
+        } catch (error) {
+            console.log("Error: Could not fetch player id");
+        }
+    }
 
   const setDefaultAvatar = async () => {
     const playerId = parseInt(sessionStorage.getItem('playerId') || '0');
@@ -81,7 +92,8 @@
 
   onMounted(() => {
     checkLoggedIn();
-    greetPlayer();
+    fetchUsername();
+    fetchPlayerId();
   })
 </script>
 

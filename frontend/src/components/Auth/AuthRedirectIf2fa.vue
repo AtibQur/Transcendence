@@ -5,9 +5,10 @@
             Your 2FA code is:
             <ImageComponent />
         </div>
-        <form>
+        <form @submit="handleSubmit">
             <label for="digitInput">Enter your verification code: </label>
-            <handleSubmit />
+            <input type="number" v-model="inputValue" name="digitInput" maxlength="6" minlength="6">
+            <input type="submit" value="Submit">
         </form>
     </div>
 </template>
@@ -18,15 +19,29 @@
     import { setDefaultAuthHeader } from '../../axiosConfig';
     import { onMounted ,ref } from 'vue';
     import ImageComponent from './ImageComponent.vue';
-    import handleSubmit from './SubmitButtonComponent.vue'
     import CookieComponent from './cookieComponent.vue';
     import { getCookie, setCookie } from '../../components/cookie_utils';
+    import { useRouter } from 'vue-router';
     
-    let accesstoken:string;
+
+    const inputValue = ref("");
+    // let accesstoken:string;
     const intraName = ref("");
-    const intraId = ref("");
-    const playerId = ref("");
+    // const intraId = ref("");
+    const router = useRouter();
+    // const playerId = ref("");
     
+    async function handleSubmit(event: Event) {
+        event.preventDefault();
+        const payload = getCookie('payload'); 
+        const submittedValue = inputValue.value;
+        
+        try {
+            await AxiosInstance.post('/auth/2fa/verify', {payload, submittedValue })
+        } catch (error) {
+            console.log("Error: Could not verify 2fa code");
+        }
+    }
     // async function getAccessToken() {
     //     try {
     //         accesstoken = getCookie('auth')
@@ -68,9 +83,9 @@
 
     onMounted(() => {
         // getAccessToken();
-        // fetchUsername();
-        // fetchIntraId();
-        // fetchPlayerId();
+    //     fetchUsername();
+    //     fetchIntraId();
+    //     fetchPlayerId();
     })
 
 </script>

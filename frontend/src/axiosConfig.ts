@@ -15,13 +15,6 @@ export const removeDefaultAuthHeader = (): void => {
 
 export const sendVerifyToken = async (payload: any, submittedValue: string): Promise<any> => {
   await instance.post('auth/2fa/verify', {payload, submittedValue});
-  // if (response.data == true) {
-  //   window.location.replace('http://localhost:8080/');
-  // } else {
-  //   removeCookie('payload');
-  //   removeCookie('playerId');
-  //   window.location.replace('http://localhost:8080/wrong2fa');
-  // }
 }
 
 export default instance;

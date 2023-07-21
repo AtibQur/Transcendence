@@ -8,16 +8,19 @@
     import { removeCookie, getCookie } from './cookie_utils';
     import  axiosInstance from '../axiosConfig';
     import { removeDefaultAuthHeader } from '../axiosConfig';
+    import { useRouter } from 'vue-router';
+
+    const router = useRouter();
 
     async function logout() {
         const accesstoken = getCookie('auth');
         if (accesstoken === undefined) {
-            window.location.replace('http://localhost:8080/auth')
+            router.push('http://localhost:8080/auth')
         } else {
             try {
                 removeCookie('auth');
                 removeDefaultAuthHeader();
-                await axiosInstance.get('/user/logout');
+                router.push({ name: 'Home' });
             } catch (error) {
                 console.log("Error logging out");
             }

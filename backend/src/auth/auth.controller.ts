@@ -34,11 +34,6 @@ export class AuthController {
             sub: userData.id,
         };
 
-        response.setHeader(
-            'Access-Control-Allow-Origin'
-            , 'http://localhost:8080'
-        )
-
         if (await this.playerService.findOne2FA(playerId) == false) {
             const jwt = await this.authService.generateToken(payload);
 
@@ -71,17 +66,18 @@ export class AuthController {
     
     // @UseGuards(AuthenticatedGuard)
     @Post('2fa/verify')
-    async create(@Body() body: any, @Res() response: Response) {
+    async create(@Body() body: any, @Res({passthrough: true}) response: Response) {
         const verified = speakeasy.totp.verify({
             secret: 'geheim',// tfa secret from db,
             encoding: 'base32',
             token: body.submittedValue,
-        });
+        }); 
+        const payload = JSON.parse(body.payload);
         if (verified) {
-            const jwt = await this.authService.generateToken(body.payload);
-
-            response.clearCookie('payload')
+            const jwt = await this.authService.generateToken(payload);
+    
             response.cookie('auth', jwt)
+            response.clearCookie('payload')
         }
         return verified;
     }
