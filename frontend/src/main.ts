@@ -27,7 +27,7 @@ import createCookies from 'vue3-cookies';
 import Logout from './components/LogoutPlayer.vue';
 
 const routes: RouteRecordRaw[] = [
-    { 
+    {
       path: '/',
       component: Home,
     },
@@ -73,9 +73,9 @@ const routes: RouteRecordRaw[] = [
       component: WrongTfa
     },
     {
+      name: 'friends',
       path: '/profile/:playerName',
-      name: 'profile',
-      component: ProfilePage, // Replace "ProfilePage" with the component for the profile page
+      component: FriendsPage,
     },
     {
       path: '/logout',
