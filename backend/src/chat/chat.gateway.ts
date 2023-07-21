@@ -41,7 +41,7 @@ export class ChatGateway {
         
         const channels = await this.channelmemberService.findPlayerChannels(client.handshake.auth.playerId);
         channels.forEach(function(channel) {
-            client.join(channel.channel.name);
+            client.join(channel.channel_id.toString());
           });
         const intra_username = await this.playerService.findOneIntraUsername(client.handshake.auth.playerId);
         client.join(intra_username);
@@ -76,7 +76,7 @@ export class ChatGateway {
     ){
         try {
             const channel_id = await this.channelService.createChannel(createChannelDto);
-            client.join(createChannelDto.name);
+            client.join(channel_id.toString());
 
             // this is needed because of the format of the channel display array (channels are fetch through channelmemberservice)
             const newChannel = await this.channelmemberService.findChannelmember(createChannelDto.owner_id, channel_id);
@@ -98,7 +98,7 @@ export class ChatGateway {
     ){
         try {
             const chatmessage = await this.chatmessageService.createChatMessage(createChatmessageDto);
-            this.server.to(chatmessage.channel.name).emit('chatmessage', chatmessage);
+            this.server.to(chatmessage.channel_id.toString()).emit('chatmessage', chatmessage);
             return chatmessage;
         } catch (error) {
             console.log('Error creating message: ', error);
@@ -136,7 +136,7 @@ export class ChatGateway {
             this.server.to(channel.member.intra_username).emit('newChannel', channel);
             
             //notify channelmembers of new member
-            this.server.to(channel.channel.name).emit('newChannelmember', {username: payload.channelmember_name, id: member.member_id});
+            this.server.to(channel.channel_id.toString()).emit('newChannelmember', {username: payload.channelmember_name, id: member.member_id});
             return newChannelmember.id;
         } catch (error) {
             console.log('Error: ', error);
@@ -154,11 +154,10 @@ export class ChatGateway {
     ) {
         try {
             //!!! now able to create identical channelmembers.. should be unique?!
-            console.log('Test!!', payload.channelId);
             await this.channelmemberService.createChannelmember({ member_id: payload.playerId, channel_id: payload.channelId});
             const channel = await this.channelService.findOneChannel(payload.channelId);
-            client.join(channel.name);
-            console.log('joined');
+            client.join(channel.id.toString());
+            console.log('joined new room');
             return true;
         } catch (error) {
             console.log('Error joining channels: ', error);
@@ -177,7 +176,7 @@ export class ChatGateway {
         try {
             const channels = await this.channelmemberService.findPlayerChannels(player_id);
             channels.forEach(function(channel) {
-                client.join(channel.channel.name);
+                client.join(channel.channel_id.toString());
               });
             const intra_username = await this.playerService.findOneIntraUsername(player_id);
             client.join(intra_username);
@@ -215,10 +214,10 @@ export class ChatGateway {
             this.server.to(client.id).emit('leftChannel', channel.name);
 
             //disconnect socket from room
-            client.leave(channel.name);
+            client.leave(channel.id.toString());
 
             //notify other channelmembers that a channelmember has left the channel
-            this.server.to(channel.name).emit('removeChannelmember', deletedMember.member_id, deletedMember.channel_id);
+            this.server.to(channel.id.toString()).emit('removeChannelmember', deletedMember.member_id, channel.name);
 
             return deletedMember.member_id;
         } catch (error) {
