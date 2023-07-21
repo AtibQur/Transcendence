@@ -68,13 +68,13 @@ export class ChannelmemberController {
   // MUTE A CHANNELMEMBER
   @Patch('mute/:player_id')
   muteMember(@Param('player_id') player_id: string, @Body() updateChannelmemberDto: UpdateChannelmemberDto) {
-    return this.channelmemberService.muteMember(+player_id, updateChannelmemberDto);
+    return this.channelmemberService.muteMember(+player_id, updateChannelmemberDto, true);
   }
 
   // UNMUTE A CHANNELMEMBER
   @Patch('unmute/:player_id')
   unmuteMember(@Param('player_id') player_id: string, @Body() updateChannelmemberDto: UpdateChannelmemberDto) {
-    return this.channelmemberService.muteMember(+player_id, updateChannelmemberDto);
+    return this.channelmemberService.muteMember(+player_id, updateChannelmemberDto, false);
   }
 
   // DELETE A PLAYER FROM CHANNEL

@@ -321,20 +321,27 @@ export class ChannelmemberService {
     }
   }
 
-  // MUTE A CHANNELMEMBER
+  // MUTE/UNMUTE A CHANNELMEMBER
   // only possible if done by admin
   // owner can not be muted
-  async muteMember(player_id: number, updateChannelmemberDto: UpdateChannelmemberDto) {
+  // in case of unmute, Date is set to null
+  async muteMember(player_id: number, updateChannelmemberDto: UpdateChannelmemberDto, toMute: boolean) {
     try {
       const updater = await this.findChannelmember(player_id, updateChannelmemberDto.channel_id);
       const toUpdate = await this.findChannelmember(updateChannelmemberDto.member_id, updateChannelmemberDto.channel_id);
+      var date = new Date();
+
+      if (!toMute)
+        date = null;
+
       if (updater.is_admin && !toUpdate.is_owner) {
         const updatedMember = await prisma.channelMember.update({
           where: {
             id: toUpdate.id
           },
           data: {
-            is_muted: true,
+            is_muted: toMute,
+            muted_at: date
           }
         });
         return updatedMember;
