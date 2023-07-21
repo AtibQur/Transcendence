@@ -2,19 +2,20 @@
   <div class="LoadFriendsContainer">
     <div class="LoadFriendsText">
       <div class="box" @click="$emit('close-menu')" @mouseenter="hover = true" @mouseleave="hover = false">
-        <h1 :class="{ 'close': hover }">{{ hover ? 'Exit' : 'Friends' }}</h1>
+        <h1 :class="{ 'close': hover }">{{ hover ? 'Exitoss' : 'Friends' }}</h1>
       </div>
-      <input type="text" v-model="newFriendName" class="friend-input" placeholder="Enter friend's name">
+      <input type="text" v-model="newFriendName" class="friend-input" placeholder="Enter friend's name" @keydown="handleKeyPress">
       <div class="buttonContainer">
         <button class="add-friend-button" @click="addFriend">Add Friend</button>
-        <button class="block-player-button" @click="blockPlayer">Block Player</button>
+        <button class="block-player-button" @click="blockPlayer">Delete Friend</button>
       </div>
       <div class="friend-list">
-        <div v-for="friend in friends" :key="friend.username" class="name-container">
+        <div v-for="friend in friends" :key="friend.username" class="name-container aliceblue-bg">
           <div class="status-circle" :class="{ 'online': friend.status === 'online', 'offline': friend.status !== 'online' }"></div>
           <div class="name">{{ friend.username }}</div>
           <div class="profile-box">
-            <router-link v-if="friend.username" :to="{ name: 'profile', params: { playerName: friend.username } }" class="profile-link">Profile</router-link>
+            <router-link v-if="friend.username" :to="{
+              name: 'friends', params: { playerName: friend.username, profilePicture: friend.profilePicture, status: friend.status } }" class="profile-link">Profile</router-link>
           </div>
         </div>
       </div>
@@ -25,6 +26,8 @@
 <script lang="ts">
 import { defineComponent } from 'vue';
 import axiosInstance from '../../../axiosConfig';
+
+const playerId = parseInt(localStorage.getItem('playerId') || '0');
 
 interface Friend {
   username: string;
@@ -38,19 +41,18 @@ export default defineComponent({
       playerId: parseInt(sessionStorage.getItem('playerId') || '0'),
       friends: [] as Friend[], // Specify the type for the friends property
       hover: false,
-      newFriendName: '' // Store the new friend's name entered by the user
+      newFriendName: ''
     };
   },
 
   mounted() {
     this.loadFriends();
   },
-  
+
   methods: {
     async loadFriends() {
       try {
         const response = await axiosInstance.get(`friend/username/${this.playerId}`);
-        console.log('Friends:', response.data);
         this.friends = response.data;
       } catch (error) {
         console.error('Error occurred while loading friends:', error);
@@ -63,14 +65,19 @@ export default defineComponent({
           friendUsername: this.newFriendName
         });
 
-        if (typeof response.data === 'string') {
-          console.log('Add friend response:', response.data);
-        } else {
-          console.log('Friend added:', response.data);
-          this.friends = response.data.friends; // Update the friends array
-
-          this.newFriendName = ''; // Clear the input field after adding a friend
+        const existingFriend = this.friends.find(friend => friend.username === this.newFriendName);
+        if (existingFriend) {
+          this.newFriendName = '';
+          return;
         }
+
+        const newFriend = {
+          username: this.newFriendName,
+          status: 'online' // NEEDS TO BE CHANGED WITH ACTUAL STATUS
+        };
+
+        this.friends.push(newFriend);
+        this.newFriendName = '';
       } catch (error) {
         console.error('Error occurred while adding friend:', error);
       }
@@ -83,13 +90,16 @@ export default defineComponent({
             friendUsername: this.newFriendName
           }
         });
-
-        console.log('Player blocked:', this.newFriendName);
         this.friends = this.friends.filter(friend => friend.username !== this.newFriendName); // Update the friends array
-
-        this.newFriendName = ''; // Clear the input field after blocking a player
+        this.newFriendName = '';
       } catch (error) {
         console.error('Error occurred while blocking player:', error);
+      }
+    },
+
+    handleKeyPress(event: KeyboardEvent) {
+      if (event.key === 'Enter') {
+        this.addFriend();
       }
     }
   }
@@ -129,14 +139,28 @@ export default defineComponent({
   overflow-y: auto; /* Enable vertical scrolling */
 }
 
+.friend-input {
+  margin-top: 20px;
+  padding: 7px 25px;
+  font-size: 18px;
+}
+
 .name-container {
-  border: 1px solid #000;
+  /* border: 1px solid #000; */
   margin-bottom: 5px;
   display: flex;
   align-items: center;
   margin-top: 20px;
+  transition: background-color 0.3s;
 }
 
+.name-container:hover {
+    background-color: #abd0dd;
+  }
+
+.name-container:hover .profile-box {
+  background-color: #abd0dd;
+}
 .name {
   margin-left: 5px;
   font-size: 25px;
@@ -151,6 +175,7 @@ export default defineComponent({
   height: 15px;
   border-radius: 50%;
   margin-right: 10px;
+  margin-left: 5px;
 }
 
 .online {
@@ -166,26 +191,35 @@ export default defineComponent({
   align-items: center;
   margin-left: auto;
   padding: 5px;
-  background-color: #abd0dd;
-  border-radius: 5px;
-  border: 1px solid #1f6091;
   transition: background-color 0.3s, border-color 0.3s;
+  background-color: aliceblue;
+  border: none;
+  color: #1f6091;
+}
+.profile-box:hover {
+  background-color: red;
+  border-color: #abd0dd;
 }
 
-.profile-box:hover {
-  background-color: #1f6091;
-  border-color: #abd0dd;
+.profile-box:hover .profile-link {
+  color: #204a6b;
 }
 
 .profile-link {
   font-size: 15px;
-  color: blue;
+  color: #1f6091;
+  transition: color 0.3s;
   text-decoration: none;
   margin-left: 5px;
 }
+
+.profile-link:hover {
+    color: #abd0dd;
+  }
 .buttonContainer {
   display: flex;
-  justify-content: space-between;  
+  justify-content: space-between;
+  margin-top: -50px;
 }
 
 .add-friend-button,
@@ -195,12 +229,19 @@ export default defineComponent({
   font-size: 18px;
   transition: background-color 0.3s;
   margin-top: 70px;
+  background-color: aliceblue;
+  color: #1f6091;
+  border: none;
 }
 
 .add-friend-button:hover,
 .block-player-button:hover {
-  background-color: #1f6091;
-  color: white;
+  background-color: #abd0dd;;
   cursor: pointer;
 }
+
+.aliceblue-bg {
+    background-color: aliceblue;
+  }
+
 </style>

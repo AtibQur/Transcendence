@@ -1,4 +1,3 @@
-ProfilePage.vue: 
 <template>
   <div class="ProfileContainer">
     <div class="ProfileData">

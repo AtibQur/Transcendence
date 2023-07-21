@@ -16,7 +16,7 @@
 <script setup lang="ts">
   import { onBeforeMount, ref } from 'vue';
   import axiosInstance from '../../axiosConfig';
-
+  
   const achievements = ref({});
   const playerId = parseInt(sessionStorage.getItem('playerId') || '0');
 
@@ -103,7 +103,6 @@
 .bold-black {
   font-weight: bold;
   font-size: large;
-
   color: black;
 }
 

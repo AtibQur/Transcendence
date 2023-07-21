@@ -16,7 +16,7 @@ import Leaderboard from './components/LeaderboardComponent.vue';
 import PopulateDatabase from './components/PopulateDatabase.vue';
 import ChatView from './components/Chat/ChatView.vue';
 import Redirect2faVerify from './components/Auth/Redirect2faVerify.vue';
-import FriendsPage from './components/Friends/FriendsPage.vue';
+import FriendsPage from './components/Friends/FriendsMenubar/FriendsPage.vue';
 import PlayerProfile from './components/profile/PlayerProfile.vue';
 import PrimeVue from 'primevue/config';
 import ToastService from 'primevue/toastservice';
@@ -26,7 +26,7 @@ import createCookies from 'vue3-cookies';
 import Logout from './components/LogoutPlayer.vue';
 
 const routes: RouteRecordRaw[] = [
-    { 
+    {
       path: '/',
       component: Home,
     },
@@ -60,17 +60,13 @@ const routes: RouteRecordRaw[] = [
       component: ProfilePage,
     },
     {
-      path: '/friends',
-      component: FriendsPage,
-    },
-    {
       path: '/login/redirect2faverify',
       component: Redirect2faVerify,
     },
     {
+      name: 'friends',
       path: '/profile/:playerName',
-      name: 'profile',
-      component: ProfilePage, // Replace "ProfilePage" with the component for the profile page
+      component: FriendsPage,
     },
     {
       path: '/logout',

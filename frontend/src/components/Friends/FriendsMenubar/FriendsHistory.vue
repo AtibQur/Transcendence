@@ -29,28 +29,49 @@
   </div>
 </template>
 
-<script setup lang="ts">
-import { onBeforeMount, ref } from 'vue';
-import axiosInstance from '../../axiosConfig';
+<script lang="ts">
+import { ref, onBeforeMount } from 'vue';
+import axiosInstance from '../../../axiosConfig';
 
-const matches = ref([]);
-const playerId = parseInt(sessionStorage.getItem('playerId') || '0');
+export default {
+  props: {
+    friendId: {
+      type: Number,
+      required: true
+    },
+  },
+  setup(props) {
+    const { matches } = useFriendsHistory(props.friendId);
 
-onBeforeMount(async () => {
-  try {
-    matches.value = await fetchMatches(playerId);
-    console.log(matches.value);
-  } catch (error) {
-    console.log("Error occurred:", error);
+    return {
+      matches
+    };
   }
-});
-
-const fetchMatches = async (playerId: number) => {
-  const response = await axiosInstance.get('match/history/' + playerId.toString());
-  const reversedMatches = response.data.reverse(); // Reverse the order of matches
-  const latestMatches = reversedMatches.slice(0, 14); // Fetch the latest 13 matches
-  return latestMatches;
 };
+
+const useFriendsHistory = (friendId) => {
+  const matches = ref('');
+
+  onBeforeMount(async () => {
+    try {
+      matches.value = await fetchMatches(friendId);
+    } catch (error) {
+      console.log("Error occurred");
+    }
+  });
+
+  const fetchMatches = async (friendId) => {
+    const response = await axiosInstance.get(`match/history/` + friendId.toString());
+    const reversedMatches = response.data.reverse(); // Reverse the order of matches
+    const latestMatches = reversedMatches.slice(0, 14); // Fetch the latest 13 matches
+    return latestMatches;
+  };
+
+  return {
+    matches
+  };
+};
+
 </script>
 
 <style>
@@ -88,13 +109,14 @@ const fetchMatches = async (playerId: number) => {
   margin-right: 100px;
 }
 
-
 .border .border-row {
   display: flex;
   justify-content: space-between;
-  border: 1px solid black;
+  /* border: 1px solid black; */
+  border: none;
   margin-bottom: 8px;
   padding: 10px;
+  transition: background-color 0.3s ease;
 }
 
 .border .border-value {
@@ -103,19 +125,33 @@ const fetchMatches = async (playerId: number) => {
 }
 
 .green-bg {
-  background-color: green;
+  background-color: rgba(39, 168, 39, 0.900);
+}
+.green-bg:hover {
+  background-color: rgb(34, 194, 34);
 }
 
 .red-bg {
-  background-color: red;
+  background-color: rgba(197, 49, 49, 0.900);
+}
+.red-bg:hover {
+  background-color: rgb(195, 45, 45);
 }
 
 .blue-text {
-  color: blue;
+  color: #134279;
+  font-weight: bold;
 }
 
 .black-text {
   color: black;
   font-weight: bold;
+}
+
+.user-infoName {
+  /* margin-right: 50px; */
+}
+.enemy-username {
+  margin-right: 10px;
 }
 </style>
