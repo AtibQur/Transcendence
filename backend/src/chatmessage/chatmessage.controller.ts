@@ -21,7 +21,17 @@ export class ChatmessageController {
   // GET ALL CHAT MESSAGES WITHIN ONE CHANNEL FILTERED
   @Get('filtered/:player_id')
   findChannelMsgsFiltered(@Param('player_id') player_id: string, @Query('channel_id') channel_id: string) {
-    return this.chatmessageService.findChannelMsgsFiltered(+player_id, +channel_id)
+    return this.chatmessageService.findChannelMsgsFiltered(+player_id, +channel_id);
   }
   // example: localhost:3000/chatmessage/filtered/40?channel_id=13
+
+//   @Get('time/:message_id')
+//   findTimeMsg(@Param('message_id') message_id: string) {
+//     return this.chatmessageService.findTimeMsg(+message_id);
+//   }
+
+//   @Get('date/:message_id')
+//   findDateMsg(@Param('message_id') message_id: string) {
+//     return this.chatmessageService.findDateMsg(+message_id);
+//   }
 }

@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Query, Param, Delete } from '@nestjs/common';
 import { BlockedplayerService } from './blockedplayer.service';
 import { CreateBlockedplayerDto } from './dto/create-blockedplayer.dto';
 import { DeleteBlockedplayerDto } from './dto/delete-blockedplayer.dto';
@@ -19,6 +19,13 @@ export class BlockedplayerController {
   @Get('username/:id')
   findBlockedUsername(@Param('id') id: string) {
     return this.blockedplayerService.findBlockedUsername(+id);
+  }
+
+  //FIND IF USER BLOCKED A PLAYER
+  // returns true is player is blocked, or false on failure
+  @Get('player/:id')
+  findIfBlocked(@Param('id') id: string, @Query('username') username: string) {
+    return this.blockedplayerService.isBlocked(+id, username);
   }
 
   // UNBLOCK A PLAYER
