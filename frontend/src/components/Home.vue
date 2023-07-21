@@ -8,6 +8,9 @@
             <input v-model="username" placeholder='Enter username'/>
             <button type="submit">Log in</button>
     </form>  
+    <div v-if="intraName">
+      <label> Welcome {{ intraName }}!</label>
+    </div>
     <div class="PongTable">
       <ul>
         <li><router-link to="/play">Play</router-link></li>
@@ -118,9 +121,14 @@
   });
 
   onMounted(() => {
-    checkLoggedIn();
-    fetchUsername();
-    fetchPlayerId();
+      const accesstoken = getCookie('auth');
+      if (accesstoken === undefined) {
+        checkLoggedIn();
+      } else {
+        setDefaultAuthHeader(accesstoken);
+        fetchUsername();
+        fetchPlayerId();
+      }
   })
 </script>
 
