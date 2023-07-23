@@ -20,7 +20,7 @@
     import { onMounted ,ref } from 'vue';
     import ImageComponent from './ImageComponent.vue';
     import CookieComponent from './cookieComponent.vue';
-    import { getCookie, setCookie } from '../../components/cookie_utils';
+    import { getCookie, removeCookie, setCookie } from '../../components/cookie_utils';
     import { useRouter } from 'vue-router';
     
 
@@ -38,6 +38,17 @@
         
         try {
             await AxiosInstance.post('/auth/2fa/verify', {payload, submittedValue })
+            .then((response) => {
+                if (response.data == true) {
+                    removeCookie('payload');
+                    const accessToken = getCookie('auth');
+                    setDefaultAuthHeader(accessToken);
+                    router.push({ name: 'Home' });
+                } else {
+                    alert("Wrong 2fa code");
+                }
+            }
+            )
         } catch (error) {
             console.log("Error: Could not verify 2fa code");
         }

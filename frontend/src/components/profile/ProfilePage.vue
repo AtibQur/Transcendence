@@ -20,6 +20,7 @@
           <li @click="changeUsernameModal">Name change</li>
           <li @click="changeProfilePicture">Picture change</li>
           <li @click="changeTfaStatus">2FA Authorisation</li>
+          <li @click="logOut">Log out</li>
           <li></li>
         </ul>
       </div>
@@ -88,8 +89,12 @@
   import ProfileStats from "./ProfileStats.vue";
   import ProfileHistory from "./ProfileHistory.vue";
   import ProfileAvatar from './ProfileAvatar.vue';
+  import { removeCookie, getCookie } from '../cookie_utils';
+  import { removeDefaultAuthHeader } from '../../axiosConfig';
+  import { useRouter } from 'vue-router';
 
   const username = ref("");
+  const router = useRouter();
   const status = ref("");
   const selectedOption = ref("Achievements");
   const showChangeNameModal = ref(false);
@@ -152,6 +157,12 @@
     }
   }
 };
+
+  async function logOut() {
+        removeCookie('auth');
+        removeDefaultAuthHeader();
+        router.push('http://localhost:8080/')
+    }
 
   const cancelNameChange = () => {
     showChangeNameModal.value = false;

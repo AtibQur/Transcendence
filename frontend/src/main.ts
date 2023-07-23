@@ -77,11 +77,6 @@ const routes: RouteRecordRaw[] = [
       path: '/profile/:playerName',
       component: FriendsPage,
     },
-    {
-      path: '/logout',
-      name: 'logout',
-      component: Logout,
-    }
 ];
 
 const router = createRouter({
