@@ -10,14 +10,15 @@ import App from './App.vue';
 import Home from './components/Home.vue';
 import Play from './components/pong/Play.vue';
 import Auth from './components/Auth/AuthCheck.vue';
-import Login from './components/Auth/AuthRedirect.vue';
+import Login from './components/Auth/AuthRedirectIf2fa.vue';
 import ProfilePage from './components/profile/ProfilePage.vue';
 import Leaderboard from './components/LeaderboardComponent.vue';
 import PopulateDatabase from './components/PopulateDatabase.vue';
 import ChatView from './components/Chat/ChatView.vue';
-import Redirect2faVerify from './components/Auth/Redirect2faVerify.vue';
+import Redirect2faVerify from './components/Auth/AuthRedirectIf2fa.vue';
 import FriendsPage from './components/Friends/FriendsMenubar/FriendsPage.vue';
 import PlayerProfile from './components/profile/PlayerProfile.vue';
+import WrongTfa from './components/Auth/WrongTfa.vue';
 import PrimeVue from 'primevue/config';
 import ToastService from 'primevue/toastservice';
 import ConfirmationService from 'primevue/confirmationservice';
@@ -60,19 +61,22 @@ const routes: RouteRecordRaw[] = [
       component: ProfilePage,
     },
     {
-      path: '/login/redirect2faverify',
+      path: '/friends',
+      component: FriendsPage,
+    },
+    {
+      path: '/redirect2faverify',
       component: Redirect2faVerify,
+    },
+    {
+      path: '/wrong2fa',
+      component: WrongTfa
     },
     {
       name: 'friends',
       path: '/profile/:playerName',
       component: FriendsPage,
     },
-    {
-      path: '/logout',
-      name: 'logout',
-      component: Logout,
-    }
 ];
 
 const router = createRouter({
