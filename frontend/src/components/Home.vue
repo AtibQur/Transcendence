@@ -48,14 +48,14 @@
     const playerIdResponse = await axiosInstance.post('/player/create', { username: username.value });
     const playerId = playerIdResponse.data
     logged.value = true;
-    socket.auth = { playerId, username };
-    socket.connect();
+    // socket.auth = { playerId, username };
     sessionStorage.setItem('playerId', playerId);
     sessionStorage.setItem('username', username.value);
     sessionStorage.setItem('logged', logged.value.toString());
     if (!playerExists.data) {
-      setDefaultAvatar();
+        setDefaultAvatar();
     }
+    socket.connect();
   };
 
   const checkLoggedIn = async () =>  {
