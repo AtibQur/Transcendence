@@ -5,6 +5,12 @@
         <h3> {{ currentChannelmemberUsername }}</h3>
         <h4> {{ ( currentChannelmemberStatus ) }}</h4>
         <!-- for testing purposes -->
+        <div v-if="currentChannelmemberInfo.memberIsOwner">
+            <h5>[OWNER]</h5>
+        </div>
+        <div v-if="currentChannelmemberInfo.memberIsAdmin">
+            <h5>[ADMIN]</h5>
+        </div>
         <div v-if="currentChannelmemberInfo.memberIsMuted">
             <h5>[MUTED]</h5>
         </div>

@@ -32,38 +32,53 @@ export class ChatGateway {
     private connectedSockets: Map<string, string> = new Map<string, string>();
 
     //HANDLES NEW INCOMING SOCKET CONNECTION,
-    // ADDS USER AND ID TO MAP
-    // AND JOINS IT TO ALL SUBSCRIBED ROOMS
+    // add user and socket id to map
+    // and joins socket id to all rooms of player
     async handleConnection(@ConnectedSocket() client: Socket){
-        if (!client.handshake.auth.username._value) //if nobody is logged in
+        // console.log('On connection:', client.handshake);
+        const playerId = parseInt(client.handshake.auth.id);
+        if (!playerId) //if nobody is logged in
+        {
+            console.log('nobody logged');
             client.disconnect();
-        this.connectedSockets.set(client.handshake.auth.username._value, client.id)
-        
-        const channels = await this.channelmemberService.findPlayerChannels(client.handshake.auth.playerId);
-        channels.forEach(function(channel) {
-            client.join(channel.channel_id.toString());
-          });
-        const intra_username = await this.playerService.findOneIntraUsername(client.handshake.auth.playerId);
-        client.join(intra_username);
-        console.log('client joined all rooms');
-        console.log(client.rooms);
-
-        console.log('connected sockets:', this.connectedSockets);
-        
-        this.playerService.updateStatus(client.handshake.auth.playerId, { status: "online" });
-        
-        this.logger.log(`client ${client.handshake.auth.playerId} (${client.handshake.auth.username._value}) connected at ${client.id}`);
+        }
+        else {
+            console.log('logging...');
+            const intra_username = await this.playerService.findOneIntraUsername(playerId);
+            this.connectedSockets.set(intra_username, client.id)
+            
+            const channels = await this.channelmemberService.findPlayerChannels(playerId);
+            channels.forEach(function(channel) {
+                client.join(channel.channel_id.toString());
+              });
+            client.join(intra_username);
+            console.log('client joined all rooms');
+            // console.log(client.rooms);
+    
+            console.log('connected sockets:', this.connectedSockets);
+            
+            this.playerService.updateStatus(playerId, { status: "online" });
+            
+            this.logger.log(`client ${playerId} (${intra_username}) connected at ${client.id}`);
+        }
     }
     
     //HANDLES DISCONNECTION OF SOCKET AND REMOVES IT FROM MAP
-    handleDisconnect(@ConnectedSocket() client: Socket){
-        if (client.handshake.auth.username._value)
-        this.connectedSockets.delete(client.handshake.auth.username._value);
-        
-        console.log('connected sockets:', this.connectedSockets);
-
-        this.playerService.updateStatus(client.handshake.auth.playerId, { status: "offline" });
-        this.logger.log(`client ${client.handshake.auth.playerId} (${client.handshake.auth.username._value}) disconnected ${client.id}`);
+    async handleDisconnect(@ConnectedSocket() client: Socket){
+        const playerId = parseInt(client.handshake.auth.id);
+        // console.log('On disconnection:', client.handshake);
+        if (playerId)
+        {
+            console.log('logging off...');
+            const intra_username = await this.playerService.findOneIntraUsername(playerId);
+            this.connectedSockets.delete(intra_username);
+            console.log('connected sockets:', this.connectedSockets);
+            
+            this.playerService.updateStatus(playerId, { status: "offline" });
+            this.logger.log(`client ${playerId} (${intra_username}) disconnected ${client.id}`);
+        }
+        else
+            console.log('close connection');
     }
 
     //ADD MESSAGE
@@ -204,6 +219,7 @@ export class ChatGateway {
             }
             
             const deletedMember = await this.channelmemberService.remove(payload.player_id, member);
+            console.log('deleted:', deletedMember);
             if (!deletedMember)
                 throw new Error();
             console.log(`player left the channel`);

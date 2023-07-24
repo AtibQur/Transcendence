@@ -23,19 +23,17 @@ limited time) other users, but not the channel owners."   ----------------> kan 
 7. mute/ban/remove actions misschien toch wel via socket?? om zo de andere members op de hoogte
    te brengen
 8. mute member voor een bepaalde tijd
-11. voeg logs voor alle activiteiten
 12. overview van alle public/Protected channels die een player kan joinen & enter password dialog
 
 ===================== COMPLEX TASKS =======================
 
-1. persistent socket wanneer pagina wordt refreshed
+1. persistent socket wanneer pagina wordt refreshed ----------> DONE
+        refresh gaat naar /chat dus als je in een chat zat dan gaat dat weg... misschien met queries op te lossen?!
 2. Direct messages -> channel?? wat voor channel name dan?
 3. channelmembers voor een bepaalde tijd muten.
 4. in gateways een onderscheid kunnen maken tussen chat en game
 6.   "Think about network issues, like unexpected disconnection or lag.
         You have to offer the best user experience possible." ----------------> denk hierover na
-
-
 
 ===================== EXTRA TASKS =======================
 
@@ -44,7 +42,9 @@ limited time) other users, but not the channel owners."   ----------------> kan 
 3. weergeef als iemand online komt/offline gaat
 4. toast als er nieuwe channelmember bij komt
 5. toast als je aan een nieuwe chat wordt toegevoegd.
+6. voeg logs voor alle activiteiten
 
 ====================== BUGGGSSS ========================
 
 1. toast doet gek in socket.on functies (heeft denk ik iets te maken met onBeforeMount & socket.on & async)
+2. leave room doet raar
