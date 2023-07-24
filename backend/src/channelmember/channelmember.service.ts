@@ -178,6 +178,7 @@ export class ChannelmemberService {
         memberIsAdmin: false,
         memberIsOwner: false,
         memberIsBanned: false,
+        memberIsMuted: false,
         memberIsFriend: false,
         showBlock: true, // player can always block someone
         showMute: false,
@@ -195,6 +196,7 @@ export class ChannelmemberService {
       rights.memberIsAdmin = member.is_admin;
       rights.memberIsOwner = member.is_owner;
       rights.memberIsBanned = member.is_banned;
+      rights.memberIsMuted = member.is_muted;
       
       // Define if player and channelmember are friends
       const existingFriendship = await this.friendService.isExistingFriendship(player_id, member_id);
@@ -319,20 +321,27 @@ export class ChannelmemberService {
     }
   }
 
-  // MUTE A CHANNELMEMBER
+  // MUTE/UNMUTE A CHANNELMEMBER
   // only possible if done by admin
   // owner can not be muted
-  async muteMember(player_id: number, updateChannelmemberDto: UpdateChannelmemberDto) {
+  // in case of unmute, Date is set to null
+  async muteMember(player_id: number, updateChannelmemberDto: UpdateChannelmemberDto, toMute: boolean) {
     try {
       const updater = await this.findChannelmember(player_id, updateChannelmemberDto.channel_id);
       const toUpdate = await this.findChannelmember(updateChannelmemberDto.member_id, updateChannelmemberDto.channel_id);
+      var date = new Date();
+
+      if (!toMute)
+        date = null;
+
       if (updater.is_admin && !toUpdate.is_owner) {
         const updatedMember = await prisma.channelMember.update({
           where: {
             id: toUpdate.id
           },
           data: {
-            is_muted: true,
+            is_muted: toMute,
+            muted_at: date
           }
         });
         return updatedMember;
@@ -353,14 +362,19 @@ export class ChannelmemberService {
   // returns deleted channelmember on success, nothing on error
   async remove(player_id: number, updateChannelmemberDto: UpdateChannelmemberDto) {
     try {
+      console.log('player_id: ', player_id);
+      console.log('memberdto: ', updateChannelmemberDto);
       const updater = await this.findChannelmember(player_id, updateChannelmemberDto.channel_id);
       const toUpdate = await this.findChannelmember(updateChannelmemberDto.member_id, updateChannelmemberDto.channel_id);
+      console.log('updater: ', updater);
+      console.log('toUpdate: ', toUpdate);
       if ((updater.is_admin && !toUpdate.is_owner) || updater.member_id === toUpdate.member_id) {
         const deletedMember = await prisma.channelMember.delete({
           where: {
             id: toUpdate.id,
-          },
+          }
         });
+        deletedMember['is_owner'] = toUpdate.is_owner;
         return deletedMember;
       }
       else {

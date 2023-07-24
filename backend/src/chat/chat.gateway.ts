@@ -219,6 +219,7 @@ export class ChatGateway {
             }
             
             const deletedMember = await this.channelmemberService.remove(payload.player_id, member);
+            console.log('deleted:', deletedMember);
             if (!deletedMember)
                 throw new Error();
             console.log(`player left the channel`);
@@ -230,10 +231,6 @@ export class ChatGateway {
 
             //disconnect socket from room
             client.leave(channel.id.toString());
-
-            //if player is owner, set new owner
-            // if (deletedMember.is_owner)
-            //     await this.channelService.setNewOwner(channel.id);
 
             //notify other channelmembers that a channelmember has left the channel
             this.server.to(channel.id.toString()).emit('removeChannelmember', deletedMember.member_id, channel.name);

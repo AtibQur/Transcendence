@@ -21,6 +21,7 @@ model Player {
   avatar_url         String   @default("default_avatar.png")
   avatar             Bytes?
   two_factor_enabled Boolean  @default(false)
+  two_factor_code    String?
   player_stats       PlayerStats?  @relation("player_stats")
 
   owner_of           Channel[]
@@ -58,6 +59,7 @@ model Channel {
   name       String
   password   String?
   is_private Boolean  @default(false)
+  is_dm      Boolean  @default(false)
 
   owner_id   Int
   owner      Player   @relation(fields: [owner_id], references: [id])

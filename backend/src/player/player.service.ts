@@ -259,6 +259,7 @@ async findIntraByUsername(username: string) {
     }
   }
 
+  //DUBBEL?!
   async findOnePlayerByUsername(id: number) {
       const selectedPlayer = await prisma.player.findUnique({
         where: {
@@ -271,6 +272,7 @@ async findIntraByUsername(username: string) {
       return selectedPlayer;
     };
 
+  //DUBBEL?!
   async findOneIntraUsername(player_id: number) {
     try {
       const selectedPlayer = await prisma.player.findUnique({

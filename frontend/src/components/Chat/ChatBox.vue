@@ -41,7 +41,6 @@ onBeforeMount(async () => {
     //FIND CHANNEL NAME
     const fetchChannelName = async (channelId: number) => {
         const response = await axiosInstance.get('channel/' + channelId.toString());
-        console.log('fetch channel name: ', response.data);
         channelName.value = response.data.name;
     };
 

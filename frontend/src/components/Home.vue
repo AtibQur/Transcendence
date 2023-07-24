@@ -48,7 +48,8 @@
     const playerIdResponse = await axiosInstance.post('/player/create', { username: username.value });
     const playerId = playerIdResponse.data
     logged.value = true;
-    // socket.auth = { playerId, username };
+    socket.auth = { id: playerId };
+    console.log('playerId: ', playerId);
     sessionStorage.setItem('playerId', playerId);
     sessionStorage.setItem('username', username.value);
     sessionStorage.setItem('logged', logged.value.toString());
@@ -109,11 +110,11 @@
   };
 
   const logOut = async () => {
+    socket.disconnect();
     logged.value = false; 
     sessionStorage.removeItem('playerId');
     sessionStorage.removeItem('username');
     sessionStorage.setItem('logged', logged.value.toString());
-    socket.disconnect();
   }
 
   defineComponent({
