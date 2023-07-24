@@ -1,37 +1,36 @@
 <template>
-	<div class="PongLogo">
-		<h1>PONG</h1>
-		<div class="text-wrapper">
-			<h1 class="dynamic-text">{{ dynamicText1 }}</h1>
-			<h1 class="dynamic-text">{{ dynamicText2 }}</h1>
+	<div v-if="!showResults">
+		<div class="PongLogo">
+			<h1>PONG</h1>
+			<div class="text-wrapper">
+				<h1 class="dynamic-text">{{ dynamicText1 }}</h1>
+				<h1 class="dynamic-text">{{ dynamicText2 }}</h1>
+			</div>
 		</div>
-	</div>
 		<GameTools :player1="player1" :player2="player2" :ball="ball" :score1="score1" :score2="score2"/>
-	<div class="gameover-container" v-if="win">
-		<h1>VICTORY!</h1>
 	</div>
-	<div class="gameover-container" v-if="lose">
-		<h1>DEFEAT</h1>
-	</div>
-	<div class="gameover-container">
-		<router-link to="/Leaderboard"><button class="gameOverBtn" v-if="end">Leaderboard</button></router-link>
-		<router-link to="/"><button class="gameOverBtn" v-if="end">Exit</button></router-link>
-	</div>
+
+	<ResultScreen v-if="showResults" 
+		:score1="score1" :score2="score2" 
+		:p1_socketId="p1_socketId" :p2_socketId="p2_socketId"
+		:stop="stop" />
 </template>
 
 <script lang="ts">
 	import { socket } from '../../socket'
 	import GameTools from './GameTools.vue'
+	import ResultScreen from './ResultScreen.vue'
 	import { defineComponent } from 'vue'
-	import {socket_match_id, p1_id, p2_id, p1_socket_id, p2_socket_id, username1, username2, match_id} from './MatchMaking.vue'
+	import {socket_match_id, p1_socket_id, p2_socket_id, username1, username2, match_id} from './MatchMaking.vue'
 	import { useRouter } from 'vue-router'
 	import axiosInstance from '../../axiosConfig'
 
 	export default defineComponent({
 	name: "MultiplayerMatch",
-	components: { GameTools},
+	components: { GameTools, ResultScreen},
 data() {
 	return {
+		showResults: false,
 		dynamicText1: '',
 		dynamicText2: '',
 		end: false,
@@ -65,9 +64,13 @@ data() {
 		moveInfo: {
 			socket_match_id: 0,
 			move: 0,
-		}
+		},
+		p1_socketId: '',
+		p2_socketId: '',
+		stop: false,
 	};
 },
+
 methods: {
 	keyUp(event) {
 		if (event.key === 'w' || event.key === 's') {
@@ -120,6 +123,8 @@ mounted() {
 	console.log("this user:", socket.id)
 	if (socket.id === undefined)
 		this.$router.push('/play');
+	this.p1_socketId = p1_socket_id;
+	this.p2_socketId = p2_socket_id;
 	console.log("Player1 ID: ", p1_socket_id)
 	console.log("Player2 ID: ", p2_socket_id)
 
@@ -128,8 +133,6 @@ mounted() {
 		ball: any
 		player1: number
 		player2: number
-		player1Id: string
-		player2Id: string
 		score1: number
 		score2: number
 	}) => {
@@ -138,28 +141,16 @@ mounted() {
 		this.player2.y = match.player2
 		this.score1 = match.score1
 		this.score2 = match.score2
-
-		if (this.score1 === 5 || this.score2 === 5){
-			if (this.score1 === 5){
-				if (socket.id === p1_socket_id)
-					this.win = true;
-				else
-					this.lose = true;
-			}
-			else if (this.score2 === 5){
-				if (socket.id === p2_socket_id)
-					this.win = true;
-				else
-					this.lose = true;
-				}
-
-			if (socket.id === p1_socket_id)
-				this.saveFinishedMatch(match_id, socket_match_id, this.score1, this.score2);
-
-			this.end = true;
+		if (match.state === 'end'){
+			console.log("this match is finished")
+			this.showResults = true;
 		}
-		if (match.state === 'stop')
-			this.$router.push('/play');
+		if (match.state === 'stop'){
+			this.stop = true;	
+			this.showResults = true;
+		}
+			
+			// this.$router.push('/play');
 	})
 
 	window.addEventListener('keyup', this.keyUp);
@@ -171,32 +162,10 @@ mounted() {
 </script>
 
 <style>
-.gameover-container {
-	position: absolute;
-	font-size: 40px;
-	text-align: center;
-	font-weight: bold;
-	color: #134279;
-	text-shadow: -1.5px 2px 1px #2164b480;
-	top: 45%;
-	left: 50%;
-	transform: translate(-50%, -50%);
-}
-.gameOverBtn {
-	color: #134279;
-	font-size: 15px;
-	border: none
-}
-
-.gameOverBtn:hover {
-	color: #79abe6;
-}
-
 .text-wrapper {
 	display: flex;
 	position: absolute;
 	align-items: center;
-	/* margin-left: 40%; */
 	justify-content: center;
 	transform: translate(-50%, -50%);
 	position: absolute;
@@ -208,11 +177,10 @@ mounted() {
 }
 
 .dynamic-text {
+	/* position: absolute; */
+	/* left: 50%; */
   margin: 250px;
-}
-
-.vs-text {
-  margin: 0 100px; /* Adjust the spacing around the "VS" text */
+  /* transform: translate(-50%, -50%); */
 }
 
 </style>
