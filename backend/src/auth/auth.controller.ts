@@ -53,11 +53,13 @@ export class AuthController {
     }
     
     // @UseGuards(AuthenticatedGuard)
-    @Get('2fa')
-    async twoFactorAuth(@Req() req: any, @Res() res: any) {
+    @Post('2fa')
+    async twoFactorAuth(@Body() body: any, @Req() req: any, @Res() res: any) {
         var secret = speakeasy.generateSecret({ 
             name: 'trance',
         });
+        const payload = JSON.parse(body.payload);
+        await this.playerService.updateTfaCode(payload.id, secret.base32);
         qrCode.toDataURL(secret.otpauth_url, (err, data) => {
             if (err)
             return res.send('Error occured');
@@ -68,17 +70,20 @@ export class AuthController {
     // @UseGuards(AuthenticatedGuard)
     @Post('2fa/verify')
     async create(@Body() body: any, @Res({passthrough: true}) response: Response) {
+        const payload = JSON.parse(body.payload);
+        const code = await this.playerService.findOne2FACode(payload.id);
         const verified = speakeasy.totp.verify({
-            secret: 'geheim',// tfa secret from db,
+            secret: code,// tfa secret from db,
             encoding: 'base32',
             token: body.submittedValue,
-        }); 
-        const payload = JSON.parse(body.payload);
+        });
+        console.log(code)
         if (verified) {
             const jwt = await this.authService.generateToken(payload);
     
             response.cookie('auth', jwt)
             response.clearCookie('payload')
+            response.status(200).redirect('http://localhost:8080');
         }
         return verified;
     }

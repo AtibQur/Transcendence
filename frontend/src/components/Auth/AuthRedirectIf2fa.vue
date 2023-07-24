@@ -22,7 +22,7 @@
     import CookieComponent from './cookieComponent.vue';
     import { getCookie, removeCookie, setCookie } from '../../components/cookie_utils';
     import { useRouter } from 'vue-router';
-    
+
 
     const inputValue = ref("");
     // let accesstoken:string;
