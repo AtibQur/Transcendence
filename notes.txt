@@ -24,6 +24,8 @@ limited time) other users, but not the channel owners."   ----------------> kan 
    te brengen
 8. mute member voor een bepaalde tijd
 12. overview van alle public/Protected channels die een player kan joinen & enter password dialog
+13. channelmember overview, currentplayer naam vervangen met 'you'
+14. types/interfaces toevoegen aan front & back end
 
 ===================== COMPLEX TASKS =======================
 
