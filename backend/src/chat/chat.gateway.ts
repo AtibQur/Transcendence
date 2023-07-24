@@ -35,7 +35,7 @@ export class ChatGateway {
     // add user and socket id to map
     // and joins socket id to all rooms of player
     async handleConnection(@ConnectedSocket() client: Socket){
-        console.log('On connection:', client.handshake);
+        // console.log('On connection:', client.handshake);
         const playerId = parseInt(client.handshake.auth.id);
         if (!playerId) //if nobody is logged in
         {
