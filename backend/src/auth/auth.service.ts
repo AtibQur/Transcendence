@@ -9,12 +9,7 @@ import { sign } from 'crypto';
 export class AuthService {
     constructor(private readonly jwtService: JwtService) {}
 
-    async generateToken(id: string, login: string, playerId: number): Promise<string> {
-        const payload = { 
-            sub: id,
-            username: login, 
-            id: playerId,
-        };
+    async generateToken(payload: any): Promise<string> {
         const options = { secret: 'geheim', expiresIn: '7d'}
         const token = await this.jwtService.signAsync(payload, options);
 

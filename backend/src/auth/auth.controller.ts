@@ -1,14 +1,15 @@
-import { Controller, Get, Header, Req, Res, Session, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, Header, Post, Req, Res, Session, UseGuards } from '@nestjs/common';
 import { PlayerService } from 'src/player/player.service';
 import * as speakeasy from 'speakeasy';
 import * as qrCode from 'qrcode';
-import e, { Request, Response } from 'express';
+import e, { Request, Response, response } from 'express';
 import { AuthService } from './auth.service';
 import { Verify } from 'crypto';
 import { request } from 'http';
 import { userInfo } from 'os';
 import { ENHANCER_TOKEN_TO_SUBTYPE_MAP } from '@nestjs/core/constants';
 import { CreatePlayerDto } from 'src/player/dto/create-player.dto';
+import { builtinModules } from 'module';
 
 
 @Controller('auth')
@@ -28,9 +29,21 @@ export class AuthController {
         createPlayerDto.username = userData.login;
         const playerId = await this.playerService.createPlayer(createPlayerDto);
 
-        const jwt = await this.authService.generateToken(userData.id, userData.login, playerId);
-        response.cookie('auth', jwt)
-        response.status(200).redirect('http://localhost:8080');
+        const payload = {
+            id: playerId,
+            username: userData.login,
+            sub: userData.id,
+        };
+
+        if (await this.playerService.findOne2FA(playerId) == false) {
+            const jwt = await this.authService.generateToken(payload);
+
+            response.cookie('auth', jwt)
+            response.status(200).redirect('http://localhost:8080');
+        } else {
+            response.cookie('payload', JSON.stringify(payload));
+            response.redirect('http://localhost:8080/redirect2faverify')
+        }
     }
 
     @Get('/logout')
@@ -45,7 +58,6 @@ export class AuthController {
         var secret = speakeasy.generateSecret({ 
             name: 'trance',
         });
-        // console.log(req.session.passport.user);
         qrCode.toDataURL(secret.otpauth_url, (err, data) => {
             if (err)
             return res.send('Error occured');
@@ -54,22 +66,21 @@ export class AuthController {
     }
     
     // @UseGuards(AuthenticatedGuard)
-    @Get('2fa/verify')
-    async twoFactorAuthVerify(@Req() req: any, @Res() res: any, @Session() session: Record<string, any>) {
-        const token = req.query.token;
-        const secret = req.query.secret;
+    @Post('2fa/verify')
+    async create(@Body() body: any, @Res({passthrough: true}) response: Response) {
         const verified = speakeasy.totp.verify({
-            secret: req.session.passport.user.tfasecret,
+            secret: 'geheim',// tfa secret from db,
             encoding: 'base32',
-            token: token,
-        });
+            token: body.submittedValue,
+        }); 
+        const payload = JSON.parse(body.payload);
         if (verified) {
-            console.log('2fa verified');
-            res.send('2fa verified, you will be redirected to the login page');
-        } else {
-            console.log('incorrect code');
-            res.send('incorrect code');
+            const jwt = await this.authService.generateToken(payload);
+    
+            response.cookie('auth', jwt)
+            response.clearCookie('payload')
         }
+        return verified;
     }
 
 }
