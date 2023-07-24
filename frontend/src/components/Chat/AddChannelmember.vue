@@ -44,10 +44,6 @@ const errorMessage = ref<string>('');
 const friends = ref<string[]>([]);
 const filteredFriends = ref<string[]>([]);
 
-// onMounted(async () => {
-//     await fetchFriends();
-// })
-
 //ACTIVATE ADD CHANNELMEMBER DIALOG
 const showDialog = async () => {
     isVisible.value = true;

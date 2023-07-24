@@ -31,30 +31,67 @@ export class ChannelService {
         channelData.password = createChannelDto.password;
       }
 
+      if (createChannelDto.is_dm) {
+        channelData.is_dm = createChannelDto.is_dm;
+      }
+
       const newChannel = await prisma.channel.create({
         data: channelData,
       });
       this.logger.log(`create new channel ${newChannel.name}`);
 
       // add channel owner as a member
-      const channelMemberDto: CreateChannelmemberDto = new CreateChannelmemberDto();
-      channelMemberDto.member_id = createChannelDto.owner_id;
-      channelMemberDto.channel_id = newChannel.id;
-      channelMemberDto.is_admin = true;
-      channelMemberDto.is_muted = false;
-      channelMemberDto.is_banned = false;
-      channelMemberDto.added_at = new Date();
-      channelMemberDto.muted_at = new Date();
-      await this.channelmemberService.createChannelmember(channelMemberDto);
+      const memberData: CreateChannelmemberDto = {
+        member_id: createChannelDto.owner_id,
+        channel_id: newChannel.id,
+        is_admin: true,
+        is_muted: false,
+        is_banned: false,
+      }
+
+      await this.channelmemberService.createChannelmember(memberData);
       this.logger.log('create new channelmember');
 
       return newChannel.id;
     }
     catch (error) {
-      console.error('Error occurred:', error);
+      console.error('Error creating channel:', error);
       return null;
     }
   }
+
+  //CREATE DIRECT MESSAGE CHANNEL
+  async createDm(player_id: number, friend_id: number) {
+    try {
+        //create channel with player_id as owner
+        const channelData: CreateChannelDto = {
+            name: 'dm',
+            is_private: true,
+            owner_id: player_id,
+            is_dm: true
+        }
+        
+        const channel_id = await this.createChannel(channelData);
+        if (!channel_id)
+            throw new Error();
+            
+        const memberData: CreateChannelmemberDto = {
+            member_id: friend_id,
+            channel_id: channel_id
+        }
+        
+        // create channelmember of friend_id
+        const friend = await this.channelmemberService.createChannelmember(memberData);
+        if (!friend)
+            throw new Error();
+    }
+    catch (error)
+    {
+        console.error('Error creating dm: ', error);
+        return null;
+    }
+  }
+
 
   // GET CHANNEL INFO (name, is_private, owner_id)
   async findOneChannel(id: number) {

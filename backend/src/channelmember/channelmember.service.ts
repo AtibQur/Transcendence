@@ -53,7 +53,6 @@ export class ChannelmemberService {
   }
 
   // FIND ALL CHANNELS WHERE PLAYER IS MEMBER
-  // TODO: move to channels module?
   async findPlayerChannels(player_id: number) {
     try {
       return prisma.channelMember.findMany({
@@ -70,7 +69,8 @@ export class ChannelmemberService {
                 channel: {
                   select: {
                       name: true,
-                      owner_id: true
+                      owner_id: true,
+                      is_dm: true
                   }
               }
           },
@@ -80,6 +80,19 @@ export class ChannelmemberService {
     catch (error) {
       console.error('Error occurred:', error);
       return null;
+    }
+  }
+
+  // FIND ALL CHANNELS WHERE PLAYER IS MEMBER
+  async findPlayerDms(player_id: number) {
+    try {
+        const allChannels = await this.findPlayerChannels(player_id);
+        const allDM = allMembers.filter((member) => member.is_admin === true);
+
+    }
+    catch (error) {
+        console.error('Error occurred:', error);
+        return null;
     }
   }
   
