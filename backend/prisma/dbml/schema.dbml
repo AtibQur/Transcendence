@@ -9,6 +9,7 @@ Table Player {
   avatar_url String [not null, default: 'default_avatar.png']
   avatar Bytes
   two_factor_enabled Boolean [not null, default: false]
+  two_factor_code String
   player_stats PlayerStats
   owner_of Channel [not null]
   member_of ChannelMember [not null]
@@ -38,6 +39,7 @@ Table Channel {
   name String [not null]
   password String
   is_private Boolean [not null, default: false]
+  is_dm Boolean [not null, default: false]
   owner_id Int [not null]
   owner Player [not null]
   messages ChatMessage [not null]
