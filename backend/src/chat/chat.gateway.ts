@@ -12,6 +12,7 @@ import { ChatmessageService } from 'src/chatmessage/chatmessage.service';
 import { CreateChatmessageDto } from 'src/chatmessage/dto/create-chatmessage.dto';
 import { CreateChannelDto } from 'src/channel/dto/create-channel.dto';
 import { CreateChannelmemberDto } from 'src/channelmember/dto/create-channelmember.dto';
+import { UpdateChannelmemberDto } from 'src/channelmember/dto/update-channelmember.dto';
 
 @WebSocketGateway({
 	cors: {
@@ -213,13 +214,13 @@ export class ChatGateway {
         @ConnectedSocket() client: Socket
     ) {
         try {
-            const member: CreateChannelmemberDto = {
+            const member: UpdateChannelmemberDto = {
                 member_id: payload.player_id,
                 channel_id: payload.channel_id,
             }
             
-            const deletedMember = await this.channelmemberService.remove(payload.player_id, member);
-            console.log('deleted:', deletedMember);
+            //added 'any' in order to resolve types error -> change to interface
+            const deletedMember: any = await this.channelmemberService.remove(payload.player_id, member);
             if (!deletedMember)
                 throw new Error();
             console.log(`player left the channel`);
@@ -231,6 +232,10 @@ export class ChatGateway {
 
             //disconnect socket from room
             client.leave(channel.id.toString());
+
+            //if member is owner, a new owner needs to be set
+            if (deletedMember.is_owner)
+                await this.channelService.setNewOwner(channel.id)
 
             //notify other channelmembers that a channelmember has left the channel
             this.server.to(channel.id.toString()).emit('removeChannelmember', deletedMember.member_id, channel.name);

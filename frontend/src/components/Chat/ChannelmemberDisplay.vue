@@ -7,7 +7,9 @@
             </Sidebar>
         </div>
         <li v-for="(channelmember, index) in channelmembers" :key="index">
-            <button class="channelmember-button" @click="showOptionPanel(channelmember)"> {{ channelmember.username }} </button>
+            <button class="channelmember-button" @click="showOptionPanel(channelmember)">
+                {{ channelmember.username === playerUsername ? 'You' : channelmember.username }}
+            </button>
         </li>
     </ul>
 </template>
@@ -30,6 +32,7 @@ const props = defineProps({
 });
 
 const channelmembers = ref([]);
+const playerUsername = sessionStorage.getItem('username') || null;
 const currentChannelId = ref<number>(props.channelId);
 const selectedChannelmember = ref({});
 const visible = ref<boolean>(false);
