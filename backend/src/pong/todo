@@ -1,0 +1,8 @@
+
+TO DO:
+
+- points fixen wanneer de game wordt gestopt vanwege disconnection
+- end screen met overview van gespeelde match en dat je daar blijft (als je page back klikt) tot dat je socket disconnect of tot dat je op exit of leaderboard drukt
+- alleen play wanneer je ingelogd bent
+- power-up
+- achievement art
