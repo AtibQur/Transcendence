@@ -116,6 +116,24 @@ export class ChannelService {
     }
   }
 
+  // or maybe in channelmember service?
+  //SET NEW OWNER FOR CHANNEL IF THE CURRENT OWNER WANT TO LEAVE THE CHANNEL
+  // set to the 'eldest' admin (smallest member id of members)
+  // if there are no members left, channel deleted?
+//   async setNewOwner(id: number, updateChannelDto: UpdateChannelDto) {
+//     try {
+//         const allMembers = await this.channelmemberService.findAllChannelmembers(id);
+//         const allAdmins = allMembers.filter((member) => member.is_admin === true);
+//         const newOwner = allAdmins.reduce((prevMember, currentMember) => {
+//             return prevMember.member_id < currentMember.member_id ? prevMember : currentMember;
+//         });
+
+//     }
+//     catch(error) {
+
+//     }
+//   }
+
   //SET PASSWORD FOR CHANNEL
   // can only be done by the owner of the channel
   // returns channel on success, nothing on error
