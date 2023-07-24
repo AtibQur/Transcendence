@@ -1,6 +1,6 @@
 <template>
     <div class="card flex justify-content-center p-fluid">
-        <button @click="isVisible = true">Add Channelmember</button>
+        <button @click="showDialog()">Add Channelmember</button>
         <Dialog v-model:visible="isVisible" modal header="New Channelmember" :style="{ width: '50vw' }" :closeButtonProps="handleCloseButton">
             <form @submit.prevent="onSubmit">
                 <div class="p-field">
@@ -44,9 +44,15 @@ const errorMessage = ref<string>('');
 const friends = ref<string[]>([]);
 const filteredFriends = ref<string[]>([]);
 
-onMounted(async () => {
+// onMounted(async () => {
+//     await fetchFriends();
+// })
+
+//ACTIVATE ADD CHANNELMEMBER DIALOG
+const showDialog = async () => {
+    isVisible.value = true;
     await fetchFriends();
-})
+}
 
 //FETCH FRIENDS OF PLAYER
 const fetchFriends = async () => {
