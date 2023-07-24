@@ -85,7 +85,7 @@
     async function fetchPlayerId() {
         try {
             const response = await axiosInstance.get('/user/id');
-            sessionStorage.setItem('playerId', response.data);
+            // sessionStorage.setItem('playerId', response.data);
         } catch (error) {
             console.log("Error: Could not fetch player id");
         }

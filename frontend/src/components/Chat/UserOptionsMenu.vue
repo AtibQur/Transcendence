@@ -1,9 +1,16 @@
 <template>
     <!-- <Toast/> -->
     <div>
+        <img :src="profilePicture" alt="Avatar" style="width:100%">
         <h3> {{ currentChannelmemberUsername }}</h3>
         <h4> {{ ( currentChannelmemberStatus ) }}</h4>
         <!-- for testing purposes -->
+        <div v-if="currentChannelmemberInfo.memberIsOwner">
+            <h5>[OWNER]</h5>
+        </div>
+        <div v-if="currentChannelmemberInfo.memberIsAdmin">
+            <h5>[ADMIN]</h5>
+        </div>
         <div v-if="currentChannelmemberInfo.memberIsMuted">
             <h5>[MUTED]</h5>
         </div>
@@ -25,6 +32,9 @@
         <div v-if="currentChannelmemberInfo.showMute">
             <button @click="openConfirmDialog(Actions.MUTE)">Mute</button>
         </div>
+        <div v-else>
+            <button @click="unmuteChannelmember()">Unmute</button>
+        </div>
         <div v-if="currentChannelmemberInfo.showMakeAdmin">
             <button @click="makeAdmin()">Make Admin</button>
         </div>
@@ -43,7 +53,6 @@
 <script setup lang="ts">
 import axiosInstance from '../../axiosConfig';
 import { onBeforeMount, ref, watch } from 'vue'
-// import Toast from 'primevue/toast';
 import { useToast } from 'primevue/usetoast';
 import { useConfirm } from "primevue/useconfirm";
 
@@ -75,8 +84,24 @@ const currentChannelmemberId = ref<number>(props.channelmember.id);
 const currentChannelmemberStatus = ref<string>('');
 const currentChannelmemberUsername  = ref<string>(props.channelmember.username);
 const currentChannelId = ref<number>(props.channelId);
+const profilePicture = ref('');
 
 onBeforeMount(async () => {
+
+    currentChannelmemberInfo.value = await fetchChannelmemberInfo(currentChannelmemberId.value);
+    profilePicture.value = await fetchAvatar(currentChannelmemberId.value);
+    
+    //TRACK WHETHER CHANNELMEMBER_ID CHANGES
+    watch(() => props.channelmember, async (newChannelmember: {username: string, id: number}) => {
+        currentChannelmemberId.value = newChannelmember.id;
+        currentChannelmemberUsername.value = newChannelmember.username;
+        currentChannelmemberInfo.value = await fetchChannelmemberInfo(currentChannelmemberId.value);
+        profilePicture.value = await fetchAvatar(currentChannelmemberId.value);
+    });
+
+    //TRACK WHETHER CHANNELMEMBERS BECOME OFFLINE/ONLINE??
+
+})
 
     // FIND ALL MEMBERS OF CHANNEL
     const fetchChannelmemberInfo = async (channelmemberId: number) => {
@@ -88,18 +113,18 @@ onBeforeMount(async () => {
         return responseRights.data;
     }
 
-    currentChannelmemberInfo.value = await fetchChannelmemberInfo(currentChannelmemberId.value);
-
-    //TRACK WHETHER CHANNELMEMBER_ID CHANGES
-    watch(() => props.channelmember, async (newChannelmember: {username: string, id: number}) => {
-        currentChannelmemberId.value = newChannelmember.id;
-        currentChannelmemberUsername.value = newChannelmember.username;
-        currentChannelmemberInfo.value = await fetchChannelmemberInfo(currentChannelmemberId.value);
-    });
-
-    //TRACK WHETHER CHANNELMEMBERS BECOME OFFLINE/ONLINE??
-
-})
+const fetchAvatar = async (channelmemberId: number) => {
+    const response = await axiosInstance.get('player/avatar/' + channelmemberId.toString());
+    
+    if (response.data) {
+        const imageBytes: Uint8Array = new Uint8Array(response.data.data);
+        const imageUrl = ref<string | null>(null);
+        imageUrl.value = URL.createObjectURL(new Blob([imageBytes]));
+        return imageUrl.value;
+    }
+    else
+        console.log("Error could not fetch avatar");
+  };
 
 //CONFIRM DIALOG BUTTON
 const openConfirmDialog = (selectedAction: Actions) => {
@@ -140,9 +165,27 @@ const muteChannelmember = async () => {
     if (response.data) {
         toast.add({ severity: 'info', summary: 'Muted Channelmember Successfully', detail: '', life: 3000 });
         currentChannelmemberInfo.value.showMute = false;
+        currentChannelmemberInfo.value.memberIsMuted = true;
     }
     else
         toast.add({ severity: 'error', summary: 'Error Channelmember not Muted', detail: '', life: 3000 });
+}
+
+// MUTE CHANNELMEMBER
+const unmuteChannelmember = async () => {
+    const response = await axiosInstance.patch(`channelmember/unmute/${playerId}`, {
+        channel_id: currentChannelId.value,
+        member_id: currentChannelmemberId.value,
+        is_muted: false
+    });
+
+    if (response.data) {
+        toast.add({ severity: 'info', summary: 'Unmuted Channelmember Successfully', detail: '', life: 3000 });
+        currentChannelmemberInfo.value.showMute = true;
+        currentChannelmemberInfo.value.memberIsMuted = false;
+    }
+    else
+        toast.add({ severity: 'error', summary: 'Error Channelmember not unMuted', detail: '', life: 3000 });
 }
 
 // MAKE CHANNELMEMBER ADMIN
