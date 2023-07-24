@@ -2,8 +2,9 @@ import { Injectable } from '@nestjs/common';
 import { CreateChannelDto } from './dto/create-channel.dto';
 import { UpdateChannelDto } from './dto/update-channel.dto';
 import { PrismaService } from '../../prisma/prisma.service';
-import { ChannelmemberService } from '../channelmember/channelmember.service'
+import { ChannelmemberService } from '../channelmember/channelmember.service';
 import { CreateChannelmemberDto } from '../channelmember/dto/create-channelmember.dto';
+import { Logger } from '@nestjs/common';
 import * as bcrypt from 'bcrypt';
 
 const prisma = PrismaService.getClient();
@@ -14,6 +15,8 @@ export class ChannelService {
   constructor(
     private readonly channelmemberService: ChannelmemberService
   ) {}
+
+  private logger = new Logger('ChannelService');
 
   // CREATE NEW CHANNEL
   async createChannel(createChannelDto: CreateChannelDto) {
@@ -31,6 +34,8 @@ export class ChannelService {
       const newChannel = await prisma.channel.create({
         data: channelData,
       });
+      this.logger.log(`create new channel ${newChannel.name}`);
+
       // add channel owner as a member
       const channelMemberDto: CreateChannelmemberDto = new CreateChannelmemberDto();
       channelMemberDto.member_id = createChannelDto.owner_id;
@@ -41,7 +46,8 @@ export class ChannelService {
       channelMemberDto.added_at = new Date();
       channelMemberDto.muted_at = new Date();
       await this.channelmemberService.createChannelmember(channelMemberDto);
-      console.log('channel & channelmember created: ', newChannel);
+      this.logger.log('create new channelmember');
+
       return newChannel.id;
     }
     catch (error) {
@@ -116,23 +122,39 @@ export class ChannelService {
     }
   }
 
-  // or maybe in channelmember service?
   //SET NEW OWNER FOR CHANNEL IF THE CURRENT OWNER WANT TO LEAVE THE CHANNEL
   // set to the 'eldest' admin (smallest member id of members)
   // if there are no members left, channel deleted?
-//   async setNewOwner(id: number, updateChannelDto: UpdateChannelDto) {
-//     try {
-//         const allMembers = await this.channelmemberService.findAllChannelmembers(id);
-//         const allAdmins = allMembers.filter((member) => member.is_admin === true);
-//         const newOwner = allAdmins.reduce((prevMember, currentMember) => {
-//             return prevMember.member_id < currentMember.member_id ? prevMember : currentMember;
-//         });
+  // returns updated channel on succes, nothing on error (or when channel is removed)
+  async setNewOwner(id: number) {
+    try {
+        console.log('finding new owner....');
+        const newOwner = await this.channelmemberService.findNewOwner(id);
+        if (!newOwner)
+        {
+            //remove channel?
+            this.logger.log("There are no more channelmembers");
+            return null;
+        }
 
-//     }
-//     catch(error) {
+        const updatedChannel = await prisma.channel.update({
+            where: {
+                id: id
+            },
+            data: {
+                owner_id: newOwner.member_id
+            }
+        })
+        this.logger.log(`set new owner for channel ${updatedChannel.name}`);
 
-//     }
-//   }
+        return updatedChannel;
+
+    }
+    catch(error) {
+        console.log("Error setting new owner: ", error);
+        return null;
+    }
+  }
 
   //SET PASSWORD FOR CHANNEL
   // can only be done by the owner of the channel
@@ -161,6 +183,8 @@ export class ChannelService {
                 password: hash
             }
         })
+
+        this.logger.log(`set password for channel ${updatedChannel.name}`);
         return updatedChannel;
 
     }

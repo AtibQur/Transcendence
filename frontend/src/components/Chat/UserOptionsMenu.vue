@@ -32,7 +32,7 @@
         <div v-if="currentChannelmemberInfo.showMute">
             <button @click="openConfirmDialog(Actions.MUTE)">Mute</button>
         </div>
-        <div v-else>
+        <div v-if="!currentChannelmemberInfo.showMute && !currentChannelmemberInfo.memberIsOwner">
             <button @click="unmuteChannelmember()">Unmute</button>
         </div>
         <div v-if="currentChannelmemberInfo.showMakeAdmin">
