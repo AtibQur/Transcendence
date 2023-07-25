@@ -13,18 +13,9 @@
             </div>
             <div class="chat-box">
                 <div v-if="inChannel || inDm">
-                    <ChatBox :channelId="channelId"/>
+                    <ChatBox @showInfo="showInfo" :channelId="channelId"/>
                     <AddMessage :channelId="channelId"/>
-                </div>
-            </div>
-            <div class="right-side-bar" v-if="inChannel">
-                <ChannelmemberDisplay :channelId="channelId" />
-                <div v-if="isAdmin">
-                    <AddChannelmember :channelId="channelId"/>
-                </div>
-                <button @click="openConfirmDialog">Leave Chat</button>
-                <div v-if="isOwner">
-                    <PasswordSettings :channelId="channelId"/>
+                    <ChannelInfoDisplay @showInfo="showInfo" @changeChannel="changeChannel" :channelId="channelId" :isVisible="showChannelInfo"/>
                 </div>
             </div>
         </div>
@@ -33,78 +24,38 @@
 
 <script setup lang="ts">
 import { ref } from 'vue';
-import { socket } from '@/socket';
 import ChannelDisplay from './ChannelDisplay.vue'
+import ChannelInfoDisplay from './ChannelInfoDisplay.vue'
 import AddChannel from './AddChannel.vue';
 import Toast from 'primevue/toast';
 import ChatBox from './ChatBox.vue';
 import AddMessage from './AddMessage.vue';
-import ChannelmemberDisplay from './ChannelmemberDisplay.vue';
-import AddChannelmember from './AddChannelmember.vue';
-import axiosInstance from '../../axiosConfig';
 import DmDisplay from './DmDisplay.vue';
-import PasswordSettings from './PasswordSettings.vue'
-import { useToast } from 'primevue/usetoast';
-import { useConfirm } from "primevue/useconfirm";
 
-const toast = useToast();
-const confirm = useConfirm();
 const playerId = parseInt(sessionStorage.getItem('playerId') || '0');
 const username = sessionStorage.getItem('username') || '0';
 const inChannel = ref(false);
 const inDm = ref(false);
-const isAdmin = ref(false);
-const isOwner = ref(false);
-const channelId = ref(null);
+
+const channelId = ref<number>(0);
+const showChannelInfo = ref(false);
 
 const changeChannel = async (channel_id: number, isChannel: boolean) => {
     channelId.value = channel_id;
+    showChannelInfo.value = false;
     if (isChannel) {
         inChannel.value = true;
-        inDm.value = false;
+        inDm.value = false
     }
     else {
         inChannel.value = false;
         inDm.value = true;
     }
-
-    await fetchPlayerInfo();
 }
 
-const fetchPlayerInfo = async () => {
-    const response = await axiosInstance.get('channelmember/info/' + playerId.toString() + '/' + channelId.value.toString());
-    if (response.data)
-    {
-        isAdmin.value = response.data.is_admin;
-        isOwner.value = response.data.is_owner;
-    }
-    else {
-        console.log("Error could not fetch player info");
-    }
-}
-
-//CONFIRM DIALOG BUTTON
-const openConfirmDialog = () => {
-    confirm.require({
-        message: 'Are you sure you want to proceed?',
-        header: 'Confirmation',
-        accept: () => {
-            leaveChat();
-        }
-    });
-};
-
-const leaveChat = async () => {
-
-    await socket.emit('leaveRoom', {player_id: playerId, channel_id: channelId.value}, (response) => {
-        if (response)
-        {
-            inChannel.value = false;
-            toast.add({ severity: 'info', summary: 'Left Channel Succesfully', detail: '', life: 3000 });
-        }
-        else 
-            toast.add({ severity: 'error', summary: 'Error you did not leave the Channel', detail: '', life: 3000 });
-    })
+const showInfo = async (isVisible: boolean) => {
+    if (inChannel.value)
+        showChannelInfo.value = isVisible;
 }
 
 </script>

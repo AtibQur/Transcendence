@@ -1,5 +1,9 @@
 <template>
-    <h2> {{ channelName }} </h2>
+    <div>
+        <button class="channel-name-button" @click="showInfo()"> 
+            <b> {{ channelName }}</b>
+        </button>
+    </div>
     <div>
         <div v-for="message in messages" :key="message.id">
                 <!-- <h6> {{ getDateMsg(message.sent_at) }}</h6> -->
@@ -21,12 +25,13 @@ const props = defineProps({
     }
 });
 
+const emit = defineEmits(['showInfo']);
 const channelName = ref('');
 const messages = ref<Message[]>([]);
 const currentChannelId = ref(props.channelId);
 // const newDate = ref(true);
 const playerId = parseInt(sessionStorage.getItem('playerId') || '0');
-const dates = ref<string>([]);
+// const dates = ref<string>([]);
 
 onBeforeMount(async () => {
     await fetchChatMessagesFiltered(playerId, currentChannelId.value);
@@ -75,6 +80,10 @@ const fetchChannelName = async (channelId: number) => {
     else
         console.log('Error fetching channelname');
 };
+
+const showInfo = () => {
+    emit('showInfo', true);
+}
 
 // const createDateMsg = (dateStr: string) => {
 //     const date = new Date(dateStr)
@@ -128,6 +137,17 @@ ul {
     list-style-type: none;
     padding: 0;
     margin: 0;
+}
+
+.channel-name-button {
+    background-color: transparent;
+    border: none;
+    cursor: pointer;
+    color: rgb(79, 76, 76);
+    font-size: large;
+    transition: color 0.3s;
+    padding: 0;
+    margin: 2em;
 }
 
 

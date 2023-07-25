@@ -12,7 +12,6 @@ import { socket } from '../../socket';
 import axiosInstance from '../../axiosConfig';
 import { onBeforeMount, ref} from 'vue'
 
-
 const emit = defineEmits(['changeChannel']);
 const playerId = parseInt(sessionStorage.getItem('playerId') || '0');
 const channels = ref([]);
@@ -37,7 +36,6 @@ onBeforeMount(async () => {
         else 
             channels.value.splice(index, 1);
     });
-
 })
     
     // FIND ALL CHANNEL FOR PLAYER
@@ -50,7 +48,6 @@ onBeforeMount(async () => {
     const changeChannel = (channel_id: number) => {
         emit('changeChannel', channel_id, true);
     }
-    
 
 </script>
 
