@@ -23,6 +23,7 @@ limited time) other users, but not the channel owners."   ----------------> kan 
 2. handle mute channelmembers -> messages
 3. handle blocked channelmembers -> messages
             - dan kan ik geen dm van diegene ontvangen/game invite
+4. handle als er een member toegevoegd wordt die al member is
 7. mute/ban/remove actions misschien toch wel via socket?? om zo de andere members op de hoogte
    te brengen
 12. overview van alle public/Protected channels die een player kan joinen & enter password dialog
@@ -61,7 +62,4 @@ limited time) other users, but not the channel owners."   ----------------> kan 
 
 
 
-====================== 25 JULI ========================
 
-1. test findPlayerDms
-2. test createDm
