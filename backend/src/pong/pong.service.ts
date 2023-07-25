@@ -83,8 +83,10 @@ export class PongService {
 	}
 
 	checkMatchEnding(match: Match): void {
-		if (match.score1 === 5 || match.score2 === 5)
+		if (match.score1 === 5 || match.score2 === 5){
 			delete this.matchList[match.id]
+			console.log("match", match.id, "deleted")
+		}
 	}
 
 	async tick(client: Socket): Promise<void> {

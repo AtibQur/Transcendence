@@ -7,7 +7,9 @@
 				<h1 class="dynamic-text">{{ dynamicText2 }}</h1>
 			</div>
 		</div>
-		<GameTools :player1="player1" :player2="player2" :ball="ball" :score1="score1" :score2="score2"/>
+		<div v-if="inMatch">
+			<GameTools :player1="player1" :player2="player2" :ball="ball" :score1="score1" :score2="score2"/>
+		</div>
 	</div>
 
 	<ResultScreen v-if="showResults" 
@@ -21,7 +23,7 @@
 	import GameTools from './GameTools.vue'
 	import ResultScreen from './ResultScreen.vue'
 	import { defineComponent } from 'vue'
-	import {socket_match_id, p1_socket_id, p2_socket_id, username1, username2, match_id} from './MatchMaking.vue'
+	import {socket_match_id, p1_socket_id, p2_socket_id, username1, username2} from './MatchMaking.vue'
 	import { useRouter } from 'vue-router'
 	import axiosInstance from '../../axiosConfig'
 
@@ -31,6 +33,7 @@
 data() {
 	return {
 		showResults: false,
+		inMatch: true,
 		dynamicText1: '',
 		dynamicText2: '',
 		end: false,
@@ -117,7 +120,7 @@ mounted() {
 		return;
 	}
 	this.moveInfo.socket_match_id = socket_match_id;
-	console.log("p1: ", username1, "p2:", username2)
+	console.log("p1 username: ", username1, "p2 username :", username2)
 	this.dynamicText1 = username1;
 	this.dynamicText2 = username2;
 	console.log("this user:", socket.id)
@@ -127,6 +130,7 @@ mounted() {
 	this.p2_socketId = p2_socket_id;
 	console.log("Player1 ID: ", p1_socket_id)
 	console.log("Player2 ID: ", p2_socket_id)
+	console.log("MATCH", socket_match_id)
 
 	socket.on('match',async (match: {
 		state: string
@@ -144,12 +148,13 @@ mounted() {
 		if (match.state === 'end'){
 			console.log("this match is finished")
 			this.showResults = true;
+			this.inMatch = false;
 		}
 		if (match.state === 'stop'){
 			this.stop = true;	
 			this.showResults = true;
+			this.inMatch = false;
 		}
-			
 			// this.$router.push('/play');
 	})
 

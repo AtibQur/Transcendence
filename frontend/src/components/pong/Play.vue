@@ -6,7 +6,12 @@
 		<div class="btns">
 			<button class="start-button" v-if="!showDifficulty && !startMatch" @click="showDifficulty = true">Solo Game</button>
 			<div v-if="!showDifficulty">
-				<button class="start-button" v-if="!startMatch" @click="joinGame">Join Game</button>
+				<div class="login" v-if="!playerId">
+					<h3> Please log in to play online </h3>
+				</div>
+				<div class="login" v-if="playerId">
+					<button class="start-button" v-if="!startMatch" @click="joinGame">Join Game</button>
+				</div>
 			</div>
 			<div v-if="showDifficulty">
 				<button class="start-button" v-if="!startSolo" @click="selectDifficulty('easy')">Easy</button>
@@ -32,6 +37,7 @@ export default defineComponent({
 	components: {SoloMatch, MatchMaking},
 data() {
 	return {
+			playerId: 0,
 			showDifficulty: false,
 			selectedDifficulty: 'easy',
 			startSolo: false,
@@ -59,6 +65,9 @@ methods: {
 		console.log('difficulty:', difficulty);
 		this.startSolo = true;
 	}
+},
+mounted() {
+	this.playerId = parseInt(sessionStorage.getItem('playerId') || '0');
 },
 })
 </script>
