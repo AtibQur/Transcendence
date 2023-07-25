@@ -82,7 +82,7 @@ export class ChatGateway {
             console.log('close connection');
     }
 
-    //ADD MESSAGE
+    //ADD CHANNEL
     // returns channel_id on success
     // returns null on failure
     @SubscribeMessage('addChannel')
@@ -100,6 +100,23 @@ export class ChatGateway {
             return channel_id;
         } catch (error) {
             console.log('Error creating channel: ', error);
+            return null;
+        }
+    }
+
+    @SubscribeMessage('addDm')
+    async addDm(
+        @MessageBody() payload: { player_id: number, friend_id: number },
+        @ConnectedSocket() client: Socket
+    ) {
+        try {
+            const dm_id = await this.channelService.createDm(payload.player_id, payload.friend_id);
+            client.join(dm_id.toString());
+
+            const friendUsername = await this.playerService.findOneIntraUsername(payload.friend_id);
+            this.server.to(friendUsername).emit('newDm', dm_id);
+        } catch (error) {
+            console.log('Error adding dm: ', error);
             return null;
         }
     }
@@ -151,8 +168,9 @@ export class ChatGateway {
             //notify player of new channel
             this.server.to(channel.member.intra_username).emit('newChannel', channel);
             
-            //notify channelmembers of new member
+            //notify channelmembers of new member --> toast does not work in socket.on
             this.server.to(channel.channel_id.toString()).emit('newChannelmember', {username: payload.channelmember_name, id: member.member_id});
+            
             return newChannelmember.id;
         } catch (error) {
             console.log('Error: ', error);
@@ -169,11 +187,14 @@ export class ChatGateway {
         @ConnectedSocket() client: Socket
     ) {
         try {
-            //!!! now able to create identical channelmembers.. should be unique?!
-            await this.channelmemberService.createChannelmember({ member_id: payload.playerId, channel_id: payload.channelId});
-            const channel = await this.channelService.findOneChannel(payload.channelId);
-            client.join(channel.id.toString());
-            console.log('joined new room');
+            if (!this.channelmemberService.isInChannel(payload.playerId, payload.channelId))
+                throw new Error('player is not member of channel');
+            
+            client.join(payload.channelId.toString());
+
+            const username = await this.playerService.findOneUsername(payload.playerId);
+            this.logger.log(`${username} joined new room`);
+
             return true;
         } catch (error) {
             console.log('Error joining channels: ', error);

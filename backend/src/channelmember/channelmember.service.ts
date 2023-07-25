@@ -86,9 +86,33 @@ export class ChannelmemberService {
   // FIND ALL CHANNELS WHERE PLAYER IS MEMBER
   async findPlayerDms(player_id: number) {
     try {
-        const allChannels = await this.findPlayerChannels(player_id);
-        const allDM = allMembers.filter((member) => member.is_admin === true);
+        const dms = await prisma.channelMember.findMany({
+            where: {
+              member_id: player_id,
+              channel: {
+                is_dm: true
+              }
+            },
+            select: {
+                channel_id: true,
+                channel: {
+                    select: {
+                        members: {
+                            select: {
+                                member_id: true,
+                                member: {
+                                    select: {
+                                        username: true
+                                    }
+                                }
+                            }
+                        }
+                    }
+                } 
+            }
+        });
 
+        return dms;
     }
     catch (error) {
         console.error('Error occurred:', error);
@@ -145,18 +169,18 @@ export class ChannelmemberService {
     try {
         const channelMember = await prisma.channelMember.findFirst({
             where: {
-            member_id: member_id,
-            channel_id: channel_id
+                member_id: member_id,
+                channel_id: channel_id
             },
             select: {
-            id: true,
-            member_id: true,
-            channel_id: true,
-            member: {
-                select: {
-                username: true,
-                intra_username: true
-                }
+                id: true,
+                member_id: true,
+                channel_id: true,
+                member: {
+                    select: {
+                    username: true,
+                    intra_username: true
+                    }
             },
             channel: {
                 select: {
@@ -417,12 +441,8 @@ export class ChannelmemberService {
   // returns deleted channelmember on success, nothing on error
   async remove(player_id: number, updateChannelmemberDto: UpdateChannelmemberDto) {
     try {
-    //   console.log('player_id: ', player_id);
-    //   console.log('memberdto: ', updateChannelmemberDto);
       const updater = await this.findChannelmember(player_id, updateChannelmemberDto.channel_id);
       const toUpdate = await this.findChannelmember(updateChannelmemberDto.member_id, updateChannelmemberDto.channel_id);
-    //   console.log('updater: ', updater);
-    //   console.log('toUpdate: ', toUpdate);
       if ((updater.is_admin && !toUpdate.is_owner) || updater.member_id === toUpdate.member_id) {
         const deletedMember = await prisma.channelMember.delete({
           where: {

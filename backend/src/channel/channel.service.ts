@@ -50,7 +50,6 @@ export class ChannelService {
       }
 
       await this.channelmemberService.createChannelmember(memberData);
-      this.logger.log('create new channelmember');
 
       return newChannel.id;
     }
@@ -77,13 +76,16 @@ export class ChannelService {
             
         const memberData: CreateChannelmemberDto = {
             member_id: friend_id,
-            channel_id: channel_id
+            channel_id: channel_id,
+            is_admin: true
         }
         
         // create channelmember of friend_id
         const friend = await this.channelmemberService.createChannelmember(memberData);
         if (!friend)
             throw new Error();
+        
+        return channel_id;
     }
     catch (error)
     {

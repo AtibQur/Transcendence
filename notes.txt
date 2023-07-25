@@ -5,9 +5,12 @@
 3. als een member geen vriend van je is en je blokkeert hem (kan dat dan uberhaupt??), ontvang je dan niks meer van hem?
 4. ontvangt de geblokkeerde nog wel dingen van jou?
 5. voor hoe lang muted? moet het een bepaalde tijd zijn of moet je zelf weer op 'unmute' klikken?
+    -> als je unmute bent, dan worden je oude berichten weer zichtbaar
 6. als je banned bent, blijf je dan nog wel member maar ben je zeg maar inactief? kan je ook unbanned worden?
 7. als banned member wordt je dan nog wel weergegeven in channelmember display?
 8. wat is het verschil tussen kick en ban
+9. dm met jezelf??
+10. MEEER ERROR CHECKING???
 
 "◦ The channel owner is a channel administrator. They can set other users as
 administrators.
@@ -19,19 +22,22 @@ limited time) other users, but not the channel owners."   ----------------> kan 
 
 2. handle mute channelmembers -> messages
 3. handle blocked channelmembers -> messages
-5. als owner de chat verlaten? wie wordt de owner? -----------> DONE
+            - dan kan ik geen dm van diegene ontvangen/game invite
 7. mute/ban/remove actions misschien toch wel via socket?? om zo de andere members op de hoogte
    te brengen
-8. mute member voor een bepaalde tijd
 12. overview van alle public/Protected channels die een player kan joinen & enter password dialog
-13. channelmember overview, currentplayer naam vervangen met 'you' --------> DONE
 14. types/interfaces toevoegen aan front & back end
 
 ===================== COMPLEX TASKS =======================
 
-1. persistent socket wanneer pagina wordt refreshed ----------> DONE
-        refresh gaat naar /chat dus als je in een chat zat dan gaat dat weg... misschien met queries op te lossen?!
+1. refresh gaat naar /chat dus als je in een chat zat dan gaat dat weg... misschien met queries op te lossen?!
 2. Direct messages -> channel?? wat voor channel name dan?
+    - maak create dm functies ---------> DONE
+    - weergeef alle dms voor player ------> DONE
+    - knop voor add dm
+    - zorg dat lijst van dms wordt geupdate als je een nieuwe dm hebt
+    - zorg dat je geen dm kan krijgen van een geblokkeerd iemand
+    - zorg dat je kan chattenw
 3. channelmembers voor een bepaalde tijd muten.
 4. in gateways een onderscheid kunnen maken tussen chat en game
 6.   "Think about network issues, like unexpected disconnection or lag.
@@ -50,3 +56,12 @@ limited time) other users, but not the channel owners."   ----------------> kan 
 
 1. toast doet gek in socket.on functies (heeft denk ik iets te maken met onBeforeMount & socket.on & async)
 2. leave room doet raar
+3. als je iemand verwijdert, dan wordt de verwijderde daar niet van op de hoogte gebracht
+
+
+
+
+====================== 25 JULI ========================
+
+1. test findPlayerDms
+2. test createDm

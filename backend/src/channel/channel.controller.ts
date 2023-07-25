@@ -54,4 +54,10 @@ export class ChannelController {
     return this.channelService.setPassword(+channel_id, +player_id, updateChannelDto);
   }
   
+
+  //TESTING
+  @Post('create/dm/:player_id/:friend_id')
+  addDm(@Param('player_id') player_id: string, @Param('friend_id') friend_id: string) {
+    return this.channelService.createDm(+player_id, +friend_id);
+  }
 }

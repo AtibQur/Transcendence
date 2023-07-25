@@ -9,10 +9,10 @@
                 <h3>Welcome {{ username }} {{ playerId }}!</h3>
                 <ChannelDisplay @changeChannel='changeChannel'/>
                 <AddChannel/>
-                <DmDisplay/> 
+                <DmDisplay @changeChannel="changeChannel"/> 
             </div>
             <div class="chat-box">
-                <div v-if="inChannel">
+                <div v-if="inChannel || inDm">
                     <ChatBox :channelId="channelId"/>
                     <AddMessage :channelId="channelId"/>
                 </div>
@@ -52,13 +52,22 @@ const confirm = useConfirm();
 const playerId = parseInt(sessionStorage.getItem('playerId') || '0');
 const username = sessionStorage.getItem('username') || '0';
 const inChannel = ref(false);
+const inDm = ref(false);
 const isAdmin = ref(false);
 const isOwner = ref(false);
 const channelId = ref(null);
 
-const changeChannel = async (channel_id: number) => {
+const changeChannel = async (channel_id: number, isChannel: boolean) => {
     channelId.value = channel_id;
-    inChannel.value = true;
+    if (isChannel) {
+        inChannel.value = true;
+        inDm.value = false;
+    }
+    else {
+        inChannel.value = false;
+        inDm.value = true;
+    }
+
     await fetchPlayerInfo();
 }
 
