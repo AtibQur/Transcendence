@@ -1,6 +1,5 @@
 <template>
-    <!-- <div v-on-click-outside="closeChannelInfo"> -->
-        <Sidebar ref="sidebarRef" v-model:visible="visible" position="right">
+        <Sidebar v-model:visible="visible" position="right">
             <ChannelmemberDisplay :channelId="currentChannelId" />
             <div v-if="isAdmin">
                 <AddChannelmember :channelId="currentChannelId"/>
@@ -10,7 +9,6 @@
                 <PasswordSettings :channelId="currentChannelId"/>
             </div>
         </Sidebar>
-    <!-- </div> -->
 </template>
 
 <script setup lang="ts">
@@ -26,11 +24,14 @@ import { useConfirm } from "primevue/useconfirm";
 
 const toast = useToast();
 const confirm = useConfirm();
-const sidebarRef = ref(null);
 
 const props = defineProps({
     channelId: {
         type: Number,
+        required: true
+    },
+    isDm: {
+        type: Boolean,
         required: true
     },
     isVisible: {
@@ -62,13 +63,15 @@ onBeforeMount(async () => {
         await fetchPlayerRights();
     });
 
+    //TRACK WHETHER SIDE BAR HAS CLOSED BECAUSE OF OUTSIDE CLICK
     watch(visible, (newValue) => {
         visible.value = newValue;
-        if (!visible.value) // if side bar is closed
+        if (!visible.value)
             emit('showInfo', false);
     });
 });
 
+//FETCH PLAYER'S RIGHTS
 const fetchPlayerRights = async () => {
     const response = await axiosInstance.get('channelmember/info/' + playerId.toString() + '/' + currentChannelId.value.toString());
     if (response.data)
@@ -92,6 +95,7 @@ const openConfirmDialog = () => {
     });
 };
 
+//LEAVE CHAT
 const leaveChat = async () => {
 
     await socket.emit('leaveRoom', {player_id: playerId, channel_id: currentChannelId.value}, (response) => {

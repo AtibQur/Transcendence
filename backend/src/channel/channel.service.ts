@@ -137,6 +137,31 @@ export class ChannelService {
     }
   }
 
+  //CHECK IF CHANNEL IS A DM
+  //returns true on succes, nothing on error
+  async isDm(id: number) {
+    try {
+        const selectedChannel = await prisma.channel.findUnique({
+            where: {
+                id: id,
+            },
+            select: {
+                is_dm: true
+            }
+        })
+
+        if (selectedChannel.is_dm)
+            return true;
+            
+        return false;
+
+    }
+    catch (error) {
+        console.log('Error checking if channel is a dm: ', error);
+        return false;
+    }
+  }
+
   //FIND ID OF CHANNEL OWNER
   // returns id on success, nothing on error
   async findOwnerId(id: number) {

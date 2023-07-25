@@ -15,7 +15,13 @@
                 <div v-if="inChannel || inDm">
                     <ChatBox @showInfo="showInfo" :channelId="channelId"/>
                     <AddMessage :channelId="channelId"/>
-                    <ChannelInfoDisplay @showInfo="showInfo" @changeChannel="changeChannel" :channelId="channelId" :isVisible="showChannelInfo"/>
+                    <ChannelInfoDisplay 
+                        @showInfo="showInfo"
+                        @changeChannel="changeChannel"
+                        :channelId="channelId"
+                        :isDm="inDm";
+                        :isVisible="showChannelInfo"
+                    />
                 </div>
             </div>
         </div>
@@ -54,8 +60,7 @@ const changeChannel = async (channel_id: number, isChannel: boolean) => {
 }
 
 const showInfo = async (isVisible: boolean) => {
-    if (inChannel.value)
-        showChannelInfo.value = isVisible;
+    showChannelInfo.value = isVisible;
 }
 
 </script>

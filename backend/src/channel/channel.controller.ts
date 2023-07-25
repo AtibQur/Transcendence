@@ -28,6 +28,13 @@ export class ChannelController {
     return this.channelService.isProtected(+channel_id);
   }
 
+  // CHECK IF CHANNEL IS A DM
+  //returns true on succes, nothing on error
+  @Get('dm/:channel_id')
+  isDm(@Param('channel_id') channel_id: string) {
+    return this.channelService.isDm(+channel_id);
+  }
+
   @Get('owner/:channel_id')
   findChannelOwnerId(@Param('channel_id') channel_id: string) {
     return this.channelService.findOwnerId(+channel_id);

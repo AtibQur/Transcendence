@@ -3,7 +3,7 @@
     <ul id="channelmemberList">
         <div class="card flex justify-content-center">
             <Sidebar v-model:visible="visible" position="right">
-                <UserOptionsMenu @removeChannelmember="removeChannelmember" :channelId="currentChannelId" :channelmember="selectedChannelmember"/>
+                <UserInfoDisplay @removeChannelmember="removeChannelmember" :channelId="currentChannelId" :channelmember="selectedChannelmember"/>
             </Sidebar>
         </div>
         <li v-for="(channelmember, index) in channelmembers" :key="index">
@@ -19,7 +19,7 @@ import { socket } from '../../socket';
 import axiosInstance from '../../axiosConfig';
 import { onBeforeMount, ref, watch } from 'vue'
 import Sidebar from 'primevue/sidebar';
-import UserOptionsMenu from './UserOptionsMenu.vue';
+import UserInfoDisplay from './UserInfoDisplay.vue';
 import { useToast } from 'primevue/usetoast';
 
 const toast = useToast();
