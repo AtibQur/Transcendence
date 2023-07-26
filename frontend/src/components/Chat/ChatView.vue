@@ -10,6 +10,7 @@
                 <ChannelDisplay @changeChannel='changeChannel'/>
                 <AddChannel/>
                 <DmDisplay @changeChannel="changeChannel"/> 
+                <AddDm/>
             </div>
             <div class="chat-box">
                 <div v-if="inChannel || inDm">
@@ -37,6 +38,7 @@ import Toast from 'primevue/toast';
 import ChatBox from './ChatBox.vue';
 import AddMessage from './AddMessage.vue';
 import DmDisplay from './DmDisplay.vue';
+import AddDm from './AddDm.vue';
 
 const playerId = parseInt(sessionStorage.getItem('playerId') || '0');
 const username = sessionStorage.getItem('username') || '0';
