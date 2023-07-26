@@ -26,7 +26,7 @@ export class ChatGateway {
         private readonly playerService: PlayerService,
         private readonly channelmemberService: ChannelmemberService,
         private readonly channelService: ChannelService,
-        private readonly chatmessageService: ChatmessageService
+        private readonly chatmessageService: ChatmessageService,
         ) {}
         
     private logger = new Logger('ChatGateway');

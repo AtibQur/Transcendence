@@ -101,7 +101,6 @@ const validateFields = async (friend_id: number) => {
     }
     if (await dmExists(friend_id)) // if the dm already exists
     {
-        console.log('hello');
         errorMessage.value = 'Dm already exists!';
         return false;
     }

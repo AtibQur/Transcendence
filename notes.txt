@@ -1,7 +1,6 @@
 ===================== ???????????? ========================
 
-1. chats kunnen niet dezelde namen hebben want anders wordt er alleen maar aan 1 chat gejoined -> want joined by name -------> SOLVED join chat id to string
-2. delete channel function?
+2. delete channel functie??
 3. als een member geen vriend van je is en je blokkeert hem (kan dat dan uberhaupt??), ontvang je dan niks meer van hem?
 4. ontvangt de geblokkeerde nog wel dingen van jou?
 5. voor hoe lang muted? moet het een bepaalde tijd zijn of moet je zelf weer op 'unmute' klikken?
@@ -12,33 +11,16 @@
 9. dm met jezelf??
 10. MEEER ERROR CHECKING???
 
-"◦ The channel owner is a channel administrator. They can set other users as
-administrators.
-◦ A user who is an administrator of a channel can kick, ban or mute (for a
-limited time) other users, but not the channel owners."   ----------------> kan alleen dus de owner anderen admin maken? of alle admin?
-
-
 ===================== SIMPLE TASKS ========================
 
 2. handle mute channelmembers -> messages
 3. handle blocked channelmembers -> messages
             - dan kan ik geen dm van diegene ontvangen/game invite
-4. handle als er een member toegevoegd wordt die al member is
-7. mute/ban/remove actions misschien toch wel via socket?? om zo de andere members op de hoogte
-   te brengen
-12. overview van alle public/Protected channels die een player kan joinen & enter password dialog
-14. types/interfaces toevoegen aan front & back end
+12. overview van alle public/Protected channels die een player kan joinen & enter password dialog (password compare bcrypt)
+13. channelinfo voor dm's -> geen 'add password & channelmember' en misschien remove channel ipv leave channel?
 
 ===================== COMPLEX TASKS =======================
 
-1. refresh gaat naar /chat dus als je in een chat zat dan gaat dat weg... misschien met queries op te lossen?!
-2. Direct messages -> channel?? wat voor channel name dan?
-    - maak create dm functies ---------> DONE
-    - weergeef alle dms voor player ------> DONE
-    - knop voor add dm
-    - zorg dat lijst van dms wordt geupdate als je een nieuwe dm hebt
-    - zorg dat je geen dm kan krijgen van een geblokkeerd iemand
-    - zorg dat je kan chattenw
 3. channelmembers voor een bepaalde tijd muten.
 4. in gateways een onderscheid kunnen maken tussen chat en game
 6.   "Think about network issues, like unexpected disconnection or lag.
@@ -46,20 +28,50 @@ limited time) other users, but not the channel owners."   ----------------> kan 
 
 ===================== EXTRA TASKS =======================
 
-1. weergeef tijd naast messages
-2. weergeef als iemand aan het typen is
-3. weergeef als iemand online komt/offline gaat
 4. toast als er nieuwe channelmember bij komt
 5. toast als je aan een nieuwe chat wordt toegevoegd.
 6. voeg logs voor alle activiteiten
+7. refresh gaat naar /chat dus als je in een chat zat dan gaat dat weg... misschien met queries op te lossen?!
+8. mute/ban/remove actions misschien toch wel via socket?? om zo de andere members op de hoogte
+   te brengen
+14. types/interfaces toevoegen aan front & back end
 
 ====================== BUGGGSSS ========================
 
 1. toast doet gek in socket.on functies (heeft denk ik iets te maken met onBeforeMount & socket.on & async)
-2. leave room doet raar
+2. leave room doet raar soms (gebeurt af en toe)
 3. als je iemand verwijdert, dan wordt de verwijderde daar niet van op de hoogte gebracht
 
 
+BLOCK
+
+tessa blokkeert maria
+    - ze zijn geen vrienden meer
+    - maria kan tessa niet tot vriend maken
+    - als tessa maria weer toevoegt dan wordt de blok opgeheven
+
+-> dm bestond al
+    - dm channel blijft bestaan
+    
+    maria:
+    - maria kan tessa geen berichten versturen --> worden ook niet gemaakt
+
+    tessa:
+    - tessa kan nog wel berichten sturen -> worden wel aangemaakt?!?!
+
+-> dm bestond niet
+
+    - dm channel kan niet aangemaakt worden ---> maar kan sws niet als je geen vrienden bent
+    - tessa moet maria eerst tot vriend maken om een dm channel te maken
+
+member (friend)page:
+ -> friend -> block button
+
+ if block button click -> delete friend
+
+ -> no friend -> -> add friend button
 
 
+ if friend
+ -> block
 
