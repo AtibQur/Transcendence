@@ -5,6 +5,9 @@
 	<button @click="StartAuth">
 		<img src="./assets/login_button.png" width="350" height="270">
 	</button>
+	<h1>
+		Click here to login with 42 :)
+	</h1>
 </template>
   
 <script setup lang="ts">
