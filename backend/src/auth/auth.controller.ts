@@ -53,18 +53,22 @@ export class AuthController {
     }
     
     // @UseGuards(AuthenticatedGuard)
-    @Post('2fa')
-    async twoFactorAuth(@Body() body: any, @Req() req: any, @Res() res: any) {
+    // @UseGuards()
+    @Get('2fa')
+    async twoFactorAuth(@Req() req: any, @Res() res: any) {
+        const token = req.header('Authorization').split(' ')[1];
+        const payload = await this.authService.validateToken(token as string);
+        const id = payload.id;
         var secret = speakeasy.generateSecret({ 
             name: 'trance',
         });
-        const payload = JSON.parse(body.payload);
-        await this.playerService.updateTfaCode(payload.id, secret.base32);
+        await this.playerService.updateTfaCode(id, secret.base32);
         qrCode.toDataURL(secret.otpauth_url, (err, data) => {
             if (err)
             return res.send('Error occured');
             res.send(data);
         });
+        return true;
     }
     
     // @UseGuards(AuthenticatedGuard)
@@ -77,15 +81,14 @@ export class AuthController {
             encoding: 'base32',
             token: body.submittedValue,
         });
-        console.log(code)
         if (verified) {
             const jwt = await this.authService.generateToken(payload);
-    
+            
+            console.log("verifieeedd")
             response.cookie('auth', jwt)
-            response.clearCookie('payload')
-            response.status(200).redirect('http://localhost:8080');
+            return jwt;
         }
-        return verified;
+        return false;
     }
 
-}
+} 

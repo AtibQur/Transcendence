@@ -13,8 +13,12 @@ w<template>
 
   const fetchImage = async () => {
     try {
-      const payload = getCookie('payload');
-      const response = await axios.post<string>('http://localhost:3000/auth/2fa', { payload });
+      const accesstoken = getCookie('auth');
+      const response = await axios.get('http://localhost:3000/auth/2fa', {
+        headers: {
+          Authorization: `Bearer ${accesstoken}`,
+        }
+      });
       imageData.value = response.data;
     } catch (error) {
       console.error(error);

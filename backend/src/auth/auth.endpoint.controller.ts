@@ -42,6 +42,7 @@ export class UserController {
         const token = req.header('Authorization').split(' ')[1];
         const payload = await this.authService.validateToken(token as string);
         await this.playerService.update2FA(payload.id, false);
+        await this.playerService.updateTfaCode(payload.id, null);
     }
 
     @Get('logout')
