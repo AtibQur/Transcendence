@@ -7,7 +7,7 @@ import { AuthService } from './auth.service';
 import { Verify } from 'crypto';
 import { request } from 'http';
 import { userInfo } from 'os';
-import { ENHANCER_TOKEN_TO_SUBTYPE_MAP } from '@nestjs/core/constants';
+import { AuthGuard } from './local.authguard';
 import { CreatePlayerDto } from 'src/player/dto/create-player.dto';
 import { builtinModules } from 'module';
 
@@ -53,7 +53,6 @@ export class AuthController {
     }
     
     // @UseGuards(AuthenticatedGuard)
-    // @UseGuards()
     @Get('2fa')
     async twoFactorAuth(@Req() req: any, @Res() res: any) {
         const token = req.header('Authorization').split(' ')[1];
