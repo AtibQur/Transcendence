@@ -97,7 +97,7 @@ onBeforeMount(async () => {
 
     currentChannelmemberInfo.value = await fetchChannelmemberInfo(currentChannelmemberId.value);
     profilePicture.value = await fetchAvatar(currentChannelmemberId.value);
-    isDm.value = await checkIfDm(currentChannelId);
+    isDm.value = await checkIfDm(currentChannelId.value);
 
     //TRACK WHETHER CHANNELMEMBER_ID CHANGES
     watch(() => props.channelmember, async (newChannelmember: {username: string, id: number}) => {

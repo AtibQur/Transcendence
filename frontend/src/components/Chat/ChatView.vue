@@ -19,7 +19,7 @@
                         @showInfo="showInfo"
                         @changeChannel="changeChannel"
                         :channelId="channelId"
-                        :isDm="inDm";
+                        :isDm="inDm"
                         :isVisible="showChannelInfo"
                     />
                 </div>
