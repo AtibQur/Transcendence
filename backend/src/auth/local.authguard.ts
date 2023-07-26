@@ -19,7 +19,6 @@ import { AuthService } from './auth.service';
 	  if (!token) {
 		throw new UnauthorizedException();
 	  }
-	  console.log(token)
 	  try {
 		const payload = await this.authService.validateToken(token);
 	  } catch {
