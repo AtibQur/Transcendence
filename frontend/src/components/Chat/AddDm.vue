@@ -80,8 +80,15 @@ const handleCloseButton = {
     },
 };
 
+const dmExists = async (friend_id: number) => {
+    const dm = await axiosInstance.get('channel/dm/' + playerId.toString() + '/' + friend_id.toString());
+    if (!dm.data)
+        return false
+    return true;
+}
+
 //VALIDATE FIELDS
-function validateFields() {
+const validateFields = async (friend_id: number) => {
     if (!selectedFriend.value) // if nothing is entered
     {
         errorMessage.value = 'Friend name required.';
@@ -90,6 +97,12 @@ function validateFields() {
     if (!friends.value.includes(selectedFriend.value)) // if the entered name is not a friend
     {
         errorMessage.value = 'Invalid name of friend';
+        return false;
+    }
+    if (await dmExists(friend_id)) // if the dm already exists
+    {
+        console.log('hello');
+        errorMessage.value = 'Dm already exists!';
         return false;
     }
     errorMessage.value = '';
@@ -104,18 +117,18 @@ function resetForm() {
 }
 
 //SUMBIT FORM
-const onSubmit = () => {
-    console.log('submit');
-    // if (validateFields())
-    // {
-    //     socket.emit('addDm', { player_id: playerId, friend_id: friend.id }, () => {
-    //         toast.add({ severity: 'info', summary: 'Added Channelmember successfully', detail: '', life: 3000 });
-    //         resetForm();
-    //     })
+const onSubmit = async () => {
+    const friend_id = await axiosInstance.get('player/profile/' + selectedFriend.value);
+    if (friend_id.data && await validateFields(friend_id.data))
+    {
+        socket.emit('addDm', { player_id: playerId, friend_id: friend_id.data }, () => {
+            toast.add({ severity: 'info', summary: 'Create Dm successfully', detail: '', life: 3000 });
+            resetForm();
+        })
 
-    //     if (!selectedFriend.value)
-    //         toast.add({ severity: 'error', summary: 'Error Channelmember not Added', detail: '', life: 3000 });
-    // }
+        if (!selectedFriend.value)
+            toast.add({ severity: 'error', summary: 'Error Dm is not created', detail: '', life: 3000 });
+    }
 };
 
 </script>

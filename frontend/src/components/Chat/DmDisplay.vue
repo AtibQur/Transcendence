@@ -23,20 +23,11 @@ onBeforeMount(async () => {
     // LISTEN IF A NEW CHANNEL IS ADDED
     socket.on('newDm', (dm) => {
         socket.emit('joinRoom', { playerId: playerId, channelId: dm.channel_id }, () => {
+            console.log('dm: ', dm);
             dms.value.push(dm);
+            console.log(dms.value);
         })
     });
-    
-    // UPDATE IF PLAYER IS IN ONLINE/OFFLINE
-    // await socket.on('leftChannel', (channelName: string) => {
-    //     const index = dms.value.findIndex((item) => item.channel.name === channelName);
-
-    //     if (index == -1)
-    //         console.log(`channel not found in channels`);
-    //     else 
-    //         dms.value.splice(index, 1);
-    // });
-
 })
     
     // FIND ALL CHANNEL FOR PLAYER

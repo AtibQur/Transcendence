@@ -35,6 +35,13 @@ export class ChannelController {
     return this.channelService.isDm(+channel_id);
   }
 
+  // CHECK IF DM OF PLAYER AND FRIEND ALREADY EXISTS
+  //returns true if it exists, otherwise false
+  @Get('dm/:player_id/:friend_id')
+  isExistingDm(@Param('player_id') player_id: string, @Param('friend_id') friend_id: string) {
+    return this.channelService.isExistingDm(+player_id, +friend_id);
+  }
+
   @Get('owner/:channel_id')
   findChannelOwnerId(@Param('channel_id') channel_id: string) {
     return this.channelService.findOwnerId(+channel_id);

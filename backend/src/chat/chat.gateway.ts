@@ -113,8 +113,12 @@ export class ChatGateway {
             const dm_id = await this.channelService.createDm(payload.player_id, payload.friend_id);
             client.join(dm_id.toString());
 
+            const playerUsername = await this.playerService.findOneUsername(payload.player_id);
             const friendUsername = await this.playerService.findOneIntraUsername(payload.friend_id);
-            this.server.to(friendUsername).emit('newDm', dm_id);
+            this.server.to(client.id).emit('newDm', {channel_id: dm_id, friend_username: friendUsername});
+            this.server.to(friendUsername).emit('newDm', {channel_id: dm_id, friend_username: playerUsername});
+            
+            return dm_id;
         } catch (error) {
             console.log('Error adding dm: ', error);
             return null;
@@ -195,30 +199,6 @@ export class ChatGateway {
             const username = await this.playerService.findOneUsername(payload.playerId);
             this.logger.log(`${username} joined new room`);
 
-            return true;
-        } catch (error) {
-            console.log('Error joining channels: ', error);
-            return false;
-        }
-    }
-
-    //JOIN ALL ROOMS OF PLAYER
-    // returns true on success
-    // returns false on failure
-    @SubscribeMessage('joinAllRooms')
-    async joinAllRooms(
-        @MessageBody() player_id: number,
-        @ConnectedSocket() client: Socket
-    ) {
-        try {
-            const channels = await this.channelmemberService.findPlayerChannels(player_id);
-            channels.forEach(function(channel) {
-                client.join(channel.channel_id.toString());
-              });
-            const intra_username = await this.playerService.findOneIntraUsername(player_id);
-            client.join(intra_username);
-            console.log('client joined all rooms');
-            console.log(client.rooms);
             return true;
         } catch (error) {
             console.log('Error joining channels: ', error);

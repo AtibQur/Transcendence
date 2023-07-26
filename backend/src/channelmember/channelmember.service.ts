@@ -57,7 +57,10 @@ export class ChannelmemberService {
     try {
       return prisma.channelMember.findMany({
           where: {
-            member_id: player_id
+            member_id: player_id,
+            channel: {
+                is_dm: false
+            }
           },
           include: {
                 member: {
