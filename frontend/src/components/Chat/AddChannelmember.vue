@@ -93,8 +93,21 @@ const handleCloseButton = {
     },
 };
 
+const channelmemberExists = async () => {
+    const channelmemberId = await axiosInstance.get('player/profile/' + newChannelmember.value);
+    if (channelmemberId.data)
+    {
+        const isInChannel = await axiosInstance.get('channelmember/channel/'
+                                                    + props.channelId.toString()
+                                                    + '/' + channelmemberId.data.toString());
+        if (isInChannel.data)
+            return true
+    }
+    return false;
+}
+
 //VALIDATE FIELDS
-function validateFields() {
+const validateFields = async () => {
     if (!newChannelmember.value)
     {
         errorMessage.value = 'Channelmember name required.';
@@ -103,6 +116,11 @@ function validateFields() {
     if (!friends.value.includes(newChannelmember.value))
     {
         errorMessage.value = 'Invalid name of friend';
+        return false;
+    }
+    if (await channelmemberExists()) // if the member already exists
+    {
+        errorMessage.value = 'Channelmember already exists!';
         return false;
     }
     errorMessage.value = '';
@@ -118,8 +136,8 @@ function resetForm() {
 }
 
 //SUMBIT FORM
-const onSubmit = () => {
-    if (validateFields())
+const onSubmit = async() => {
+    if (await validateFields())
     {
         socket.emit('addChannelmember', { channelmember_name: newChannelmember.value, channel_id: props.channelId, is_admin: isAdmin.value }, () => {
             toast.add({ severity: 'info', summary: 'Added Channelmember successfully', detail: '', life: 3000 });
