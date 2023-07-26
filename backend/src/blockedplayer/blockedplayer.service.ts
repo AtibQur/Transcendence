@@ -68,6 +68,7 @@ export class BlockedplayerService {
   // UNBLOCK A PLAYER
   async unblockPlayer(id: number, deleteBlockedplayerDto: DeleteBlockedplayerDto) {
     try {
+      console.log(deleteBlockedplayerDto.blockedUsername);
       const blockedId = await this.playerService.findIdByUsername(deleteBlockedplayerDto.blockedUsername);
       if (!blockedId) {
         throw new Error("Player does not exist");
