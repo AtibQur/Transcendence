@@ -8,8 +8,11 @@
       </div>
       <input type="text" v-model="newFriendName" class="friend-input" placeholder="Enter friend's name" @keydown="handleKeyPress">
       <div class="buttonContainer">
-        <button class="add-friend-button" @click="addFriend">Add Friend</button>
-        <button class="delete-friend-button" @click="deleteFriend">Delete Friend</button>
+        <button class="add-del-block-button" @click="addFriend">ADD</button>
+        <button class="add-del-block-button" @click="deleteFriend">DELETE</button>
+        <Toast />
+        <ConfirmPopup></ConfirmPopup>
+        <button class="add-del-block-button" @click="confirmBlock($event)">BLOCK</button>
       </div>
       <div class="friend-list">
         <div v-for="friend in friends" :key="friend.username" class="name-container aliceblue-bg">
@@ -27,7 +30,10 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
+import ConfirmPopup from 'primevue/confirmpopup';
+import Toast from 'primevue/toast';
 import { useToast } from 'primevue/usetoast';
+import { useConfirm } from "primevue/useconfirm";
 import axiosInstance from '../../../axiosConfig';
 
 interface Friend {
@@ -36,6 +42,10 @@ interface Friend {
 }
 
 export default defineComponent({
+  components: {
+    ConfirmPopup,
+    Toast,
+  },
   emits: ['close-menu'],
   data() {
     return {
@@ -43,7 +53,8 @@ export default defineComponent({
       friends: [] as Friend[], // Specify the type for the friends property
       hover: false,
       newFriendName: '',
-      toast: useToast()
+      toast: useToast(),
+      confirm: useConfirm(),
     };
   },
 
@@ -52,6 +63,21 @@ export default defineComponent({
   },
 
   methods: {
+    async confirmBlock(event) {
+      this.$confirm.require({
+        target: event.currentTarget,
+        message: 'Blocking this player will also remove the friendship. Are you sure you want to proceed?',
+        icon: 'pi pi-exclamation-triangle',
+        accept: () => {
+            // this.deleteFriend();
+            this.blockFriend();
+        },
+        reject: () => {
+            this.$toast.add({ severity: 'error', summary: 'Rejected', detail: 'Nobody is blocked.', life: 3000 });
+        }
+      });
+    },
+
     async loadFriends() {
       try {
         const response = await axiosInstance.get(`friend/username/${this.playerId}`);
@@ -110,6 +136,27 @@ export default defineComponent({
       }
     },
 
+    async blockFriend() {
+      try {
+        console.log("FRIENDNAME: ", this.newFriendName)
+        // NOTE TO SELF: waarom komt die newFriendName niet goed binnen bij de createBlockedplayer??
+        const response = await axiosInstance.post(`blockedplayer/add/${this.playerId}`, {
+          data: {
+            blockedUsername: this.newFriendName
+          }
+        });
+        if (response.data) {
+          this.toast.add({ severity: 'success', summary: 'Successfully blocked player', detail: '', life: 3000 });
+        }
+        else {
+          this.toast.add({ severity: 'error', summary: 'Error blocking player', detail: '', life: 3000 });
+        }
+      }
+      catch (error) {
+        console.error('Error occurred while blocking player:', error);
+      }
+    },
+
     handleKeyPress(event: KeyboardEvent) {
       if (event.key === 'Enter') {
         this.addFriend();
@@ -120,6 +167,10 @@ export default defineComponent({
 </script>
 
 <style scoped>
+
+.LoadFriendsContainer {
+    padding: 5px;
+}
 .LoadFriendsText {
   text-align: center;
   color: #1f6091;
@@ -235,20 +286,20 @@ export default defineComponent({
   margin-top: -50px;
 }
 
-.add-friend-button,
-.delete-friend-button {
+.add-del-block-button {
   width: 50%;
   padding: 5px;
   font-size: 18px;
   transition: background-color 0.3s;
   margin-top: 70px;
-  background-color: aliceblue;
-  color: #1f6091;
+  background-color: rgb(251, 253, 255);
+  color: #3172a4;
   border: none;
+  font-family: 'JetBrains Mono';
+  font-weight: bold;
 }
 
-.add-friend-button:hover,
-.delete-friend-button:hover {
+.add-del-block-button:hover {
   background-color: #abd0dd;;
   cursor: pointer;
 }
