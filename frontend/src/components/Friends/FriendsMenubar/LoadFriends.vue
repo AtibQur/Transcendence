@@ -2,12 +2,14 @@
   <div class="LoadFriendsContainer">
     <div class="LoadFriendsText">
       <div class="box" @click="$emit('close-menu')" @mouseenter="hover = true" @mouseleave="hover = false">
-        <h1 :class="{ 'close': hover }">{{ hover ? 'Exitoss' : 'Friends' }}</h1>
+        <div class="hover-wrapper" :class="{ 'close': hover }">
+          <h1>{{ hover ? 'Exit' : 'Friends' }}</h1>
+        </div>
       </div>
       <input type="text" v-model="newFriendName" class="friend-input" placeholder="Enter friend's name" @keydown="handleKeyPress">
       <div class="buttonContainer">
         <button class="add-friend-button" @click="addFriend">Add Friend</button>
-        <button class="block-player-button" @click="blockPlayer">Delete Friend</button>
+        <button class="delete-friend-button" @click="deleteFriend">Delete Friend</button>
       </div>
       <div class="friend-list">
         <div v-for="friend in friends" :key="friend.username" class="name-container aliceblue-bg">
@@ -25,9 +27,8 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
+import { useToast } from 'primevue/usetoast';
 import axiosInstance from '../../../axiosConfig';
-
-const playerId = parseInt(localStorage.getItem('playerId') || '0');
 
 interface Friend {
   username: string;
@@ -41,7 +42,8 @@ export default defineComponent({
       playerId: parseInt(sessionStorage.getItem('playerId') || '0'),
       friends: [] as Friend[], // Specify the type for the friends property
       hover: false,
-      newFriendName: ''
+      newFriendName: '',
+      toast: useToast()
     };
   },
 
@@ -64,36 +66,47 @@ export default defineComponent({
         const response = await axiosInstance.post(`friend/add/${this.playerId}`, {
           friendUsername: this.newFriendName
         });
-
-        const existingFriend = this.friends.find(friend => friend.username === this.newFriendName);
-        if (existingFriend) {
+        if (response.data) {
+          this.toast.add({ severity: 'success', summary: 'Successfully added friend', detail: '', life: 3000 });
+          const existingFriend = this.friends.find(friend => friend.username === this.newFriendName);
+          if (existingFriend) {
+            this.newFriendName = '';
+            return;
+          }
+  
+          const newFriend = {
+            username: this.newFriendName,
+            status: 'online' // NEEDS TO BE CHANGED WITH ACTUAL STATUS
+          };
+  
+          this.friends.push(newFriend);
           this.newFriendName = '';
-          return;
         }
-
-        const newFriend = {
-          username: this.newFriendName,
-          status: 'online' // NEEDS TO BE CHANGED WITH ACTUAL STATUS
-        };
-
-        this.friends.push(newFriend);
-        this.newFriendName = '';
+        else {
+          this.toast.add({ severity: 'error', summary: 'Error adding friend', detail: '', life: 3000 });
+        }
       } catch (error) {
         console.error('Error occurred while adding friend:', error);
       }
     },
 
-    async blockPlayer() {
+    async deleteFriend() {
       try {
-        await axiosInstance.delete(`friend/${this.playerId}`, {
+        const response = await axiosInstance.delete(`friend/${this.playerId}`, {
           data: {
             friendUsername: this.newFriendName
           }
         });
-        this.friends = this.friends.filter(friend => friend.username !== this.newFriendName); // Update the friends array
-        this.newFriendName = '';
+        if (response.data) {
+          this.toast.add({ severity: 'success', summary: 'Successfully deleted friend', detail: '', life: 3000 });
+          this.friends = this.friends.filter(friend => friend.username !== this.newFriendName); // Update the friends array
+          this.newFriendName = '';
+        }
+        else {
+          this.toast.add({ severity: 'error', summary: 'Error deleting friend', detail: '', life: 3000 });
+        }
       } catch (error) {
-        console.error('Error occurred while blocking player:', error);
+        console.error('Error occurred while deleting friend:', error);
       }
     },
 
@@ -223,7 +236,7 @@ export default defineComponent({
 }
 
 .add-friend-button,
-.block-player-button {
+.delete-friend-button {
   width: 50%;
   padding: 5px;
   font-size: 18px;
@@ -235,7 +248,7 @@ export default defineComponent({
 }
 
 .add-friend-button:hover,
-.block-player-button:hover {
+.delete-friend-button:hover {
   background-color: #abd0dd;;
   cursor: pointer;
 }
