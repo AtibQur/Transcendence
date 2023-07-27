@@ -13,7 +13,6 @@ export class FriendService {
   ) {}
 
   // ADD OTHER PLAYER AS FRIEND
-  // TODO: als friend eerst geblokkeerd was dan moet de block verwijderd worden!
   async addFriend(id: number, addFriendDto: AddFriendDto) {
     try {
       const friendId = await this.playerService.findIdByUsername(addFriendDto.friendUsername);

@@ -43,7 +43,7 @@ export class FriendController {
   }
 
   // CHECK IF FRIENDSHIP EXISTS
-  // returns id on success, nothing on error
+  // returns true or false
   @Get('id/:id/:friendId')
   findFriendshipId(@Param('id') id: string, @Param('friendId') friendId: string) {
     return this.friendService.findFriendshipId(+id, +friendId);
