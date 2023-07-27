@@ -24,6 +24,13 @@ export class ChannelmemberController {
     return this.channelmemberService.findPlayerChannels(+player_id);
   }
 
+  // FIND ALL CHANNELS WHERE PLAYER IS MEMBER
+  // TODO: move to channels module?
+  @Get('alldms/:player_id')
+  findPlayerDms(@Param('player_id') player_id: string) {
+    return this.channelmemberService.findPlayerDms(+player_id);
+  }
+
   // FIND ALL CHANNELMEMBERS OF CHANNEL
   @Get('allmembers/:channel_id')
   findAllChannelmembers(@Param('channel_id') channel_id: string) {

@@ -150,6 +150,7 @@
       if (newName.value != username.value) {
         throw new Error("Username already exists");
       }
+      sessionStorage.setItem('username', username.value); //update sessionstorage
       closeModal();
     } catch (error) {
       alert("Username already exists. Please choose a different username.");

@@ -1,9 +1,9 @@
 <template>
-    <!-- <Toast/> -->
     <div>
         <img :src="profilePicture" alt="Avatar" style="width:100%">
         <h3> {{ currentChannelmemberUsername }}</h3>
         <h4> {{ ( currentChannelmemberStatus ) }}</h4>
+        
         <!-- for testing purposes -->
         <div v-if="currentChannelmemberInfo.memberIsOwner">
             <h5>[OWNER]</h5>
@@ -17,32 +17,38 @@
         <div v-if="currentChannelmemberInfo.memberIsBanned">
             <h5>[BANNED]</h5>
         </div>
+
     </div>
     <div v-if="currentChannelmemberUsername != playerUsername">
         <div>
             <button>View Profile</button>
         </div>
         <div v-if="currentChannelmemberInfo.memberIsFriend">
-            <button>Send Message</button>
+            <div v-if="isDm">
+                <button>Send Message</button>
+            </div>
             <button>Invite To Play Pong</button>
         </div>
         <div v-else>
             <button @click="addFriend()">Add Friend</button>
         </div>
-        <div v-if="currentChannelmemberInfo.showMute">
-            <button @click="openConfirmDialog(Actions.MUTE)">Mute</button>
-        </div>
-        <div v-else>
-            <button @click="unmuteChannelmember()">Unmute</button>
-        </div>
-        <div v-if="currentChannelmemberInfo.showMakeAdmin">
-            <button @click="makeAdmin()">Make Admin</button>
-        </div>
-        <div v-if="currentChannelmemberInfo.showBan">
-            <button @click="openConfirmDialog(Actions.BAN)">Ban</button>
-        </div>
-        <div v-if="currentChannelmemberInfo.showDelete">
-            <button @click="openConfirmDialog(Actions.REMOVE);">Remove from Channel</button>
+        
+        <div v-if="!isDm">
+            <div v-if="currentChannelmemberInfo.showMute">
+                <button @click="openConfirmDialog(Actions.MUTE)">Mute</button>
+            </div>
+            <div v-if="!currentChannelmemberInfo.showMute && !currentChannelmemberInfo.memberIsOwner">
+                <button @click="unmuteChannelmember()">Unmute</button>
+            </div>
+            <div v-if="currentChannelmemberInfo.showMakeAdmin">
+                <button @click="makeAdmin()">Make Admin</button>
+            </div>
+            <div v-if="currentChannelmemberInfo.showBan">
+                <button @click="openConfirmDialog(Actions.BAN)">Ban</button>
+            </div>
+            <div v-if="currentChannelmemberInfo.showDelete">
+                <button @click="openConfirmDialog(Actions.REMOVE);">Remove from Channel</button>
+            </div>
         </div>
     </div>
     <div v-else>
@@ -85,12 +91,14 @@ const currentChannelmemberStatus = ref<string>('');
 const currentChannelmemberUsername  = ref<string>(props.channelmember.username);
 const currentChannelId = ref<number>(props.channelId);
 const profilePicture = ref('');
+const isDm = ref(false);
 
 onBeforeMount(async () => {
 
     currentChannelmemberInfo.value = await fetchChannelmemberInfo(currentChannelmemberId.value);
     profilePicture.value = await fetchAvatar(currentChannelmemberId.value);
-    
+    isDm.value = await checkIfDm(currentChannelId.value);
+
     //TRACK WHETHER CHANNELMEMBER_ID CHANGES
     watch(() => props.channelmember, async (newChannelmember: {username: string, id: number}) => {
         currentChannelmemberId.value = newChannelmember.id;
@@ -103,15 +111,15 @@ onBeforeMount(async () => {
 
 })
 
-    // FIND ALL MEMBERS OF CHANNEL
-    const fetchChannelmemberInfo = async (channelmemberId: number) => {
-        const channelmemberQuery = 'member_id=' + channelmemberId.toString();
-        const channelQuery = 'channel_id=' + currentChannelId.value.toString();
-        const responseRights = await axiosInstance.get('channelmember/rights/' + playerId + `?${channelmemberQuery}&${channelQuery}`);
-        const responseStatus = await axiosInstance.get('player/status/' + channelmemberId.toString());
-        currentChannelmemberStatus.value = responseStatus.data;
-        return responseRights.data;
-    }
+// FIND ALL MEMBERS OF CHANNEL
+const fetchChannelmemberInfo = async (channelmemberId: number) => {
+    const channelmemberQuery = 'member_id=' + channelmemberId.toString();
+    const channelQuery = 'channel_id=' + currentChannelId.value.toString();
+    const responseRights = await axiosInstance.get('channelmember/rights/' + playerId + `?${channelmemberQuery}&${channelQuery}`);
+    const responseStatus = await axiosInstance.get('player/status/' + channelmemberId.toString());
+    currentChannelmemberStatus.value = responseStatus.data;
+    return responseRights.data;
+}
 
 const fetchAvatar = async (channelmemberId: number) => {
     const response = await axiosInstance.get('player/avatar/' + channelmemberId.toString());
@@ -125,6 +133,16 @@ const fetchAvatar = async (channelmemberId: number) => {
     else
         console.log("Error could not fetch avatar");
   };
+
+const checkIfDm = async (channelId: number) => {
+    const response = await axiosInstance.get('channel/dm/' + channelId.toString());
+
+    if (response.data != null) {
+        return response.data;
+    }
+    else
+        console.log('Error could not check if channel is dm');
+}
 
 //CONFIRM DIALOG BUTTON
 const openConfirmDialog = (selectedAction: Actions) => {

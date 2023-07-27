@@ -28,6 +28,20 @@ export class ChannelController {
     return this.channelService.isProtected(+channel_id);
   }
 
+  // CHECK IF CHANNEL IS A DM
+  //returns true on succes, nothing on error
+  @Get('dm/:channel_id')
+  isDm(@Param('channel_id') channel_id: string) {
+    return this.channelService.isDm(+channel_id);
+  }
+
+  // CHECK IF DM OF PLAYER AND FRIEND ALREADY EXISTS
+  //returns true if it exists, otherwise false
+  @Get('dm/:player_id/:friend_id')
+  isExistingDm(@Param('player_id') player_id: string, @Param('friend_id') friend_id: string) {
+    return this.channelService.isExistingDm(+player_id, +friend_id);
+  }
+
   @Get('owner/:channel_id')
   findChannelOwnerId(@Param('channel_id') channel_id: string) {
     return this.channelService.findOwnerId(+channel_id);
@@ -54,4 +68,10 @@ export class ChannelController {
     return this.channelService.setPassword(+channel_id, +player_id, updateChannelDto);
   }
   
+
+  //TESTING
+  @Post('create/dm/:player_id/:friend_id')
+  addDm(@Param('player_id') player_id: string, @Param('friend_id') friend_id: string) {
+    return this.channelService.createDm(+player_id, +friend_id);
+  }
 }
