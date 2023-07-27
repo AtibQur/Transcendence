@@ -103,11 +103,11 @@ const fetchMatches = async (playerId: number) => {
 }
 
 .green-bg {
-  background-color: green;
+  background-color: var(--green-soft);
 }
 
 .red-bg {
-  background-color: red;
+  background-color: var(--red-soft);
 }
 
 .blue-text {

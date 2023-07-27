@@ -1,5 +1,5 @@
 <template>
-    <h4>Available Channels</h4>
+    <h4>Channels</h4>
     <ul id="channelList">
         <li v-for="(channel, index) in channels" :key="index">
             <button class="channel-display-button" @click="changeChannel(channel.channel_id)"> {{ channel.channel.name }} </button>
@@ -52,15 +52,23 @@ onBeforeMount(async () => {
 </script>
 
 <style>
-.channel-display-button {
-    background-color: transparent;
-    border: none;
-    cursor: pointer;
-    color: rgb(79, 76, 76);
-    text-decoration: underline;
-    transition: color 0.3s;
-    padding: 0;
-    margin: 0;
-}
+    .channel-display-button {
+        font-family: 'JetBrains Mono';
+        border: none;
+        cursor: pointer;
+        background-color: var(--white-moretransparent);
+        color: var(--black-soft);
+        min-height:30px; 
+        min-width: 300px;
+        text-align: left;
+        transition: color 0.3s;
+        padding: 20px;
+        margin: 0;
+    }
 
+    .channel-display-button:hover {
+        background-color: var(--blue-dark-transparent);
+        color: var(--white-softblue);
+        transition: 0.3s;
+    }
 </style>

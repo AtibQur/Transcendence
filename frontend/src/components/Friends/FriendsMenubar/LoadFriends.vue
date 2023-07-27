@@ -224,19 +224,19 @@ export default defineComponent({
 }
 
 .status-circle {
-  width: 15px;
-  height: 15px;
+  width: 12px;
+  height: 12px;
   border-radius: 50%;
   margin-right: 10px;
   margin-left: 5px;
 }
 
 .online {
-  background-color: green;
+  background-color: var(--green-soft);
 }
 
 .offline {
-  background-color: red;
+  background-color: var(--red-soft);
 }
 
 .profile-box {
