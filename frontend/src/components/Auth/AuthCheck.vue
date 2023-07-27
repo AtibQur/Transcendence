@@ -1,12 +1,9 @@
 <template>
-	<div>
-		<h1>Auth</h1>
-	</div>
-	<button @click="StartAuth">
-		<img src="./assets/login_button.png" width="350" height="270">
+	<button class="custom-button-1" @click="StartAuth" width="350" height="270">
+		Sign in with 42 School
 	</button>
 </template>
-  
+
 <script setup lang="ts">
 	// import dotenv from 'dotenv';
 	// import * as path from 'path';
@@ -26,12 +23,3 @@
 }
 
 </script>
-  
-<style>
-	button {
-	width: 350;
-	height: 270;
-	margin-top: 120px;
-	background-color: transparent;
-	}
-</style>
