@@ -2,6 +2,7 @@ import { Controller, Get, Header, Post, Req, Res, Session, UseGuards, Body } fro
 import { PlayerService } from 'src/player/player.service';
 import * as speakeasy from 'speakeasy';
 import * as qrCode from 'qrcode';
+import { AuthGuard } from './local.authguard';
 import e, { Request, Response } from 'express';
 import { AuthService } from './auth.service';
 
@@ -9,7 +10,9 @@ import { AuthService } from './auth.service';
 export class UserController {
     constructor(private readonly authService: AuthService,
         private readonly playerService: PlayerService) {}
+
     @Get('username')
+    @UseGuards(AuthGuard)
     async GetAuthStatus(@Req() request: Request) {
         const token = request.header('Authorization').split(' ')[1];
         const payload = await this.authService.validateToken(token as string);
@@ -17,6 +20,7 @@ export class UserController {
     }
 
     @Get('id')
+    @UseGuards(AuthGuard)
     async GetAuthId(@Req() req: any) {
         const token = req.header('Authorization').split(' ')[1];
         const payload = await this.authService.validateToken(token as string);
@@ -24,6 +28,7 @@ export class UserController {
     }
 
     @Get('intraId')
+    @UseGuards(AuthGuard)
     async GetAuthUser(@Req() req: any) {
         const token = req.header('Authorization').split(' ')[1];
         const payload = await this.authService.validateToken(token as string);
@@ -31,6 +36,7 @@ export class UserController {
     }
 
     @Get('enable2fa')
+    @UseGuards(AuthGuard)
     async Enable2FA(@Req() req: any) {
         const token = req.header('Authorization').split(' ')[1];
         const payload = await this.authService.validateToken(token as string);
@@ -38,10 +44,12 @@ export class UserController {
     }
     
     @Get('disable2fa')
+    @UseGuards(AuthGuard)
     async Disable2FA(@Req() req: any, @Res() res: Response) {
         const token = req.header('Authorization').split(' ')[1];
         const payload = await this.authService.validateToken(token as string);
         await this.playerService.update2FA(payload.id, false);
+        await this.playerService.updateTfaCode(payload.id, null);
     }
 
     @Get('logout')

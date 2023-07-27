@@ -208,6 +208,26 @@ async findIntraByUsername(username: string) {
     }
   }
 
+  // GET 2FA CODE
+
+  async findOne2FACode(id: number) {
+    try {
+      const selectedPlayer = await prisma.player.findUnique({
+        where: {
+          id: id,
+        },
+        select: {
+          two_factor_code: true
+        }
+      });
+      return selectedPlayer.two_factor_code;
+    }
+    catch (error) {
+      console.error('Error occurred:', error);
+      return null;
+    }
+  }
+
   // GET PLAYERS ACHIEVEMENTS
   async findOneAchievements(id: number) {
     try {
@@ -445,6 +465,22 @@ async findIntraByUsername(username: string) {
   }
     catch (error) {
       console.error('Error occurred', error);
+  }
+}
+
+async updateTfaCode(id: number, code: string) {
+  try {
+    await prisma.player.update({
+      where: {
+        id: id,
+      },
+      data: {
+        two_factor_code: code,
+      },
+    });
+  }
+  catch (error) {
+    console.error('Error occurred', error);
   }
 }
 
