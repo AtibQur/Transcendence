@@ -59,31 +59,32 @@
         </div>
       </div>
     </div>
-
+    
     <div v-if="showChangePictureModal" class="Modal" @click="closeModal">
       <div class="ModalContent" @click.stop>
         <h2>Profile Picture Change</h2>
         <div v-if="showChangePictureModal" class="show">
-      <ProfileAvatar @avatarUploaded="handleAvatarUploaded" />        </div>
-      </div>
-    </div>
-
-    <div v-if="showChangeTfaModal" class="Modal" @click="closeModal">
-      <div class="ModalContent" @click.stop>
-        <h2>Change 2FA Status</h2>
-        <div>
-          <p>2FA Status: </p>
-          <button @click="enableTFA">Enable</button>
-          <button @click="disableTFA">Disable</button>
+          <ProfileAvatar @avatarUploaded="handleAvatarUploaded" />        </div>
         </div>
       </div>
-    </div>
+      
+      <div v-if="showChangeTfaModal" class="Modal" @click="closeModal">
+        <div class="ModalContent" @click.stop>
+          <h2>Change 2FA Status</h2>
+          <div>
+            <p>2FA Status: </p>
+            <button @click="enableTFA">Enable</button>
+            <button @click="disableTFA">Disable</button>
+          </div>
+        </div>
+      </div>
 
   </div>
 </template>
 
 <script setup lang="ts">
   import { onBeforeMount, ref } from 'vue';
+  import ImageComponent from '../Auth/ImageComponent.vue';
   import axiosInstance from '../../axiosConfig';
   import ProfileAchievements from "./ProfileAchievements.vue";
   import ProfileStats from "./ProfileStats.vue";
@@ -98,6 +99,7 @@
   const status = ref("");
   const selectedOption = ref("Achievements");
   const showChangeNameModal = ref(false);
+  const showQRCode = ref(false);
   const newName = ref('');
   const profilePicture = ref("");
   const showChangePictureModal = ref(false);
@@ -177,8 +179,7 @@
   const enableTFA = async () => {
     showChangeTfaModal.value = false;
     try {
-      await axiosInstance.get('user/enable2fa');
-      alert("Two Factor Authorization enabled");
+      router.push({ name: '2fa' });
     } catch (error) {
       alert("Two Factor Authorization could not be enabled");
     }
