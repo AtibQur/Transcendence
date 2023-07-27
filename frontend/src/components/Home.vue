@@ -3,20 +3,23 @@
     <div class="PongLogo">
       <h1>PONG</h1>
     </div>
-    <!-- <label> Welcome {{ intraName }}!</label> -->
     <form @submit.prevent="initPlayerData">
             <input v-model="username" placeholder='Enter username'/>
             <button type="submit">Log in</button>
-    </form>  
+    </form>
+    <p></p>
     <div v-if="intraName">
-      <label> Welcome {{ intraName }}!</label>
+      <label> Intraname logged:   {{ intraName }}</label>
+      <p></p>
+      <label> Logged for testing: {{ logged_user }}</label>
     </div>
+    <p></p>
     <div class="PongTable">
       <ul>
         <li><router-link to="/play">Play</router-link></li>
         <li><router-link to="/leaderboard">Leaderboard</router-link></li>
         <li><router-link to="/chat">Chat</router-link></li>
-        <li><router-link to="/populatedatabase">Populate Database</router-link></li>
+        <li><router-link to="/profile">Profile</router-link></li>
       </ul>
     </div>
     <button @click="logOut">Log out</button>
@@ -34,6 +37,7 @@
   const username = ref('');
   const intraName = ref("");
   const router = useRouter();
+  const logged_user = sessionStorage.getItem('username') || '';
 //   import router from '@/router';
 
 //   const intraName = ref("");
