@@ -141,6 +141,7 @@ const onSubmit = async () => {
     position: relative;
     min-height:30px; 
     min-width: 120px;
+    margin: 5px;
     background-color: var(--white-transparent);
     color: var(--black-soft);
     cursor: pointer;

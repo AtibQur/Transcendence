@@ -5,6 +5,7 @@
             <button class="dm-display-button" @click="changeChannel(dm.channel_id)"> {{ dm.friend_username }} </button>
         </li>
     </ul>
+    <p></p>
 </template>
 
 <script setup lang="ts">

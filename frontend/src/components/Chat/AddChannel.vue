@@ -134,23 +134,3 @@ const onSubmit = () => {
 };
 
 </script>
-
-<style>
-  .custom-button-1 {
-    font-family: 'JetBrains Mono';
-    font-weight: bolder;
-    border:none; 
-    border-radius:10px;
-    position: relative;
-    min-height:30px; 
-    min-width: 120px;
-    background-color: var(--white-transparent);
-    color: var(--black-soft);
-    cursor: pointer;
-  }
-  .custom-button-1:hover {
-    background-color: var(--blue-dark-transparent);
-    color: var(--white-softblue);
-    transition: 0.3s;
-  }
-</style>
