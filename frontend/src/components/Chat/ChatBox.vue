@@ -1,5 +1,9 @@
 <template>
-    <h2> Chat: {{ channelName }} </h2>
+    <div>
+        <button class="channel-name-button" @click="showInfo()"> 
+            <b> {{ channelName }}</b>
+        </button>
+    </div>
     <div>
         <div v-for="message in messages" :key="message.id">
                 <!-- <h6> {{ getDateMsg(message.sent_at) }}</h6> -->
@@ -21,33 +25,19 @@ const props = defineProps({
     }
 });
 
+const emit = defineEmits(['showInfo']);
 const channelName = ref('');
 const messages = ref<Message[]>([]);
 const currentChannelId = ref(props.channelId);
 // const newDate = ref(true);
 const playerId = parseInt(sessionStorage.getItem('playerId') || '0');
-const dates = ref<string>([]);
+// const dates = ref<string>([]);
 
 onBeforeMount(async () => {
-    
-    // FIND CHANNEL MESSAGES FILTERED
-    const fetchChatMessagesFiltered = async (player_id: number, channel_id: number) => {
-        const channel_id_query = 'channel_id=' + channel_id.toString();
-        const response = await axiosInstance.get('chatmessage/filtered/' + player_id.toString() + `?${channel_id_query}`);
-        messages.value = response.data;
-        // return response.data;
-    };
-
-    //FIND CHANNEL NAME
-    const fetchChannelName = async (channelId: number) => {
-        const response = await axiosInstance.get('channel/' + channelId.toString());
-        channelName.value = response.data.name;
-    };
-
     await fetchChatMessagesFiltered(playerId, currentChannelId.value);
     await fetchChannelName(currentChannelId.value);
 
-
+    
     //ADD MESSAGE TO CURRENT MESSAGES
     socket.on('chatmessage', (message: Message) => {
         console.log("new message");
@@ -60,8 +50,40 @@ onBeforeMount(async () => {
         await fetchChatMessagesFiltered(playerId, currentChannelId.value);
         await fetchChannelName(currentChannelId.value);
     });
-
+    
 });
+
+// FIND CHANNEL MESSAGES FILTERED
+const fetchChatMessagesFiltered = async (player_id: number, channel_id: number) => {
+    const channel_id_query = 'channel_id=' + channel_id.toString();
+    const response = await axiosInstance.get('chatmessage/filtered/' + player_id.toString() + `?${channel_id_query}`);
+    messages.value = response.data;
+};
+
+//FIND CHANNEL NAME
+const fetchChannelName = async (channelId: number) => {
+    const response = await axiosInstance.get('channel/' + channelId.toString());
+    if (response.data)
+    {
+        if (!response.data.is_dm)
+            channelName.value = response.data.name;
+        else { //if the channel is a dm then channelname become the name of the friend
+            const members = await axiosInstance.get('channelmember/allmembers/' + channelId.toString());
+            if (members.data)
+            {
+                const friend = members.data.find((member) => member.member_id !== playerId);
+                if (friend)
+                    channelName.value = friend.member.username;
+            }
+        }
+    }
+    else
+        console.log('Error fetching channelname');
+};
+
+const showInfo = () => {
+    emit('showInfo', true);
+}
 
 // const createDateMsg = (dateStr: string) => {
 //     const date = new Date(dateStr)
@@ -115,6 +137,17 @@ ul {
     list-style-type: none;
     padding: 0;
     margin: 0;
+}
+
+.channel-name-button {
+    background-color: transparent;
+    border: none;
+    cursor: pointer;
+    color: rgb(79, 76, 76);
+    font-size: large;
+    transition: color 0.3s;
+    padding: 0;
+    margin: 2em;
 }
 
 

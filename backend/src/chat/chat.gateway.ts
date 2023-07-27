@@ -12,6 +12,7 @@ import { ChatmessageService } from 'src/chatmessage/chatmessage.service';
 import { CreateChatmessageDto } from 'src/chatmessage/dto/create-chatmessage.dto';
 import { CreateChannelDto } from 'src/channel/dto/create-channel.dto';
 import { CreateChannelmemberDto } from 'src/channelmember/dto/create-channelmember.dto';
+import { UpdateChannelmemberDto } from 'src/channelmember/dto/update-channelmember.dto';
 
 @WebSocketGateway({
 	cors: {
@@ -25,7 +26,7 @@ export class ChatGateway {
         private readonly playerService: PlayerService,
         private readonly channelmemberService: ChannelmemberService,
         private readonly channelService: ChannelService,
-        private readonly chatmessageService: ChatmessageService
+        private readonly chatmessageService: ChatmessageService,
         ) {}
         
     private logger = new Logger('ChatGateway');
@@ -81,7 +82,7 @@ export class ChatGateway {
             console.log('close connection');
     }
 
-    //ADD MESSAGE
+    //ADD CHANNEL
     // returns channel_id on success
     // returns null on failure
     @SubscribeMessage('addChannel')
@@ -99,6 +100,27 @@ export class ChatGateway {
             return channel_id;
         } catch (error) {
             console.log('Error creating channel: ', error);
+            return null;
+        }
+    }
+
+    @SubscribeMessage('addDm')
+    async addDm(
+        @MessageBody() payload: { player_id: number, friend_id: number },
+        @ConnectedSocket() client: Socket
+    ) {
+        try {
+            const dm_id = await this.channelService.createDm(payload.player_id, payload.friend_id);
+            client.join(dm_id.toString());
+
+            const playerUsername = await this.playerService.findOneUsername(payload.player_id);
+            const friendUsername = await this.playerService.findOneIntraUsername(payload.friend_id);
+            this.server.to(client.id).emit('newDm', {channel_id: dm_id, friend_username: friendUsername});
+            this.server.to(friendUsername).emit('newDm', {channel_id: dm_id, friend_username: playerUsername});
+            
+            return dm_id;
+        } catch (error) {
+            console.log('Error adding dm: ', error);
             return null;
         }
     }
@@ -150,8 +172,9 @@ export class ChatGateway {
             //notify player of new channel
             this.server.to(channel.member.intra_username).emit('newChannel', channel);
             
-            //notify channelmembers of new member
+            //notify channelmembers of new member --> toast does not work in socket.on
             this.server.to(channel.channel_id.toString()).emit('newChannelmember', {username: payload.channelmember_name, id: member.member_id});
+            
             return newChannelmember.id;
         } catch (error) {
             console.log('Error: ', error);
@@ -168,35 +191,14 @@ export class ChatGateway {
         @ConnectedSocket() client: Socket
     ) {
         try {
-            //!!! now able to create identical channelmembers.. should be unique?!
-            await this.channelmemberService.createChannelmember({ member_id: payload.playerId, channel_id: payload.channelId});
-            const channel = await this.channelService.findOneChannel(payload.channelId);
-            client.join(channel.id.toString());
-            console.log('joined new room');
-            return true;
-        } catch (error) {
-            console.log('Error joining channels: ', error);
-            return false;
-        }
-    }
+            if (!this.channelmemberService.isInChannel(payload.playerId, payload.channelId))
+                throw new Error('player is not member of channel');
+            
+            client.join(payload.channelId.toString());
 
-    //JOIN ALL ROOMS OF PLAYER
-    // returns true on success
-    // returns false on failure
-    @SubscribeMessage('joinAllRooms')
-    async joinAllRooms(
-        @MessageBody() player_id: number,
-        @ConnectedSocket() client: Socket
-    ) {
-        try {
-            const channels = await this.channelmemberService.findPlayerChannels(player_id);
-            channels.forEach(function(channel) {
-                client.join(channel.channel_id.toString());
-              });
-            const intra_username = await this.playerService.findOneIntraUsername(player_id);
-            client.join(intra_username);
-            console.log('client joined all rooms');
-            console.log(client.rooms);
+            const username = await this.playerService.findOneUsername(payload.playerId);
+            this.logger.log(`${username} joined new room`);
+
             return true;
         } catch (error) {
             console.log('Error joining channels: ', error);
@@ -213,13 +215,13 @@ export class ChatGateway {
         @ConnectedSocket() client: Socket
     ) {
         try {
-            const member: CreateChannelmemberDto = {
+            const member: UpdateChannelmemberDto = {
                 member_id: payload.player_id,
                 channel_id: payload.channel_id,
             }
             
-            const deletedMember = await this.channelmemberService.remove(payload.player_id, member);
-            console.log('deleted:', deletedMember);
+            //added 'any' in order to resolve types error -> change to interface
+            const deletedMember: any = await this.channelmemberService.remove(payload.player_id, member);
             if (!deletedMember)
                 throw new Error();
             console.log(`player left the channel`);
@@ -231,6 +233,10 @@ export class ChatGateway {
 
             //disconnect socket from room
             client.leave(channel.id.toString());
+
+            //if member is owner, a new owner needs to be set
+            if (deletedMember.is_owner)
+                await this.channelService.setNewOwner(channel.id)
 
             //notify other channelmembers that a channelmember has left the channel
             this.server.to(channel.id.toString()).emit('removeChannelmember', deletedMember.member_id, channel.name);

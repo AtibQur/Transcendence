@@ -11,11 +11,8 @@
 import { socket } from '../../socket';
 import axiosInstance from '../../axiosConfig';
 import { onBeforeMount, ref} from 'vue'
-import { useToast } from 'primevue/usetoast';
 
-const toast = useToast();
 const emit = defineEmits(['changeChannel']);
-
 const playerId = parseInt(sessionStorage.getItem('playerId') || '0');
 const channels = ref([]);
 
@@ -25,11 +22,13 @@ onBeforeMount(async () => {
     
     // LISTEN IF A NEW CHANNEL IS ADDED
     socket.on('newChannel', (channel) => {
-        channels.value.push(channel);
+        socket.emit('joinRoom', { playerId: playerId, channelId: channel.channel_id }, () => {
+            channels.value.push(channel);
+        })
     });
     
     // UPDATE CHANNEL DISPLAY IF PLAYER LEAVE A CHANNEL
-    await socket.on('leftChannel', (channelName: string) => {
+    socket.on('leftChannel', (channelName: string) => {
         const index = channels.value.findIndex((item) => item.channel.name === channelName);
 
         if (index == -1)
@@ -37,7 +36,6 @@ onBeforeMount(async () => {
         else 
             channels.value.splice(index, 1);
     });
-
 })
     
     // FIND ALL CHANNEL FOR PLAYER
@@ -48,9 +46,8 @@ onBeforeMount(async () => {
 
     // EVENT TO CHANGE CURRENT CHANNEL
     const changeChannel = (channel_id: number) => {
-        emit('changeChannel', channel_id);
+        emit('changeChannel', channel_id, true);
     }
-    
 
 </script>
 
@@ -59,15 +56,11 @@ onBeforeMount(async () => {
     background-color: transparent;
     border: none;
     cursor: pointer;
-  color: #000;
-  text-decoration: underline;
-  transition: color 0.3s;
-  padding: 0;
-  margin: 0;
-}
-
-.channel-display-button {
-  color: rgb(79, 76, 76);
+    color: rgb(79, 76, 76);
+    text-decoration: underline;
+    transition: color 0.3s;
+    padding: 0;
+    margin: 0;
 }
 
 </style>

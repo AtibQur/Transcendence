@@ -1,12 +1,12 @@
 <template>
+    <div v-if="!isProtected">
+        <button @click="showDialog(PasswordAction.ADD)">Add Password</button>
+    </div>
+    <div v-else>
+        <button @click="showDialog(PasswordAction.CHANGE)">Change Password</button>
+        <button @click="openConfirmDialog()">Remove Password</button>
+    </div>
     <div class="card flex justify-content-center p-fluid">
-        <div v-if="!isProtected">
-            <button @click="showDialog(PasswordAction.ADD)">Add Password</button>
-        </div>
-        <div v-else>
-            <button @click="showDialog(PasswordAction.CHANGE)">Change Password</button>
-            <button @click="openConfirmDialog()">Remove Password</button>
-        </div>
         <Dialog v-model:visible="isVisible" modal header="New Password" :style="{ width: '50vw' }">
             <form @submit.prevent="setPassword()">
                 <div class="p-field">
