@@ -1,5 +1,5 @@
 <template>
-    <button @click="showDialog()">Add Channelmember</button>
+    <button class="custom-button-1" @click="showDialog()">Add Channelmember</button>
     <div class="card flex justify-content-center p-fluid">
         <Dialog v-model:visible="isVisible" modal header="New Channelmember" :style="{ width: '50vw' }" :closeButtonProps="handleCloseButton">
             <form @submit.prevent="onSubmit">

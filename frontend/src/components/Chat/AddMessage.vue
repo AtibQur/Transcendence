@@ -1,8 +1,8 @@
 <template>
-    <div class="message-input">
+    <div class="new-message">
         <form @submit.prevent="sendMessage">
-            <input v-model="content" placeholder='Write a message'/>
-            <button type="submit">Send</button>
+            <input v-model="content" placeholder='Write a message' class="message-input"/>
+            <button class="simple-button" type="submit">Send</button>
         </form>
     </div>
 </template>
@@ -36,4 +36,24 @@ const sendMessage = () => {
 </script>
 
 <style>
+.simple-button {
+    font-family: 'JetBrains mono';
+    border: none;
+    cursor: pointer;
+}
+
+.simple-button:hover {
+    color: var(--blue-medium)
+}
+
+.message-input {
+    font-family: 'JetBrains mono';
+    font-style: italic;
+    background-color: var(--gray-light);
+    border-radius:10px;
+    border: none;
+    width: 90%;
+    padding: 10px;
+    margin: 10px;
+}
 </style>

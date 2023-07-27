@@ -1,10 +1,10 @@
 <template>
-        <Sidebar v-model:visible="visible" position="right">
+        <Sidebar v-model:visible="visible" position="right" class="custom-sidebar">
             <ChannelmemberDisplay :channelId="currentChannelId" />
             <div v-if="isAdmin">
                 <AddChannelmember :channelId="currentChannelId"/>
             </div>
-            <button @click="openConfirmDialog">Leave Chat</button>
+            <button class="custom-button-1" @click="openConfirmDialog">Leave Chat</button>
             <div v-if="isOwner">
                 <PasswordSettings :channelId="currentChannelId"/>
             </div>
@@ -110,3 +110,11 @@ const leaveChat = async () => {
 }
 
 </script>
+
+<style>
+
+.custom-sidebar {
+  background-color: var(--blue-light);
+  border-left: 1px solid var(--gray-medium);
+}
+</style>
