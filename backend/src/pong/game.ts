@@ -1,6 +1,7 @@
 import { User } from './interfaces/user.interface';
 import { Ball } from './interfaces/ball.interface';
 import { Game } from './interfaces/state.interface';
+import { PowerUp } from './interfaces/powerUp.interface';
 
 export class PongGame {
 	private canvasWidth = 858;
@@ -30,7 +31,15 @@ export class PongGame {
 	private _game: Game = {
 		state: 'start',
 	};
+	private _powerUp: PowerUp = {
+		type: 0,
+		x: 0,
+		y: 0,
+	};
 
+	get powerUp(): PowerUp {
+		return (this._powerUp)
+	}
 	get ball(): Ball {
 		return this._ball;
 	}
@@ -53,37 +62,50 @@ export class PongGame {
 		ball.y = Math.min(Math.max((Math.random() * this.canvasHeight), 100), 
 		this.canvasHeight - 100);
 	}
+
 	canvasCollision(player1, player2, ball) {
-		if (ball.x + this.ball.radius > this.canvasWidth - 10 || ball.x < 0) {
+		if (ball.x > this.canvasWidth || ball.x < 0) {
 			ball.dX =- ball.dX;
 		}
-		if (ball.y + this.ball.radius > this.canvasHeight - 10 || ball.y < 0) {
+		if (ball.y + this.ball.radius > this.canvasHeight - 20 || ball.y < 0) {
 			ball.dY =- ball.dY;
 		}
 		if (ball.x < 0){
 			player2.score++;
 			this.resetBall(ball);
 		}
-		if (ball.x + this.ball.radius > 848){
+		if (ball.x > 843){
 			player1.score++;
 			this.resetBall(ball);
 		}
 	}
+
 	paddleCollision(player1, player2, ball) {
-		const paddleTop = player1.y - 40;
-		const paddleBottom = player1.y + 40;
+		const paddleTop = player1.y - 45;
+		const paddleBottom = player1.y + 45;
 		const ballCenter = ball.y + (this.ball.radius / 2);
+		// Left Paddle
 		if (ball.x < 20 && ball.x > 15 && ballCenter >= paddleTop && 
 			ballCenter <= paddleBottom) {
 			ball.dX =- ball.dX;
-			ball.velocity += 0.01;
+			ball.velocity += 0.002;
 		}
-		if (ball.x < this.canvasWidth - 20 && ball.x > this.canvasWidth - 40 && 
-			ballCenter >= player2.y - 40 && ballCenter <= player2.y + 40) {
+		// Right Paddle
+		if (ball.x < this.canvasWidth - 10 && ball.x > this.canvasWidth - 50 && 
+			ballCenter >= player2.y - 45 && ballCenter <= player2.y + 45) {
 			ball.dX =- ball.dX;
-			ball.velocity += 0.01;
+			ball.velocity += 0.002;
 		}
 	}
+
+	checkPowerUp(){
+		if (this.player1.score == 3){
+			this.powerUp.type = 1;
+			this.powerUp.x = 422;
+			this.powerUp.y = 251;
+		}
+	}
+
 	moveBall(player1, player2, ball) {
 		ball.x += ball.dX * ball.velocity;
 		ball.y += ball.dY * ball.velocity;
@@ -93,10 +115,14 @@ export class PongGame {
 		this.canvasCollision(player1, player2, ball);
 		this.paddleCollision(player1, player2, ball);
 	}
+
 	updateGame(player1, player2, ball) {
 		for (let i = 0; i < ball.velocity; i++)
 			this.moveBall(player1, player2, ball);
-		if (player1.score === 5 || player2.score === 5)
+
+		this.checkPowerUp()
+
+		if (player1.score === 10 || player2.score === 10)
 			this.game.state = 'end'
 	}
 }

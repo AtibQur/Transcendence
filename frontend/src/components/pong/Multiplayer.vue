@@ -7,9 +7,18 @@
 				<h1 class="dynamic-text">{{ dynamicText2 }}</h1>
 			</div>
 		</div>
-		<div v-if="inMatch">
-			<GameTools :player1="player1" :player2="player2" :ball="ball" :score1="score1" :score2="score2"/>
-		</div>
+		<!-- <img
+			class:="pixel-power-up"
+			src="../../assets/images/PONG_logo.png"
+			alt="Pixel Power Up"
+			:style="{ top: powerUpPos.y + 'px', left: powerUpPos.x + 'px'}"
+		/> -->
+		<GameTools :player1="player1" :player2="player2" 
+			:ball="ball" 
+			:score1="score1" :score2="score2"
+			:powerUpPixel="powerUpPixel"
+			:powerUpVisable="powerUpVisable" />
+		<!-- <PowerUp :powerUpPixel="powerUpPixel" /> -->
 	</div>
 
 	<ResultScreen v-if="showResults" 
@@ -20,12 +29,15 @@
 
 <script lang="ts">
 	import { socket } from '../../socket'
-	import GameTools from './GameTools.vue'
-	import ResultScreen from './ResultScreen.vue'
 	import { defineComponent } from 'vue'
 	import {socket_match_id, p1_socket_id, p2_socket_id, username1, username2} from './MatchMaking.vue'
 	import { useRouter } from 'vue-router'
 	import axiosInstance from '../../axiosConfig'
+
+	import GameTools from './GameTools.vue'
+	import ResultScreen from './ResultScreen.vue'
+	import PowerUp from './PowerUp.vue'
+
 
 	export default defineComponent({
 	name: "MultiplayerMatch",
@@ -33,7 +45,6 @@
 data() {
 	return {
 		showResults: false,
-		inMatch: true,
 		dynamicText1: '',
 		dynamicText2: '',
 		end: false,
@@ -42,11 +53,11 @@ data() {
 		router: useRouter(),
 		canvas: {
 			width: 858,
-			height: 525,
+			height: 526,
 		},
 		ball: {
-			x: 429,
-			y: 262,
+			x: 429 - 10,
+			y: 263 - 10,
 			radius: 10,
 			dX: 1,
 			dY: 1,
@@ -54,6 +65,7 @@ data() {
 		},
 		player1: {
 			y: 262,
+			h: 80,
 		},
 		player2: {
 			y: 262,
@@ -71,6 +83,17 @@ data() {
 		p1_socketId: '',
 		p2_socketId: '',
 		stop: false,
+		powerUp: {
+			type: 0,
+			x: 0,
+			y: 0,
+		},
+		// powerUpSrc: "frontend/src/components/pong/powerUp-pixel-art/power-up1.png",
+		powerUpPixel: {
+			x: 0,
+			y: 0,
+		},
+		powerUpVisable: false,
 	};
 },
 
@@ -91,7 +114,7 @@ methods: {
 			this.moveInfo.move -= 2;
 			socket.emit('move', this.moveInfo);
 		}
-		if (this.keysPressed['s'] && this.moveInfo.move < this.canvas.height - 40){
+		if (this.keysPressed['s'] && this.moveInfo.move < this.canvas.height - 50){
 			this.moveInfo.move += 2;
 			socket.emit('move', this.moveInfo);
 		}
@@ -109,7 +132,32 @@ methods: {
 			finished_match_res = await axiosInstance.patch('match/finish/' + match_id.toString(), {player_points: this.score1, opponent_points: this.score2});
 			console.log("Finished match data:", finished_match_res.data)
 		}
-		//
+	},
+
+	checkPowerUp(powerUp: any){
+		// console.log("use powerUp", powerUp, "now")
+		if (powerUp){
+			if (powerUp.type === 1){
+				this.powerUpVisable = true;
+				this.powerUpPixel.x = powerUp.x;
+				this.powerUpPixel.y = powerUp.y;
+			}
+		}
+	},
+
+	printInfo() {
+		this.moveInfo.socket_match_id = socket_match_id;
+		console.log("p1 username: ", username1, "p2 username :", username2)
+		this.dynamicText1 = username1;
+		this.dynamicText2 = username2;
+		console.log("this user:", socket.id)
+		if (socket.id === undefined)
+			this.$router.push('/play');
+		this.p1_socketId = p1_socket_id;
+		this.p2_socketId = p2_socket_id;
+		console.log("Player1 ID: ", p1_socket_id)
+		console.log("Player2 ID: ", p2_socket_id)
+		console.log("MATCH", socket_match_id)
 	}
 },
 
@@ -119,19 +167,8 @@ mounted() {
 		console.log('Socket not connected')
 		return;
 	}
-	this.moveInfo.socket_match_id = socket_match_id;
-	console.log("p1 username: ", username1, "p2 username :", username2)
-	this.dynamicText1 = username1;
-	this.dynamicText2 = username2;
-	console.log("this user:", socket.id)
-	if (socket.id === undefined)
-		this.$router.push('/play');
-	this.p1_socketId = p1_socket_id;
-	this.p2_socketId = p2_socket_id;
-	console.log("Player1 ID: ", p1_socket_id)
-	console.log("Player2 ID: ", p2_socket_id)
-	console.log("MATCH", socket_match_id)
 
+	this.printInfo();
 	socket.on('match',async (match: {
 		state: string
 		ball: any
@@ -139,23 +176,24 @@ mounted() {
 		player2: number
 		score1: number
 		score2: number
+		powerUp: any
 	}) => {
 		this.ball = match.ball;
 		this.player1.y = match.player1
 		this.player2.y = match.player2
 		this.score1 = match.score1
 		this.score2 = match.score2
+		this.powerUp = match.powerUp
+
+		this.checkPowerUp(this.powerUp);
 		if (match.state === 'end'){
 			console.log("this match is finished")
 			this.showResults = true;
-			this.inMatch = false;
 		}
 		if (match.state === 'stop'){
 			this.stop = true;	
 			this.showResults = true;
-			this.inMatch = false;
 		}
-			// this.$router.push('/play');
 	})
 
 	window.addEventListener('keyup', this.keyUp);

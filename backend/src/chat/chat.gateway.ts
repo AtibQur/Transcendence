@@ -34,37 +34,37 @@ export class ChatGateway {
     //HANDLES NEW INCOMING SOCKET CONNECTION,
     // ADDS USER AND ID TO MAP
     // AND JOINS IT TO ALL SUBSCRIBED ROOMS
-    async handleConnection(@ConnectedSocket() client: Socket){
-        if (!client.handshake.auth.username._value) //if nobody is logged in
-            client.disconnect();
-        this.connectedSockets.set(client.handshake.auth.username._value, client.id)
+    // async handleConnection(@ConnectedSocket() client: Socket){
+    //     if (!client.handshake.auth.username._value) //if nobody is logged in
+    //         client.disconnect();
+    //     this.connectedSockets.set(client.handshake.auth.username._value, client.id)
         
-        const channels = await this.channelmemberService.findPlayerChannels(client.handshake.auth.playerId);
-        channels.forEach(function(channel) {
-            client.join(channel.channel.name);
-          });
-        const intra_username = await this.playerService.findOneIntraUsername(client.handshake.auth.playerId);
-        client.join(intra_username);
-        console.log('client joined all rooms');
-        console.log(client.rooms);
+    //     const channels = await this.channelmemberService.findPlayerChannels(client.handshake.auth.playerId);
+    //     channels.forEach(function(channel) {
+    //         client.join(channel.channel.name);
+    //       });
+    //     const intra_username = await this.playerService.findOneIntraUsername(client.handshake.auth.playerId);
+    //     client.join(intra_username);
+    //     console.log('client joined all rooms');
+    //     console.log(client.rooms);
 
-        console.log('connected sockets:', this.connectedSockets);
+    //     console.log('connected sockets:', this.connectedSockets);
         
-        this.playerService.updateStatus(client.handshake.auth.playerId, { status: "online" });
+    //     this.playerService.updateStatus(client.handshake.auth.playerId, { status: "online" });
         
-        this.logger.log(`client ${client.handshake.auth.playerId} (${client.handshake.auth.username._value}) connected at ${client.id}`);
-    }
+    //     this.logger.log(`client ${client.handshake.auth.playerId} (${client.handshake.auth.username._value}) connected at ${client.id}`);
+    // }
     
     //HANDLES DISCONNECTION OF SOCKET AND REMOVES IT FROM MAP
-    handleDisconnect(@ConnectedSocket() client: Socket){
-        if (client.handshake.auth.username._value)
-        this.connectedSockets.delete(client.handshake.auth.username._value);
+    // handleDisconnect(@ConnectedSocket() client: Socket){
+    //     if (client.handshake.auth.username._value)
+    //     this.connectedSockets.delete(client.handshake.auth.username._value);
         
-        console.log('connected sockets:', this.connectedSockets);
+    //     console.log('connected sockets:', this.connectedSockets);
 
-        this.playerService.updateStatus(client.handshake.auth.playerId, { status: "offline" });
-        this.logger.log(`client ${client.handshake.auth.playerId} (${client.handshake.auth.username._value}) disconnected ${client.id}`);
-    }
+    //     this.playerService.updateStatus(client.handshake.auth.playerId, { status: "offline" });
+    //     this.logger.log(`client ${client.handshake.auth.playerId} (${client.handshake.auth.username._value}) disconnected ${client.id}`);
+    // }
 
     //ADD MESSAGE
     // returns channel_id on success

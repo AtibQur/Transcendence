@@ -43,7 +43,7 @@ methods: {
 mounted() {
 	console.log(this.score1, this.score2)
 	if (this.p1_socketId === socket.id){
-		if (this.score1 === 5){
+		if (this.score1 === 10){
 			this.win = true;
 			if (this.stop == true){
 				this.disconnected = true;
@@ -54,7 +54,7 @@ mounted() {
 		this.dynamicScore1 = 'score: ' + this.score1;
 	}
 	else if (this.p2_socketId === socket.id){
-		if (this.score2 === 5){
+		if (this.score2 === 10){
 			this.win = true;
 			if (this.stop == true){
 				this.disconnected = true;

@@ -83,7 +83,7 @@ export class PongService {
 	}
 
 	checkMatchEnding(match: Match): void {
-		if (match.score1 === 5 || match.score2 === 5){
+		if (match.score1 === 10 || match.score2 === 10){
 			delete this.matchList[match.id]
 			console.log("match", match.id, "deleted")
 		}

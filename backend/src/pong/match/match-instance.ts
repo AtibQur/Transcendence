@@ -5,6 +5,7 @@ import { User } from '../interfaces/user.interface'
 import { Ball } from '../interfaces/ball.interface';
 import { Game } from '../interfaces/state.interface';
 import { Match } from '../match/match';
+import { PowerUp } from '../interfaces/powerUp.interface';
 
 @Injectable()
 export class MatchInstance {
@@ -14,6 +15,7 @@ export class MatchInstance {
 	private player1: User = this.pongGame.player1;
 	private player2: User = this.pongGame.player2;
 	private game: Game = this.pongGame.game;
+	private powerUp: PowerUp = this.pongGame.powerUp;
 
 	constructor(match: Match) {
 		this.match = match;
@@ -35,6 +37,7 @@ export class MatchInstance {
 		this.player2.user = this.match.player2;
 		this.player1.score = 0;
 		this.player2.score = 0;
+		this.powerUp.type = 0;
 	}
 
 	handleMove(client: Socket, data: any): void {
@@ -73,6 +76,7 @@ export class MatchInstance {
 		this.pongGame.updateGame(this.player1, this.player2, this.ball);
 		this.match.updateScore(this.player1.score, this.player2.score)
 
+		console.log("powerup", this.powerUp)
 		client.to(this.player1.user.socket_id).emit('match', {
 			state: this.game.state,
 			ball: this.ball,
@@ -80,6 +84,7 @@ export class MatchInstance {
 			player2: this.player2.new,
 			score1: this.player1.score,
 			score2: this.player2.score,
+			powerUp: this.powerUp,
 		},
 		);
 		client.to(this.player2.user.socket_id).emit('match', {
@@ -89,6 +94,7 @@ export class MatchInstance {
 			player2: this.player2.new,
 			score1: this.player1.score,
 			score2: this.player2.score,
+			powerUp: this.powerUp,
 		},
 		);
 	}
@@ -98,10 +104,10 @@ export class MatchInstance {
 		this.game.state = 'stop'
 		if (this.player1.user.socket_id === client.id){
 			this.player1.score = 0;
-			this.player2.score = 5;
+			this.player2.score = 10;
 		}
 		else if (this.player2.user.socket_id === client.id){
-			this.player1.score = 5;
+			this.player1.score = 10;
 			this.player2.score = 0;
 		}
 		client.to(this.player1.user.socket_id).emit('match', {

@@ -1,6 +1,9 @@
 <template>
-	<GameTools :player1="player1" :player2="player2" :ball="ball" :score1="score1" :score2="score2"/>
-	<div class="gameover-container" v-if="win">
+	<GameTools :player1="player1" :player2="player2" :ball="ball" 
+		:score1="score1" :score2="score2"
+		:powerUpPixel="powerUpPixel"
+		:powerUpVisable="powerUpVisable" />
+	<div class="gameover-contai	ner" v-if="win">
 		<h1>VICTORY!</h1>
 	</div>
 	<div class="gameover-container" v-if="lose">
@@ -52,6 +55,11 @@ data() {
 				w: false,
 				s: false,
 			},
+			powerUpPixel: {
+				x: 0,
+				y: 0,
+			},
+			powerUpVisable: false,
 		};
 	},
 methods: {
@@ -78,17 +86,17 @@ methods: {
 		this.ball.y = Math.min(Math.max((Math.random() * this.canvas.height), 100), this.canvas.height - 100);
 	},
 	canvasCollision(){
-		if (this.ball.x + this.ball.radius > this.canvas.width - 10 || this.ball.x < 0) {
+		if (this.ball.x > this.canvas.width || this.ball.x < 0) {
 			this.ball.dX =- this.ball.dX;
 		}
-		if (this.ball.y + this.ball.radius > this.canvas.height - 10 || this.ball.y < 0) {
+		if (this.ball.y + this.ball.radius > this.canvas.height - 20 || this.ball.y < 0) {
 			this.ball.dY =- this.ball.dY;
 		}
 		if (this.ball.x < 0){
 			this.score2++;
 			this.resetBall();
 		}
-		if (this.ball.x + this.ball.radius > 848){
+		if (this.ball.x > 843){
 			this.score1++;
 			this.resetBall();
 		}
@@ -97,17 +105,19 @@ methods: {
 		const paddleTop = this.player1.y - 40;
 		const paddleBottom = this.player1.y + 40;
 		const ballCenter = this.ball.y + (this.ball.radius / 2);
+		// Left Paddle
 		if (this.ball.x < 20 && this.ball.x > 15 && ballCenter >= paddleTop && ballCenter <= paddleBottom) {
 			this.ball.dX =- this.ball.dX;
 			this.ball.velocity += 0.01;
 		}
-		if (this.ball.x < this.canvas.width - 20 && this.ball.x > this.canvas.width - 40 && ballCenter >= this.player2.y - 40 && ballCenter <= this.player2.y + 40) {
+		// Right Paddle
+		if (this.ball.x < this.canvas.width - 20 && this.ball.x > this.canvas.width - 50 && ballCenter >= this.player2.y - 40 && ballCenter <= this.player2.y + 40) {
 			this.ball.dX =- this.ball.dX;
 			this.ball.velocity += 0.01;
 		}
 	},
 	difficultyMode(){
-		if (this.ball.y > this.player2.y && this.player2.y < this.canvas.height - 40)
+		if (this.ball.y > this.player2.y && this.player2.y < this.canvas.height - 50)
 			this.player2.y += 2 * this.player2.computerSpeed;
 		else if (this.player2.y > 40)
 			this.player2.y -= 2 * this.player2.computerSpeed;
@@ -119,11 +129,13 @@ methods: {
 			this.player2.computerSpeed = 0.6;
 		if (this.selectedDifficulty == 'hard')
 			this.player2.computerSpeed = 0.65;
-		this.difficultyMode();
+
+		if (this.gameOver === false)
+			this.difficultyMode();
 		if (this.keysPressed['w'] && this.player1.y > 40){
 			this.player1.y -= 2;
 		}
-		if (this.keysPressed['s'] && this.player1.y < this.canvas.height - 40){
+		if (this.keysPressed['s'] && this.player1.y < this.canvas.height - 50){
 			this.player1.y += 2;
 		}
 	},

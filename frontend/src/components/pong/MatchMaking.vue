@@ -96,7 +96,6 @@ export default {
 			// match_id = match_id_response.data.id;
 			// console.log("match Database ID: ", match_id)
 		// }
-		//
 		router.push('/play/multiplayer');
 	} catch (error) {
 		console.log('Error starting match')
