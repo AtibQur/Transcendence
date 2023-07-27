@@ -3,13 +3,15 @@ import { AddFriendDto } from './dto/add-friend.dto';
 import { UpdateFriendDto } from './dto/update-friend.dto';
 import { PlayerService } from 'src/player/player.service';
 import { PrismaService } from '../../prisma/prisma.service';
+import { BlockedplayerService } from 'src/blockedplayer/blockedplayer.service';
 
 const prisma = PrismaService.getClient();
 
 @Injectable()
 export class FriendService {
   constructor(
-    private readonly playerService: PlayerService
+    private readonly playerService: PlayerService,
+    private readonly blockedplayerService: BlockedplayerService
   ) {}
 
   // ADD OTHER PLAYER AS FRIEND
@@ -25,7 +27,9 @@ export class FriendService {
       if (existingFriendship) {
         throw new Error("Player is already your friend");
       }
-      
+      if (this.blockedplayerService.isBlocked(id, addFriendDto.friendUsername)) {
+        this.blockedplayerService.unblockPlayer(id, {blockedUsername: addFriendDto.friendUsername});
+      }
       const newFriendShip = await prisma.friend.create({
         data: {
           player_id: id,
