@@ -28,27 +28,31 @@ const content = ref('');
 // })
 
 const sendMessage = () => {
-    socket.emit('addChatmessage', { content: content.value, sender_id: playerId, channel_id: props.channelId }, () => {
-        content.value = '';
-    })
+    const trimmedContent = content.value.trim();
+    if (trimmedContent !== '') {
+        socket.emit('addChatmessage', { content: content.value, sender_id: playerId, channel_id: props.channelId }, () => {
+            content.value = '';
+        })
+    }
 }
 
 </script>
 
-<style>
+<style scoped>
 .simple-button {
     font-family: 'JetBrains mono';
     border: none;
+    border-radius: 20%;
     cursor: pointer;
+    padding: 7px;
 }
 
 .simple-button:hover {
-    color: var(--blue-medium)
+    color: var(--blue-medium);
 }
 
 .message-input {
     font-family: 'JetBrains mono';
-    font-style: italic;
     background-color: var(--gray-light);
     border-radius:10px;
     border: none;
