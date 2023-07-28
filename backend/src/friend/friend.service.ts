@@ -27,8 +27,12 @@ export class FriendService {
       if (existingFriendship) {
         throw new Error("Player is already your friend");
       }
-      if (this.blockedplayerService.isBlocked(id, addFriendDto.friendUsername)) {
-        this.blockedplayerService.unblockPlayer(id, {blockedUsername: addFriendDto.friendUsername});
+      if (await this.blockedplayerService.isBlocked(id, addFriendDto.friendUsername)) {
+        await this.blockedplayerService.unblockPlayer(id, {blockedUsername: addFriendDto.friendUsername});
+      }
+      const playerUsername = await this.playerService.findOneUsername(id);
+      if (await this.blockedplayerService.isBlocked(friendId, playerUsername)) {
+        throw new Error("Player blocked you");
       }
       const newFriendShip = await prisma.friend.create({
         data: {
