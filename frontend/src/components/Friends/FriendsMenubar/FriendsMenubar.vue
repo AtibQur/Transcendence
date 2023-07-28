@@ -43,6 +43,9 @@ export default defineComponent({
 });
 </script>
 <style scoped>
+body {
+  cursor: none;
+}
 .menu-wrapper {
   position: fixed;
   top: 20px;
