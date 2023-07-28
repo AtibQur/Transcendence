@@ -57,7 +57,7 @@ export default {
 };
 </script>
 
-<style>
+<style scoped>
 .scrollable-container {
 display: flex;
 flex-wrap: wrap;
