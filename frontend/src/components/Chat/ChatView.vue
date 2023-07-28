@@ -25,8 +25,8 @@
                 </div>
             </div>
             <div class="right-side-bar">
-                <div class="ProfilePicture" style="margin: 20px;">
-                    <img :src="profilePicture" alt="Avatar" style="width:60%">
+                <div style="margin: 20px;">
+                    <img :src="profilePicture" alt="Avatar" style="width:60%; border-radius: 10%">
                 </div>
                 <h2>{{ username }} {{ playerId }}</h2>
                 <div class="status-circle" :class="{ 'online': status === 'online', 'offline': status !== 'online' }">
