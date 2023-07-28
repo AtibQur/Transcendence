@@ -17,6 +17,13 @@
 
 <style>
 @import url('https://fonts.googleapis.com/css?family=JetBrains+Mono');
+
+html, body, #app {
+	padding: 0;
+	margin: 0;
+	height: 100%;
+}
+
 #app {
 	font-family: 'JetBrains Mono';
 	-webkit-font-smoothing: antialiased;
