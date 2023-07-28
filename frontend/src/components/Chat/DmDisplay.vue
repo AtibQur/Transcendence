@@ -1,12 +1,11 @@
 <template>
-    <div class="users-container">
-        <h4>Direct Messages</h4>
-        <ul id="userList">
-            <li v-for="(playerName, index) in onlinePlayers" :key="index">
-                {{ playerName === currentPlayer ? playerName + ' (You)' : playerName }}
-            </li>
-        </ul>
-    </div>
+    <h4>Direct Messages</h4>
+    <ul id="dmList">
+        <li v-for="(dm, index) in dms" :key="index">
+            <button class="dm-display-button" @click="changeChannel(dm.channel_id)"> {{ dm.friend_username }} </button>
+        </li>
+    </ul>
+    <p></p>
 </template>
 
 <script setup lang="ts">
@@ -14,27 +13,71 @@ import { socket } from '../../socket';
 import axiosInstance from '../../axiosConfig';
 import { onBeforeMount, ref} from 'vue'
 
-const onlinePlayers = ref([]);
+const emit = defineEmits(['changeChannel']);
 const playerId = parseInt(sessionStorage.getItem('playerId') || '0');
-const currentPlayer = sessionStorage.getItem('username');
+const dms = ref([]);
 
 onBeforeMount(async () => {
+    
+    await fetchDms(playerId);
+    
+    // LISTEN IF A NEW CHANNEL IS ADDED
+    socket.on('newDm', (dm) => {
+        socket.emit('joinRoom', { playerId: playerId, channelId: dm.channel_id }, () => {
+            console.log('dm: ', dm);
+            dms.value.push(dm);
+            console.log(dms.value);
+        })
+    });
+})
+    
+    // FIND ALL CHANNEL FOR PLAYER
+    const fetchDms = async (playerId: number) => {
+        const response = await axiosInstance.get('channelmember/alldms/' + playerId.toString());
+        if (response.data)
+        {
+            response.data.forEach((item) => {
+                const friend = item.channel.members.find((member) => member.member_id !== playerId);
 
-    // FIND ALL ONLINE Players
-    const fetchOnlinePlayers = async () => {
-        const response = await axiosInstance.get('player/online');
-        onlinePlayers.value = response.data.map(item => item.player.username);
+                const dm = {
+                    channel_id: item.channel_id,
+                    friend_username: friend ? friend.member.username : null
+                };
+
+                dms.value.push(dm);
+            });
+        }
+        else
+            console.log('Error fetching dms');
     }
 
-    await fetchOnlinePlayers();
-
-    //UPDATE LIST OF ONLINE PLAYERS IF NEW PLAYER IS ADDED
-    // socket.on('player', (player_id: number) => {
-    //     const newPlayerName = await fetchUsername(player_id);
-    //     onlinePlayers.value.push();
-    // });
-
-})
-
+    // EVENT TO CHANGE CURRENT CHANNEL
+    const changeChannel = (channel_id: number) => {
+        emit('changeChannel', channel_id, false);
+    }
 
 </script>
+
+<style>
+.dm-display-button {
+    font-family: 'JetBrains Mono';
+    background-color: transparent;
+    border: none;
+    cursor: pointer;
+    background-color: var(--white-moretransparent);
+    color: var(--black-soft);
+    min-height:30px; 
+    min-width: 300px;
+    text-align: left;
+    transition: color 0.3s;
+    padding: 20px;
+    margin: 0;
+}
+
+.dm-display-button:hover {
+    background-color: var(--blue-dark-transparent);
+    color: var(--white-softblue);
+    transition: 0.3s;
+}
+
+</style>

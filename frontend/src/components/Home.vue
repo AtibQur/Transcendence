@@ -3,23 +3,26 @@
     <div class="PongLogo">
       <h1>PONG</h1>
     </div>
-    <!-- <label> Welcome {{ intraName }}!</label> -->
     <form @submit.prevent="initPlayerData">
             <input v-model="username" placeholder='Enter username'/>
             <button type="submit">Log in</button>
-    </form>  
+    </form>
+    <p></p>
     <div v-if="intraName">
-      <label> Welcome {{ intraName }}!</label>
+      <label> Intraname logged:   {{ intraName }}</label>
+      <p></p>
+      <label> Logged for testing: {{ logged_user }}</label>
     </div>
+    <p></p>
     <div class="PongTable">
       <ul>
         <li><router-link to="/play">Play</router-link></li>
         <li><router-link to="/leaderboard">Leaderboard</router-link></li>
         <li><router-link to="/chat">Chat</router-link></li>
-        <li><router-link to="/populatedatabase">Populate Database</router-link></li>
+        <li><router-link to="/profile">Profile</router-link></li>
       </ul>
     </div>
-    <button @click="logOut">Log out</button>
+    <button class="custom-button-1" @click="logOut">Log out</button>
   </div>
 </template>
 
@@ -35,6 +38,7 @@
   const username = ref('');
   const intraName = ref("");
   const router = useRouter();
+  const logged_user = sessionStorage.getItem('username') || '';
 //   import router from '@/router';
 
 //   const intraName = ref("");
@@ -138,7 +142,7 @@
   @import url('https://fonts.googleapis.com/css?family=JetBrains+Mono');  
 
   .PongContainer {
-    background-color: #B2DAE7;
+    background-color: var(--blue-light);
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -153,7 +157,7 @@
     font-size: 96px;
     line-height: 127px;
     color: #134279;
-    text-shadow: -3px 3px #a29e9e;
+    text-shadow: -3px 3px var(--gray-shadow);
   }
 
   .PongTable {
@@ -181,5 +185,25 @@
   .PongTable li a {
     color: #134279;
     text-decoration: none;
+  }
+
+  /* great for light blue bg */
+  .custom-button-1 {
+    font-family: 'JetBrains Mono';
+    font-weight: bolder;
+    position: absolute;
+    border:none; 
+    border-radius:10px; 
+    padding:15px;
+    min-height:30px; 
+    min-width: 120px;
+    background-color: var(--white-transparent);
+    color: var(--black-soft);
+    cursor: pointer;
+  }
+  .custom-button-1:hover {
+    background-color: var(--blue-dark-transparent);
+    color: var(--white-softblue);
+    transition: 0.3s;
   }
 </style>

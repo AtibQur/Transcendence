@@ -1,7 +1,7 @@
 <template>
     <div class="card flex justify-content-center p-fluid">
         <ConfirmDialog />
-        <button @click="isVisible = true">Create New Channel</button>
+        <button class="custom-button-1" @click="isVisible = true">Create New Channel</button>
         <Dialog v-model:visible="isVisible" modal header="New Channel" :style="{ width: '50vw' }" :closeButtonProps="handleCloseButton">
             <form @submit.prevent="onSubmit">
                 <div class="p-field">
@@ -134,7 +134,3 @@ const onSubmit = () => {
 };
 
 </script>
-
-<style>
-
-</style>

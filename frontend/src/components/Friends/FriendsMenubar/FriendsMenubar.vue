@@ -64,8 +64,11 @@ body {
   top: 20px;
   right: 20px;
   cursor: pointer;
-  background-color: #000;
-  color: #ABD0DD;
+  border:none; 
+  border-radius:10px;
+  min-width: 140px;
+  background-color: var(--white-transparent);
+  color: var(--black-soft);
   padding: 10px 20px;
   z-index: 1000;
   transition: background-color 0.3s, color 0.3s;
@@ -75,8 +78,9 @@ body {
   font-size: 20px;
 }
 .bar:hover {
-  background-color: #fff;
-  color: #000;
+  background-color: var(--blue-dark-transparent);
+  color: var(--white-softblue);
+  transition: 0.3s;
 }
 .menu {
   position: fixed;
@@ -116,13 +120,13 @@ body {
 }
 .close {
   cursor: pointer;
-  background-color: #000;
+  background-color: var(--black-soft);
   color: #ABD0DD;
   padding: 10px 20px;
   transition: background-color 0.3s, color 0.3s;
 }
 .close:hover {
   background-color: #fff;
-  color: #000;
+  color: var(--black-soft);
 }
 </style>

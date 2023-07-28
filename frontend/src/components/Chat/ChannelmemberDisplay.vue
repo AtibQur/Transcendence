@@ -1,13 +1,15 @@
 <template>
-    <h4>Channel Members</h4>
+    <h4 class="custom-h4">Channel Members</h4>
     <ul id="channelmemberList">
         <div class="card flex justify-content-center">
             <Sidebar v-model:visible="visible" position="right">
-                <UserOptionsMenu @removeChannelmember="removeChannelmember" :channelId="currentChannelId" :channelmember="selectedChannelmember"/>
+                <UserInfoDisplay @removeChannelmember="removeChannelmember" :channelId="currentChannelId" :channelmember="selectedChannelmember"/>
             </Sidebar>
         </div>
         <li v-for="(channelmember, index) in channelmembers" :key="index">
-            <button class="channelmember-button" @click="showOptionPanel(channelmember)"> {{ channelmember.username }} </button>
+            <button class="channelmember-button" @click="showOptionPanel(channelmember)">
+                {{ channelmember.username === playerUsername ? 'You' : channelmember.username }}
+            </button>
         </li>
     </ul>
 </template>
@@ -17,7 +19,7 @@ import { socket } from '../../socket';
 import axiosInstance from '../../axiosConfig';
 import { onBeforeMount, ref, watch } from 'vue'
 import Sidebar from 'primevue/sidebar';
-import UserOptionsMenu from './UserOptionsMenu.vue';
+import UserInfoDisplay from './UserInfoDisplay.vue';
 import { useToast } from 'primevue/usetoast';
 
 const toast = useToast();
@@ -30,6 +32,7 @@ const props = defineProps({
 });
 
 const channelmembers = ref([]);
+const playerUsername = sessionStorage.getItem('username') || null;
 const currentChannelId = ref<number>(props.channelId);
 const selectedChannelmember = ref({});
 const visible = ref<boolean>(false);
@@ -93,20 +96,31 @@ const removeChannelmember = async (member_id: number) => {
 </script>
 
 <style>
+.custom-h4 {
+  font-family: 'JetBrains Mono';
+  font-weight: bold;
+  font-size: larger;
+  color: black;
+}
 
 .channelmember-button {
+  font-family: 'JetBrains Mono';
   background-color: transparent;
+  color: var(--black-soft);
   border: none;
   cursor: pointer;
   color: #000;
-  text-decoration: underline;
   transition: color 0.3s;
-  padding: 0;
+  min-width: 200px;
+  text-align: left;
+  font-size: medium;
+  padding-bottom: 10px;
   margin: 0;
 }
 
 .channelmember-button:hover {
-  color: rgb(79, 76, 76);
+  color: var(--white-softblue);
+  transition: 0.3s;
 }
 
 </style>

@@ -1,4 +1,5 @@
 <template>
+  <Toast/>
   <div class="ProfileContainer">
     <div class="ProfileData">
       <div class="ProfilePicture">
@@ -11,6 +12,22 @@
         <div class="ProfileStatus">
           <h3>status: {{ friendStatus }}</h3>
         </div>
+      </div>
+    </div>
+
+    <div class="ProfileOptions">
+      <div class="ProfileOptionsContainer">
+        <ul>
+          <div v-if="!isFriend">
+            <li @click="addFriend()">Add Friend</li>
+          </div>
+          <div v-if="!isBlocked">
+            <li @click="blockPlayer()">Block</li>
+          </div>
+          <div v-if="!isFriend && isBlocked">
+            <li @click="unblockPlayer()">Unblock</li>
+          </div>
+        </ul>
       </div>
     </div>
 
@@ -41,12 +58,15 @@ import { useRoute, useRouter } from 'vue-router';
 import FriendsStats from './FriendsStats.vue';
 import FriendsHistory from './FriendsHistory.vue';
 import FriendsAchievements from './FriendsAchievements.vue';
+import Toast from 'primevue/toast';
+import { useToast } from 'primevue/usetoast';
 
 export default {
   components: {
     FriendsAchievements,
     FriendsHistory,
     FriendsStats,
+    Toast
   },
   setup() {
     const route = useRoute();
@@ -56,6 +76,10 @@ export default {
     const friendStatus = ref('');
     const profilePicture = ref('');
     const selectedOption = ref('Achievements');
+    const playerId = sessionStorage.getItem('playerId') || '0';
+    const isFriend = ref(false);
+    const isBlocked = ref(false);
+    const toast = useToast();
 
     const fetchFriendData = async () => {
       const params = route.params;
@@ -63,16 +87,57 @@ export default {
         const idResponse = await axiosInstance.get(`player/profile/${params.playerName}`);
         const avatarResponse = await axiosInstance.get(`player/avatar/${idResponse.data}`);
         const statusResponse = await axiosInstance.get(`player/status/${idResponse.data}`);
-
+        
         playerName.value = params.playerName;
         friendId.value = idResponse.data;
         profilePicture.value = URL.createObjectURL(new Blob([new Uint8Array(avatarResponse.data.data)]));
         friendStatus.value = statusResponse.data;
         selectedOption.value = 'Achievements'; // Set selectedOption to 'Achievements' whenever a new profile is loaded
+        
+        const isFriendResponse = await axiosInstance.get(`friend/exists/${playerId}/${friendId.value.toString()}`);
+        isFriend.value = isFriendResponse.data;
+
+        const isBlockedResponse = await axiosInstance.get(`blockedplayer/player/${playerId}?username=${playerName.value}`);
+        isBlocked.value = isBlockedResponse.data;
       } catch (error) {
         console.log('Error occurred:', error);
       }
     };
+
+    const addFriend = async () => {
+        const friendResponse = await axiosInstance.post(`friend/add/${playerId}`, {friendUsername: playerName.value});
+        if (friendResponse.data)
+        {
+            toast.add({ severity: 'success', summary: 'Added friend successfully', detail: '', life: 3000 });
+            isFriend.value = true;
+            isBlocked.value = false;
+        }
+        else
+            toast.add({ severity: 'error', summary: 'Error adding friend', detail: '', life: 3000 });
+    }
+
+    const blockPlayer = async () => {
+        const blockPlayerResponse = await axiosInstance.post(`blockedplayer/add/${playerId}`, {blockedUsername: playerName.value});
+        if (blockPlayerResponse.data)
+        {
+            toast.add({ severity: 'success', summary: 'Blocked player successfully', detail: '', life: 3000 });
+            isFriend.value = false;
+            isBlocked.value = true;
+        }
+        else
+            toast.add({ severity: 'error', summary: 'Error blocking player', detail: '', life: 3000 });
+    }
+
+    const unblockPlayer = async () => {
+        const unblockPlayerResponse = await axiosInstance.delete(`blockedplayer/delete/${playerId}`, { data: {blockedUsername: playerName.value}});
+        if (unblockPlayerResponse.data)
+        {
+            toast.add({ severity: 'success', summary: 'Unblocked player successfully', detail: '', life: 3000 });
+            isBlocked.value = false;
+        }
+        else
+            toast.add({ severity: 'error', summary: 'Error unblocking player', detail: '', life: 3000 });
+    }
 
     // Watch for changes in route params and fetch friend data
     watch(route, () => {
@@ -97,6 +162,7 @@ export default {
 
     return {
       playerName,
+      playerId,
       friendId,
       profilePicture,
       friendStatus,
@@ -104,6 +170,11 @@ export default {
       FriendsAchievements,
       FriendsHistory,
       FriendsStats,
+      isFriend,
+      isBlocked,
+      addFriend,
+      blockPlayer,
+      unblockPlayer
     };
   },
 };
