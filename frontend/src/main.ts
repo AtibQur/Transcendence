@@ -26,11 +26,16 @@ import ConfirmationService from 'primevue/confirmationservice';
 
 import createCookies from 'vue3-cookies';
 import Logout from './components/LogoutPlayer.vue';
+import cursor from './components/CursorComponent.vue';
 
 const routes: RouteRecordRaw[] = [
     {
       path: '/',
       component: Home,
+    },
+    {
+      path: '/cursor',
+      component: cursor,
     },
     {
       path: '/play', 
