@@ -21,7 +21,6 @@
     </div>
     <button @click="logOut">Log out</button>
   </div>
-  <CursorComponent/>
 </template>
 
 <script setup lang="ts">
@@ -32,7 +31,6 @@
   import { socket } from '@/socket';
   import { useRouter } from 'vue-router';
   import { useMousePosition } from './cursor'
-import CursorComponent from './CursorComponent.vue';
 
   const username = ref('');
   const intraName = ref("");

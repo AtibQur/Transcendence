@@ -8,11 +8,13 @@
 	<div>
 		<FriendsMenubar/>
 	</div>
+	<CursorComponent/>
   </template>
 
 <script setup lang="ts">
 	import Menubar from './components/Menubar/Menubar.vue';
 	import FriendsMenubar from './components/Friends/FriendsMenubar/FriendsMenubar.vue';
+	import CursorComponent from './components/CursorComponent.vue';
 
 </script>
 
