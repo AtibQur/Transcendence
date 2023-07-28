@@ -17,8 +17,6 @@ export class PlayerService {
         '10 wins': false,
         '50 wins': false,
         '100 wins': false,
-        '10 consecutive wins': false,
-        '50 consecutive wins': false,
         'Reached level 5': false,
         'Reached level 10': false,
         'Reached level 20': false,
@@ -653,6 +651,21 @@ async updateTfaCode(id: number, code: string) {
     }
     else if (numFriends >= 1) {
       updateDto.achieved = 'First friend';
+    }
+    await this.achieveAchievement(id, updateDto)
+  }
+
+  // CHECK ALL ACHIEVEMENTS, UPDATE IF ANYTHING NEW IS ACHIEVED
+  async updateAchievementsAfterMessage(id: number, numMessages: number) {
+    const updateDto: UpdatePlayerDto = {
+      achieved: ''
+    };
+
+    if (numMessages >= 10) {
+      updateDto.achieved = '10 chat messages sent';
+    }
+    else if (numMessages >= 1) {
+      updateDto.achieved = 'First chat messages sent';
     }
     await this.achieveAchievement(id, updateDto)
   }

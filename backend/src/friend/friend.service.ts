@@ -36,8 +36,11 @@ export class FriendService {
           friend_id: friendId,
         },
       });
-      const numFriends = await this.findNumFriends(id);
-      this.playerService.updateAchievementsAfterFriendAdd(id, numFriends);
+      const numFriendsPlayer = await this.findNumFriends(id);
+      await this.playerService.updateAchievementsAfterFriendAdd(id, numFriendsPlayer);
+      const numFriendsFriend = await this.findNumFriends(friendId);
+      await this.playerService.updateAchievementsAfterFriendAdd(friendId, numFriendsFriend);
+
       return newFriendShip;
     }
     catch (error) {

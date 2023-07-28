@@ -3,6 +3,7 @@ import { CreateChatmessageDto } from './dto/create-chatmessage.dto';
 import { PrismaService } from '../../prisma/prisma.service';
 import { BlockedplayerService } from 'src/blockedplayer/blockedplayer.service';
 import { ChannelService } from 'src/channel/channel.service';
+import { PlayerService } from 'src/player/player.service';
 
 const prisma = PrismaService.getClient();
 
@@ -10,7 +11,8 @@ const prisma = PrismaService.getClient();
 export class ChatmessageService {
   constructor(
     private readonly blockedplayerService: BlockedplayerService,
-    private readonly channelService: ChannelService
+    private readonly channelService: ChannelService,
+    private readonly playerService: PlayerService
   ) {}
   
   // CREATE NEW CHAT MESSAGE
@@ -36,6 +38,9 @@ export class ChatmessageService {
             }
         }
       });
+      const numMessages = await this.findNumSentMessages(createChatmessageDto.sender_id);
+      console.log("num messages: ", numMessages);
+      this.playerService.updateAchievementsAfterMessage(createChatmessageDto.sender_id, numMessages);
       console.log('Chatmessage is created');
       return newChatMessage;
     } catch (error) {
@@ -43,9 +48,25 @@ export class ChatmessageService {
     }
   }
 
+  // GET AMOUNT OF MESSAGES SENT BY SENDERID
+  async findNumSentMessages(senderId: number) {
+    try {
+      const sentMessages = await prisma.chatMessage.findMany({
+        where: {
+          sender_id: senderId
+        }
+      });
+      return Object.keys(sentMessages).length;
+    }
+    catch (error) {
+      console.error('Error occurred:', error);
+      return 0;
+    }
+  }
+
   // GET ALL CHAT MESSAGES WITHIN ONE CHANNEL
   async findChannelMsgs(channel_id: number) {
-    return prisma.chatMessage.findMany({
+    return await prisma.chatMessage.findMany({
       where: {
         channel_id: channel_id
       }
