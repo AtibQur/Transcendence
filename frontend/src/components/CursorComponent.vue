@@ -28,10 +28,9 @@ onMounted(() => {
 });
 </script>
   
-<style scoped>
-html {
+<style>
+* {
 	cursor: none;
-	
 }
 #custom-cursor {
 	position: fixed;
@@ -45,6 +44,6 @@ html {
 	pointer-events: none;
 	transform: translate(-50%, -50%);
 	/* to center the cursor */
-	z-index: 10;
+	z-index: 1000;
 }
 </style>

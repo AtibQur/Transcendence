@@ -135,8 +135,8 @@
 </script>
 
 <style>
-  @import url('https://fonts.googleapis.com/css?family=JetBrains+Mono');
-  
+  @import url('https://fonts.googleapis.com/css?family=JetBrains+Mono');  
+
   .PongContainer {
     background-color: #B2DAE7;
     display: flex;
