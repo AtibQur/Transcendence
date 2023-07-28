@@ -36,6 +36,8 @@ export class FriendService {
           friend_id: friendId,
         },
       });
+      const numFriends = await this.findNumFriends(id);
+      this.playerService.updateAchievementsAfterFriendAdd(id, numFriends);
       return newFriendShip;
     }
     catch (error) {
@@ -99,6 +101,18 @@ export class FriendService {
     }
     catch (error) {
       console.error('Error occurred: ', error);
+      return null;
+    }
+  }
+
+  // GET AMOUNT OF FRIENDS
+  async findNumFriends(id: number) {
+    try {
+      const friends = await this.findFriends(id);
+      return Object.keys(friends).length;
+    }
+    catch (error) {
+      console.error('Error occurred:', error);
       return null;
     }
   }
