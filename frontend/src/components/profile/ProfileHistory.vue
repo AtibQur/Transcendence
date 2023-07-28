@@ -63,15 +63,15 @@ const fetchMatches = async (playerId: number) => {
 
 .border .border-row {
   font-family: 'JetBrains Mono';
+  font-size: 18px;
   display: flex;
   border: none;
-  border-radius: 8px;
-  margin-bottom: 8px;
-  padding: 10px;
+  border-radius: 18px;
+  padding: 15px;
 }
 
 .border .border-value {
-  margin-bottom: 5px;
+  margin: 10px;
   flex-basis: 25%;
 }
 

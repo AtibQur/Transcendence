@@ -48,7 +48,7 @@ const sendMessage = () => {
 }
 
 .simple-button:hover {
-    color: var(--blue-medium);
+    color: var(--blue-mediumlight);
 }
 
 .message-input {
