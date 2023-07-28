@@ -1,6 +1,6 @@
 <template>
     <div v-if="!isProtected">
-        <button @click="showDialog(PasswordAction.ADD)">Add Password</button>
+        <button class="custom-button-1" @click="showDialog(PasswordAction.ADD)">Add Password</button>
     </div>
     <div v-else>
         <button @click="showDialog(PasswordAction.CHANGE)">Change Password</button>

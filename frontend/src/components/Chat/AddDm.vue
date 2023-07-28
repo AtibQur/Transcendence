@@ -1,5 +1,5 @@
 <template>
-    <button @click="showDialog()">Create new Dm</button>
+    <button class="custom-button-1" @click="showDialog()">Create new Dm</button>
     <div class="card flex justify-content-center p-fluid">
         <Dialog v-model:visible="isVisible" modal header="New Dm" :style="{ width: '50vw' }" :closeButtonProps="handleCloseButton">
             <form @submit.prevent="onSubmit">
@@ -131,3 +131,24 @@ const onSubmit = async () => {
 };
 
 </script>
+
+<style>
+  .custom-button-1 {
+    font-family: 'JetBrains Mono';
+    font-weight: bolder;
+    border:none; 
+    border-radius:10px;
+    position: relative;
+    min-height:30px; 
+    min-width: 120px;
+    margin: 5px;
+    background-color: var(--white-transparent);
+    color: var(--black-soft);
+    cursor: pointer;
+  }
+  .custom-button-1:hover {
+    background-color: var(--blue-dark-transparent);
+    color: var(--white-softblue);
+    transition: 0.3s;
+  }
+</style>

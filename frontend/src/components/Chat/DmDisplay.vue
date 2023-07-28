@@ -5,6 +5,7 @@
             <button class="dm-display-button" @click="changeChannel(dm.channel_id)"> {{ dm.friend_username }} </button>
         </li>
     </ul>
+    <p></p>
 </template>
 
 <script setup lang="ts">
@@ -59,14 +60,24 @@ onBeforeMount(async () => {
 
 <style>
 .dm-display-button {
+    font-family: 'JetBrains Mono';
     background-color: transparent;
     border: none;
     cursor: pointer;
-    color: rgb(79, 76, 76);
-    text-decoration: underline;
+    background-color: var(--white-moretransparent);
+    color: var(--black-soft);
+    min-height:30px; 
+    min-width: 300px;
+    text-align: left;
     transition: color 0.3s;
-    padding: 0;
+    padding: 20px;
     margin: 0;
+}
+
+.dm-display-button:hover {
+    background-color: var(--blue-dark-transparent);
+    color: var(--white-softblue);
+    transition: 0.3s;
 }
 
 </style>

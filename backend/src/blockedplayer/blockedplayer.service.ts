@@ -85,7 +85,7 @@ export class BlockedplayerService {
         throw new Error("Player was not blocked");
       }
     }
-      catch (error) {
+    catch (error) {
       console.error('Error occurred:', error);
       return null;
     }

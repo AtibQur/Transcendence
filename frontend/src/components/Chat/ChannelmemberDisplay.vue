@@ -1,5 +1,5 @@
 <template>
-    <h4>Channel Members</h4>
+    <h4 class="custom-h4">Channel Members</h4>
     <ul id="channelmemberList">
         <div class="card flex justify-content-center">
             <Sidebar v-model:visible="visible" position="right">
@@ -96,20 +96,31 @@ const removeChannelmember = async (member_id: number) => {
 </script>
 
 <style>
+.custom-h4 {
+  font-family: 'JetBrains Mono';
+  font-weight: bold;
+  font-size: larger;
+  color: black;
+}
 
 .channelmember-button {
+  font-family: 'JetBrains Mono';
   background-color: transparent;
+  color: var(--black-soft);
   border: none;
   cursor: pointer;
   color: #000;
-  text-decoration: underline;
   transition: color 0.3s;
-  padding: 0;
+  min-width: 200px;
+  text-align: left;
+  font-size: medium;
+  padding-bottom: 10px;
   margin: 0;
 }
 
 .channelmember-button:hover {
-  color: rgb(79, 76, 76);
+  color: var(--white-softblue);
+  transition: 0.3s;
 }
 
 </style>

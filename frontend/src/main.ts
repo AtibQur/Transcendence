@@ -14,18 +14,14 @@ import Auth from './components/Auth/AuthCheck.vue';
 import Login from './components/Auth/AuthRedirectIf2fa.vue';
 import ProfilePage from './components/profile/ProfilePage.vue';
 import Leaderboard from './components/LeaderboardComponent.vue';
-import PopulateDatabase from './components/PopulateDatabase.vue';
 import ChatView from './components/Chat/ChatView.vue';
 import Redirect2faVerify from './components/Auth/AuthRedirectIf2fa.vue';
 import FriendsPage from './components/Friends/FriendsMenubar/FriendsPage.vue';
-import PlayerProfile from './components/profile/PlayerProfile.vue';
 import WrongTfa from './components/Auth/WrongTfa.vue';
 import PrimeVue from 'primevue/config';
 import ToastService from 'primevue/toastservice';
 import ConfirmationService from 'primevue/confirmationservice';
-
 import createCookies from 'vue3-cookies';
-import Logout from './components/LogoutPlayer.vue';
 
 const routes: RouteRecordRaw[] = [
     {
@@ -57,10 +53,6 @@ const routes: RouteRecordRaw[] = [
     {
       path: '/leaderboard',
       component: Leaderboard,
-    },
-    {
-    path: '/populatedatabase',
-    component: PopulateDatabase,
     },
     {
       path: '/profile',

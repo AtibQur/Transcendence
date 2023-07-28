@@ -1,14 +1,16 @@
 <template>
     <div>
-        <button class="channel-name-button" @click="showInfo()"> 
-            <b> {{ channelName }}</b>
-        </button>
-    </div>
-    <div>
-        <div v-for="message in messages" :key="message.id">
-                <!-- <h6> {{ getDateMsg(message.sent_at) }}</h6> -->
-            {{ message.sender.username }}: {{ message.content }}
+      <button class="channel-name-button" @click="showInfo()"> 
+        <b>{{ channelName }}</b>
+      </button>
+      <div class="messages-container">
+        <div v-for="message in messages" :key="message.id" :class="getMessageSenderClass(message)">
+          {{ message.sender.username }}
+          <div :class="getMessageClass(message)">
+            {{ message.content }}
         </div>
+          </div>
+      </div>
     </div>
   </template>
 
@@ -31,6 +33,7 @@ const messages = ref<Message[]>([]);
 const currentChannelId = ref(props.channelId);
 // const newDate = ref(true);
 const playerId = parseInt(sessionStorage.getItem('playerId') || '0');
+const username = sessionStorage.getItem('username') || '0';
 // const dates = ref<string>([]);
 
 onBeforeMount(async () => {
@@ -79,6 +82,20 @@ const fetchChannelName = async (channelId: number) => {
     }
     else
         console.log('Error fetching channelname');
+};
+
+const getMessageClass = (message: Message) => {
+  return message.sender.username === username ? 'my-message' : 'friend-message';
+};
+
+const getMessageSenderClass = (message: Message) => {
+  return message.sender.username === username ? 'my-message-sender' : 'friend-message-sender';
+};
+
+const getMessageBlockSize = (messageContent: string) => {
+  return {
+    width: `${messageContent.length * 10}px`, // Adjust the multiplier to control the width
+  };
 };
 
 const showInfo = () => {
@@ -140,15 +157,62 @@ ul {
 }
 
 .channel-name-button {
-    background-color: transparent;
+    font-family: 'JetBrains Mono';
+    font-weight: bold;
     border: none;
     cursor: pointer;
-    color: rgb(79, 76, 76);
+    background-color: var(--gray-light);
+    color: var(--black-soft);
     font-size: large;
-    transition: color 0.3s;
     padding: 0;
-    margin: 2em;
+    margin: 0;
+    width: 100%;
+    height: 75px;
+    margin-bottom: 20px;
+}
+.channel-name-button:hover {
+    background-color: var(--gray-shadow);
+    color: var(--white-softgray);
+    transition: 0.3s;
 }
 
+.messages-container {
+    display: flex;
+    flex-direction: column;
+  }
+
+.my-message-sender {
+    color: var(--gray-medium);
+    align-self: flex-end;
+    text-align: right;
+    margin-right: 10px;
+}
+
+.friend-message-sender {
+    color: var(--gray-medium);
+    align-self: flex-start;
+    text-align: left;
+    margin-left: 15px;
+}
+
+.my-message {
+    background-color: rgba(230, 99, 230, 0.2);
+    color: rgba(179, 11, 179, 1);
+    border-radius:10px;
+    padding: 8px 12px;
+    margin: 15px;
+    margin-top: 5px;
+    align-self: flex-end;
+}
+
+.friend-message {
+    background-color: rgba(125, 46, 222, 0.2);
+    color: rgba(87, 11, 179, 1);
+    border-radius:10px;
+    padding: 8px 12px;
+    margin: 15px;
+    margin-top: 5px;
+    align-self: flex-end;
+}
 
 </style>
