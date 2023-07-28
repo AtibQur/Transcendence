@@ -44,5 +44,7 @@
 	--gray-light: #e4e4e4;
 	--red-soft: #e74545;
 	--green-soft: #74c23c;
+	--red-light: #ed7b7b;
+	--green-light: #aced83;
 	}
 </style>

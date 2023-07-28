@@ -36,17 +36,13 @@
 </script>
 
 
-<style>
+<style scoped>
 .scrollable-container {
   display: flex;
   flex-wrap: wrap;
   justify-content: space-evenly;
   align-items: flex-start;
-  margin-top: 30px;
-  width: 150%;
   height: 700px;
-  min-height: 500px;
-  border: 2px solid #131780;
   border-radius: 8px;
   overflow-y: scroll;
   overflow-x: hidden;
@@ -65,11 +61,10 @@
 .item {
   display: flex;
   align-items: center;
-  border: 1px solid #131780;
+  border: 1px solid var(--gray-medium);
   border-radius: 8px;
-  margin: 5px;
+  margin: 10px;
   padding: 10px;
-  margin-left: 2px;
   flex-basis: 30%;
   transition: background-color 0.3s ease;
 }
@@ -102,13 +97,13 @@
 
 .bold-black {
   font-weight: bold;
-  font-size: large;
+  font-size: medium;
   color: black;
 }
 
 .regular-grey {
   font-weight: normal;
-  font-size: large;
+  font-size: medium;
   color: grey;
 }
 </style>

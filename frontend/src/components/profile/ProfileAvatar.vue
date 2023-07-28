@@ -1,7 +1,7 @@
 <template>
     <div>
       <input type="file" @change="handleFileChange" />
-      <button @click="uploadAvatar">Upload</button>
+      <button class="custom-button-1" @click="uploadAvatar">Upload</button>
     </div>
   </template>
   
