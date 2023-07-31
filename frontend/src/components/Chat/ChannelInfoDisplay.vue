@@ -1,12 +1,14 @@
 <template>
         <Sidebar v-model:visible="visible" position="right" class="custom-sidebar">
             <ChannelmemberDisplay :channelId="currentChannelId" />
-            <div v-if="isAdmin">
-                <AddChannelmember :channelId="currentChannelId"/>
-            </div>
-            <button class="custom-button-1" @click="openConfirmDialog">Leave Chat</button>
-            <div v-if="isOwner">
-                <PasswordSettings :channelId="currentChannelId"/>
+            <div v-if="!isDm">
+                <div v-if="isAdmin">
+                    <AddChannelmember :channelId="currentChannelId"/>
+                </div>
+                <button class="custom-button-1" @click="openConfirmDialog">Leave Chat</button>
+                <div v-if="isOwner">
+                    <PasswordSettings :channelId="currentChannelId"/>
+                </div>
             </div>
         </Sidebar>
 </template>
@@ -41,11 +43,12 @@ const props = defineProps({
 });
 
 const emit = defineEmits(['changeChannel', 'showInfo']);
-const isAdmin = ref(false);
-const isOwner = ref(false);
+const isAdmin = ref<boolean>(false);
+const isOwner = ref<boolean>(false);
 const playerId = parseInt(sessionStorage.getItem('playerId') || '0');
 const currentChannelId = ref<number>(props.channelId);
 const visible = ref<boolean>(props.isVisible);
+const isDm = ref<boolean>(false);
 
 onBeforeMount(async () => {
 
@@ -82,6 +85,17 @@ const fetchPlayerRights = async () => {
     else {
         console.log("Error could not fetch player info");
     }
+
+    await fetchChannelType();
+}
+
+const fetchChannelType = async () => {
+    const response = await axiosInstance.get('channel/dm/' + currentChannelId.value.toString());
+    if (response.data != null)
+        isDm.value = response.data;
+    else
+        console.log("Error could not fetch channel type");
+
 }
 
 //CONFIRM DIALOG BUTTON
