@@ -6,7 +6,7 @@
           v-for="(match, index) in matches"
           :key="index"
           class="border-row"
-          :class="['border-value', { 'green-bg': match.player_points === 5, 'red-bg': match.player_points !== 5 }]"
+          :class="['border-value', { 'green-bg': match.player_points === 10, 'red-bg': match.player_points !== 10 }]"
         >
           <div class="border-value blue-text player-username">{{ match.player.username }}</div>
           <div class="border-value black-text"  style="font-weight: bold">{{ match.player_points }}</div>
@@ -59,6 +59,8 @@ const fetchMatches = async (playerId: number) => {
   height: 100%;
   padding: 20px;
   box-sizing: border-box;
+  max-height: 700px;
+  overflow-y: auto;
 }
 
 .border .border-row {
