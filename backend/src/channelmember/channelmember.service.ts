@@ -3,6 +3,7 @@ import { CreateChannelmemberDto } from './dto/create-channelmember.dto';
 import { UpdateChannelmemberDto } from './dto/update-channelmember.dto';
 import { PrismaService } from '../../prisma/prisma.service';
 import { FriendService } from 'src/friend/friend.service';
+import { Logger } from '@nestjs/common';
 
 const prisma = PrismaService.getClient();
 
@@ -12,6 +13,8 @@ export class ChannelmemberService {
   constructor(
     private readonly friendService: FriendService
   ) {}
+
+  private logger = new Logger('ChannelService');
 
   // ADD PLAYER TO EXISTING CHANNEL
   async createChannelmember(createChannelmemberDto: CreateChannelmemberDto) {
@@ -35,7 +38,7 @@ export class ChannelmemberService {
       const newChannelMember = await prisma.channelMember.create({
         data,
       });
-
+      this.logger.log('create new channelmember');
       return newChannelMember;
     }
     catch (error) {
@@ -50,12 +53,14 @@ export class ChannelmemberService {
   }
 
   // FIND ALL CHANNELS WHERE PLAYER IS MEMBER
-  // TODO: move to channels module?
   async findPlayerChannels(player_id: number) {
     try {
       return prisma.channelMember.findMany({
           where: {
-            member_id: player_id
+            member_id: player_id,
+            channel: {
+                is_dm: false
+            }
           },
           include: {
                 member: {
@@ -67,7 +72,8 @@ export class ChannelmemberService {
                 channel: {
                   select: {
                       name: true,
-                      owner_id: true
+                      owner_id: true,
+                      is_dm: true
                   }
               }
           },
@@ -77,6 +83,43 @@ export class ChannelmemberService {
     catch (error) {
       console.error('Error occurred:', error);
       return null;
+    }
+  }
+
+  // FIND ALL CHANNELS WHERE PLAYER IS MEMBER
+  async findPlayerDms(player_id: number) {
+    try {
+        const dms = await prisma.channelMember.findMany({
+            where: {
+              member_id: player_id,
+              channel: {
+                is_dm: true
+              }
+            },
+            select: {
+                channel_id: true,
+                channel: {
+                    select: {
+                        members: {
+                            select: {
+                                member_id: true,
+                                member: {
+                                    select: {
+                                        username: true
+                                    }
+                                }
+                            }
+                        }
+                    }
+                } 
+            }
+        });
+
+        return dms;
+    }
+    catch (error) {
+        console.error('Error occurred:', error);
+        return null;
     }
   }
   
@@ -129,18 +172,18 @@ export class ChannelmemberService {
     try {
         const channelMember = await prisma.channelMember.findFirst({
             where: {
-            member_id: member_id,
-            channel_id: channel_id
+                member_id: member_id,
+                channel_id: channel_id
             },
             select: {
-            id: true,
-            member_id: true,
-            channel_id: true,
-            member: {
-                select: {
-                username: true,
-                intra_username: true
-                }
+                id: true,
+                member_id: true,
+                channel_id: true,
+                member: {
+                    select: {
+                    username: true,
+                    intra_username: true
+                    }
             },
             channel: {
                 select: {
@@ -178,6 +221,7 @@ export class ChannelmemberService {
         memberIsAdmin: false,
         memberIsOwner: false,
         memberIsBanned: false,
+        memberIsMuted: false,
         memberIsFriend: false,
         showBlock: true, // player can always block someone
         showMute: false,
@@ -195,6 +239,7 @@ export class ChannelmemberService {
       rights.memberIsAdmin = member.is_admin;
       rights.memberIsOwner = member.is_owner;
       rights.memberIsBanned = member.is_banned;
+      rights.memberIsMuted = member.is_muted;
       
       // Define if player and channelmember are friends
       const existingFriendship = await this.friendService.isExistingFriendship(player_id, member_id);
@@ -244,6 +289,37 @@ export class ChannelmemberService {
     }
   }
 
+  // FIND NEW OWNER (IN CASE THE OWNER WANTS TO LEAVE A CHANNEL)
+  // returns new owner on succes, nothing on error
+  async findNewOwner(channel_id: number) {
+    const allMembers = await this.findAllChannelmembers(channel_id);
+
+    if (allMembers.length == 0) //if there are no members
+    {
+        console.log('no other members left in channel');
+        return null;
+    }
+
+    var newOwner;
+    const allAdmins = allMembers.filter((member) => member.is_admin === true);
+    console.log('all admins ', allAdmins);
+    if (allAdmins.length != 0)
+    {
+        newOwner = allAdmins.reduce((prevMember, currentMember) => {
+            return prevMember.member_id < currentMember.member_id ? prevMember : currentMember;
+        });
+    }
+    else // if there are no other admins
+    {
+        console.log('no admin members left in channel');
+        newOwner = allMembers.reduce((prevMember, currentMember) => {
+            return prevMember.member_id < currentMember.member_id ? prevMember : currentMember;
+        });
+    }
+    
+    return newOwner;
+  }
+
   // CHECK IF MEMBER IS ADMIN
   async findIsAdmin(member_id: number, channel_id: number) {
     try {
@@ -279,6 +355,7 @@ export class ChannelmemberService {
             is_admin: true,
           }
         });
+        this.logger.log(`${updater.member.username} made ${toUpdate.member.username} admin`);
         return updatedMember;
       }
       else {
@@ -307,6 +384,7 @@ export class ChannelmemberService {
             is_banned: true,
           }
         });
+        this.logger.log(`${updater.member.username} banned ${toUpdate.member.username}`);
         return updatedMember;
       }
       else {
@@ -319,22 +397,35 @@ export class ChannelmemberService {
     }
   }
 
-  // MUTE A CHANNELMEMBER
+  // MUTE/UNMUTE A CHANNELMEMBER
   // only possible if done by admin
   // owner can not be muted
-  async muteMember(player_id: number, updateChannelmemberDto: UpdateChannelmemberDto) {
+  // in case of unmute, Date is set to null
+  async muteMember(player_id: number, updateChannelmemberDto: UpdateChannelmemberDto, toMute: boolean) {
     try {
       const updater = await this.findChannelmember(player_id, updateChannelmemberDto.channel_id);
       const toUpdate = await this.findChannelmember(updateChannelmemberDto.member_id, updateChannelmemberDto.channel_id);
+      var date = new Date();
+
+      if (!toMute)
+        date = null;
+
       if (updater.is_admin && !toUpdate.is_owner) {
         const updatedMember = await prisma.channelMember.update({
           where: {
             id: toUpdate.id
           },
           data: {
-            is_muted: true,
+            is_muted: toMute,
+            muted_at: date
           }
         });
+
+        if (toMute)
+            this.logger.log(`${updater.member.username} muted ${toUpdate.member.username}`);
+        else
+            this.logger.log(`${updater.member.username} unmuted ${toUpdate.member.username}`);
+
         return updatedMember;
       }
       else {
@@ -359,8 +450,11 @@ export class ChannelmemberService {
         const deletedMember = await prisma.channelMember.delete({
           where: {
             id: toUpdate.id,
-          },
+          }
         });
+        deletedMember['is_owner'] = toUpdate.is_owner;
+        this.logger.log(`${updater.member.username} removed ${toUpdate.member.username}`);
+        
         return deletedMember;
       }
       else {

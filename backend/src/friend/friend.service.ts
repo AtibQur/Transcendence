@@ -3,13 +3,15 @@ import { AddFriendDto } from './dto/add-friend.dto';
 import { UpdateFriendDto } from './dto/update-friend.dto';
 import { PlayerService } from 'src/player/player.service';
 import { PrismaService } from '../../prisma/prisma.service';
+import { BlockedplayerService } from 'src/blockedplayer/blockedplayer.service';
 
 const prisma = PrismaService.getClient();
 
 @Injectable()
 export class FriendService {
   constructor(
-    private readonly playerService: PlayerService
+    private readonly playerService: PlayerService,
+    private readonly blockedplayerService: BlockedplayerService
   ) {}
 
   // ADD OTHER PLAYER AS FRIEND
@@ -25,7 +27,9 @@ export class FriendService {
       if (existingFriendship) {
         throw new Error("Player is already your friend");
       }
-      
+      if (this.blockedplayerService.isBlocked(id, addFriendDto.friendUsername)) {
+        this.blockedplayerService.unblockPlayer(id, {blockedUsername: addFriendDto.friendUsername});
+      }
       const newFriendShip = await prisma.friend.create({
         data: {
           player_id: id,
@@ -40,29 +44,17 @@ export class FriendService {
     }
   }
 
-    // CHECK IF FRIENDSCHIP EXISTS
+    // CHECK IF FRIENDSHIP EXISTS
     async isExistingFriendship(id: number, friendId: number) {
         try {
-            const existingFriendship = await prisma.friend.findFirst( {
-                where: {
-                    OR: [
-                        {
-                            player_id: id,
-                            friend_id: friendId,
-                        },
-                        {
-                            player_id: friendId,
-                            friend_id: id,
-                        },
-                    ],
-                },
-            });
-            
-            if (existingFriendship) 
-                return true;
-            else
-                return false;
-        } catch (error) {
+          if (await this.findFriendshipId(id, friendId)) {
+            return true;
+          }
+          else {
+            return false;
+          }
+        }
+        catch (error) {
             return false;
         }
     }
@@ -84,9 +76,11 @@ export class FriendService {
                 ],
             },
         });
-      return friendshipId;
-    } catch (error) {
-        throw new Error("Friendship does not exist");
+      return friendshipId.id;
+    }
+    catch (error) {
+      console.error('Friendship does not exist:', error);
+      return null;
     }
   }
 
@@ -102,7 +96,8 @@ export class FriendService {
         },
       });
       return friends;
-    } catch (error) {
+    }
+    catch (error) {
       console.error('Error occurred: ', error);
       return null;
     }
@@ -157,7 +152,8 @@ async findFriendsUsername(id: number) {
     });
 
     return filteredFriends;
-  } catch (error) {
+  }
+  catch (error) {
     console.error('Error occurred: ', error);
     return null;
   }
@@ -167,16 +163,15 @@ async findFriendsUsername(id: number) {
   async remove(id: number, updateFriendDto: UpdateFriendDto) {
     try {
         const friendId = await this.playerService.findIdByUsername(updateFriendDto.friendUsername);
-      
-        const isExistingFriendship = await this.isExistingFriendship(id, friendId);
-        if (!isExistingFriendship)
-            throw new Error("Friendship does not exist");
-        
+        if (!friendId)
+          throw new Error("Player does not exist");
         const friendshipId = await this.findFriendshipId(id, friendId);
+        if (!friendshipId)
+            throw new Error("Friendship does not exist");
 
         const deletedFriendship = await prisma.friend.delete({
             where: {
-                id: friendshipId.id
+                id: friendshipId
             },
         })
         return deletedFriendship;
@@ -186,6 +181,5 @@ async findFriendsUsername(id: number) {
         return null;
     }
   }
-  
 
 }

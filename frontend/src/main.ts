@@ -10,24 +10,22 @@ import App from './App.vue';
 import Home from './components/Home.vue';
 import Play from './components/pong/Play.vue';
 import Multiplayer from './components/pong/Multiplayer.vue';
+import Tfa from './components/Auth/Redirect2faVerify.vue';
 import Auth from './components/Auth/AuthCheck.vue';
-import Login from './components/Auth/AuthRedirect.vue';
+import Login from './components/Auth/AuthRedirectIf2fa.vue';
 import ProfilePage from './components/profile/ProfilePage.vue';
 import Leaderboard from './components/LeaderboardComponent.vue';
-import PopulateDatabase from './components/PopulateDatabase.vue';
 import ChatView from './components/Chat/ChatView.vue';
-import Redirect2faVerify from './components/Auth/Redirect2faVerify.vue';
-import FriendsPage from './components/Friends/FriendsPage.vue';
-import PlayerProfile from './components/profile/PlayerProfile.vue';
+import Redirect2faVerify from './components/Auth/AuthRedirectIf2fa.vue';
+import FriendsPage from './components/Friends/FriendsMenubar/FriendsPage.vue';
+import WrongTfa from './components/Auth/WrongTfa.vue';
 import PrimeVue from 'primevue/config';
 import ToastService from 'primevue/toastservice';
 import ConfirmationService from 'primevue/confirmationservice';
-
 import createCookies from 'vue3-cookies';
-import Logout from './components/LogoutPlayer.vue';
 
 const routes: RouteRecordRaw[] = [
-    { 
+    {
       path: '/',
       component: Home,
     },
@@ -39,6 +37,11 @@ const routes: RouteRecordRaw[] = [
 		path: '/play/multiplayer',
 		component: Multiplayer,
 	},
+    {
+      path: '/2fa',
+      name: '2fa',
+      component: Tfa,
+    },
     {
       path: '/auth',
       name: 'auth',
@@ -57,10 +60,6 @@ const routes: RouteRecordRaw[] = [
       component: Leaderboard,
     },
     {
-    path: '/populatedatabase',
-    component: PopulateDatabase,
-    },
-    {
       path: '/profile',
       component: ProfilePage,
     },
@@ -69,19 +68,18 @@ const routes: RouteRecordRaw[] = [
       component: FriendsPage,
     },
     {
-      path: '/login/redirect2faverify',
+      path: '/redirect2faverify',
       component: Redirect2faVerify,
     },
     {
-      path: '/profile/:playerName',
-      name: 'profile',
-      component: ProfilePage, // Replace "ProfilePage" with the component for the profile page
+      path: '/wrong2fa',
+      component: WrongTfa
     },
     {
-      path: '/logout',
-      name: 'logout',
-      component: Logout,
-    }
+      name: 'friends',
+      path: '/profile/:playerName',
+      component: FriendsPage,
+    },
 ];
 
 const router = createRouter({

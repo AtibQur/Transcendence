@@ -1,17 +1,13 @@
 <template>
-    <button class="custom-button-1" @click="showDialog()">Add Channelmember</button>
+    <button class="custom-button-1" @click="showDialog()">Create new Dm</button>
     <div class="card flex justify-content-center p-fluid">
-        <Dialog v-model:visible="isVisible" modal header="New Channelmember" :style="{ width: '50vw' }" :closeButtonProps="handleCloseButton">
+        <Dialog v-model:visible="isVisible" modal header="New Dm" :style="{ width: '50vw' }" :closeButtonProps="handleCloseButton">
             <form @submit.prevent="onSubmit">
                 <div class="p-field">
-                    <AutoComplete v-model="newChannelmember" :suggestions="filteredFriends" @complete="search" />
-                </div>
-                <div class="p-field">
-                    <Checkbox v-model="isAdmin" inputId="admin" :binary="true" />
-                    <label for="admin" > Admin </label>
+                    <AutoComplete v-model="selectedFriend" :suggestions="filteredFriends" @complete="search" />
                 </div>
                 <small id="text-error" class="p-error">{{ errorMessage }}</small>
-                <button type="submit">Add</button>
+                <button type="submit">Create</button>
             </form>
         </Dialog>
     </div>
@@ -20,26 +16,17 @@
 <script setup lang="ts">
 import { socket } from '../../socket';
 import axiosInstance from '../../axiosConfig';
-import { ref, onMounted } from 'vue';
+import { ref } from 'vue';
 import Dialog from 'primevue/dialog';
 import AutoComplete from 'primevue/autocomplete';
 import { useToast } from 'primevue/usetoast';
 import { useConfirm } from "primevue/useconfirm";
-import Checkbox from 'primevue/checkbox';
-
-const props = defineProps({
-    channelId: {
-        type: Number,
-        required: true
-    }
-});
 
 const toast = useToast();
 const confirm = useConfirm();
 const isVisible = ref<boolean>(false);
-const isAdmin = ref<boolean>(false);
-const playerId = sessionStorage.getItem('playerId') || '0';
-const newChannelmember = ref<string>('');
+const playerId = parseInt(sessionStorage.getItem('playerId') || '0');
+const selectedFriend = ref<string>('');
 const errorMessage = ref<string>('');
 const friends = ref<string[]>([]);
 const filteredFriends = ref<string[]>([]);
@@ -52,7 +39,7 @@ const showDialog = async () => {
 
 //FETCH FRIENDS OF PLAYER
 const fetchFriends = async () => {
-    const response = await axiosInstance.get('friend/username/' + playerId);
+    const response = await axiosInstance.get('friend/username/' + playerId.toString());
     if (response.data)
         friends.value = response.data.map(item => item.username);
 }
@@ -93,60 +80,75 @@ const handleCloseButton = {
     },
 };
 
-const channelmemberExists = async () => {
-    const channelmemberId = await axiosInstance.get('player/profile/' + newChannelmember.value);
-    if (channelmemberId.data)
-    {
-        const isInChannel = await axiosInstance.get('channelmember/channel/'
-                                                    + props.channelId.toString()
-                                                    + '/' + channelmemberId.data.toString());
-        if (isInChannel.data)
-            return true
-    }
-    return false;
+const dmExists = async (friend_id: number) => {
+    const dm = await axiosInstance.get('channel/dm/' + playerId.toString() + '/' + friend_id.toString());
+    if (!dm.data)
+        return false
+    return true;
 }
 
 //VALIDATE FIELDS
-const validateFields = async () => {
-    if (!newChannelmember.value)
+const validateFields = async (friend_id: number) => {
+    if (!selectedFriend.value) // if nothing is entered
     {
-        errorMessage.value = 'Channelmember name required.';
+        errorMessage.value = 'Friend name required.';
         return false;
     }
-    if (!friends.value.includes(newChannelmember.value))
+    if (!friends.value.includes(selectedFriend.value)) // if the entered name is not a friend
     {
         errorMessage.value = 'Invalid name of friend';
         return false;
     }
-    if (await channelmemberExists()) // if the member already exists
+    if (await dmExists(friend_id)) // if the dm already exists
     {
-        errorMessage.value = 'Channelmember already exists!';
+        errorMessage.value = 'Dm already exists!';
         return false;
     }
     errorMessage.value = '';
     return true;
 }
 
-//RESET FORM
+// //RESET FORM
 function resetForm() {
-    newChannelmember.value = '';
-    isAdmin.value = false;
+    selectedFriend.value = '';
     isVisible.value = false;
     errorMessage.value = '';
 }
 
 //SUMBIT FORM
-const onSubmit = async() => {
-    if (await validateFields())
+const onSubmit = async () => {
+    const friend_id = await axiosInstance.get('player/profile/' + selectedFriend.value);
+    if (friend_id.data && await validateFields(friend_id.data))
     {
-        socket.emit('addChannelmember', { channelmember_name: newChannelmember.value, channel_id: props.channelId, is_admin: isAdmin.value }, () => {
-            toast.add({ severity: 'info', summary: 'Added Channelmember successfully', detail: '', life: 3000 });
+        socket.emit('addDm', { player_id: playerId, friend_id: friend_id.data }, () => {
+            toast.add({ severity: 'info', summary: 'Create Dm successfully', detail: '', life: 3000 });
             resetForm();
         })
 
-        if (!newChannelmember.value)
-            toast.add({ severity: 'error', summary: 'Error Channelmember not Added', detail: '', life: 3000 });
+        if (!selectedFriend.value)
+            toast.add({ severity: 'error', summary: 'Error Dm is not created', detail: '', life: 3000 });
     }
 };
 
 </script>
+
+<style>
+  .custom-button-1 {
+    font-family: 'JetBrains Mono';
+    font-weight: bolder;
+    border:none; 
+    border-radius:10px;
+    position: relative;
+    min-height:30px; 
+    min-width: 120px;
+    margin: 5px;
+    background-color: var(--white-transparent);
+    color: var(--black-soft);
+    cursor: pointer;
+  }
+  .custom-button-1:hover {
+    background-color: var(--blue-dark-transparent);
+    color: var(--white-softblue);
+    transition: 0.3s;
+  }
+</style>

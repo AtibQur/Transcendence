@@ -6,109 +6,154 @@
         </div>
         <div class="chat-start-page" v-else>
             <div class="left-side-bar">
-                <h3>Welcome {{ username }} {{ playerId }}!</h3>
                 <ChannelDisplay @changeChannel='changeChannel'/>
+                <DmDisplay @changeChannel="changeChannel"/> 
                 <AddChannel/>
-                <DmDisplay/> 
+                <AddDm/>
             </div>
             <div class="chat-box">
-                <div v-if="inChannel">
-                    <ChatBox :channelId="channelId"/>
+                <div v-if="inChannel || inDm">
+                    <ChatBox @showInfo="showInfo" :channelId="channelId"/>
                     <AddMessage :channelId="channelId"/>
+                    <ChannelInfoDisplay 
+                        @showInfo="showInfo"
+                        @changeChannel="changeChannel"
+                        :channelId="channelId"
+                        :isDm="inDm"
+                        :isVisible="showChannelInfo"
+                    />
                 </div>
             </div>
-            <div class="right-side-bar" v-if="inChannel">
-                <ChannelmemberDisplay :channelId="channelId" />
-                <div v-if="isAdmin">
-                    <AddChannelmember :channelId="channelId"/>
+            <div class="right-side-bar">
+                <div class="ProfilePicture" style="margin: 20px;">
+                    <img :src="profilePicture" alt="Avatar" style="width:60%">
                 </div>
-                <button @click="openConfirmDialog">Leave Chat</button>
+                <h2>{{ username }} {{ playerId }}</h2>
+                <div class="status-circle" :class="{ 'online': status === 'online', 'offline': status !== 'online' }">
+                    <span class="status-text">
+                        {{ status }}
+                    </span>
+                </div>
             </div>
         </div>
     </div>
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue';
-import { socket } from '@/socket';
+import { onBeforeMount, ref } from 'vue';
+import axiosInstance from '../../axiosConfig';
 import ChannelDisplay from './ChannelDisplay.vue'
+import ChannelInfoDisplay from './ChannelInfoDisplay.vue'
 import AddChannel from './AddChannel.vue';
 import Toast from 'primevue/toast';
 import ChatBox from './ChatBox.vue';
 import AddMessage from './AddMessage.vue';
-import ChannelmemberDisplay from './ChannelmemberDisplay.vue';
-import AddChannelmember from './AddChannelmember.vue';
-import axiosInstance from '../../axiosConfig';
 import DmDisplay from './DmDisplay.vue';
-import { useToast } from 'primevue/usetoast';
-import { useConfirm } from "primevue/useconfirm";
+import AddDm from './AddDm.vue';
 
-const toast = useToast();
-const confirm = useConfirm();
 const playerId = parseInt(sessionStorage.getItem('playerId') || '0');
 const username = sessionStorage.getItem('username') || '0';
+const profilePicture = ref('');
 const inChannel = ref(false);
-const isAdmin = ref(false);
-const channelId = ref(null);
+const inDm = ref(false);
+const status = ref('');
 
-const changeChannel = async (channel_id: number) => {
+const channelId = ref<number>(0);
+const showChannelInfo = ref(false);
+
+const changeChannel = async (channel_id: number, isChannel: boolean) => {
     channelId.value = channel_id;
-    inChannel.value = true;
-    isAdmin.value = await fetchIsAdmin();
+    showChannelInfo.value = false;
+    if (isChannel) {
+        inChannel.value = true;
+        inDm.value = false
+    }
+    else {
+        inChannel.value = false;
+        inDm.value = true;
+    }
 }
 
-const fetchIsAdmin = async () => {
-    const response = await axiosInstance.get('channelmember/admin/' + playerId.toString() + '/' + channelId.value.toString());
+const showInfo = async (isVisible: boolean) => {
+    showChannelInfo.value = isVisible;
+}
+onBeforeMount(async () => {
+    try {
+      profilePicture.value = await fetchAvatar(playerId);
+      status.value = await fetchStatus(playerId);
+    } catch (error) {
+      console.log("Error occurred chat profile");
+    }
+  });
+
+  const fetchAvatar = async (player_id: number) => {
+    const response = await axiosInstance.get('player/avatar/' + player_id.toString());
+    const imageBytes: Uint8Array = new Uint8Array(response.data.data);
+    const imageUrl = ref<string | null>(null);
+    imageUrl.value = URL.createObjectURL(new Blob([imageBytes]));
+    return imageUrl.value;
+  };
+
+  const fetchStatus = async (player_id: number) => {
+    const response = await axiosInstance.get('player/status/' + player_id.toString());
     return response.data;
-}
-
-//CONFIRM DIALOG BUTTON
-const openConfirmDialog = () => {
-    confirm.require({
-        message: 'Are you sure you want to proceed?',
-        header: 'Confirmation',
-        accept: () => {
-            leaveChat();
-        }
-    });
-};
-
-const leaveChat = async () => {
-
-    await socket.emit('leaveRoom', {player_id: playerId, channel_id: channelId.value}, (response) => {
-        if (response)
-        {
-            inChannel.value = false;
-            toast.add({ severity: 'info', summary: 'Left Channel Succesfully', detail: '', life: 3000 });
-        }
-        else 
-            toast.add({ severity: 'error', summary: 'Error you did not leave the Channel', detail: '', life: 3000 });
-    })
-}
-
+  }
 </script>
 
 
-<style>
-
+<style scoped>
 .chat-start-page {
     display: flex;
 }
 
-.left-side-bar,
+.left-side-bar {
+    flex: 1;
+    padding: 10px;
+    background-color: var(--blue-light);
+    border-top: 2px solid var(--gray-medium);
+    margin-top: 100px;
+}
+
 .right-side-bar {
     flex: 1;
     padding: 10px;
-    background-color: #f1f1f1;
+    border-top: 2px solid var(--gray-medium);
+    background-color: var(--blue-light);
+    margin-top: 100px;
 }
+
+.status-circle {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    margin-right: 10px;
+    margin-left: 15px;
+    margin-top: 50px;
+  }
+  
+.online {
+    background-color: var(--green-soft);
+}
+
+.offline {
+    background-color: var(--red-soft);
+}
+
+.status-text {
+    margin-left: 40px;
+    font-weight: bold;
+  }
 
 /* Chat Box */
 .chat-box {
     flex: 3;
     flex-direction: column;
-    background: white;
+    background: var(--white-softblue);
     overflow: auto;
-    box-shadow: 2px 2px 5px 2px rgba(0, 0, 0, 0.3)
+    margin-top: 100px;
+    border-top: 2px solid var(--gray-medium);
+    border-left: 2px solid var(--gray-medium);
+    border-right: 2px solid var(--gray-medium);
 }
 
 

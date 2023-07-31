@@ -1,22 +1,30 @@
-// import { CanActivate, ExecutionContext } from "@nestjs/common";
-// import { AuthGuard } from "@nestjs/passport";
-// import { Injectable } from "@nestjs/common";
+import {
+	CanActivate,
+	ExecutionContext,
+	Injectable,
+	UnauthorizedException,
+  } from '@nestjs/common';
+  import { JwtService } from '@nestjs/jwt';
+  import { Request } from 'express';
+import { AuthService } from './auth.service';
 
-// @Injectable()
-// export class LocalAuthGuard extends AuthGuard('42') {
-//     async canActivate(context: ExecutionContext) {
-//         const result = (await super.canActivate(context)) as boolean;
-//         const request = context.switchToHttp().getRequest();
-//         await super.logIn(request);
-//         return result;
-//     }
-// }
-
-// @Injectable()
-// export class AuthenticatedGuard implements CanActivate {
-//     async canActivate(context: ExecutionContext): Promise<any> {
-//         const request = context.switchToHttp().getRequest();
-//         // console.log(request.isAuthenticated());
-//         return request.isAuthenticated();
-//     }
-// }
+  @Injectable()
+  export class AuthGuard implements CanActivate {
+	constructor(private jwtService: JwtService,
+		private readonly authService: AuthService) {}
+  
+	async canActivate(context: ExecutionContext): Promise<boolean> {
+	  const request = context.switchToHttp().getRequest();
+	  const token = request.header('Authorization').split(' ')[1];
+	  if (!token) {
+		throw new UnauthorizedException();
+	  }
+	  console.log(token)
+	  try {
+		const payload = await this.authService.validateToken(token);
+	  } catch {
+		throw new UnauthorizedException();
+	  }
+	  return true;
+	}
+}

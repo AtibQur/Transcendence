@@ -24,16 +24,24 @@ export class ChannelmemberController {
     return this.channelmemberService.findPlayerChannels(+player_id);
   }
 
+  // FIND ALL CHANNELS WHERE PLAYER IS MEMBER
+  // TODO: move to channels module?
+  @Get('alldms/:player_id')
+  findPlayerDms(@Param('player_id') player_id: string) {
+    return this.channelmemberService.findPlayerDms(+player_id);
+  }
+
   // FIND ALL CHANNELMEMBERS OF CHANNEL
   @Get('allmembers/:channel_id')
   findAllChannelmembers(@Param('channel_id') channel_id: string) {
     return this.channelmemberService.findAllChannelmembers(+channel_id);
   }
 
+  // CHECK IF PLAYER IS MEMBER OF CHANNEL
   @Get('channel/:channel_id/:member_id')
   findIsInChannel(@Param('member_id') member_id: string, @Param('channel_id') channel_id: string) {
     return this.channelmemberService.isInChannel(+member_id, +channel_id);
-  }
+  } 
 
   // GET A MEMBERS INFO (is_admin, is_muted etc)
   @Get('info/:member_id/:channel_id')
@@ -68,7 +76,13 @@ export class ChannelmemberController {
   // MUTE A CHANNELMEMBER
   @Patch('mute/:player_id')
   muteMember(@Param('player_id') player_id: string, @Body() updateChannelmemberDto: UpdateChannelmemberDto) {
-    return this.channelmemberService.muteMember(+player_id, updateChannelmemberDto);
+    return this.channelmemberService.muteMember(+player_id, updateChannelmemberDto, true);
+  }
+
+  // UNMUTE A CHANNELMEMBER
+  @Patch('unmute/:player_id')
+  unmuteMember(@Param('player_id') player_id: string, @Body() updateChannelmemberDto: UpdateChannelmemberDto) {
+    return this.channelmemberService.muteMember(+player_id, updateChannelmemberDto, false);
   }
 
   // DELETE A PLAYER FROM CHANNEL

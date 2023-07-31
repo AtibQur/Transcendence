@@ -1,4 +1,3 @@
-ProfilePage.vue: 
 <template>
   <div class="ProfileContainer">
     <div class="ProfileData">
@@ -20,7 +19,8 @@ ProfilePage.vue:
         <ul>
           <li @click="changeUsernameModal">Name change</li>
           <li @click="changeProfilePicture">Picture change</li>
-          <li>2FA Authorisation</li>
+          <li @click="changeTfaStatus">2FA Authorisation</li>
+          <li @click="logOut">Log out</li>
           <li></li>
         </ul>
       </div>
@@ -59,33 +59,51 @@ ProfilePage.vue:
         </div>
       </div>
     </div>
-
+    
     <div v-if="showChangePictureModal" class="Modal" @click="closeModal">
       <div class="ModalContent" @click.stop>
         <h2>Profile Picture Change</h2>
         <div v-if="showChangePictureModal" class="show">
-      <ProfileAvatar @avatarUploaded="handleAvatarUploaded" />        </div>
+          <ProfileAvatar @avatarUploaded="handleAvatarUploaded" />        </div>
+        </div>
       </div>
-    </div>
+      
+      <div v-if="showChangeTfaModal" class="Modal" @click="closeModal">
+        <div class="ModalContent" @click.stop>
+          <h2>Change 2FA Status</h2>
+          <div>
+            <p>2FA Status: </p>
+            <button @click="enableTFA">Enable</button>
+            <button @click="disableTFA">Disable</button>
+          </div>
+        </div>
+      </div>
 
   </div>
 </template>
 
 <script setup lang="ts">
   import { onBeforeMount, ref } from 'vue';
+  import ImageComponent from '../Auth/ImageComponent.vue';
   import axiosInstance from '../../axiosConfig';
   import ProfileAchievements from "./ProfileAchievements.vue";
   import ProfileStats from "./ProfileStats.vue";
   import ProfileHistory from "./ProfileHistory.vue";
   import ProfileAvatar from './ProfileAvatar.vue';
+  import { removeCookie, getCookie } from '../cookie_utils';
+  import { removeDefaultAuthHeader } from '../../axiosConfig';
+  import { useRouter } from 'vue-router';
 
   const username = ref("");
+  const router = useRouter();
   const status = ref("");
   const selectedOption = ref("Achievements");
   const showChangeNameModal = ref(false);
+  const showQRCode = ref(false);
   const newName = ref('');
   const profilePicture = ref("");
   const showChangePictureModal = ref(false);
+  const showChangeTfaModal = ref(false);
 
   const playerId = parseInt(sessionStorage.getItem('playerId') || '0');
 
@@ -122,6 +140,10 @@ ProfilePage.vue:
     showChangeNameModal.value = true;
   };
 
+  const changeTfaStatus = () => {
+    showChangeTfaModal.value = true;
+  };
+
   const changeUsername = async () => {
   if (newName.value) {
     try {
@@ -130,6 +152,7 @@ ProfilePage.vue:
       if (newName.value != username.value) {
         throw new Error("Username already exists");
       }
+      sessionStorage.setItem('username', username.value); //update sessionstorage
       closeModal();
     } catch (error) {
       alert("Username already exists. Please choose a different username.");
@@ -138,6 +161,12 @@ ProfilePage.vue:
   }
 };
 
+  async function logOut() {
+        removeCookie('auth');
+        removeDefaultAuthHeader();
+        router.push('http://localhost:8080/')
+    }
+
   const cancelNameChange = () => {
     showChangeNameModal.value = false;
     newName.value = '';
@@ -145,6 +174,25 @@ ProfilePage.vue:
 
   const changeProfilePicture = () => {
     showChangePictureModal.value = true;
+  };
+
+  const enableTFA = async () => {
+    showChangeTfaModal.value = false;
+    try {
+      router.push({ name: '2fa' });
+    } catch (error) {
+      alert("Two Factor Authorization could not be enabled");
+    }
+  };
+
+  const disableTFA = async () => {
+    showChangeTfaModal.value = false;
+    try {
+      await axiosInstance.get('user/disable2fa');
+      alert("Two Factor Authorization disabled");
+    } catch (error) {
+      alert("Two Factor Authorization could not be disabled");
+    }
   };
 
   const handleAvatarUploaded = async (avatarBytes: Uint8Array) => {

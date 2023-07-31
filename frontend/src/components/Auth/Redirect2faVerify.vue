@@ -1,28 +1,29 @@
 <template>
     <div>
-        <p> {{ verified }} </p>
+        <h1>Your Google Authenticator QRcode </h1>
+    </div>
+    <div>
+        <div>
+            <ImageComponent />
+        </div>
+        <div>
+            <h3>
+                Please scan the QRcode with your Google Authenticator app to link your account to our application.
+            </h3>
+        </div>
     </div>
 </template>
 
 <script setup lang="ts">
-    import axios from 'axios';
-    import { onMounted ,ref } from 'vue';
-    
-    const verified = ref("");
-    const answerLoaded = ref(false);
-    
-    async function fetchVerifyStatus() {
-        try {
-            const response = await axios.get('http://localhost:3000/auth/2fa/verify');
-            verified.value = response.data;
-            answerLoaded.value = true;
-            return verified.value;
-        } catch (error) {
-            console.log("Error: Could not fetch verified status");
-        }
-    }
-    
+    import ImageComponent from './ImageComponent.vue';
+    import { onMounted, ref } from 'vue';
+    import axiosInstance from '../../axiosConfig';
+
+    const enableTFA = async () => {
+        await axiosInstance.get('/user/enable2fa');
+    };
+
     onMounted(() => {
-        fetchVerifyStatus();
-    })
+        enableTFA();
+    });
 </script>
