@@ -48,12 +48,13 @@ export class ChatGateway {
             const intra_username = await this.playerService.findOneIntraUsername(playerId);
             this.connectedSockets.set(intra_username, client.id)
             
-            const channels = await this.channelmemberService.findPlayerChannels(playerId);
+            const channels = await this.channelmemberService.findAllPlayerRooms(playerId);
             channels.forEach(function(channel) {
                 client.join(channel.channel_id.toString());
               });
             client.join(intra_username);
-            console.log('client joined all rooms');
+
+            console.log('client joined all rooms & dms');
             // console.log(client.rooms);
     
             console.log('connected sockets:', this.connectedSockets);

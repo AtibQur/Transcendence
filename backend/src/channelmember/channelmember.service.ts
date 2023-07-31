@@ -52,6 +52,37 @@ export class ChannelmemberService {
     }
   }
 
+  // FIND ALL ROOMS (channels & dms) WHERE PLAYER IS MEMBER
+  async findAllPlayerRooms(player_id: number) {
+    try {
+      return prisma.channelMember.findMany({
+          where: {
+            member_id: player_id
+          },
+          include: {
+                member: {
+                  select: {
+                    username: true,
+                    intra_username: true
+                  }
+                },
+                channel: {
+                  select: {
+                      name: true,
+                      owner_id: true,
+                      is_dm: true
+                  }
+              }
+          },
+        });
+      
+    }
+    catch (error) {
+      console.error('Error occurred:', error);
+      return null;
+    }
+  }
+
   // FIND ALL CHANNELS WHERE PLAYER IS MEMBER
   async findPlayerChannels(player_id: number) {
     try {
