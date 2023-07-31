@@ -27,8 +27,12 @@ export class FriendService {
       if (existingFriendship) {
         throw new Error("Player is already your friend");
       }
-      if (this.blockedplayerService.isBlocked(id, addFriendDto.friendUsername)) {
-        this.blockedplayerService.unblockPlayer(id, {blockedUsername: addFriendDto.friendUsername});
+      if (await this.blockedplayerService.isBlocked(id, addFriendDto.friendUsername)) {
+        await this.blockedplayerService.unblockPlayer(id, {blockedUsername: addFriendDto.friendUsername});
+      }
+      const playerUsername = await this.playerService.findOneUsername(id);
+      if (await this.blockedplayerService.isBlocked(friendId, playerUsername)) {
+        throw new Error("Player blocked you");
       }
       const newFriendShip = await prisma.friend.create({
         data: {
@@ -36,6 +40,11 @@ export class FriendService {
           friend_id: friendId,
         },
       });
+      const numFriendsPlayer = await this.findNumFriends(id);
+      await this.playerService.updateAchievementsAfterFriendAdd(id, numFriendsPlayer);
+      const numFriendsFriend = await this.findNumFriends(friendId);
+      await this.playerService.updateAchievementsAfterFriendAdd(friendId, numFriendsFriend);
+
       return newFriendShip;
     }
     catch (error) {
@@ -99,6 +108,18 @@ export class FriendService {
     }
     catch (error) {
       console.error('Error occurred: ', error);
+      return null;
+    }
+  }
+
+  // GET AMOUNT OF FRIENDS
+  async findNumFriends(id: number) {
+    try {
+      const friends = await this.findFriends(id);
+      return Object.keys(friends).length;
+    }
+    catch (error) {
+      console.error('Error occurred:', error);
       return null;
     }
   }

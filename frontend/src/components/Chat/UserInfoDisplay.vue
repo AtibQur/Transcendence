@@ -1,33 +1,32 @@
 <template>
     <div>
         <img :src="profilePicture" alt="Avatar" style="width:100%">
-        <h3> {{ currentChannelmemberUsername }}</h3>
-        <h4> {{ ( currentChannelmemberStatus ) }}</h4>
+        <h4 class="custom-h4"> {{ currentChannelmemberUsername }}</h4>
         
         <!-- for testing purposes -->
-        <div v-if="currentChannelmemberInfo.memberIsOwner">
-            <h5>[OWNER]</h5>
-        </div>
-        <div v-if="currentChannelmemberInfo.memberIsAdmin">
-            <h5>[ADMIN]</h5>
-        </div>
-        <div v-if="currentChannelmemberInfo.memberIsMuted">
-            <h5>[MUTED]</h5>
-        </div>
-        <div v-if="currentChannelmemberInfo.memberIsBanned">
-            <h5>[BANNED]</h5>
+            <div v-if="currentChannelmemberInfo.memberIsOwner">
+                <h5>[OWNER]</h5>
+            </div>
+            <div v-if="currentChannelmemberInfo.memberIsAdmin">
+                <h5>[ADMIN]</h5>
+            </div>
+            <div v-if="currentChannelmemberInfo.memberIsMuted">
+                <h5>[MUTED]</h5>
+            </div>
+            <div v-if="currentChannelmemberInfo.memberIsBanned">
+                <h5>[BANNED]</h5>
+            </div>
         </div>
 
-    </div>
     <div v-if="currentChannelmemberUsername != playerUsername">
         <div>
-            <button>View Profile</button>
+            <button class="custom-button-1">View Profile</button>
         </div>
         <div v-if="currentChannelmemberInfo.memberIsFriend">
             <div v-if="isDm">
-                <button>Send Message</button>
+                <button class="custom-button-1">Send Message</button>
             </div>
-            <button>Invite To Play Pong</button>
+            <button class="custom-button-1">Invite To Play Pong</button>
         </div>
         <div v-else>
             <button @click="addFriend()">Add Friend</button>
@@ -35,24 +34,24 @@
         
         <div v-if="!isDm">
             <div v-if="currentChannelmemberInfo.showMute">
-                <button @click="openConfirmDialog(Actions.MUTE)">Mute</button>
+                <button  class="custom-button-1" @click="openConfirmDialog(Actions.MUTE)">Mute</button>
             </div>
             <div v-if="!currentChannelmemberInfo.showMute && !currentChannelmemberInfo.memberIsOwner">
-                <button @click="unmuteChannelmember()">Unmute</button>
+                <button  class="custom-button-1" @click="unmuteChannelmember()">Unmute</button>
             </div>
             <div v-if="currentChannelmemberInfo.showMakeAdmin">
-                <button @click="makeAdmin()">Make Admin</button>
+                <button  class="custom-button-1" @click="makeAdmin()">Make Admin</button>
             </div>
             <div v-if="currentChannelmemberInfo.showBan">
-                <button @click="openConfirmDialog(Actions.BAN)">Ban</button>
+                <button  class="custom-button-1" @click="openConfirmDialog(Actions.BAN)">Ban</button>
             </div>
             <div v-if="currentChannelmemberInfo.showDelete">
-                <button @click="openConfirmDialog(Actions.REMOVE);">Remove from Channel</button>
+                <button  class="custom-button-1" @click="openConfirmDialog(Actions.REMOVE);">Remove from Channel</button>
             </div>
         </div>
     </div>
     <div v-else>
-        <button>Edit Profile</button>
+        <button class="custom-button-1">Edit Profile</button>
     </div>
 </template>
 
@@ -256,3 +255,13 @@ const removeChannelmember = async () => {
 
 
 </script>
+
+<style scoped>
+.custom-h4 {
+    font-family: 'JetBrains Mono';
+    font-weight: bolder;
+    font-size: x-large;
+    color: black;
+    text-align: center;
+  }
+</style>

@@ -15,15 +15,15 @@
         <button class="add-del-block-button" @click="confirmBlock($event)">BLOCK</button>
       </div>
       <div class="friend-list">
-        <div v-for="friend in friends" :key="friend.username" class="name-container aliceblue-bg">
+        <router-link v-for="friend in friends" :key="friend.username" :to="{
+          name: 'friends',
+          params: { playerName: friend.username, profilePicture: friend.profilePicture, status: friend.status }
+        }" class="name-container" style="text-decoration: none; color: inherit;">
           <div class="status-circle" :class="{ 'online': friend.status === 'online', 'offline': friend.status !== 'online' }"></div>
           <div class="name">{{ friend.username }}</div>
-          <div class="profile-box">
-            <router-link v-if="friend.username" :to="{
-              name: 'friends', params: { playerName: friend.username, profilePicture: friend.profilePicture, status: friend.status } }" class="profile-link">Profile</router-link>
-          </div>
-        </div>
+        </router-link>
       </div>
+      
     </div>
   </div>
 </template>
@@ -162,18 +162,13 @@ export default defineComponent({
 }
 .LoadFriendsText {
   text-align: center;
-  color: #1f6091;
+  color: var(--blue-medium);
   font-size: 35px;
 }
 
 .box {
-  background-color: #abd0dd;
   padding: 5px 50px;
   display: inline-block;
-  border-bottom: 1px solid rgb(67, 63, 63);
-  border-top: none;
-  border-left: none;
-  border-right: none;
 }
 
 .LoadFriendsText h1 {
@@ -193,6 +188,9 @@ export default defineComponent({
 }
 
 .friend-input {
+  font-family: 'JetBrains Mono';
+  border: none;
+  border-radius: 8px;
   margin-top: 20px;
   padding: 7px 25px;
   font-size: 18px;
@@ -200,20 +198,19 @@ export default defineComponent({
 
 .name-container {
   /* border: 1px solid #000; */
-  margin-bottom: 5px;
+  margin: 10px;
+  padding: 10px;
+  border-radius: 8px;
   display: flex;
   align-items: center;
-  margin-top: 20px;
-  transition: background-color 0.3s;
+  transition: background-color 0.2s;
+  background-color: var(--blue-lightest);
 }
 
 .name-container:hover {
-    background-color: #abd0dd;
+    background-color: var(--white-softblue);
   }
 
-.name-container:hover .profile-box {
-  background-color: #abd0dd;
-}
 .name {
   margin-left: 5px;
   font-size: 25px;
@@ -239,36 +236,6 @@ export default defineComponent({
   background-color: var(--red-soft);
 }
 
-.profile-box {
-  display: flex;
-  align-items: center;
-  margin-left: auto;
-  padding: 5px;
-  transition: background-color 0.3s, border-color 0.3s;
-  background-color: aliceblue;
-  border: none;
-  color: #1f6091;
-}
-.profile-box:hover {
-  background-color: red;
-  border-color: #abd0dd;
-}
-
-.profile-box:hover .profile-link {
-  color: #204a6b;
-}
-
-.profile-link {
-  font-size: 15px;
-  color: #1f6091;
-  transition: color 0.3s;
-  text-decoration: none;
-  margin-left: 5px;
-}
-
-.profile-link:hover {
-    color: #abd0dd;
-  }
 .buttonContainer {
   display: flex;
   justify-content: space-between;
@@ -277,24 +244,26 @@ export default defineComponent({
 
 .add-del-block-button {
   width: 50%;
-  padding: 5px;
+  padding: 10px;
   font-size: 18px;
   transition: background-color 0.3s;
   margin-top: 70px;
-  background-color: rgb(251, 253, 255);
-  color: #3172a4;
+  margin-bottom: 18px;
+  margin-left: 10px;
+  margin-right: 10px;
+  border-radius: 8px;
   border: none;
   font-family: 'JetBrains Mono';
   font-weight: bold;
-}
-
-.add-del-block-button:hover {
-  background-color: #abd0dd;;
+  background-color: var(--white-transparent);
+  color: var(--blue-dark);
   cursor: pointer;
 }
 
-.aliceblue-bg {
-    background-color: aliceblue;
-  }
+.add-del-block-button:hover {
+  background-color: var(--blue-dark-transparent);
+  color: var(--white-softblue);
+  transition: 0.3s;
+}
 
 </style>

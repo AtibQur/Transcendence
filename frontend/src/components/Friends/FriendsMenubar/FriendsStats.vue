@@ -62,7 +62,7 @@ const fetchPercentageWon = async (friendId: string) => {
 
 </script>
 
-  <style>
+  <style scoped>
   .border-container {
     height: 800px;
     display: flex;

@@ -138,8 +138,6 @@
 </script>
 
 <style>
-  @import url('https://fonts.googleapis.com/css?family=JetBrains+Mono');
-  
   .PongContainer {
     background-color: var(--blue-light);
     display: flex;

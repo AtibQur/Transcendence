@@ -1,17 +1,6 @@
 <template>
   <div class="border-container">
     <div class="border">
-      <div class="border-match-info">
-        <div class="user-info">
-          <div class="player-infoRow">
-            <div class="user-infoName blue-text">player</div>
-            <div class="user-infoScore black-text">score</div>
-            <div class="enemy-infoScore black-text">score</div>
-            <div class="enemy-infoName blue-text">enemy</div>
-          </div>
-        </div>
-      </div>
-
       <div class="border-text">
         <div
           v-for="(match, index) in matches"
@@ -20,8 +9,9 @@
           :class="['border-value', { 'green-bg': match.player_points === 5, 'red-bg': match.player_points !== 5 }]"
         >
           <div class="border-value blue-text player-username">{{ match.player.username }}</div>
-          <div class="border-value black-text">{{ match.player_points }}</div>
-          <div class="border-value black-text">{{ match.opponent_points }}</div>
+          <div class="border-value black-text"  style="font-weight: bold">{{ match.player_points }}</div>
+          <div class="border-value black-text"> VS </div>
+          <div class="border-value black-text" style="font-weight: bold">{{ match.opponent_points }}</div>
           <div class="border-value blue-text enemy-username">{{ match.opponent.username }}</div>
         </div>
       </div>
@@ -53,69 +43,52 @@ const fetchMatches = async (playerId: number) => {
 };
 </script>
 
-<style>
+<style scoped>
 .border-container {
+  min-height: 300px;
   display: flex;
   justify-content: center;
-  margin-top: 20px;
-  background-color: aliceblue;
-}
-
-.border-match-info {
-  display: flex;
-  justify-content: space-between;
-  margin-bottom: 10px;
-}
-
-.user-info {
-  display: flex;
-  flex-direction: column;
-  margin-bottom: 10px;
-}
-
-.player-infoRow {
-  display: flex;
-  flex-direction: row;
   align-items: center;
-  justify-content: space-between;
-  margin-bottom: 5px;
-  margin-left: 50px;
-  text-align: center;
-
+  background-color: aliceblue;
+  border-radius: 8px;
 }
 
-.player-infoRow > *:not(:last-child) {
-  margin-right: 100px;
+.border {
+  border: none;
+  width: 100%;
+  height: 100%;
+  padding: 20px;
+  box-sizing: border-box;
 }
-
 
 .border .border-row {
+  font-family: 'JetBrains Mono';
+  font-size: 18px;
   display: flex;
-  justify-content: space-between;
-  border: 1px solid black;
-  margin-bottom: 8px;
-  padding: 10px;
+  border: none;
+  border-radius: 18px;
+  padding: 15px;
 }
 
 .border .border-value {
-  margin-bottom: 5px;
+  margin: 10px;
   flex-basis: 25%;
 }
 
 .green-bg {
-  background-color: var(--green-soft);
+  background-color: var(--green-light);
 }
 
 .red-bg {
-  background-color: var(--red-soft);
+  background-color: var(--red-light);
 }
 
 .blue-text {
-  color: blue;
+  color: rgb(43, 43, 43);
 }
 
 .black-text {
   color: black;
-  font-weight: bold;
+  font-weight: regular;
 }
 </style>

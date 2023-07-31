@@ -74,7 +74,7 @@ const useFriendsHistory = (friendId) => {
 
 </script>
 
-<style>
+<style scoped>
 .border-container {
   display: flex;
   justify-content: center;

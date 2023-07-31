@@ -17,18 +17,17 @@
     <div class="ProfileOptions">
       <div class="ProfileOptionsContainer">
         <ul>
-          <li @click="changeUsernameModal">Name change</li>
-          <li @click="changeProfilePicture">Picture change</li>
-          <li @click="changeTfaStatus">2FA Authorisation</li>
-          <li @click="logOut">Log out</li>
-          <li></li>
+          <button class="custom-button-1" @click="changeUsernameModal">Change username</button>
+          <button class="custom-button-1" @click="changeProfilePicture">Change picture</button>
+          <button class="custom-button-1" @click="changeTfaStatus">2FA Authorisation</button>
+          <button class="custom-button-1" @click="logOut">Log out</button>
         </ul>
       </div>
     </div>
 
     <div class="ProfileStats">
-      <select v-model="selectedOption">
-        <option value="Achievements">{{ username }}'s Achievements</option>
+      <select v-model="selectedOption" class="custom-dropdown">
+        <option value="Achievements">Achievements</option>
         <option value="Stats">Stats</option>
         <option value="Match History">Match History</option>
       </select>
@@ -46,16 +45,17 @@
 
     <div v-if="showChangeNameModal" class="Modal" @click="closeModal">
       <div class="ModalContent" @click.stop>
-        <h2>Name Change</h2>
+        <h2>Username Change</h2>
         <input
           type="text"
           v-model="newName"
-          placeholder="Enter a new name"
+          placeholder="Enter a new username"
+          class="message-input"
           @keydown.enter="changeUsername"
         />
         <div class="ModalButtons">
-          <button @click="cancelNameChange">Cancel</button>
-          <button @click="changeUsername">Save</button>
+          <button class="custom-button-1" @click="cancelNameChange">Cancel</button>
+          <button class="custom-button-1" @click="changeUsername">Save</button>
         </div>
       </div>
     </div>
@@ -73,8 +73,8 @@
           <h2>Change 2FA Status</h2>
           <div>
             <p>2FA Status: </p>
-            <button @click="enableTFA">Enable</button>
-            <button @click="disableTFA">Disable</button>
+            <button class="custom-button-1" @click="enableTFA">Enable</button>
+            <button class="custom-button-1" @click="disableTFA">Disable</button>
           </div>
         </div>
       </div>
@@ -208,10 +208,10 @@
 
 </script>
   
-  <style>
+<style scoped>
 .ProfileContainer {
   position: absolute;
-  left: 400px;
+  left: 30px;
   top: 50%;
   transform: translateY(-50%);
   width: calc(100% - 800px);
@@ -222,7 +222,6 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  border: 2px solid black;
 }
   
   .ProfileData {
@@ -263,8 +262,8 @@
   
   .ProfileOptions {
     position: absolute;
-    left: 5%;
-    top: 65%;
+    left: 10%;
+    top: 55%;
     width: 25%;
     height: 30%;
     /* border: 1px solid black; */
@@ -313,7 +312,11 @@
     color: #1f6091;
     font-weight: bold;
   }
-  
+
+  .custom-dropdown {
+    font-family: 'JetBrains Mono';
+  }
+
   .ProfileStats {
     position: absolute;
     left: 40%;
@@ -358,7 +361,7 @@
   background-color: aliceblue; 
   padding: 20px;
   border: 1px solid #888;
-  border-radius: 4px;
+  border-radius: 8px;
   text-align: center;
   width: 30%; /* Adjust the width as desired */
 }
@@ -379,10 +382,18 @@
 }
 
 .ModalButtons button {
-  margin: 0 5px;
+  margin: 5 5px;
 }
 .ModalContent button:hover {
   color: #fefefe; /* Change color on hover */
   background-color: #697b8e;
+}
+
+.message-input {
+  font-family: 'JetBrains mono';
+  border-radius:10px;
+  border: none;
+  padding: 10px;
+  margin-bottom: 50px;
 }
   </style>

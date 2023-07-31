@@ -2,7 +2,7 @@
     <h4 class="custom-h4">Channel Members</h4>
     <ul id="channelmemberList">
         <div class="card flex justify-content-center">
-            <Sidebar v-model:visible="visible" position="right">
+            <Sidebar v-model:visible="visible" position="right" class="custom-sidebar">
                 <UserInfoDisplay @removeChannelmember="removeChannelmember" :channelId="currentChannelId" :channelmember="selectedChannelmember"/>
             </Sidebar>
         </div>
@@ -95,7 +95,7 @@ const removeChannelmember = async (member_id: number) => {
 
 </script>
 
-<style>
+<style scoped>
 .custom-h4 {
   font-family: 'JetBrains Mono';
   font-weight: bold;

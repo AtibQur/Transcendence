@@ -3,8 +3,8 @@
         <button class="custom-button-1" @click="showDialog(PasswordAction.ADD)">Add Password</button>
     </div>
     <div v-else>
-        <button @click="showDialog(PasswordAction.CHANGE)">Change Password</button>
-        <button @click="openConfirmDialog()">Remove Password</button>
+        <button class="custom-button-1" @click="showDialog(PasswordAction.CHANGE)">Change Password</button>
+        <button class="custom-button-1" @click="openConfirmDialog()">Remove Password</button>
     </div>
     <div class="card flex justify-content-center p-fluid">
         <Dialog v-model:visible="isVisible" modal header="New Password" :style="{ width: '50vw' }">

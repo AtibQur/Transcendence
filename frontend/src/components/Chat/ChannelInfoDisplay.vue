@@ -114,6 +114,7 @@ const leaveChat = async () => {
 <style>
 
 .custom-sidebar {
+  font-family: 'JetBrains Mono';
   background-color: var(--blue-light);
   border-left: 1px solid var(--gray-medium);
 }

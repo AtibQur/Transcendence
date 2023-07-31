@@ -17,6 +17,13 @@
 
 <style>
 @import url('https://fonts.googleapis.com/css?family=JetBrains+Mono');
+
+html, body, #app {
+	padding: 0;
+	margin: 0;
+	height: 100%;
+}
+
 #app {
 	font-family: 'JetBrains Mono';
 	-webkit-font-smoothing: antialiased;
@@ -33,10 +40,11 @@
 	--blue-dark: #134279;
 	--blue-dark-transparent: rgba(31, 96, 145, 0.5);;
 	--blue-dark-hover: rgb(31, 96, 145);
-	--blue-medium: #76aabc;
+	--blue-medium: #1f6091;
+	--blue-mediumlight: #76aabc;
 	--blue-light: #B2DAE7;
 	--blue-lighter: #c9e9f4;
-	--blue-light2: #abd0dd; /* tiny bit less bright */
+	--blue-lightest: #d7eff7;
 	--gray-blue-medium: #7b99a3;
 	--gray-shadow: #a29e9e;
 	--gray-dark: #525151;
@@ -44,5 +52,8 @@
 	--gray-light: #e4e4e4;
 	--red-soft: #e74545;
 	--green-soft: #74c23c;
+	--red-light: #f0a1a1;
+	--green-light: #b7ef94;
+	--yellow-soft: #ffec8c9e;
 	}
 </style>

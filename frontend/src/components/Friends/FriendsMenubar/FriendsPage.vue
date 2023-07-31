@@ -181,7 +181,7 @@ export default {
 </script>
 
 
-<style>
+<style scoped>
 .ProfileContainer {
   position: absolute;
   left: 400px;
