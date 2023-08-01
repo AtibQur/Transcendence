@@ -24,9 +24,7 @@ onBeforeMount(async () => {
     // LISTEN IF A NEW CHANNEL IS ADDED
     socket.on('newDm', (dm) => {
         socket.emit('joinRoom', { playerId: playerId, channelId: dm.channel_id }, () => {
-            console.log('dm: ', dm);
             dms.value.push(dm);
-            console.log(dms.value);
         })
     });
 })

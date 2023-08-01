@@ -112,11 +112,11 @@ const openConfirmDialog = () => {
 //LEAVE CHAT
 const leaveChat = async () => {
 
-    await socket.emit('leaveRoom', {player_id: playerId, channel_id: currentChannelId.value}, (response) => {
+    await socket.emit('leaveRoom', {player_id: +playerId, member_id: playerId, channel_id: currentChannelId.value}, (response) => {
         if (response)
         {
             toast.add({ severity: 'info', summary: 'Left Channel Succesfully', detail: '', life: 3000 });
-            emit('changeChannel', 0, false);
+            emit('changeChannel', 0, false, false);
         }
         else 
             toast.add({ severity: 'error', summary: 'Error you did not leave the Channel', detail: '', life: 3000 });

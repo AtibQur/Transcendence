@@ -64,6 +64,7 @@ const fetchChatMessagesFiltered = async (player_id: number, channel_id: number) 
 //FIND CHANNEL NAME
 const fetchChannelName = async (channelId: number) => {
     const response = await axiosInstance.get('channel/' + channelId.toString());
+    console.log('hello');
     if (response.data)
     {
         if (!response.data.is_dm)

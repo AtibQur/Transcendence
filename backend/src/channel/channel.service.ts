@@ -114,6 +114,32 @@ export class ChannelService {
     }
   }
 
+  // GET ALL PUBLIC & PROTECTED CHANNELS FOR WHICH THE PLAYER IS NOT MEMBER YET
+  async findAllJoinableChannels(player_id: number) {
+    try {
+        return prisma.channel.findMany({
+            where: {
+                is_private: false,
+                NOT: {
+                    members: {
+                      some: {
+                        member_id: player_id,
+                      },
+                    },
+                },
+            },
+            select: {
+                id: true,
+                name: true,
+            },
+        })
+    }
+    catch (error) {
+        console.error('Error occurred:', error);
+        return null;
+    }
+  }
+
   // CHECK IF DM ALREADY EXISTS
   // returns true if it already exists, false if not
   async isExistingDm(player_id: number, friend_id: number) {
@@ -257,6 +283,27 @@ export class ChannelService {
     }
   }
 
+  //FIND THE HASHED PASSWORD OF A CHANNEL
+  // returns hash on success, nothing on error
+  async findPassword(id: number) {
+    try {
+        const selectedChannel = await prisma.channel.findUnique({
+            where: {
+                id: id
+            },
+            select: {
+                password: true
+            }
+        })
+        
+        if (!selectedChannel)
+            throw new Error();
+        return selectedChannel.password;
+    } catch (error) {
+        return null;
+    }
+  }
+
   //SET PASSWORD FOR CHANNEL
   // can only be done by the owner of the channel
   // returns channel on success, nothing on error
@@ -291,6 +338,23 @@ export class ChannelService {
     }
     catch (error) {
         console.log('Error setting password: ', error);
+        return null;
+    }
+  }
+
+  // COMPARES GIVEN PASSWORD WITH PASSWORD OF CHANNEL
+  // returns true if they match, otherwise false
+  async validatePassword(id: number, password: string) {
+    try {
+        const hash: string = await this.findPassword(id);
+        if (!hash)
+            throw new Error();
+
+        const isMatch = await bcrypt.compare(password, hash);
+        return isMatch;
+
+    } catch (error) {
+        console.log('Error validating password: ', error);
         return null;
     }
   }

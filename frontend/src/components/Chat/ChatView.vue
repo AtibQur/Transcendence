@@ -10,6 +10,7 @@
                 <DmDisplay @changeChannel="changeChannel"/> 
                 <AddChannel/>
                 <AddDm/>
+                <JoinChannel/>
             </div>
             <div class="chat-box">
                 <div v-if="inChannel || inDm">
@@ -50,6 +51,7 @@ import ChatBox from './ChatBox.vue';
 import AddMessage from './AddMessage.vue';
 import DmDisplay from './DmDisplay.vue';
 import AddDm from './AddDm.vue';
+import JoinChannel from './JoinChannel.vue';
 
 const playerId = parseInt(sessionStorage.getItem('playerId') || '0');
 const username = sessionStorage.getItem('username') || '0';
@@ -61,16 +63,20 @@ const status = ref('');
 const channelId = ref<number>(0);
 const showChannelInfo = ref(false);
 
-const changeChannel = async (channel_id: number, isChannel: boolean) => {
+const changeChannel = async (channel_id: number, isChannel: boolean, isDm: boolean) => {
     channelId.value = channel_id;
     showChannelInfo.value = false;
     if (isChannel) {
         inChannel.value = true;
         inDm.value = false
     }
-    else {
+    else if (isDm) {
         inChannel.value = false;
         inDm.value = true;
+    }
+    else {
+        inChannel.value = false;
+        inDm.value = false;
     }
 }
 

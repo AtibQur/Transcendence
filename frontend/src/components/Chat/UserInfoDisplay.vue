@@ -4,6 +4,7 @@
         <h4 class="custom-h4"> {{ currentChannelmemberUsername }}</h4>
         
         <!-- for testing purposes -->
+        <div v-if="!isDm">
             <div v-if="currentChannelmemberInfo.memberIsOwner">
                 <h5>[OWNER]</h5>
             </div>
@@ -17,13 +18,14 @@
                 <h5>[BANNED]</h5>
             </div>
         </div>
+    </div>
 
     <div v-if="currentChannelmemberUsername != playerUsername">
         <div>
             <button class="custom-button-1">View Profile</button>
         </div>
         <div v-if="currentChannelmemberInfo.memberIsFriend">
-            <div v-if="isDm">
+            <div v-if="!isDm">
                 <button class="custom-button-1">Send Message</button>
             </div>
             <button class="custom-button-1">Invite To Play Pong</button>
@@ -57,6 +59,7 @@
 
 <script setup lang="ts">
 import axiosInstance from '../../axiosConfig';
+import { socket } from '@/socket';
 import { onBeforeMount, ref, watch } from 'vue'
 import { useToast } from 'primevue/usetoast';
 import { useConfirm } from "primevue/useconfirm";
@@ -83,7 +86,7 @@ const emit = defineEmits(['removeChannelmember']);
 const toast = useToast();
 const confirm = useConfirm();
 const playerUsername = sessionStorage.getItem('username') || '0';
-const playerId = sessionStorage.getItem('playerId') || '0';
+const playerId = parseInt(sessionStorage.getItem('playerId') || '0');
 const currentChannelmemberInfo = ref({});
 const currentChannelmemberId = ref<number>(props.channelmember.id);
 const currentChannelmemberStatus = ref<string>('');
@@ -114,7 +117,7 @@ onBeforeMount(async () => {
 const fetchChannelmemberInfo = async (channelmemberId: number) => {
     const channelmemberQuery = 'member_id=' + channelmemberId.toString();
     const channelQuery = 'channel_id=' + currentChannelId.value.toString();
-    const responseRights = await axiosInstance.get('channelmember/rights/' + playerId + `?${channelmemberQuery}&${channelQuery}`);
+    const responseRights = await axiosInstance.get('channelmember/rights/' + playerId.toString() + `?${channelmemberQuery}&${channelQuery}`);
     const responseStatus = await axiosInstance.get('player/status/' + channelmemberId.toString());
     currentChannelmemberStatus.value = responseStatus.data;
     return responseRights.data;
@@ -162,7 +165,7 @@ const openConfirmDialog = (selectedAction: Actions) => {
 
 // ADD FRIEND (http post or socket?)
 const addFriend = async () => {
-    const response = await axiosInstance.post(`friend/add/${playerId}`, { friendUsername: currentChannelmemberUsername.value });
+    const response = await axiosInstance.post(`friend/add/${playerId.toString()}`, { friendUsername: currentChannelmemberUsername.value });
     if (response.data) {
         toast.add({ severity: 'info', summary: 'Added Friend Successfully', detail: '', life: 3000 });
         currentChannelmemberInfo.value.memberIsFriend = true;
@@ -173,7 +176,7 @@ const addFriend = async () => {
 
 // MUTE CHANNELMEMBER
 const muteChannelmember = async () => {
-    const response = await axiosInstance.patch(`channelmember/mute/${playerId}`, {
+    const response = await axiosInstance.patch(`channelmember/mute/${playerId.toString()}`, {
         channel_id: currentChannelId.value,
         member_id: currentChannelmemberId.value,
         is_muted: true
@@ -190,7 +193,7 @@ const muteChannelmember = async () => {
 
 // MUTE CHANNELMEMBER
 const unmuteChannelmember = async () => {
-    const response = await axiosInstance.patch(`channelmember/unmute/${playerId}`, {
+    const response = await axiosInstance.patch(`channelmember/unmute/${playerId.toString()}`, {
         channel_id: currentChannelId.value,
         member_id: currentChannelmemberId.value,
         is_muted: false
@@ -207,7 +210,7 @@ const unmuteChannelmember = async () => {
 
 // MAKE CHANNELMEMBER ADMIN
 const makeAdmin = async () => {
-    const response = await axiosInstance.patch(`channelmember/makeadmin/${playerId}`, {
+    const response = await axiosInstance.patch(`channelmember/makeadmin/${playerId.toString()}`, {
         channel_id: currentChannelId.value,
         member_id: currentChannelmemberId.value,
         is_admin: true
@@ -224,7 +227,7 @@ const makeAdmin = async () => {
 
 // BAN CHANNELMEMBER
 const banChannelmember = async () => {
-    const response = await axiosInstance.patch(`channelmember/ban/${playerId}`, {
+    const response = await axiosInstance.patch(`channelmember/ban/${playerId.toString()}`, {
         channel_id: currentChannelId.value,
         member_id: currentChannelmemberId.value,
         is_banned: true
@@ -240,17 +243,16 @@ const banChannelmember = async () => {
 
 // DELETE CHANNELMEMBER
 const removeChannelmember = async () => {
-    const response = await axiosInstance.delete(`channelmember/${playerId}`, { data: {
-        channel_id: currentChannelId.value,
-        member_id: currentChannelmemberId.value
-    }})
-
-    if (response.data) {
-        toast.add({ severity: 'info', summary: 'Removed Channelmember successfully', detail: '', life: 3000 });
-        emit('removeChannelmember', currentChannelmemberId.value);
-    }
-    else
-        toast.add({ severity: 'error', summary: 'Error Channelmember not removed', detail: '', life: 3000 });
+    
+    await socket.emit('leaveRoom', {player_id: playerId, member_id: currentChannelmemberId.value, channel_id: currentChannelId.value}, (response) => {
+        if (response)
+        {
+            toast.add({ severity: 'success', summary: 'Removed Channelmember successfully', detail: '', life: 3000 });
+            emit('removeChannelmember', currentChannelmemberId.value);
+        }
+        else 
+            toast.add({ severity: 'error', summary: 'Error Channelmember not removed', detail: '', life: 3000 });
+    })
 }
 
 
