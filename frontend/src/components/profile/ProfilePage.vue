@@ -210,12 +210,12 @@
   
 <style scoped>
 .ProfileContainer {
-  position: absolute;
-  left: 30px;
+  position: fixed;
+  left: 50%;
   top: 50%;
-  transform: translateY(-50%);
-  width: calc(100% - 800px);
+  transform: translate(-50%, -50%);
   min-width: 1500px;
+  width: calc(100% - 800px);
   height: 75vh;
   min-height: 1000px;
   display: flex;
@@ -223,7 +223,7 @@
   align-items: center;
   justify-content: center;
 }
-  
+
   .ProfileData {
     position: absolute;
     left: 12%;
