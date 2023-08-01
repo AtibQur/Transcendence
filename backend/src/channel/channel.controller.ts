@@ -1,7 +1,8 @@
-import { Controller, Get, Post, Body, Patch, Param, Query } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Query, Delete } from '@nestjs/common';
 import { ChannelService } from './channel.service';
 import { CreateChannelDto } from './dto/create-channel.dto';
 import { UpdateChannelDto } from './dto/update-channel.dto';
+import { DeleteChannelDto } from './dto/delete-channel.dto';
 
 @Controller('channel')
 export class ChannelController {
@@ -96,5 +97,10 @@ export class ChannelController {
   @Patch('protect/remove/:channel_id/:player_id')
   removePassword(@Param('channel_id') channel_id: string, @Param('player_id') player_id: string, @Body() updateChannelDto: UpdateChannelDto) {
     return this.channelService.setPassword(+channel_id, +player_id, updateChannelDto);
+  }
+
+  @Delete('delete/:player_id')
+  remove(@Param('player_id') player_id: string, @Body() deleteChannelDto: DeleteChannelDto) {
+    return this.channelService.remove(+player_id, deleteChannelDto);
   }
 }

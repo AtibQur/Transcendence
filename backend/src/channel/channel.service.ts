@@ -4,6 +4,7 @@ import { UpdateChannelDto } from './dto/update-channel.dto';
 import { PrismaService } from '../../prisma/prisma.service';
 import { ChannelmemberService } from '../channelmember/channelmember.service';
 import { CreateChannelmemberDto } from '../channelmember/dto/create-channelmember.dto';
+import { DeleteChannelDto } from './dto/delete-channel.dto';
 import { Logger } from '@nestjs/common';
 import * as bcrypt from 'bcrypt';
 
@@ -401,5 +402,33 @@ export class ChannelService {
     if (hash)
         return hash;
     return null;
+  }
+
+  //REMOVE CHANNEL
+  // can only be done by the owner or if the last member wants to leave the channel
+  // returns deleted channel on success, nothing on error
+  async remove(player_id: number, deleteChannelDto: DeleteChannelDto) {
+    try {
+        const channel_id = parseInt(deleteChannelDto.name) || 0;
+        const updater = await this.channelmemberService.findChannelmember(player_id, channel_id);
+
+        if (!updater.is_owner)
+            throw new Error('player not allowed');
+        
+        const deletedChannel = await prisma.channel.delete({
+            where: {
+                id: channel_id,
+            },
+            include: {
+                members: true, // Include the members to trigger the cascade deletion
+                messages: true
+            },
+        });
+
+        return deletedChannel;
+    } catch (error) {
+        console.log('Error deleting channel:', error);
+        return null;
+    }
   }
 }
