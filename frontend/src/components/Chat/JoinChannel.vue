@@ -121,7 +121,6 @@ const checkPassword = async () => {
     }
 
     errorMessage.value = '';
-    console.log(protectedChannel.value);
     joinChannel(protectedChannel.value);
     return true;
 }

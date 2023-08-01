@@ -51,7 +51,7 @@ onBeforeMount(async () => {
 
     // EVENT TO CHANGE CURRENT CHANNEL
     const changeChannel = (channel_id: number) => {
-        emit('changeChannel', channel_id, false);
+        emit('changeChannel', channel_id, false, true);
     }
 
 </script>

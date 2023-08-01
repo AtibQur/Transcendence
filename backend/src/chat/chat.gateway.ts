@@ -218,13 +218,11 @@ export class ChatGateway {
                 member_id: payload.member_id,
                 channel_id: payload.channel_id,
             }
-            
-            console.log(payload.player_id, payload.member_id, payload.channel_id);
+
             //added 'any' in order to resolve types error -> change to interface
             const deletedMember: any = await this.channelmemberService.remove(payload.player_id, member);
             if (!deletedMember)
                 throw new Error();
-            
 
             const channel = await this.channelService.findOneChannel(payload.channel_id);
             const intraname = await this.playerService.findOneIntraUsername(deletedMember.member_id);
@@ -238,7 +236,7 @@ export class ChatGateway {
                 this.logger.log('player has been removed')
                 this.server.to(intraname).emit('leftChannel', channel.name);
             }
-                
+
             //disconnect socket from room
             client.leave(channel.id.toString());
 

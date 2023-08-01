@@ -290,7 +290,6 @@ async findIntraByUsername(username: string) {
       return selectedPlayer;
     };
 
-  //DUBBEL?!
   async findOneIntraUsername(player_id: number) {
     try {
       const selectedPlayer = await prisma.player.findUnique({
