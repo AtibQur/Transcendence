@@ -62,38 +62,39 @@ const fetchPercentageWon = async (friendId: string) => {
 
 </script>
 
-  <style scoped>
-  .border-container {
-    height: 800px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-  }
-  
-  .border {
-    border: 1px solid black;
-    width: 100%;
-    height: 100%;
-    padding: 20px;
-    box-sizing: border-box;
-  }
-  
-  .border-text {
-    font-family: Arial, sans-serif;
-    font-size: 18px;
-  }
-  
-  .border-row {
-    display: flex;
-    justify-content: space-between;
-    margin-bottom: 10px;
-  }
-  
-  .border-label {
-    font-weight: bold;
-  }
-  
-  .border-value {
-    margin-left: 10px;
-  }
-  </style>
+<style scoped>
+.border-container {
+  height: 250px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: aliceblue;
+  border-radius: 8px;
+}
+
+.border {
+  border: none;
+  width: 100%;
+  height: 100%;
+  padding: 20px;
+  box-sizing: border-box;
+}
+
+.border-text {
+  font-size: 18px;
+}
+
+.border-row {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 10px;
+}
+
+.border-label {
+  font-weight: bold;
+}
+
+.border-value {
+  margin-left: 10px;
+}
+</style>

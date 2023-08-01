@@ -184,7 +184,7 @@ export default {
 <style scoped>
 .ProfileContainer {
   position: absolute;
-  left: 400px;
+  left: 30px;
   top: 50%;
   transform: translateY(-50%);
   width: calc(100% - 800px);
@@ -195,7 +195,6 @@ export default {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  border: 2px solid black;
 }
   
   .ProfileData {
@@ -236,8 +235,8 @@ export default {
   
   .ProfileOptions {
     position: absolute;
-    left: 5%;
-    top: 65%;
+    left: 10%;
+    top: 55%;
     width: 25%;
     height: 30%;
     /* border: 1px solid black; */
@@ -268,12 +267,12 @@ export default {
   font-size: 22px;
   font-weight: 400;
   text-align: left;
-  cursor: pointer;
-  transition: color 0.3s, background-color 0.3s;
+  cursor: pointer; /* Add cursor style to indicate interactivity */
+  transition: color 0.3s, background-color 0.3s; /* Add transition for smooth effect */
 }
 
 .ProfileOptions .ProfileOptionsContainer ul li:hover {
-  color: #1f6091;
+  color: #1f6091; /* Change color on hover */
 }
 
   .ProfileOptions .ProfileOptionsContainer ul li a {
@@ -286,7 +285,11 @@ export default {
     color: #1f6091;
     font-weight: bold;
   }
-  
+
+  .custom-dropdown {
+    font-family: 'JetBrains Mono';
+  }
+
   .ProfileStats {
     position: absolute;
     left: 40%;
@@ -331,7 +334,7 @@ export default {
   background-color: aliceblue; 
   padding: 20px;
   border: 1px solid #888;
-  border-radius: 4px;
+  border-radius: 8px;
   text-align: center;
   width: 30%; /* Adjust the width as desired */
 }
@@ -352,10 +355,18 @@ export default {
 }
 
 .ModalButtons button {
-  margin: 0 5px;
+  margin: 5 5px;
 }
 .ModalContent button:hover {
   color: #fefefe; /* Change color on hover */
   background-color: #697b8e;
+}
+
+.message-input {
+  font-family: 'JetBrains mono';
+  border-radius:10px;
+  border: none;
+  padding: 10px;
+  margin-bottom: 50px;
 }
   </style>
