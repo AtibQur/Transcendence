@@ -73,6 +73,9 @@ export class MatchService {
           OR: [
             { player_id: id },
             { opponent_id: id }
+          ],
+          NOT: [
+            { player_points: 0, opponent_points: 0 }
           ]
         },
         include: {
