@@ -53,8 +53,7 @@ const useFriendsHistory = (friendId) => {
   const fetchMatches = async (friendId) => {
     const response = await axiosInstance.get(`match/history/` + friendId.toString());
     const reversedMatches = response.data.reverse(); // Reverse the order of matches
-    const latestMatches = reversedMatches.slice(0, 14); // Fetch the latest 13 matches
-    return latestMatches;
+    return reversedMatches;
   };
 
   return {

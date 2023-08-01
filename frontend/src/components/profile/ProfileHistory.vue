@@ -38,8 +38,7 @@ onBeforeMount(async () => {
 const fetchMatches = async (playerId: number) => {
   const response = await axiosInstance.get('match/history/' + playerId.toString());
   const reversedMatches = response.data.reverse(); // Reverse the order of matches
-  const latestMatches = reversedMatches.slice(0, 14); // Fetch the latest 13 matches
-  return latestMatches;
+  return reversedMatches;
 };
 </script>
 

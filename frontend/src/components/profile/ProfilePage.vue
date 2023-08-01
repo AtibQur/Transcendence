@@ -14,34 +14,39 @@
       </div>
     </div>
 
-    <div class="ProfileOptions">
-      <div class="ProfileOptionsContainer">
-        <ul>
-          <button class="custom-button-1" @click="changeUsernameModal">Change username</button>
-          <button class="custom-button-1" @click="changeProfilePicture">Change picture</button>
-          <button class="custom-button-1" @click="changeTfaStatus">2FA Authorisation</button>
-          <button class="custom-button-1" @click="logOut">Log out</button>
-        </ul>
+    <!-- Wrap .ProfileStats and .ProfileOptions inside a scrollable container -->
+    <div class="ProfileScrollContainer">
+      <div class="ProfileStats">
+        <select v-model="selectedOption" class="custom-dropdown">
+          <option value="Achievements">Achievements</option>
+          <option value="Stats">Stats</option>
+          <option value="Match History">Match History</option>
+        </select>
+
+        <div v-if="selectedOption === 'Achievements'" class="show">
+          <ProfileAchievements />
+        </div>
+        <div v-else-if="selectedOption === 'Stats'" class="show">
+          <ProfileStats />
+        </div>
+        <div v-else-if="selectedOption === 'Match History'" class="show">
+          <ProfileHistory />
+        </div>
+      </div>
+
+      <div class="ProfileOptions">
+        <div class="ProfileOptionsContainer">
+          <ul>
+            <button class="custom-button-1" @click="changeUsernameModal">Change username</button>
+            <button class="custom-button-1" @click="changeProfilePicture">Change picture</button>
+            <button class="custom-button-1" @click="changeTfaStatus">2FA Authorisation</button>
+            <button class="custom-button-1" @click="logOut">Log out</button>
+          </ul>
+        </div>
       </div>
     </div>
 
-    <div class="ProfileStats">
-      <select v-model="selectedOption" class="custom-dropdown">
-        <option value="Achievements">Achievements</option>
-        <option value="Stats">Stats</option>
-        <option value="Match History">Match History</option>
-      </select>
-
-      <div v-if="selectedOption === 'Achievements'" class="show">
-        <ProfileAchievements />
-      </div>
-      <div v-else-if="selectedOption === 'Stats'" class="show">
-        <ProfileStats />
-      </div>
-      <div v-else-if="selectedOption === 'Match History'" class="show">
-        <ProfileHistory />
-      </div>
-    </div>
+    <!-- ... Rest of the template ... -->
 
     <div v-if="showChangeNameModal" class="Modal" @click="closeModal">
       <div class="ModalContent" @click.stop>
@@ -64,23 +69,24 @@
       <div class="ModalContent" @click.stop>
         <h2>Profile Picture Change</h2>
         <div v-if="showChangePictureModal" class="show">
-          <ProfileAvatar @avatarUploaded="handleAvatarUploaded" />        </div>
+          <ProfileAvatar @avatarUploaded="handleAvatarUploaded" />
         </div>
       </div>
+    </div>
       
-      <div v-if="showChangeTfaModal" class="Modal" @click="closeModal">
-        <div class="ModalContent" @click.stop>
-          <h2>Change 2FA Status</h2>
-          <div>
-            <p>2FA Status: </p>
-            <button class="custom-button-1" @click="enableTFA">Enable</button>
-            <button class="custom-button-1" @click="disableTFA">Disable</button>
-          </div>
+    <div v-if="showChangeTfaModal" class="Modal" @click="closeModal">
+      <div class="ModalContent" @click.stop>
+        <h2>Change 2FA Status</h2>
+        <div>
+          <p>2FA Status: </p>
+          <button class="custom-button-1" @click="enableTFA">Enable</button>
+          <button class="custom-button-1" @click="disableTFA">Disable</button>
         </div>
       </div>
-
+    </div>
   </div>
 </template>
+
 
 <script setup lang="ts">
   import { onBeforeMount, ref } from 'vue';
@@ -396,4 +402,29 @@
   padding: 10px;
   margin-bottom: 50px;
 }
-  </style>
+@media screen and (max-width: 1040px) {
+  .ProfileContainer {
+    flex-direction: row; /* Arrange divs in a row */
+    height: auto; /* Remove the fixed height */
+    padding: 20px; /* Add some padding for better layout */
+  }
+
+  .ProfileData {
+    order: 1; /* Set the order to 1 to appear first in the row */
+  }
+
+  .ProfileOptions {
+    order: 3; /* Set the order to 3 to appear last in the row */
+  }
+
+  .ProfileStats {
+    order: 2; /* Set the order to 2 to appear in the middle of the row */
+  }
+
+  .ProfileScrollContainer {
+    overflow-y: auto; /* Enable vertical scrolling if content overflows */
+    max-height: 75vh; /* Limit the maximum height of the container to allow scrolling */
+  }
+}
+
+</style>
