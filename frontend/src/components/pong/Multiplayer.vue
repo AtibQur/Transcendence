@@ -30,7 +30,7 @@
 <script lang="ts">
 	import { socket } from '../../socket'
 	import { defineComponent } from 'vue'
-	import {socket_match_id, p1_socket_id, p2_socket_id, username1, username2} from './MatchMaking.vue'
+	import {socket_match_id, p1_socket_id, p2_socket_id, username1, username2, match_id} from './MatchMaking.vue'
 	import { useRouter } from 'vue-router'
 	import axiosInstance from '../../axiosConfig'
 
@@ -44,6 +44,7 @@
 	components: { GameTools, ResultScreen},
 data() {
 	return {
+		matchSaved: false,
 		showResults: false,
 		dynamicText1: '',
 		dynamicText2: '',
@@ -123,13 +124,15 @@ methods: {
 	async saveFinishedMatch(match_id: number, socket_match_id: number, score1: number, score2: number) {
 
 		console.log("match_id: ", socket_match_id)
-		console.log("this.score1: ", this.score1)
-		console.log("this.score2: ", this.score2)
+		console.log("this.score1: ", score1)
+		console.log("this.score2: ", score2)
+		score1 = 1;
+		score2 = 10;
 
 		// finished match saves here
 		let finished_match_res;
 		if (match_id){
-			finished_match_res = await axiosInstance.patch('match/finish/' + match_id.toString(), {player_points: this.score1, opponent_points: this.score2});
+			finished_match_res = await axiosInstance.patch('match/finish/' + match_id.toString(), {player_points: score1, opponent_points: score2});
 			console.log("Finished match data:", finished_match_res.data)
 		}
 	},
@@ -168,7 +171,9 @@ mounted() {
 		return;
 	}
 
-	this.printInfo();
+	if (!this.matchSaved){
+		this.printInfo();
+	}
 	socket.on('match',async (match: {
 		state: string
 		ball: any
@@ -186,13 +191,18 @@ mounted() {
 		this.powerUp = match.powerUp
 
 		this.checkPowerUp(this.powerUp);
-		if (match.state === 'end'){
+		if (match.state === 'end' && !this.matchSaved){
 			console.log("this match is finished")
+			this.saveFinishedMatch(match_id, socket_match_id, this.score1, this.score2)
 			this.showResults = true;
+			this.matchSaved = true;
 		}
-		if (match.state === 'stop'){
+		if (match.state === 'stop' && !this.matchSaved){
 			this.stop = true;	
+			console.log("this match is canceled")
+			this.saveFinishedMatch(match_id, socket_match_id, this.score1, this.score2)
 			this.showResults = true;
+			this.matchSaved = true;
 		}
 	})
 

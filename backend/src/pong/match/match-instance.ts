@@ -35,8 +35,8 @@ export class MatchInstance {
 		this.game.state = 'start';
 		this.player1.user = this.match.player1;
 		this.player2.user = this.match.player2;
-		this.player1.score = 0;
-		this.player2.score = 0;
+		this.player1.score = 8;
+		this.player2.score = 8;
 		this.powerUp.type = 0;
 	}
 
@@ -76,7 +76,7 @@ export class MatchInstance {
 		this.pongGame.updateGame(this.player1, this.player2, this.ball);
 		this.match.updateScore(this.player1.score, this.player2.score)
 
-		console.log("powerup", this.powerUp)
+		// console.log("powerup", this.powerUp)
 		client.to(this.player1.user.socket_id).emit('match', {
 			state: this.game.state,
 			ball: this.ball,

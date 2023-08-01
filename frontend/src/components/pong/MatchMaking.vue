@@ -22,7 +22,7 @@
 export default {
 	name: 'MatchMaking',
 	setup() {
-		const beginMatch = ref(false);
+		const matchSaved = ref(false);
 		const router = useRouter(1);
 		const player = {
 			id: 0,
@@ -63,39 +63,42 @@ export default {
 
 	socket.on('startMatch', async (match) => {
 	try {
-		const { player1, player2 } = match;
-		console.log("P1", player1)
-		console.log("P2", player2)
+		if (!matchSaved.value){
+			const { player1, player2 } = match;
+			console.log("P1", player1)
+			console.log("P2", player2)
+			
+			p1_id = match.player1.player_id;
+			p2_id = match.player2.player_id;
+			p1_socket_id = match.player1.socket_id;
+			p2_socket_id = match.player2.socket_id;
+			socket_match_id = match.matchId;
 
-		if (player1.socket_id === socket.id) {
-		// 	// Player 1's logic
-			console.log('I am player 1');
-			console.log('My player ID:', player1.player_id);
-			console.log('Opponent player ID:', player2.player_id);
-		} else if (player2.socket_id === socket.id) {
-			// Player 2's logic
-			console.log('I am player 2');
-			console.log('My player ID:', player2.player_id);
-			console.log('Opponent player ID:', player1.player_id);
+			if (player1.socket_id === socket.id) {
+				// Player 1's logic
+				console.log('I am player 1');
+				console.log('My player ID:', player1.player_id);
+				console.log('Opponent player ID:', player2.player_id);
+
+				//starting match saves here
+				const match_id_response = await axiosInstance.post('match/create', {player_id: p1_id, opponent_id: p2_id});
+				match_id = match_id_response.data.id;
+			} else if (player2.socket_id === socket.id) {
+				// Player 2's logic
+				console.log('I am player 2');
+				console.log('My player ID:', player2.player_id);
+				console.log('Opponent player ID:', player1.player_id);
+			}
+		
+			console.log("FRONT END MatchId", socket_match_id)
+			// console.log(match.p1, 'and', match.p2, 'are in a match');
+		
+			username1 = await fetchUsername(p1_id);
+			username2 = await fetchUsername(p2_id);
+
+			matchSaved.value = true;
 		}
 
-		p1_id = match.player1.player_id;
-		p2_id = match.player2.player_id;
-		p1_socket_id = match.player1.socket_id;
-		p2_socket_id = match.player2.socket_id;
-		socket_match_id = match.matchId;
-		console.log("FRONT END MatchId", socket_match_id)
-		// console.log(match.p1, 'and', match.p2, 'are in a match');
-
-		username1 = await fetchUsername(p1_id);
-		username2 = await fetchUsername(p2_id);
-
-		// starting match saves here
-		// if (socket.id == p1_socket_id){
-			// const match_id_response = await axiosInstance.post('match/create', {player_id: p1_id, opponent_id: p2_id});
-			// match_id = match_id_response.data.id;
-			// console.log("match Database ID: ", match_id)
-		// }
 		router.push('/play/multiplayer');
 	} catch (error) {
 		console.log('Error starting match')
@@ -108,7 +111,6 @@ export default {
 	});
 
 	return {
-		beginMatch,
 		animatedDots,
 		};
 	},
