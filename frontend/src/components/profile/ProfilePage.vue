@@ -1,4 +1,5 @@
 <template>
+  <Toast />
   <div class="ProfileContainer">
     <div class="ProfileData">
       <div class="ProfilePicture" :style="{ backgroundImage: 'url(' + profilePicture + ')' }"></div>
@@ -88,15 +89,16 @@
 
 <script setup lang="ts">
   import { onBeforeMount, ref } from 'vue';
-  import ImageComponent from '../Auth/ImageComponent.vue';
   import axiosInstance from '../../axiosConfig';
   import ProfileAchievements from "./ProfileAchievements.vue";
   import ProfileStats from "./ProfileStats.vue";
   import ProfileHistory from "./ProfileHistory.vue";
   import ProfileAvatar from './ProfileAvatar.vue';
-  import { removeCookie, getCookie } from '../cookie_utils';
+  import { removeCookie } from '../cookie_utils';
   import { removeDefaultAuthHeader } from '../../axiosConfig';
   import { useRouter } from 'vue-router';
+  import Toast from 'primevue/toast';
+  import { useToast } from 'primevue/usetoast';
 
   const username = ref("");
   const router = useRouter();
@@ -108,6 +110,7 @@
   const profilePicture = ref("");
   const showChangePictureModal = ref(false);
   const showChangeTfaModal = ref(false);
+  const toast = useToast();
 
   const playerId = parseInt(sessionStorage.getItem('playerId') || '0');
 
@@ -150,16 +153,27 @@
 
   const changeUsername = async () => {
   if (newName.value) {
+    var message = "";
     try {
+      if (newName.value.length > 20) {
+        message = "Username too long. Max 20 characters please!";
+        throw new Error(message);
+      }
+      else if (newName.value.length < 3) {
+        message = "Username too short. Min 3 characters please!";
+        throw new Error(message);
+      }
       const updatedUsername = await axiosInstance.patch(`player/username/${playerId}`, { username: newName.value });
       username.value = updatedUsername.data; // Update the local username value
       if (newName.value != username.value) {
-        throw new Error("Username already exists");
+        message = "Username already exists";
+        throw new Error(message);
       }
       sessionStorage.setItem('username', username.value); //update sessionstorage
       closeModal();
-    } catch (error) {
-      alert("Username already exists. Please choose a different username.");
+    }
+    catch (error) {
+      toast.add({ severity: 'error', summary: message, detail: '', life: 3000 });
       console.log(error);
     }
   }
