@@ -140,6 +140,40 @@ export class ChannelService {
     }
   }
 
+  // Find DM
+  // returns dm on success, nothing on error
+  async findDm(player_id: number, friend_id: number) {
+    try {
+      const selectedDm = await prisma.channel.findFirst({
+          where: {
+            is_dm: true,
+            AND: [
+                {
+                  members: {
+                    some: {
+                      member_id: player_id,
+                    },
+                  },
+                },
+                {
+                  members: {
+                    some: {
+                      member_id: friend_id,
+                    },
+                  },
+                },
+              ],
+          }
+        });
+        if (!selectedDm)
+            throw new Error();
+        return selectedDm;
+    }
+    catch (error) {
+        return null;
+    }
+  }
+
   // CHECK IF DM ALREADY EXISTS
   // returns true if it already exists, false if not
   async isExistingDm(player_id: number, friend_id: number) {

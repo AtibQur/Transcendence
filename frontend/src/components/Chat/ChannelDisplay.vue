@@ -62,7 +62,7 @@ onBeforeMount(async () => {
         background-color: var(--white-moretransparent);
         color: var(--black-soft);
         min-height:30px; 
-        min-width: 300px;
+        width: 100%;
         text-align: left;
         transition: color 0.3s;
         padding: 20px;

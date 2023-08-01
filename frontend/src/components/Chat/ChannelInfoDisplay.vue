@@ -1,6 +1,6 @@
 <template>
         <Sidebar v-model:visible="visible" position="right" class="custom-sidebar">
-            <ChannelmemberDisplay :channelId="currentChannelId" />
+            <ChannelmemberDisplay @changeChannel="changeChannel" :channelId="currentChannelId" />
             <div v-if="!isDm">
                 <div v-if="isAdmin">
                     <AddChannelmember :channelId="currentChannelId"/>
@@ -121,6 +121,10 @@ const leaveChat = async () => {
         else 
             toast.add({ severity: 'error', summary: 'Error you did not leave the Channel', detail: '', life: 3000 });
     })
+}
+
+const changeChannel = async (channel_id: number, isChannel: boolean, isDm: boolean) => {
+    emit('changeChannel', channel_id, isChannel, isDm);
 }
 
 </script>

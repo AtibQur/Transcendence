@@ -3,7 +3,10 @@
     <ul id="channelmemberList">
         <div class="card flex justify-content-center">
             <Sidebar v-model:visible="visible" position="right" class="custom-sidebar">
-                <UserInfoDisplay @removeChannelmember="removeChannelmember" :channelId="currentChannelId" :channelmember="selectedChannelmember"/>
+                <UserInfoDisplay @changeChannel="changeChannel"
+                                @removeChannelmember="removeChannelmember"
+                                :channelId="currentChannelId"
+                                :channelmember="selectedChannelmember"/>
             </Sidebar>
         </div>
         <li v-for="(channelmember, index) in channelmembers" :key="index">
@@ -31,6 +34,7 @@ const props = defineProps({
     }
 });
 
+const emit = defineEmits(['changeChannel']);
 const channelmembers = ref([]);
 const playerUsername = sessionStorage.getItem('username') || null;
 const currentChannelId = ref<number>(props.channelId);
@@ -91,6 +95,10 @@ const removeChannelmember = async (member_id: number) => {
         channelmembers.value.splice(index, 1);
         visible.value = false;
     }
+}
+
+const changeChannel = async (channel_id: number, isChannel: boolean, isDm: boolean) => {
+    emit('changeChannel', channel_id, isChannel, isDm);
 }
 
 </script>

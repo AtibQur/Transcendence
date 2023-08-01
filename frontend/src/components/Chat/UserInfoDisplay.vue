@@ -26,12 +26,12 @@
         </div>
         <div v-if="currentChannelmemberInfo.memberIsFriend">
             <div v-if="!isDm">
-                <button class="custom-button-1">Send Message</button>
+                <button @click="sendDm()" class="custom-button-1">Send Message</button>
             </div>
             <button class="custom-button-1">Invite To Play Pong</button>
         </div>
         <div v-else>
-            <button @click="addFriend()">Add Friend</button>
+            <button class="custom-button-1" @click="addFriend()">Add Friend</button>
         </div>
         
         <div v-if="!isDm">
@@ -81,7 +81,7 @@ const props = defineProps({
     }
 });
 
-const emit = defineEmits(['removeChannelmember']);
+const emit = defineEmits(['changeChannel', 'removeChannelmember']);
 
 const toast = useToast();
 const confirm = useConfirm();
@@ -172,6 +172,25 @@ const addFriend = async () => {
     }
     else
         toast.add({ severity: 'error', summary: 'Error Friend not Added', detail: '', life: 3000 });
+}
+
+// SEND DM
+// if dm conversation does not already exist, create dm
+const sendDm = async () => {
+    console.log(playerId);
+    console.log(currentChannelmemberId.value);
+    const response = await axiosInstance.get('channel/dm/info/' + playerId.toString() + '/' + currentChannelmemberId.value.toString());
+    if (response)
+    {
+        if (response.data)
+            emit('changeChannel', response.data.id, false, true);
+        else {
+            socket.emit('addDm', { player_id: playerId, friend_id: currentChannelmemberId.value }, (response) => {
+                if (response)
+                    emit('changeChannel', response, false, true);
+            })
+        }
+    }
 }
 
 // MUTE CHANNELMEMBER

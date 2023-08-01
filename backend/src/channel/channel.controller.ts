@@ -14,6 +14,13 @@ export class ChannelController {
     return this.channelService.createChannel(createChannelDto);
   }
 
+  // CREATE NEW CHANNEL
+  // returns channel id on success, nothing on error
+  @Post('create/:player_id/:friend_id')
+  createDm(@Param('player_id') player_id: string, @Param('friend_id') friend_id: string) {
+    return this.channelService.createDm(+player_id, +friend_id);
+  }
+
   // GET ALL PUBLIC & PROTECTED CHANNELS
  // returns all public & protects channels for which a player is not channelmember
   @Get('all/:player_id')
@@ -33,6 +40,13 @@ export class ChannelController {
   @Get('protect/:channel_id')
   isProtected(@Param('channel_id') channel_id: string) {
     return this.channelService.isProtected(+channel_id);
+  }
+
+  // FIND DM
+  //returns dm on succes, nothing on error
+  @Get('dm/info/:player_id/:friend_id')
+  findDm(@Param('player_id') player_id: string, @Param('friend_id') friend_id: string) {
+    return this.channelService.findDm(+player_id, +friend_id);
   }
 
   // CHECK IF CHANNEL IS A DM
