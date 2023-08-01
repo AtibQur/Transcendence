@@ -183,7 +183,7 @@ export default defineComponent({
 }
 
 .friend-list {
-  max-height: 800px; /* Set a fixed height for the scrollable area */
+  max-height: 820px; /* Set a fixed height for the scrollable area */
   overflow-y: auto; /* Enable vertical scrolling */
 }
 
