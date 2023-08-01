@@ -2,8 +2,10 @@
   <div class="scrollable-container">
     <div class="content">
       <ul class="item-list">
-        <li v-for="(value, key) in achievements" :key="key" class="item">
-          <div class="image-container"></div>
+        <li v-for="(value, key) in achievements" :key="key" :class="['item', {'achieved-bg': value, 'unachieved-bg': !value}]">
+          <div :class="['image-container', { 'unachieved': !value}]">
+            <img src="../../../assets/images/achievement-star.png" alt="Achievement Star">
+          </div>
           <div :class="['name-container', { 'bold-black': value, 'regular-grey': !value }]">
             <div class="item-name">{{ key }}</div>
           </div>
@@ -56,7 +58,6 @@ export default {
   }
 };
 </script>
-
 <style scoped>
 .scrollable-container {
   display: flex;
