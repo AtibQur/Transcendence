@@ -333,7 +333,7 @@ export class ChannelmemberService {
 
     var newOwner;
     const allAdmins = allMembers.filter((member) => member.is_admin === true);
-    console.log('all admins ', allAdmins);
+
     if (allAdmins.length != 0)
     {
         newOwner = allAdmins.reduce((prevMember, currentMember) => {

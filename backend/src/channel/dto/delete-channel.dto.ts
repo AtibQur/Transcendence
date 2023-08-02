@@ -1,3 +1,3 @@
 export class DeleteChannelDto {
-    name: string;
+    id: number;
 }
