@@ -152,9 +152,10 @@ ul {
 .messages-container {
     display: flex;
     flex-direction: column;
-    max-height: 70vh; /* Adjust the maximum height relative to viewport height */
+    max-height: calc(100vh - 95px); /* Adjust as needed based on your layout */
     overflow-y: auto;
-  }
+    overflow-x: hidden;
+}
 
 .my-message-sender {
     color: var(--gray-medium);
