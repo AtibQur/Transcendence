@@ -48,12 +48,13 @@ export class ChatGateway {
             const intra_username = await this.playerService.findOneIntraUsername(playerId);
             this.connectedSockets.set(intra_username, client.id)
             
-            const channels = await this.channelmemberService.findPlayerChannels(playerId);
+            const channels = await this.channelmemberService.findAllPlayerRooms(playerId);
             channels.forEach(function(channel) {
                 client.join(channel.channel_id.toString());
               });
             client.join(intra_username);
-            console.log('client joined all rooms');
+
+            console.log('client joined all rooms & dms');
             // console.log(client.rooms);
     
             console.log('connected sockets:', this.connectedSockets);
@@ -131,7 +132,6 @@ export class ChatGateway {
     @SubscribeMessage('addChatmessage')
     async addMessage(
         @MessageBody() createChatmessageDto: CreateChatmessageDto,
-        @ConnectedSocket() client: Socket
     ){
         try {
             const chatmessage = await this.chatmessageService.createChatMessage(createChatmessageDto);
@@ -154,7 +154,6 @@ export class ChatGateway {
             const id = await this.playerService.findIdByUsername(payload.channelmember_name);
             if (!id)
                 throw new Error('Player does not exist');
-
             const member: CreateChannelmemberDto = {
                 member_id: id,
                 channel_id: payload.channel_id,
@@ -211,25 +210,32 @@ export class ChatGateway {
     // returns null on failure
     @SubscribeMessage('leaveRoom')
     async leaveRoom(
-        @MessageBody() payload: {player_id: number, channel_id: number},
+        @MessageBody() payload: {player_id: number, member_id: number, channel_id: number},
         @ConnectedSocket() client: Socket
     ) {
         try {
             const member: UpdateChannelmemberDto = {
-                member_id: payload.player_id,
+                member_id: payload.member_id,
                 channel_id: payload.channel_id,
             }
-            
+
             //added 'any' in order to resolve types error -> change to interface
             const deletedMember: any = await this.channelmemberService.remove(payload.player_id, member);
             if (!deletedMember)
                 throw new Error();
-            console.log(`player left the channel`);
 
             const channel = await this.channelService.findOneChannel(payload.channel_id);
+            const intraname = await this.playerService.findOneIntraUsername(deletedMember.member_id);
 
             //update channel display for player
-            this.server.to(client.id).emit('leftChannel', channel.name);
+            if (payload.player_id == payload.member_id) {
+                this.logger.log('player has left the channel')
+                this.server.to(client.id).emit('leftChannel', channel.name);
+            }
+            else {
+                this.logger.log('player has been removed')
+                this.server.to(intraname).emit('leftChannel', channel.name);
+            }
 
             //disconnect socket from room
             client.leave(channel.id.toString());

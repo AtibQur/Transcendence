@@ -33,8 +33,10 @@ onBeforeMount(async () => {
 
         if (index == -1)
             console.log(`channel not found in channels`);
-        else 
+        else {
             channels.value.splice(index, 1);
+            emit('changeChannel', 0, false, false)
+        }
     });
 })
     
@@ -42,11 +44,12 @@ onBeforeMount(async () => {
     const fetchChannels = async (playerId: number) => {
         const response = await axiosInstance.get('channelmember/allchannels/' + playerId.toString());
         channels.value = response.data;
+        console.log(channels.value)
     }
 
     // EVENT TO CHANGE CURRENT CHANNEL
     const changeChannel = (channel_id: number) => {
-        emit('changeChannel', channel_id, true);
+        emit('changeChannel', channel_id, true, false);
     }
 
 </script>
@@ -59,7 +62,7 @@ onBeforeMount(async () => {
         background-color: var(--white-moretransparent);
         color: var(--black-soft);
         min-height:30px; 
-        min-width: 300px;
+        width: 100%;
         text-align: left;
         transition: color 0.3s;
         padding: 20px;

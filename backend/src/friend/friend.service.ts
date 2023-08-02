@@ -71,6 +71,8 @@ export class FriendService {
   // GET A FRIENDSHIP ID
   async findFriendshipId(id: number, friendId: number) {
     try {
+        if (id == friendId)
+            return null;
         const friendshipId = await prisma.friend.findFirst( {
             where: {
                 OR: [
@@ -88,7 +90,10 @@ export class FriendService {
       return friendshipId.id;
     }
     catch (error) {
-      console.error('Friendship does not exist:', error);
+      if (error.code == 'P2001')
+          console.error('Friendship does not exist');
+      else
+          console.error('Error occured: ', error);
       return null;
     }
   }

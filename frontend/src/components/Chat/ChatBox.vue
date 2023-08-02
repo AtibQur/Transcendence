@@ -5,7 +5,7 @@
       </button>
       <div class="messages-container" ref="messagesContainerRef">
         <div v-for="message in messages" :key="message.id" :class="getMessageSenderClass(message)">
-          {{ message.sender.username }}
+          {{ message.sender.username === username ? 'You' : message.sender.username }}
           <div :class="getMessageClass(message)">
             {{ message.content }}
           </div>
@@ -92,36 +92,6 @@ const getMessageBlockSize = (messageContent: string) => {
 const showInfo = () => {
     emit('showInfo', true);
 }
-
-// const createDateMsg = (dateStr: string) => {
-//     const date = new Date(dateStr)
-
-//     const weekdays = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
-//     const weekdayName = weekdays[date.getDay()];
-
-//     const day = date.getDate().toString().padStart(2, '0');
-//     const month = (date.getMonth() + 1).toString().padStart(2, '0');
-//     const year = date.getFullYear();
-
-//     return `${weekdayName} ${day}/${month}/${year}`;
-// }
-
-// const getDateMsg = (dateStr: string) => {
-//     const date = createDateMsg(dateStr);
-//     console.log(dates.value.includes(date));
-//     if (dates.value.includes(date))
-//         console.log('hi');// return '';
-//     else
-//         dates.value.push(date);
-//     console.log(date);
-//     return date;
-// }
-
-// const getTimeMsg = async (message_id: number) => {
-//     const response = await axiosInstance.get('chatmessage/time/' + message_id.toString());
-//     console.log(response.data);
-//     return response.data;
-// }
 
 async function addChatmessage(message: Message) {
   try {
