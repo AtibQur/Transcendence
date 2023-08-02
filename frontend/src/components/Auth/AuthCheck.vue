@@ -5,16 +5,12 @@
 </template>
 
 <script setup lang="ts">
-	// import dotenv from 'dotenv';
-	// import * as path from 'path';
-	// 
 	async function StartAuth() {
-		// const envPath = path.resolve(__dirname, '../../../.env');
-		// dotenv.config({ path: envPath });
+		console.log("CLIENT ID FROM ENV: ", process.env.VUE_APP_FT_CLIENTID);
 		
 		const url:string = 'https://api.intra.42.fr/oauth/authorize?client_id=' 
-		+ 'u-s4t2ud-2242a91faab9b153180b4629bf62a41aaead8152fbaff4bbd48301fc0fa4cbcf' + '&redirect_uri=' + 
-		'http://localhost:3000/auth/42/callback' + '&response_type=code';
+		+ process.env.VUE_APP_FT_CLIENTID + '&redirect_uri=' + 
+		process.env.VUE_APP_FT_REDIRECTURI + '&response_type=code';
 	try {
 		window.location.assign(url);
 	} catch (error) {
