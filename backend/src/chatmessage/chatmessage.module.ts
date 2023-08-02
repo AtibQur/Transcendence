@@ -11,6 +11,8 @@ import { ChannelmemberService } from 'src/channelmember/channelmember.service';
 import { ChannelmemberModule } from 'src/channelmember/channelmember.module';
 import { FriendModule } from 'src/friend/friend.module';
 import { FriendService } from 'src/friend/friend.service';
+import { AuthModule } from 'src/auth/auth.module';
+import { AuthService } from 'src/auth/auth.service';
 
 @Module({
   imports: [
@@ -18,7 +20,8 @@ import { FriendService } from 'src/friend/friend.service';
     PlayerModule,
     ChannelModule,
     ChannelmemberModule,
-    FriendModule
+    FriendModule,
+    AuthModule
   ],
   controllers: [
     ChatmessageController
@@ -29,7 +32,8 @@ import { FriendService } from 'src/friend/friend.service';
     PlayerService,
     ChannelService,
     ChannelmemberService,
-    FriendService
+    FriendService,
+    AuthService
   ]
 })
 export class ChatmessageModule {}

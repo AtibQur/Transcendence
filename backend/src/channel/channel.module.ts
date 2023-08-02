@@ -9,13 +9,16 @@ import { PlayerModule } from 'src/player/player.module';
 import { PlayerService } from 'src/player/player.service';
 import { BlockedplayerModule } from 'src/blockedplayer/blockedplayer.module';
 import { BlockedplayerService } from 'src/blockedplayer/blockedplayer.service';
+import { AuthModule } from 'src/auth/auth.module';
+import { AuthService } from 'src/auth/auth.service';
 
 @Module({
   imports: [
     ChannelmemberModule,
     PlayerModule,
     FriendModule,
-    BlockedplayerModule
+    BlockedplayerModule,
+    AuthModule  
   ],
   controllers: [ChannelController],
   providers: [
@@ -23,7 +26,8 @@ import { BlockedplayerService } from 'src/blockedplayer/blockedplayer.service';
     PlayerService,
     ChannelmemberService,
     FriendService,
-    BlockedplayerService
+    BlockedplayerService,
+    AuthService
   ]
 })
 export class ChannelModule {}
