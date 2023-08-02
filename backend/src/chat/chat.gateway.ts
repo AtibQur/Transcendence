@@ -13,6 +13,7 @@ import { CreateChatmessageDto } from 'src/chatmessage/dto/create-chatmessage.dto
 import { CreateChannelDto } from 'src/channel/dto/create-channel.dto';
 import { CreateChannelmemberDto } from 'src/channelmember/dto/create-channelmember.dto';
 import { UpdateChannelmemberDto } from 'src/channelmember/dto/update-channelmember.dto';
+import { DeleteChannelDto } from 'src/channel/dto/delete-channel.dto';
 
 @WebSocketGateway({
 	cors: {
@@ -36,7 +37,6 @@ export class ChatGateway {
     // add user and socket id to map
     // and joins socket id to all rooms of player
     async handleConnection(@ConnectedSocket() client: Socket){
-        // console.log('On connection:', client.handshake);
         const playerId = parseInt(client.handshake.auth.id);
         if (!playerId) //if nobody is logged in
         {
@@ -55,7 +55,6 @@ export class ChatGateway {
             client.join(intra_username);
 
             console.log('client joined all rooms & dms');
-            // console.log(client.rooms);
     
             console.log('connected sockets:', this.connectedSockets);
             
@@ -68,7 +67,6 @@ export class ChatGateway {
     //HANDLES DISCONNECTION OF SOCKET AND REMOVES IT FROM MAP
     async handleDisconnect(@ConnectedSocket() client: Socket){
         const playerId = parseInt(client.handshake.auth.id);
-        // console.log('On disconnection:', client.handshake);
         if (playerId)
         {
             console.log('logging off...');
@@ -105,6 +103,9 @@ export class ChatGateway {
         }
     }
 
+    //ADD DM
+    // returns dm_id on success
+    // returns null on failure
     @SubscribeMessage('addDm')
     async addDm(
         @MessageBody() payload: { player_id: number, friend_id: number },
@@ -241,11 +242,21 @@ export class ChatGateway {
             client.leave(channel.id.toString());
 
             //if member is owner, a new owner needs to be set
+            var response = null;
             if (deletedMember.is_owner)
-                await this.channelService.setNewOwner(channel.id)
+                response = await this.channelService.setNewOwner(channel.id);
 
-            //notify other channelmembers that a channelmember has left the channel
-            this.server.to(channel.id.toString()).emit('removeChannelmember', deletedMember.member_id, channel.name);
+            //if there are no other channelmembers
+            if (response == false) {
+                
+                const channelData: DeleteChannelDto = {
+                    id: channel.id
+                }
+                
+                this.channelService.remove(payload.player_id, channelData);
+            }
+            else //notify other channelmembers that a channelmember has left the channel
+                this.server.to(channel.id.toString()).emit('removeChannelmember', deletedMember.member_id, channel.name);
 
             return deletedMember.member_id;
         } catch (error) {
@@ -253,4 +264,44 @@ export class ChatGateway {
             return null;
         }
     }
+
+    //DELETE ROOM
+    // returns deleted channel id on succes
+    // returns null on failure
+    @SubscribeMessage('deleteRoom')
+    async deleteRoom(
+        @MessageBody() payload: {player_id: number, channel_id: number},
+        @ConnectedSocket() client: Socket
+    ) {
+        try {
+            if (!payload.channel_id)
+                throw new Error();
+
+            const channelIdStr = payload.channel_id.toString();
+            const channel = await this.channelService.findOneChannel(payload.channel_id);
+
+            //notify channelmembers so that their channel display updates
+            this.server.to(channelIdStr).emit('leftChannel', channel.name);
+            
+            //remove all sockets from room
+            this.server.in(channelIdStr).socketsLeave(channelIdStr);
+
+            const channelData: DeleteChannelDto = {
+                id: channel.id
+            }
+
+            const deletedChannel = await this.channelService.remove(payload.player_id, channelData);
+
+            this.logger.log('removed channel');
+            if (!deletedChannel)
+                throw new Error();
+            
+            return deletedChannel.id;
+        } catch (error) {
+            console.log('Error deleting room: ', error);
+            return null;
+        }
+    }
+
+
 }

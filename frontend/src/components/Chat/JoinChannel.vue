@@ -4,6 +4,7 @@
         <Dialog v-model:visible="showPasswordDialog"
                 modal header="Enter Password"
                 :style="{ width: '80wv' }"
+                :closeButtonProps="handleCloseButtonPassword"
                 >
             <form @submit.prevent="checkPassword()">
                 <div class="p-field password-dialog">
@@ -58,34 +59,18 @@ const password = ref<string>('');
 const errorMessage = ref<string>('');
 const protectedChannel = ref(null);
 
-/* 
-    1. fetch all public & protected channels -DONE
-    2. display them in dialog -DONE
-    3. add scroller -DONE
-    4. add join button to each of them -DONE
-    5. create join button functionality
-    5a. create password dialog
-    5b. create password compare functionality
-    6. change join button to 'joined'
-    7. handle outside click
-
-
-
-    1. client clicks on join button
-    2. check if the chat is protected or not
-
-    2a. if protected, show password dialog
-    2b if submit is clicked, check whether password is correct
-    2c if not correct, show error message, 
-    
-    3. send emit to addchannelmember
-
-*/
-
 const showDialog = async () => {
     showJoinDialog.value = true
     await fetchAllJoinableChannels();
 }
+
+const handleCloseButtonPassword = {
+    'aria-label': 'Close Dialog',
+    onClick: () => {
+        password.value = '';
+        errorMessage.value = '';
+    },
+};
 
 const fetchAllJoinableChannels = async () => {
     const response = await axiosInstance.get('channel/all/' + playerId.toString());
@@ -115,7 +100,6 @@ const checkPassword = async () => {
 
     if (!isValidated.data)
     {
-        console.log('hello');
         errorMessage.value = 'Password not correct.';
         return false;
     }

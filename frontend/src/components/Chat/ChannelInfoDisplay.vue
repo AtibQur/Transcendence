@@ -5,9 +5,10 @@
                 <div v-if="isAdmin">
                     <AddChannelmember :channelId="currentChannelId"/>
                 </div>
-                <button class="custom-button-1" @click="openConfirmDialog">Leave Chat</button>
+                <button class="custom-button-1" @click="openConfirmLeaveDialog">Leave Chat</button>
                 <div v-if="isOwner">
                     <PasswordSettings :channelId="currentChannelId"/>
+                    <button class="custom-button-1" @click="openConfirmRemoveDialog">Remove Chat</button>
                 </div>
             </div>
         </Sidebar>
@@ -98,24 +99,42 @@ const fetchChannelType = async () => {
 
 }
 
-//CONFIRM DIALOG BUTTON
-const openConfirmDialog = () => {
+//CONFIRM DIALOG FOR LEAVE BUTTON
+const openConfirmLeaveDialog = () => {
     confirm.require({
         message: 'Are you sure you want to proceed?',
         header: 'Confirmation',
         accept: () => {
-            leaveChat();
+            leaveChannel();
+        }
+    });
+};
+
+//CONFIRM DIALOG FOR REMOVE BUTTON
+const openConfirmRemoveDialog = () => {
+    confirm.require({
+        message: 'Are you sure you want to proceed?',
+        header: 'Confirmation',
+        accept: () => {
+            removeChannel();
         }
     });
 };
 
 //LEAVE CHAT
-const leaveChat = async () => {
+const leaveChannel = async () => {
 
-    await socket.emit('leaveRoom', {player_id: playerId, member_id: playerId, channel_id: currentChannelId.value}, (response) => {
+    await socket.emit('leaveRoom', {player_id: playerId,
+                                    member_id: playerId,
+                                    channel_id: currentChannelId.value},
+                                    (response) =>
+    {
         if (response)
         {
-            toast.add({ severity: 'info', summary: 'Left Channel Succesfully', detail: '', life: 3000 });
+            toast.add({ severity: 'info',
+                        summary: 'Left Channel Succesfully',
+                        detail: '',
+                        life: 3000 });
             emit('changeChannel', 0, false, false);
         }
         else 
@@ -123,6 +142,28 @@ const leaveChat = async () => {
     })
 }
 
+//REMOVE CHANNEL
+// can only be done by the owner
+const removeChannel = async () => {
+
+    await socket.emit('deleteRoom', { player_id: playerId,
+                                      channel_id: currentChannelId.value},
+                                      (response) => 
+    {
+        if (response)
+        {
+            toast.add({ severity: 'info',
+                        summary: 'Removed Channel Succesfully',
+                        detail: '',
+                        life: 3000 });
+            emit('changeChannel', 0, false, false);
+        }
+        else 
+            toast.add({ severity: 'error', summary: 'Error removing Channel', detail: '', life: 3000 });
+    })
+}
+
+// COMMUNNICATE CHANNEL CHANGE TO CHATVIEW COMPONENT
 const changeChannel = async (channel_id: number, isChannel: boolean, isDm: boolean) => {
     emit('changeChannel', channel_id, isChannel, isDm);
 }
