@@ -13,7 +13,7 @@
 		// dotenv.config({ path: envPath });
 		
 		const url:string = 'https://api.intra.42.fr/oauth/authorize?client_id=' 
-		+ 'u-s4t2ud-1f5d67cb202d54f32ab27a0d8d47faa94081df9fc3e7da31b097a09fb7707578' + '&redirect_uri=' + 
+		+ 'u-s4t2ud-2242a91faab9b153180b4629bf62a41aaead8152fbaff4bbd48301fc0fa4cbcf' + '&redirect_uri=' + 
 		'http://localhost:3000/auth/42/callback' + '&response_type=code';
 	try {
 		window.location.assign(url);
