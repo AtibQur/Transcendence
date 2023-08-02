@@ -18,7 +18,6 @@ model Player {
   id                 Int      @id @default(autoincrement())
   username           String   @unique
   intra_username     String   @default("username")
-  avatar_url         String   @default("default_avatar.png")
   avatar             Bytes?
   two_factor_enabled Boolean  @default(false)
   two_factor_code    String?
@@ -33,8 +32,6 @@ model Player {
   blocked_by         BlockedPlayer[]    @relation("blocked_by")
   friends            Friend[]           @relation("friends")
   friends_con        Friend[]           @relation("friends_con")
-  sent_invitations   GameInvitation[]   @relation("sent_invitations")
-  recv_invitations   GameInvitation[]   @relation("recv_invitations")
 }
 
 model PlayerStats {
@@ -74,7 +71,7 @@ model ChannelMember {
   member     Player   @relation(fields: [member_id], references: [id])
 
   channel_id Int
-  channel    Channel @relation(fields: [channel_id], references: [id])
+  channel    Channel @relation(fields: [channel_id], references: [id], onDelete: Cascade)
 
   is_admin   Boolean @default(false)
   is_muted   Boolean @default(false)
@@ -90,7 +87,7 @@ model ChatMessage {
   channel_id Int
   sent_at    DateTime
   sender     Player  @relation(fields: [sender_id], references: [id])
-  channel    Channel @relation(fields: [channel_id], references: [id])
+  channel    Channel @relation(fields: [channel_id], references: [id], onDelete: Cascade)
 }
 
 model Match {
@@ -124,15 +121,4 @@ model Friend {
 
   friend_id   Int
   friend      Player  @relation("friends_con", fields: [friend_id], references: [id])
-}
-
-model GameInvitation {
-  id           Int      @id @default(autoincrement())
-  sender_id    Int
-  recipient_id Int
-  timestamp    DateTime
-  accepted     Boolean  @default(false)
-
-  sender       Player   @relation("sent_invitations", fields: [sender_id], references: [id])
-  recipient    Player   @relation("recv_invitations", fields: [recipient_id], references: [id])
 }

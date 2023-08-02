@@ -5,7 +5,7 @@
       </button>
       <div class="messages-container">
         <div v-for="message in messages" :key="message.id" :class="getMessageSenderClass(message)">
-          {{ message.sender.username }}
+          {{ message.sender.username === username ? 'You' : message.sender.username }}
           <div :class="getMessageClass(message)">
             {{ message.content }}
         </div>
@@ -17,7 +17,7 @@
 <script setup lang="ts">
 import { socket } from '@/socket';
 import axiosInstance from '../../axiosConfig';
-import { onBeforeMount, onUpdated, ref, computed, watch} from 'vue'
+import { onBeforeMount, ref, watch} from 'vue'
 import Message from '@/types/Message';
 
 const props = defineProps({
@@ -31,10 +31,8 @@ const emit = defineEmits(['showInfo']);
 const channelName = ref('');
 const messages = ref<Message[]>([]);
 const currentChannelId = ref(props.channelId);
-// const newDate = ref(true);
 const playerId = parseInt(sessionStorage.getItem('playerId') || '0');
-const username = sessionStorage.getItem('username') || '0';
-// const dates = ref<string>([]);
+const username = sessionStorage.getItem('username') || null;
 
 onBeforeMount(async () => {
     await fetchChatMessagesFiltered(playerId, currentChannelId.value);
@@ -66,6 +64,7 @@ const fetchChatMessagesFiltered = async (player_id: number, channel_id: number) 
 //FIND CHANNEL NAME
 const fetchChannelName = async (channelId: number) => {
     const response = await axiosInstance.get('channel/' + channelId.toString());
+    console.log('hello');
     if (response.data)
     {
         if (!response.data.is_dm)
@@ -101,36 +100,6 @@ const getMessageBlockSize = (messageContent: string) => {
 const showInfo = () => {
     emit('showInfo', true);
 }
-
-// const createDateMsg = (dateStr: string) => {
-//     const date = new Date(dateStr)
-
-//     const weekdays = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
-//     const weekdayName = weekdays[date.getDay()];
-
-//     const day = date.getDate().toString().padStart(2, '0');
-//     const month = (date.getMonth() + 1).toString().padStart(2, '0');
-//     const year = date.getFullYear();
-
-//     return `${weekdayName} ${day}/${month}/${year}`;
-// }
-
-// const getDateMsg = (dateStr: string) => {
-//     const date = createDateMsg(dateStr);
-//     console.log(dates.value.includes(date));
-//     if (dates.value.includes(date))
-//         console.log('hi');// return '';
-//     else
-//         dates.value.push(date);
-//     console.log(date);
-//     return date;
-// }
-
-// const getTimeMsg = async (message_id: number) => {
-//     const response = await axiosInstance.get('chatmessage/time/' + message_id.toString());
-//     console.log(response.data);
-//     return response.data;
-// }
 
 async function addChatmessage(message: Message) {
     try {
