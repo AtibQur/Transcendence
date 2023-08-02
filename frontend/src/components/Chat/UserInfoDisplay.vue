@@ -109,8 +109,6 @@ onBeforeMount(async () => {
         profilePicture.value = await fetchAvatar(currentChannelmemberId.value);
     });
 
-    //TRACK WHETHER CHANNELMEMBERS BECOME OFFLINE/ONLINE??
-
 })
 
 // FIND ALL MEMBERS OF CHANNEL
@@ -195,19 +193,17 @@ const sendDm = async () => {
 
 // MUTE CHANNELMEMBER
 const muteChannelmember = async () => {
-    const response = await axiosInstance.patch(`channelmember/mute/${playerId.toString()}`, {
-        channel_id: currentChannelId.value,
-        member_id: currentChannelmemberId.value,
-        is_muted: true
-    });
 
-    if (response.data) {
-        toast.add({ severity: 'info', summary: 'Muted Channelmember Successfully', detail: '', life: 3000 });
-        currentChannelmemberInfo.value.showMute = false;
-        currentChannelmemberInfo.value.memberIsMuted = true;
-    }
-    else
-        toast.add({ severity: 'error', summary: 'Error Channelmember not Muted', detail: '', life: 3000 });
+    await socket.emit('muteMember', { player_id: playerId, member_id: currentChannelmemberId.value, channel_id: currentChannelId.value}, (response) => {
+        if (response)
+        {
+            toast.add({ severity: 'info', summary: 'Muted Channelmember Successfully', detail: '', life: 3000 });
+            currentChannelmemberInfo.value.showMute = false;
+            currentChannelmemberInfo.value.memberIsMuted = true;
+        }
+        else 
+            toast.add({ severity: 'error', summary: 'Error Channelmember not Muted', detail: '', life: 3000 });
+    })
 }
 
 // MUTE CHANNELMEMBER

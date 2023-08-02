@@ -469,6 +469,39 @@ export class ChannelmemberService {
     }
   }
 
+  // CHECK IF A MEMBER IS MUTED IN A CHANNEL
+  // returns true if a member is muted less than 1 minute,
+  // false if not muted/or muted after 1 minute, nothing on error
+  async checkMute(member_id: number, channel_id: number)
+  {
+    try {
+        const member = await this.findChannelmember(member_id, channel_id);
+        const timeToMute = 60000; //1 minute
+
+        if (member.is_muted)
+        {
+            const dateDiff = new Date().getTime() - new Date(member.muted_at).getTime();
+            if (dateDiff < timeToMute)
+                return true;
+
+            await prisma.channelMember.update({
+                where: {
+                id: member.id
+                },
+                data: {
+                is_muted: false,
+                muted_at: null
+                }
+            });
+        }
+
+        return false;
+    } catch (error) {
+        console.log('Error occurred: ', error);
+        return null;
+    }
+  }
+
   // DELETE A PLAYER FROM CHANNEL
   // owner can not be deleted
   // only possible if done by admin or if player wants to leave chat
