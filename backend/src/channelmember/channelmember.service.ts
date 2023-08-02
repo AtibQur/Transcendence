@@ -162,6 +162,7 @@ export class ChannelmemberService {
             channel_id: channel_id
           },
           select: {
+            id: true,
             member: {
               select: {
                 username: true
@@ -323,32 +324,47 @@ export class ChannelmemberService {
   // FIND NEW OWNER (IN CASE THE OWNER WANTS TO LEAVE A CHANNEL)
   // returns new owner on succes, nothing on error
   async findNewOwner(channel_id: number) {
-    const allMembers = await this.findAllChannelmembers(channel_id);
-
-    if (allMembers.length == 0) //if there are no members
-    {
-        console.log('no other members left in channel');
+    try {
+        const allMembers = await this.findAllChannelmembers(channel_id);
+    
+        if (allMembers.length == 0) //if there are no members
+        {
+            console.log('no other members left in channel');
+            return null;
+        }
+    
+        var newOwner;
+        const allAdmins = allMembers.filter((member) => member.is_admin === true);
+    
+        if (allAdmins.length != 0)
+        {
+            newOwner = allAdmins.reduce((prevMember, currentMember) => {
+                return prevMember.member_id < currentMember.member_id ? prevMember : currentMember;
+            });
+        }
+        else // if there are no other admins
+        {
+            console.log('no admin members left in channel');
+            newOwner = allMembers.reduce((prevMember, currentMember) => {
+                return prevMember.member_id < currentMember.member_id ? prevMember : currentMember;
+            });
+    
+            //new owner should also be made admin
+            const updatedMember = await prisma.channelMember.update({
+                where: {
+                  id: newOwner.id
+                },
+                data: {
+                  is_admin: true,
+                }
+            });
+            return updatedMember;
+        }
+        return newOwner;
+    } catch (error) {
+        console.log('Error finding new owner: ', error);
         return null;
     }
-
-    var newOwner;
-    const allAdmins = allMembers.filter((member) => member.is_admin === true);
-
-    if (allAdmins.length != 0)
-    {
-        newOwner = allAdmins.reduce((prevMember, currentMember) => {
-            return prevMember.member_id < currentMember.member_id ? prevMember : currentMember;
-        });
-    }
-    else // if there are no other admins
-    {
-        console.log('no admin members left in channel');
-        newOwner = allMembers.reduce((prevMember, currentMember) => {
-            return prevMember.member_id < currentMember.member_id ? prevMember : currentMember;
-        });
-    }
-    
-    return newOwner;
   }
 
   // CHECK IF MEMBER IS ADMIN
