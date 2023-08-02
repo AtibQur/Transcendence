@@ -5,10 +5,10 @@
                 <div v-if="isAdmin">
                     <AddChannelmember :channelId="currentChannelId"/>
                 </div>
-                <button class="custom-button-1" @click="openConfirmDialog">Leave Chat</button>
+                <button class="custom-button-1" @click="openConfirmLeaveDialog">Leave Chat</button>
                 <div v-if="isOwner">
                     <PasswordSettings :channelId="currentChannelId"/>
-                    <button class="custom-button-1" @click="removeChannel">Remove Chat</button>
+                    <button class="custom-button-1" @click="openConfirmRemoveDialog">Remove Chat</button>
                 </div>
             </div>
         </Sidebar>
@@ -99,13 +99,24 @@ const fetchChannelType = async () => {
 
 }
 
-//CONFIRM DIALOG BUTTON
-const openConfirmDialog = () => {
+//CONFIRM DIALOG FOR LEAVE BUTTON
+const openConfirmLeaveDialog = () => {
     confirm.require({
         message: 'Are you sure you want to proceed?',
         header: 'Confirmation',
         accept: () => {
             leaveChannel();
+        }
+    });
+};
+
+//CONFIRM DIALOG FOR REMOVE BUTTON
+const openConfirmRemoveDialog = () => {
+    confirm.require({
+        message: 'Are you sure you want to proceed?',
+        header: 'Confirmation',
+        accept: () => {
+            removeChannel();
         }
     });
 };
