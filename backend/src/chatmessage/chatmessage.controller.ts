@@ -1,6 +1,8 @@
 import { Controller, Get, Post, Body, Param, Query } from '@nestjs/common';
 import { ChatmessageService } from './chatmessage.service';
 import { CreateChatmessageDto } from './dto/create-chatmessage.dto';
+import { AuthGuard } from '../auth/local.authguard';
+import { UseGuards } from '@nestjs/common';
 
 @Controller('chatmessage')
 export class ChatmessageController {
@@ -8,6 +10,7 @@ export class ChatmessageController {
 
   // CREATE NEW CHAT MESSAGE
   @Post('create')
+  @UseGuards(AuthGuard)
   create(@Body() createChatmessageDto: CreateChatmessageDto) {
     return this.chatmessageService.createChatMessage(createChatmessageDto);
   }
@@ -20,6 +23,7 @@ export class ChatmessageController {
 
   // GET ALL CHAT MESSAGES WITHIN ONE CHANNEL FILTERED
   @Get('filtered/:player_id')
+  @UseGuards(AuthGuard)
   findChannelMsgsFiltered(@Param('player_id') player_id: string, @Query('channel_id') channel_id: string) {
     return this.chatmessageService.findChannelMsgsFiltered(+player_id, +channel_id);
   }
