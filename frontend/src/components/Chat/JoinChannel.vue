@@ -4,6 +4,7 @@
         <Dialog v-model:visible="showPasswordDialog"
                 modal header="Enter Password"
                 :style="{ width: '80wv' }"
+                :closeButtonProps="handleCloseButtonPassword"
                 >
             <form @submit.prevent="checkPassword()">
                 <div class="p-field password-dialog">
@@ -86,6 +87,16 @@ const showDialog = async () => {
     showJoinDialog.value = true
     await fetchAllJoinableChannels();
 }
+
+//HANDLE CLOSE BUTTON
+//when clicked confirm dialog is shown
+const handleCloseButtonPassword = {
+    'aria-label': 'Close Dialog',
+    onClick: () => {
+        password.value = '';
+        errorMessage.value = '';
+    },
+};
 
 const fetchAllJoinableChannels = async () => {
     const response = await axiosInstance.get('channel/all/' + playerId.toString());
