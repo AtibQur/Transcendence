@@ -6,7 +6,7 @@
           v-for="(match, index) in matches"
           :key="index"
           class="border-row"
-          :class="['border-value', { 'green-bg': match.player_points === 5, 'red-bg': match.player_points !== 5 }]"
+          :class="['border-value', { 'green-bg': match.player_points > match.opponent_points, 'red-bg': match.player_points < match.opponent_points, 'yellow-bg': match.player_points === match.opponent_points }]"
         >
           <div class="border-value blue-text player-username">{{ match.player.username }}</div>
           <div class="border-value black-text"  style="font-weight: bold">{{ match.player_points }}</div>
@@ -38,8 +38,7 @@ onBeforeMount(async () => {
 const fetchMatches = async (playerId: number) => {
   const response = await axiosInstance.get('match/history/' + playerId.toString());
   const reversedMatches = response.data.reverse(); // Reverse the order of matches
-  const latestMatches = reversedMatches.slice(0, 14); // Fetch the latest 13 matches
-  return latestMatches;
+  return reversedMatches;
 };
 </script>
 
@@ -59,6 +58,8 @@ const fetchMatches = async (playerId: number) => {
   height: 100%;
   padding: 20px;
   box-sizing: border-box;
+  max-height: 700px;
+  overflow-y: auto;
 }
 
 .border .border-row {
@@ -81,6 +82,10 @@ const fetchMatches = async (playerId: number) => {
 
 .red-bg {
   background-color: var(--red-light);
+}
+
+.yellow-bg {
+  background-color: var(--yellow-soft);
 }
 
 .blue-text {

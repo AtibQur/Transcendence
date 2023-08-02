@@ -91,6 +91,11 @@ function validateFields() {
         errorMessage.value = 'Channel name required.';
         return false;
     }
+    if (newChannelName.value.length > 30)
+    {
+        errorMessage.value = 'Channel name too long.';
+        return false;
+    }
     if (selectedSecurityType.value == -1)
     {
         errorMessage.value = 'Security type required.';
