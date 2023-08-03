@@ -55,7 +55,6 @@ export class ChatGateway {
             client.join(intra_username);
 
             console.log('client joined all rooms & dms');
-    
             console.log('connected sockets:', this.connectedSockets);
             
             this.playerService.updateStatus(playerId, { status: "online" });
@@ -128,7 +127,7 @@ export class ChatGateway {
     }
 
     //ADD MESSAGE
-    // returns chatmessage object on success
+    // returns true if the message is created, false if the sender muted and could not send a message
     // returns null on failure
     @SubscribeMessage('addChatmessage')
     async addMessage(
@@ -136,6 +135,9 @@ export class ChatGateway {
     ){
         try {
             const chatmessage = await this.chatmessageService.createChatMessage(createChatmessageDto);
+            if (!chatmessage)
+                return false;
+
             this.server.to(chatmessage.channel_id.toString()).emit('chatmessage', chatmessage);
             return chatmessage;
         } catch (error) {
@@ -202,6 +204,32 @@ export class ChatGateway {
             return true;
         } catch (error) {
             console.log('Error joining channels: ', error);
+            return false;
+        }
+    }
+
+    //MUTE MEMBER
+    // can only be done by admin
+    // returns true on success
+    // returns false on failure
+    @SubscribeMessage('muteMember')
+    async muteMember(
+        @MessageBody() payload: {player_id: number, member_id: number, channel_id: number},
+        @ConnectedSocket() client: Socket
+    ) {
+        try {
+            const member: UpdateChannelmemberDto = {
+                member_id: payload.member_id,
+                channel_id: payload.channel_id
+            }
+
+            const mutedMember = await this.channelmemberService.muteMember(payload.player_id, member, true);
+            if (!mutedMember)
+                throw new Error();
+
+            return true;
+        } catch (error) {
+            console.log('Error muting member: ', error);
             return false;
         }
     }

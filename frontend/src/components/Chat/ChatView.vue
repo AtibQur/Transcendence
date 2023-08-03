@@ -30,9 +30,9 @@
                     <img :src="profilePicture" alt="Avatar" style="width:60%; border-radius: 10%">
                 </div>
                 <h2>{{ username }} {{ playerId }}</h2>
-                <div class="status-circle" :class="{ 'online': status === 'online', 'offline': status !== 'online' }">
+                <div class="status-circle">
                     <span class="status-text">
-                        {{ status }}
+                        online
                     </span>
                 </div>
             </div>
@@ -58,7 +58,6 @@ const username = sessionStorage.getItem('username') || '0';
 const profilePicture = ref('');
 const inChannel = ref(false);
 const inDm = ref(false);
-const status = ref('');
 
 const channelId = ref<number>(0);
 const showChannelInfo = ref(false);
@@ -86,7 +85,6 @@ const showInfo = async (isVisible: boolean) => {
 onBeforeMount(async () => {
     try {
       profilePicture.value = await fetchAvatar(playerId);
-      status.value = await fetchStatus(playerId);
     } catch (error) {
       console.log("Error occurred chat profile");
     }
@@ -100,10 +98,6 @@ onBeforeMount(async () => {
     return imageUrl.value;
   };
 
-  const fetchStatus = async (player_id: number) => {
-    const response = await axiosInstance.get('player/status/' + player_id.toString());
-    return response.data;
-  }
 </script>
 
 
@@ -135,15 +129,8 @@ onBeforeMount(async () => {
     margin-right: 10px;
     margin-left: 15px;
     margin-top: 50px;
-  }
-  
-.online {
     background-color: var(--green-soft);
-}
-
-.offline {
-    background-color: var(--red-soft);
-}
+  }
 
 .status-text {
     margin-left: 40px;

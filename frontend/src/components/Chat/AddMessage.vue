@@ -9,8 +9,8 @@
 
 <script setup lang="ts">
 import { socket } from '../../socket';
-import { onBeforeMount, ref } from 'vue';
-// import Message from '@/types/Message';
+import { ref } from 'vue';
+import { useToast } from 'primevue/usetoast';
 
 const props = defineProps({
     channelId: {
@@ -19,19 +19,18 @@ const props = defineProps({
     }
 });
 
+const toast = useToast();
 const playerId = parseInt(sessionStorage.getItem('playerId') || '0');
 const content = ref('');
-
-
-// onBeforeMount(() => {
-
-// })
 
 const sendMessage = () => {
     const trimmedContent = content.value.trim();
     if (trimmedContent !== '') {
-        socket.emit('addChatmessage', { content: content.value, sender_id: playerId, channel_id: props.channelId }, () => {
-            content.value = '';
+        socket.emit('addChatmessage', { content: content.value, sender_id: playerId, channel_id: props.channelId }, (response) => {
+            if (response == false)
+                toast.add({ severity: 'error', summary: 'You are muted', detail: '', life: 3000 });
+            else
+                content.value = '';
         })
     }
 }

@@ -16,11 +16,9 @@ export class AuthService {
 
     async validateToken(token: string): Promise<any> {
         try {
-            console.log("VERIFYING TOKEN")
             const options = { secret: process.env.JWT_SECRET, expiresIn: '7d'}
             return this.jwtService.verify(token, options);
         } catch (error) {
-            console.log("INVALID TOKEN")
             throw 'invalid token';
         }
     }
