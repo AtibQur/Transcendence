@@ -20,7 +20,6 @@ export class AuthService {
             const options = { secret: process.env.JWT_SECRET, expiresIn: '7d'}
             return this.jwtService.verify(token, options);
         } catch (error) {
-            console.log("INVALID TOKEN")
             throw 'invalid token';
         }
     }
