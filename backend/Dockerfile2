@@ -1,4 +1,4 @@
-FROM node:19
+FROM node:19-alpine
 
 # Set the working directory to /app
 WORKDIR /app
@@ -9,6 +9,10 @@ COPY package*.json ./
 # Install app dependencies
 RUN npm install
 
+RUN npm install prisma --save-dev && \
+    npx prisma && \
+    npx prisma generate
+
 # Copy the rest of the application code to the container
 COPY . .
 
@@ -16,4 +20,4 @@ COPY . .
 EXPOSE 3000
 
 # Start the application
-CMD [ "npm", "run", "start:dev" ]
+CMD [ "npm", "run", "start:db" ]
