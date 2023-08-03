@@ -6,13 +6,13 @@ import { AuthGuard } from '../auth/local.authguard';
 import { UseGuards } from '@nestjs/common';
 
 @Controller('friend')
+@UseGuards(AuthGuard)
 export class FriendController {
   constructor(private readonly friendService: FriendService) {}
 
   // ADD OTHER PLAYER AS FRIEND
   // returns created friend, nothing on failure
   @Post('add/:id')
-  @UseGuards(AuthGuard)
   addFriend(@Param('id') id: string, @Body() addFriendDto: AddFriendDto) {
     return this.friendService.addFriend(+id, addFriendDto);
   }
@@ -20,7 +20,6 @@ export class FriendController {
   // GET A PLAYERS FRIENDS (CAN PROBABLY BE DELETED!!)
   // returns friend list, or nothing on failure
   @Get(':id')
-  @UseGuards(AuthGuard)
   findFriends(@Param('id') id: string) {
     return this.friendService.findFriends(+id);
   }
@@ -28,7 +27,6 @@ export class FriendController {
   // FIND FRIENDS USERNAME AND STATUS
   // returns friend list, or nothing on failure
   @Get('username/:id')
-  @UseGuards(AuthGuard)
   findFriendsUsername(@Param('id') id: string) {
     return this.friendService.findFriendsUsername(+id);
   }
@@ -36,7 +34,6 @@ export class FriendController {
   // CHECK IF FRIENDSHIP EXISTS
   // returns true or false
   @Get('exists/:id/:friendId')
-  @UseGuards(AuthGuard)
   isExistingPlayer(@Param('id') id: string, @Param('friendId') friendId: string) {
     return this.friendService.isExistingFriendship(+id, +friendId);
   }
@@ -44,7 +41,6 @@ export class FriendController {
   // CHECK IF FRIENDSHIP EXISTS
   // returns friendship id, nothing if friendship doesn't exist
   @Get('id/:id/:friendId')
-  @UseGuards(AuthGuard)
   findFriendshipId(@Param('id') id: string, @Param('friendId') friendId: string) {
     return this.friendService.findFriendshipId(+id, +friendId);
   }
@@ -52,7 +48,6 @@ export class FriendController {
   // DELETE A FRIENDSHIP
   // returns deleted friend, nothing on failure
   @Delete(':id')
-  @UseGuards(AuthGuard)
   remove(@Param('id') id: string, @Body() updateFriendDto: UpdateFriendDto) {
     return this.friendService.remove(+id, updateFriendDto);
   }
