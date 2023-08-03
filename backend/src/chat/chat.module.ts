@@ -6,8 +6,11 @@ import { ChannelService } from 'src/channel/channel.service';
 import { ChatmessageService } from 'src/chatmessage/chatmessage.service';
 import { BlockedplayerService } from 'src/blockedplayer/blockedplayer.service';
 import { FriendService } from 'src/friend/friend.service';
+import { AuthModule } from 'src/auth/auth.module';
+import { AuthService } from 'src/auth/auth.service';
 
 @Module({
+  imports: [AuthModule],
   providers: [
     ChatGateway,
     ChannelmemberService,
@@ -15,7 +18,8 @@ import { FriendService } from 'src/friend/friend.service';
     ChatmessageService,
     BlockedplayerService,
     PlayerService,
-    FriendService
+    FriendService,
+    AuthService
     ]
   })
 export class ChatModule {}

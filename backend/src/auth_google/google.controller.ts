@@ -11,7 +11,7 @@ export class GoogleController {
     @Get('auth/google/callback')
     @UseGuards(AuthGuard('google'))
     async googleLoginCallback(@Req() req) {
-        console.log(req.user);
+        // console.log(req.user);
         if (!req.user)
             return 'No user from google'
         return req.user;

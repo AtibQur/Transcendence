@@ -2,8 +2,11 @@ import { Controller, Get, Post, Body, Query, Param, Delete } from '@nestjs/commo
 import { BlockedplayerService } from './blockedplayer.service';
 import { CreateBlockedplayerDto } from './dto/create-blockedplayer.dto';
 import { DeleteBlockedplayerDto } from './dto/delete-blockedplayer.dto';
+import { AuthGuard } from '../auth/local.authguard';
+import { UseGuards } from '@nestjs/common';
 
 @Controller('blockedplayer')
+@UseGuards(AuthGuard)
 export class BlockedplayerController {
   constructor(private readonly blockedplayerService: BlockedplayerService) {}
 
