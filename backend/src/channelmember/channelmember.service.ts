@@ -271,7 +271,7 @@ export class ChannelmemberService {
       rights.memberIsAdmin = member.is_admin;
       rights.memberIsOwner = member.is_owner;
       rights.memberIsBanned = member.is_banned;
-      rights.memberIsMuted = member.is_muted;
+      rights.memberIsMuted = await this.checkMute(member_id, channel_id);
       
       // Define if player and channelmember are friends
       const existingFriendship = await this.friendService.isExistingFriendship(player_id, member_id);
@@ -492,7 +492,7 @@ export class ChannelmemberService {
   {
     try {
         const member = await this.findChannelmember(member_id, channel_id);
-        const timeToMute = 60000; //1 minute
+        const timeToMute = 10000; //1 minute
 
         if (member.is_muted)
         {
