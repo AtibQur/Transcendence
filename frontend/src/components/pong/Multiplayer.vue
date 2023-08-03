@@ -70,6 +70,7 @@ data() {
 		},
 		player2: {
 			y: 262,
+			h: 80,
 		},
 		score1: 0,
 		score2: 0,
@@ -79,7 +80,7 @@ data() {
 		},
 		moveInfo: {
 			socket_match_id: 0,
-			move: 0,
+			move: 263,
 		},
 		p1_socketId: '',
 		p2_socketId: '',
@@ -110,12 +111,23 @@ methods: {
 		}
 	},
 
-	move() {
-		if (this.keysPressed['w'] &&this.moveInfo.move > 40){
+	// Movement
+	moveP1() {
+		if (this.keysPressed['w'] && this.moveInfo.move > (this.player1.h / 2)){
 			this.moveInfo.move -= 2;
 			socket.emit('move', this.moveInfo);
 		}
-		if (this.keysPressed['s'] && this.moveInfo.move < this.canvas.height - 50){
+		if (this.keysPressed['s'] && this.moveInfo.move < (this.canvas.height - (this.player1.h / 2) - 10)){
+			this.moveInfo.move += 2;
+			socket.emit('move', this.moveInfo);
+		}
+	},
+	moveP2() {
+		if (this.keysPressed['w'] && this.moveInfo.move > (this.player2.h / 2)){
+			this.moveInfo.move -= 2;
+			socket.emit('move', this.moveInfo);
+		}
+		if (this.keysPressed['s'] && this.moveInfo.move < (this.canvas.height - this.player2.h / 2)- 10){
 			this.moveInfo.move += 2;
 			socket.emit('move', this.moveInfo);
 		}
@@ -126,8 +138,6 @@ methods: {
 		console.log("match_id: ", socket_match_id)
 		console.log("this.score1: ", score1)
 		console.log("this.score2: ", score2)
-		score1 = 1;
-		score2 = 10;
 
 		// finished match saves here
 		let finished_match_res;
@@ -137,13 +147,31 @@ methods: {
 		}
 	},
 
-	checkPowerUp(powerUp: any){
-		// console.log("use powerUp", powerUp, "now")
+	// checkPowerUp(player1: any, player2: any, powerUp: any){
+	// 	// console.log("use powerUp", powerUp, "now")
+	// 	if (powerUp){
+	// 		if (powerUp.type !== 0){
+	// 			this.powerUpVisable = true;
+	// 			this.powerUpPixel.x = powerUp.x;
+	// 			this.powerUpPixel.y = powerUp.y;
+	// 			if (powerUp.active){
+	// 				this.powerUpVisable = false;
+	// 				player1.h = 150;
+	// 			}
+	// 		} // else
+	// 			// this.powerUpVisable = false;
+	// 	}
+	// },
+
+	showPowerUp(powerUp: any){
 		if (powerUp){
-			if (powerUp.type === 1){
+			if (powerUp.type !== 0){
 				this.powerUpVisable = true;
 				this.powerUpPixel.x = powerUp.x;
 				this.powerUpPixel.y = powerUp.y;
+				if (powerUp.active){
+					this.powerUpVisable = false;
+				}
 			}
 		}
 	},
@@ -179,6 +207,8 @@ mounted() {
 		ball: any
 		player1: number
 		player2: number
+		player1Height: number
+		player2Height: number
 		score1: number
 		score2: number
 		powerUp: any
@@ -186,11 +216,14 @@ mounted() {
 		this.ball = match.ball;
 		this.player1.y = match.player1
 		this.player2.y = match.player2
+		this.player1.h = match.player1Height
+		this.player2.h = match.player2Height
 		this.score1 = match.score1
 		this.score2 = match.score2
 		this.powerUp = match.powerUp
 
-		this.checkPowerUp(this.powerUp);
+		// this.checkPowerUp(this.player1, this.player2, this.powerUp);
+		this.showPowerUp(this.powerUp);
 		if (match.state === 'end' && !this.matchSaved){
 			console.log("this match is finished")
 			this.saveFinishedMatch(match_id, socket_match_id, this.score1, this.score2)
@@ -208,7 +241,10 @@ mounted() {
 
 	window.addEventListener('keyup', this.keyUp);
 	window.addEventListener('keydown', this.keyDown);
-	setInterval(this.move, 1)
+	if (p1_socket_id === socket.id)
+		setInterval(this.moveP1, 1)
+	if (p2_socket_id=== socket.id)
+		setInterval(this.moveP2, 1)
 	}
 
 })

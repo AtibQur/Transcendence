@@ -14,8 +14,8 @@
 	<div class="gameover-container">
 		<h1 class="dynamicText">{{ dynamicScore1 }}</h1>
 		<h1 class="dynamicText">{{ dynamicScore2 }}</h1>
-		<router-link to="/Leaderboard"><button class="gameOverBtn" >Leaderboard</button></router-link>
-		<router-link to="/"><button class="gameOverBtn">Exit</button></router-link>
+		<router-link to="/Leaderboard"><button class="custom-button-1">Leaderboard</button></router-link>
+		<router-link to="/"><button class="custom-button-1">Exit</button></router-link>
 	</div>
 </template>
 
@@ -68,19 +68,15 @@ mounted() {
 })
 </script>
 
-<style>
+<style scoped>
 .gameover-container {
-	position: absolute;
+	display: contents;
+	flex-direction: column;
+	align-items: center;
+    justify-content: center;
 	font-size: 40px;
-	text-align: center;
-	font-weight: bold;
 	color: #134279;
-	/* text-shadow: -1.5px 2px 1px #2164b480; */
-	top: 45%;
-	left: 50%;
-	transform: translate(-50%, -50%);
 }
-
 .disconnected-container {
 	position: absolute;
 	font-size: 10px;
@@ -91,21 +87,12 @@ mounted() {
 }
 
 .dynamicText {
-	font-size: 40px;
+	font-size: 30px;
 	text-align: center;
 	font-weight: bold;
 	text-shadow: none;
+	top: 30%;
 	color: #134279;
-}
-
-.gameOverBtn {
-	color: #134279;
-	font-size: 15px;
-	border: none
-}
-
-.gameOverBtn:hover {
-	color: #79abe6;
 }
 
 </style>

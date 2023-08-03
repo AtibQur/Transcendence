@@ -35,9 +35,12 @@ export class MatchInstance {
 		this.game.state = 'start';
 		this.player1.user = this.match.player1;
 		this.player2.user = this.match.player2;
-		this.player1.score = 8;
-		this.player2.score = 8;
+		this.player1.new = 263;
+		this.player2.new = 263;
+		this.player1.score = 0;
+		this.player2.score = 0;
 		this.powerUp.type = 0;
+		this.powerUp.new = true;
 	}
 
 	handleMove(client: Socket, data: any): void {
@@ -77,11 +80,15 @@ export class MatchInstance {
 		this.match.updateScore(this.player1.score, this.player2.score)
 
 		// console.log("powerup", this.powerUp)
+		// this.sendMatchStateUpdate(client);
+
 		client.to(this.player1.user.socket_id).emit('match', {
 			state: this.game.state,
 			ball: this.ball,
 			player1: this.player1.new,
 			player2: this.player2.new,
+			player1Height: this.player1.height,
+			player2Height: this.player2.height,
 			score1: this.player1.score,
 			score2: this.player2.score,
 			powerUp: this.powerUp,
@@ -92,11 +99,29 @@ export class MatchInstance {
 			ball: this.ball,
 			player1: this.player1.new,
 			player2: this.player2.new,
+			player1Height: this.player1.height,
+			player2Height: this.player2.height,
 			score1: this.player1.score,
 			score2: this.player2.score,
 			powerUp: this.powerUp,
 		},
 		);
+	}
+
+	sendMatchStateUpdate(client: Socket){
+		const matchState = {
+			state: this.game.state,
+			ball: this.ball,
+			player1: this.player1.new,
+			player2: this.player2.new,
+			player1Height: this.player1.height,
+			player2Height: this.player2.height,
+			score1: this.player1.score,
+			score2: this.player2.score,
+		};
+
+		client.to(this.player1.user.socket_id).emit('match', matchState);
+		client.to(this.player2.user.socket_id).emit('match', matchState);
 	}
 
 	handleDisconnect(client: Socket): void {
@@ -105,28 +130,29 @@ export class MatchInstance {
 		if (this.player1.user.socket_id === client.id){
 			this.player1.score = 0;
 			this.player2.score = 10;
-		}
-		else if (this.player2.user.socket_id === client.id){
+		} else if (this.player2.user.socket_id === client.id){
 			this.player1.score = 10;
 			this.player2.score = 0;
 		}
-		client.to(this.player1.user.socket_id).emit('match', {
-			state: this.game.state,
-			ball: this.ball,
-			player1: this.player1.new,
-			player2: this.player2.new,
-			score1: this.player1.score,
-			score2: this.player2.score,
-		},
-		);
-		client.to(this.player2.user.socket_id).emit('match', {
-			state: this.game.state,
-			ball: this.ball,
-			player1: this.player1.new,
-			player2: this.player2.new,
-			score1: this.player1.score,
-			score2: this.player2.score,
-		},
-		);
+
+		this.sendMatchStateUpdate(client);
+		// client.to(this.player1.user.socket_id).emit('match', {
+		// 	state: this.game.state,
+		// 	ball: this.ball,
+		// 	player1: this.player1.new,
+		// 	player2: this.player2.new,
+		// 	score1: this.player1.score,
+		// 	score2: this.player2.score,
+		// },
+		// );
+		// client.to(this.player2.user.socket_id).emit('match', {
+		// 	state: this.game.state,
+		// 	ball: this.ball,
+		// 	player1: this.player1.new,
+		// 	player2: this.player2.new,
+		// 	score1: this.player1.score,
+		// 	score2: this.player2.score,
+		// },
+		// );
 	}
 }
