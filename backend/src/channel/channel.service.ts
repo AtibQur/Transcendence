@@ -4,6 +4,7 @@ import { UpdateChannelDto } from './dto/update-channel.dto';
 import { PrismaService } from '../../prisma/prisma.service';
 import { ChannelmemberService } from '../channelmember/channelmember.service';
 import { CreateChannelmemberDto } from '../channelmember/dto/create-channelmember.dto';
+import { DeleteChannelDto } from './dto/delete-channel.dto';
 import { Logger } from '@nestjs/common';
 import * as bcrypt from 'bcrypt';
 
@@ -114,6 +115,66 @@ export class ChannelService {
     }
   }
 
+  // GET ALL PUBLIC & PROTECTED CHANNELS FOR WHICH THE PLAYER IS NOT MEMBER YET
+  async findAllJoinableChannels(player_id: number) {
+    try {
+        return prisma.channel.findMany({
+            where: {
+                is_private: false,
+                NOT: {
+                    members: {
+                      some: {
+                        member_id: player_id,
+                      },
+                    },
+                },
+            },
+            select: {
+                id: true,
+                name: true,
+            },
+        })
+    }
+    catch (error) {
+        console.error('Error occurred:', error);
+        return null;
+    }
+  }
+
+  // Find DM
+  // returns dm on success, nothing on error
+  async findDm(player_id: number, friend_id: number) {
+    try {
+      const selectedDm = await prisma.channel.findFirst({
+          where: {
+            is_dm: true,
+            AND: [
+                {
+                  members: {
+                    some: {
+                      member_id: player_id,
+                    },
+                  },
+                },
+                {
+                  members: {
+                    some: {
+                      member_id: friend_id,
+                    },
+                  },
+                },
+              ],
+          }
+        });
+        if (!selectedDm)
+            throw new Error();
+        return selectedDm;
+    }
+    catch (error) {
+        return null;
+    }
+  }
+
   // CHECK IF DM ALREADY EXISTS
   // returns true if it already exists, false if not
   async isExistingDm(player_id: number, friend_id: number) {
@@ -203,7 +264,6 @@ export class ChannelService {
   // returns id on success, nothing on error
   async findOwnerId(id: number) {
     try {
-
         const selectedChannel = await prisma.channel.findUnique({
             where: {
                 id: id
@@ -226,17 +286,13 @@ export class ChannelService {
   //SET NEW OWNER FOR CHANNEL IF THE CURRENT OWNER WANT TO LEAVE THE CHANNEL
   // set to the 'eldest' admin (smallest member id of members)
   // if there are no members left, channel deleted?
-  // returns updated channel on succes, nothing on error (or when channel is removed)
+  // returns channel id on succes, false if there are no more members and nothing on error
   async setNewOwner(id: number) {
     try {
         console.log('finding new owner....');
         const newOwner = await this.channelmemberService.findNewOwner(id);
         if (!newOwner)
-        {
-            //remove channel?
-            this.logger.log("There are no more channelmembers");
-            return null;
-        }
+            return false;
 
         const updatedChannel = await prisma.channel.update({
             where: {
@@ -248,11 +304,32 @@ export class ChannelService {
         })
         this.logger.log(`set new owner for channel ${updatedChannel.name}`);
 
-        return updatedChannel;
+        return true;
 
     }
     catch(error) {
         console.log("Error setting new owner: ", error);
+        return null;
+    }
+  }
+
+  //FIND THE HASHED PASSWORD OF A CHANNEL
+  // returns hash on success, nothing on error
+  async findPassword(id: number) {
+    try {
+        const selectedChannel = await prisma.channel.findUnique({
+            where: {
+                id: id
+            },
+            select: {
+                password: true
+            }
+        })
+        
+        if (!selectedChannel)
+            throw new Error();
+        return selectedChannel.password;
+    } catch (error) {
         return null;
     }
   }
@@ -295,13 +372,63 @@ export class ChannelService {
     }
   }
 
+  // COMPARES GIVEN PASSWORD WITH PASSWORD OF CHANNEL
+  // returns true if they match, otherwise false
+  async validatePassword(id: number, password: string) {
+    try {
+        const hash: string = await this.findPassword(id);
+        if (!hash)
+            throw new Error();
+
+        const isMatch = await bcrypt.compare(password, hash);
+        return isMatch;
+
+    } catch (error) {
+        console.log('Error validating password: ', error);
+        return null;
+    }
+  }
+
   //ENCRYPT PASSWORD
   // returns hash, nothing or error;
   async encryptPassword(password: string) {
-    const saltOrRounds = 10;
-    const hash = await bcrypt.hash(password, saltOrRounds);
-    if (hash)
+    try {
+        const saltOrRounds = 10;
+        const hash = await bcrypt.hash(password, saltOrRounds);
+
+        if (hash)
         return hash;
-    return null;
+
+    } catch (error) {
+        console.log('Error encrypting password: ', error);
+        return null;
+    }
+  }
+
+  //REMOVE CHANNEL
+  // can only be done by the owner or if the last member wants to leave the channel
+  // returns deleted channel on success, nothing on error
+  async remove(player_id: number, deleteChannelDto: DeleteChannelDto) {
+    try {
+        const updater = await this.channelmemberService.findChannelmember(player_id, deleteChannelDto.id);
+
+        if (!updater.is_owner)
+            throw new Error('player not allowed');
+        
+        const deletedChannel = await prisma.channel.delete({
+            where: {
+                id: deleteChannelDto.id,
+            },
+            include: {
+                members: true,
+                messages: true
+            },
+        });
+
+        return deletedChannel;
+    } catch (error) {
+        console.log('Error deleting channel:', error);
+        return null;
+    }
   }
 }

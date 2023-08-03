@@ -20,7 +20,7 @@
 <script setup lang="ts">
 import { socket } from '../../socket';
 import axiosInstance from '../../axiosConfig';
-import { ref, onMounted } from 'vue';
+import { ref } from 'vue';
 import Dialog from 'primevue/dialog';
 import AutoComplete from 'primevue/autocomplete';
 import { useToast } from 'primevue/usetoast';
@@ -70,26 +70,12 @@ const search = (event) => {
     }, 250);
 }
 
-//CONFIRM DIALOG BUTTON
-const openConfirmDialog = () => {
-    confirm.require({
-        message: 'Are you sure you want to proceed?',
-        header: 'Confirmation',
-        accept: () => {
-            resetForm();
-        },
-        onShow: () => {
-            isVisible.value = true;
-        }
-    });
-};
-
 //HANDLE CLOSE BUTTON
 //when clicked confirm dialog is shown
 const handleCloseButton = {
     'aria-label': 'Close Dialog',
     onClick: () => {
-        openConfirmDialog()
+        resetForm();
     },
 };
 

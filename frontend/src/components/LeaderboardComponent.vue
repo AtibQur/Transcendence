@@ -15,13 +15,13 @@
 
     <div class="Leaderboard-info">
       <div class="Leaderboard-rank">
-        <h2>Rank</h2>
+        <h2>RANK</h2>
       </div>
       <div class="Leaderboard-name">
-        <h2>Name</h2>
+        <h2>USERNAME</h2>
       </div>
       <div class="Leaderboard-games">
-        <h2>Games won</h2>
+        <h2>LEVEL</h2>
       </div>
     </div>
 
@@ -112,21 +112,19 @@
 
 </script>
 
- <style>
+ <style scoped>
    .Leaderboard {
-   position: absolute;
-   left: 400px;
-   top: 50%;
-   transform: translateY(-50%);
-   width: calc(100% - 800px);
-   min-width: 1500px;
+   position: relative;
+   margin: 100px;
    height: 75vh;
-   min-height: 1000px;
+   min-height: 180px;
+   min-width: 700px;
    display: flex;
    flex-direction: column;
    align-items: center;
    justify-content: center;
-   border: 2px solid black;
+   background-color: var(--white-softblue);
+   border-radius: 8px;
    }
  
    .Leaderboard-header {
@@ -135,8 +133,9 @@
      left: 0;
      width: 100%;
      height: 10%;
+     min-height: 100px;
      background-color: #1D233A;
-     border-bottom: 2px solid black;
+     border-radius: 8px;
    }
    .Leaderboard-header .Leaderboard-logo {
      position: absolute;
@@ -144,7 +143,6 @@
      left: 0;
      width: 100px;
      height: 100px;
-     border-right: 2px solid black;
    }
    .Leaderboard-header .Leaderboard-logo img {
      position: absolute;
@@ -165,10 +163,9 @@
      justify-content: center;
    }
    .Leaderboard-header .Leaderboard-text h1 {
-     font-family: 'JetBrains Mono';
      font-style: normal;
      line-height: 127px;
-     color: #FAFAFA;
+     color: var(--white-softblue);
    }
    .Leaderboard-header .Leaderboard-empty {
      position: absolute;
@@ -176,7 +173,6 @@
      left: 80%;
      width: 20%;
      height: 100%;
-     border-left: 2px solid black;
    }
    .Leaderboard-header .Leaderboard-emptyspace {
      position: absolute;
@@ -189,11 +185,20 @@
  
    .Leaderboard-info {
      position: absolute;
-     top: 10%;
+     top: 100px;
      left: 0;
      width: 100%;
      height: 8%;
-     border-bottom: 2px solid black;
+   }
+
+   .Leaderboard-info h2 {
+    font-size: 18px;
+    font-family: 'JetBrains Mono';
+    font-style: normal;
+    line-height: 127px;
+    color: var(--gray-medium);
+    font-weight: 400;
+    margin-top: 40px;
    }
    .Leaderboard-info .Leaderboard-rank {
      position: absolute;
@@ -201,75 +206,46 @@
      left: 0;
      width: 20%;
      height: 100%;
-     border-right: 2px solid black;
      display: flex;
      align-items: center;
      justify-content: center;
    }
-   .Leaderboard-info .Leaderboard-rank h2 {
-     font-family: 'JetBrains Mono';
-     font-style: normal;
-     line-height: 127px;
-     color: #595959;
-     font-weight: 400;
-     font-size: 14px;
-     padding-top: 6%;
-   }
+
    .Leaderboard-info .Leaderboard-name {
      position: absolute;
-     top: 0;
-     left: 20%;
-     width: 60%;
-     height: 100%;
+     left: 18%;
      display: flex;
      align-items: center;
+     width: 60%;
+     height: 100%;
      justify-content: left;
    }
-   .Leaderboard-info .Leaderboard-name h2 {
-     font-family: 'JetBrains Mono';
-     font-style: normal;
-     line-height: 127px;
-     color: #595959;
-     font-weight: 400;
-     font-size: 14px;
-     padding-left: 6%;
-     padding-top: 3%;
-   }
+
  .Leaderboard-info .Leaderboard-games {
      position: absolute;
      top: 0;
-     left: 80%;
+     left: 75%;
      width: 20%;
      height: 100%;
-     border-left: 2px solid black;
      display: flex;
      align-items: center;
      justify-content: center;
-   }
-   .Leaderboard-info .Leaderboard-games h2 {
-     font-family: 'JetBrains Mono';
-     font-style: normal;
-     color: #595959;
-     font-weight: 400;
-     font-size: 14px;
-     padding-top: 6%;
-   }
+  }
    
    .Leaderboard-footer {
      position: absolute;
-     top: 90%;
+     top: 95%;
      left: 0;
      width: 100%;
-     height: 10%;
+     height: 5%;
      background-color: #1D233A;
-     border-top: 2px solid black;
+     border-radius: 8px;
    }
 
    .Leaderboard-player-stats {
    /* Add styles to match Leaderboard-header */
    position: absolute;
-   top: 18%; /* Adjust as needed */
-   left: 0;
+   top: 160px; /* Adjust as needed */
    width: 100%;
    height: 72%; /* Adjust as needed */
    overflow-y: auto; /* Add scrollbars if needed */
@@ -290,8 +266,8 @@
      display: flex;
      align-items: center;
      justify-content: center;
-     border-bottom: 2px solid black;
-     height: 65px; /* Adjust as needed */
+     height: 80px; /* Adjust as needed */
+     margin: 15px;
    }
  
    .Leaderboard-row .Leaderboard-rank {
@@ -299,20 +275,23 @@
      display: flex;
      align-items: center;
      justify-content: center;
-     width: 20%;
-     height: 100%;
-     border-right: 2px solid black;
+     width: 10%;
+     height: 75%;
+     background-color: var(--yellow-soft);
+     border-radius: 50px;
+     margin-right: 30px;
    }
  
    .Leaderboard-row .Leaderboard-name {
      /* Styles to match Leaderboard-info */
      display: flex;
      align-items: center;
-     justify-content: center;
      width: 60%;
      height: 100%;
-     border-right: 2px solid black;
      justify-content: left;
+     background-color: var(--blue-lightest);
+     border-radius: 18px;
+     margin-right: 30px;
    }
  
    .Leaderboard-row .Leaderboard-name h2 {
@@ -324,7 +303,6 @@
      font-size: 14px;
      padding-left: 6%;
      padding-top: 3%;
-     border-right: none; /* Remove border on the last column */
    }
    .Leaderboard-row .Leaderboard-games {
      /* Styles to match Leaderboard-info */
@@ -333,8 +311,9 @@
      justify-content: center;
      width: 20%;
      height: 100%;
-     border-right: 2px solid black;
      border-right: none; /* Remove border on the last column */
+     background-color: var(--yellow-soft);
+     border-radius: 50px;
    }
  
    .Leaderboard-row .Leaderboard-rank h2,
@@ -344,10 +323,11 @@
      font-family: 'JetBrains Mono';
      font-style: normal;
      line-height: 127px;
-     color: #595959;
-     font-weight: 400;
-     font-size: 14px;
+     color: var(--black-soft);
+     font-weight: bold;
+     font-size: 24px;
      border-right: none; /* Remove border on the last column */
+     padding: 30px;
    }
  
    </style>

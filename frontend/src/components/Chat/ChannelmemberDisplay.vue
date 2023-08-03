@@ -2,8 +2,11 @@
     <h4 class="custom-h4">Channel Members</h4>
     <ul id="channelmemberList">
         <div class="card flex justify-content-center">
-            <Sidebar v-model:visible="visible" position="right">
-                <UserInfoDisplay @removeChannelmember="removeChannelmember" :channelId="currentChannelId" :channelmember="selectedChannelmember"/>
+            <Sidebar v-model:visible="visible" position="right" class="custom-sidebar">
+                <UserInfoDisplay @changeChannel="changeChannel"
+                                @removeChannelmember="removeChannelmember"
+                                :channelId="currentChannelId"
+                                :channelmember="selectedChannelmember"/>
             </Sidebar>
         </div>
         <li v-for="(channelmember, index) in channelmembers" :key="index">
@@ -31,6 +34,7 @@ const props = defineProps({
     }
 });
 
+const emit = defineEmits(['changeChannel']);
 const channelmembers = ref([]);
 const playerUsername = sessionStorage.getItem('username') || null;
 const currentChannelId = ref<number>(props.channelId);
@@ -93,9 +97,13 @@ const removeChannelmember = async (member_id: number) => {
     }
 }
 
+const changeChannel = async (channel_id: number, isChannel: boolean, isDm: boolean) => {
+    emit('changeChannel', channel_id, isChannel, isDm);
+}
+
 </script>
 
-<style>
+<style scoped>
 .custom-h4 {
   font-family: 'JetBrains Mono';
   font-weight: bold;

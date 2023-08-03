@@ -10,6 +10,7 @@
                 <DmDisplay @changeChannel="changeChannel"/> 
                 <AddChannel/>
                 <AddDm/>
+                <JoinChannel/>
             </div>
             <div class="chat-box">
                 <div v-if="inChannel || inDm">
@@ -25,13 +26,13 @@
                 </div>
             </div>
             <div class="right-side-bar">
-                <div class="ProfilePicture" style="margin: 20px;">
-                    <img :src="profilePicture" alt="Avatar" style="width:60%">
+                <div style="margin: 20px;">
+                    <img :src="profilePicture" alt="Avatar" style="width:60%; border-radius: 10%">
                 </div>
                 <h2>{{ username }} {{ playerId }}</h2>
-                <div class="status-circle" :class="{ 'online': status === 'online', 'offline': status !== 'online' }">
+                <div class="status-circle">
                     <span class="status-text">
-                        {{ status }}
+                        online
                     </span>
                 </div>
             </div>
@@ -50,27 +51,31 @@ import ChatBox from './ChatBox.vue';
 import AddMessage from './AddMessage.vue';
 import DmDisplay from './DmDisplay.vue';
 import AddDm from './AddDm.vue';
+import JoinChannel from './JoinChannel.vue';
 
 const playerId = parseInt(sessionStorage.getItem('playerId') || '0');
 const username = sessionStorage.getItem('username') || '0';
 const profilePicture = ref('');
 const inChannel = ref(false);
 const inDm = ref(false);
-const status = ref('');
 
 const channelId = ref<number>(0);
 const showChannelInfo = ref(false);
 
-const changeChannel = async (channel_id: number, isChannel: boolean) => {
+const changeChannel = async (channel_id: number, isChannel: boolean, isDm: boolean) => {
     channelId.value = channel_id;
     showChannelInfo.value = false;
     if (isChannel) {
         inChannel.value = true;
         inDm.value = false
     }
-    else {
+    else if (isDm) {
         inChannel.value = false;
         inDm.value = true;
+    }
+    else {
+        inChannel.value = false;
+        inDm.value = false;
     }
 }
 
@@ -80,7 +85,6 @@ const showInfo = async (isVisible: boolean) => {
 onBeforeMount(async () => {
     try {
       profilePicture.value = await fetchAvatar(playerId);
-      status.value = await fetchStatus(playerId);
     } catch (error) {
       console.log("Error occurred chat profile");
     }
@@ -94,10 +98,6 @@ onBeforeMount(async () => {
     return imageUrl.value;
   };
 
-  const fetchStatus = async (player_id: number) => {
-    const response = await axiosInstance.get('player/status/' + player_id.toString());
-    return response.data;
-  }
 </script>
 
 
@@ -129,15 +129,8 @@ onBeforeMount(async () => {
     margin-right: 10px;
     margin-left: 15px;
     margin-top: 50px;
-  }
-  
-.online {
     background-color: var(--green-soft);
-}
-
-.offline {
-    background-color: var(--red-soft);
-}
+  }
 
 .status-text {
     margin-left: 40px;

@@ -48,7 +48,7 @@ export class MatchService {
   // UPDATE MATCH POINTS AFTER FINISH
   async finishMatch(match_id: number, updateMatchDto: UpdateMatchDto) {
     try {
-      if (!updateMatchDto.player_points || !updateMatchDto.opponent_points){
+      if (updateMatchDto.player_points === undefined || updateMatchDto.opponent_points === undefined){
         throw new Error("Missing player points or opponent points");
       }
       const finishedMatch = await prisma.match.update({
@@ -85,6 +85,9 @@ export class MatchService {
           OR: [
             { player_id: id },
             { opponent_id: id }
+          ],
+          NOT: [
+            { player_points: 0, opponent_points: 0 }
           ]
         },
         include: {

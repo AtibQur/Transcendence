@@ -57,16 +57,18 @@
 
 </script>
 
-<style>
+<style scoped>
 .border-container {
-  height: 800px;
+  height: 250px;
   display: flex;
   justify-content: center;
   align-items: center;
+  background-color: aliceblue;
+  border-radius: 8px;
 }
 
 .border {
-  border: 1px solid black;
+  border: none;
   width: 100%;
   height: 100%;
   padding: 20px;
@@ -74,7 +76,6 @@
 }
 
 .border-text {
-  font-family: Arial, sans-serif;
   font-size: 18px;
 }
 

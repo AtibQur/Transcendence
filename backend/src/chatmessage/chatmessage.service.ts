@@ -2,7 +2,8 @@ import { Injectable } from '@nestjs/common';
 import { CreateChatmessageDto } from './dto/create-chatmessage.dto';
 import { PrismaService } from '../../prisma/prisma.service';
 import { BlockedplayerService } from 'src/blockedplayer/blockedplayer.service';
-import { ChannelService } from 'src/channel/channel.service';
+import { ChannelmemberService } from 'src/channelmember/channelmember.service';
+import { PlayerService } from 'src/player/player.service';
 
 const prisma = PrismaService.getClient();
 
@@ -10,42 +11,68 @@ const prisma = PrismaService.getClient();
 export class ChatmessageService {
   constructor(
     private readonly blockedplayerService: BlockedplayerService,
-    private readonly channelService: ChannelService
+    private readonly channelmemberService: ChannelmemberService,
+    private readonly playerService: PlayerService
   ) {}
   
   // CREATE NEW CHAT MESSAGE
   async createChatMessage(createChatmessageDto: CreateChatmessageDto) {
     try {
-      const newChatMessage = await prisma.chatMessage.create({
-        data: {
-          content: createChatmessageDto.content,
-          sender_id: createChatmessageDto.sender_id,
-          channel_id: createChatmessageDto.channel_id,
-          sent_at: new Date(),
-        },
-        include: {
-            sender: {
-              select: {
-                username: true
-              }
+        //check whether member is muted
+        const memberIsMuted = await this.channelmemberService.checkMute(createChatmessageDto.sender_id, createChatmessageDto.channel_id);
+
+        if (memberIsMuted)
+            return null; //what to return!? 
+
+        const newChatMessage = await prisma.chatMessage.create({
+            data: {
+            content: createChatmessageDto.content,
+            sender_id: createChatmessageDto.sender_id,
+            channel_id: createChatmessageDto.channel_id,
+            sent_at: new Date(),
             },
-            channel: {
+            include: {
+                sender: {
                 select: {
-                    name: true
+                    username: true
+                }
+                },
+                channel: {
+                    select: {
+                        name: true
+                    }
                 }
             }
+        });
+        const numMessages = await this.findNumSentMessages(createChatmessageDto.sender_id);
+        this.playerService.updateAchievementsAfterMessage(createChatmessageDto.sender_id, numMessages);
+        console.log('Chatmessage is created');
+        return newChatMessage;
+    } catch (error) {
+        console.error('Error occurred:', error);
+        return null;
+    }
+  }
+
+  // GET AMOUNT OF MESSAGES SENT BY SENDERID
+  async findNumSentMessages(senderId: number) {
+    try {
+      const sentMessages = await prisma.chatMessage.findMany({
+        where: {
+          sender_id: senderId
         }
       });
-      console.log('Chatmessage is created');
-      return newChatMessage;
-    } catch (error) {
+      return Object.keys(sentMessages).length;
+    }
+    catch (error) {
       console.error('Error occurred:', error);
+      return 0;
     }
   }
 
   // GET ALL CHAT MESSAGES WITHIN ONE CHANNEL
   async findChannelMsgs(channel_id: number) {
-    return prisma.chatMessage.findMany({
+    return await prisma.chatMessage.findMany({
       where: {
         channel_id: channel_id
       }

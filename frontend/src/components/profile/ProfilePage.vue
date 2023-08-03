@@ -1,9 +1,8 @@
 <template>
+  <Toast />
   <div class="ProfileContainer">
     <div class="ProfileData">
-      <div class="ProfilePicture">
-        <img :src="profilePicture" alt="Avatar" style="width:100%">
-      </div>
+      <div class="ProfilePicture" :style="{ backgroundImage: 'url(' + profilePicture + ')' }"></div>
       <div class="ProfileInfo">
         <div class="ProfileName">
           <h1>{{ username }}</h1>
@@ -14,48 +13,53 @@
       </div>
     </div>
 
-    <div class="ProfileOptions">
-      <div class="ProfileOptionsContainer">
-        <ul>
-          <li @click="changeUsernameModal">Name change</li>
-          <li @click="changeProfilePicture">Picture change</li>
-          <li @click="changeTfaStatus">2FA Authorisation</li>
-          <li @click="logOut">Log out</li>
-          <li></li>
-        </ul>
+    <!-- Wrap .ProfileStats and .ProfileOptions inside a scrollable container -->
+    <div class="ProfileScrollContainer">
+      <div class="ProfileStats">
+        <select v-model="selectedOption" class="custom-dropdown">
+          <option value="Achievements">Achievements</option>
+          <option value="Stats">Stats</option>
+          <option value="Match History">Match History</option>
+        </select>
+
+        <div v-if="selectedOption === 'Achievements'" class="show">
+          <ProfileAchievements />
+        </div>
+        <div v-else-if="selectedOption === 'Stats'" class="show">
+          <ProfileStats />
+        </div>
+        <div v-else-if="selectedOption === 'Match History'" class="show">
+          <ProfileHistory />
+        </div>
+      </div>
+
+      <div class="ProfileOptions">
+        <div class="ProfileOptionsContainer">
+          <ul>
+            <button class="custom-button-1" @click="changeUsernameModal">Change username</button>
+            <button class="custom-button-1" @click="changeProfilePicture">Change picture</button>
+            <button class="custom-button-1" @click="changeTfaStatus">2FA Authorisation</button>
+            <button class="custom-button-1" @click="logOut">Log out</button>
+          </ul>
+        </div>
       </div>
     </div>
 
-    <div class="ProfileStats">
-      <select v-model="selectedOption">
-        <option value="Achievements">{{ username }}'s Achievements</option>
-        <option value="Stats">Stats</option>
-        <option value="Match History">Match History</option>
-      </select>
-
-      <div v-if="selectedOption === 'Achievements'" class="show">
-        <ProfileAchievements />
-      </div>
-      <div v-else-if="selectedOption === 'Stats'" class="show">
-        <ProfileStats />
-      </div>
-      <div v-else-if="selectedOption === 'Match History'" class="show">
-        <ProfileHistory />
-      </div>
-    </div>
+    <!-- ... Rest of the template ... -->
 
     <div v-if="showChangeNameModal" class="Modal" @click="closeModal">
       <div class="ModalContent" @click.stop>
-        <h2>Name Change</h2>
+        <h2>Username Change</h2>
         <input
           type="text"
           v-model="newName"
-          placeholder="Enter a new name"
+          placeholder="Enter a new username"
+          class="message-input"
           @keydown.enter="changeUsername"
         />
         <div class="ModalButtons">
-          <button @click="cancelNameChange">Cancel</button>
-          <button @click="changeUsername">Save</button>
+          <button class="custom-button-1" @click="cancelNameChange">Cancel</button>
+          <button class="custom-button-1" @click="changeUsername">Save</button>
         </div>
       </div>
     </div>
@@ -64,35 +68,37 @@
       <div class="ModalContent" @click.stop>
         <h2>Profile Picture Change</h2>
         <div v-if="showChangePictureModal" class="show">
-          <ProfileAvatar @avatarUploaded="handleAvatarUploaded" />        </div>
+          <ProfileAvatar @avatarUploaded="handleAvatarUploaded" />
         </div>
       </div>
+    </div>
       
-      <div v-if="showChangeTfaModal" class="Modal" @click="closeModal">
-        <div class="ModalContent" @click.stop>
-          <h2>Change 2FA Status</h2>
-          <div>
-            <p>2FA Status: </p>
-            <button @click="enableTFA">Enable</button>
-            <button @click="disableTFA">Disable</button>
-          </div>
+    <div v-if="showChangeTfaModal" class="Modal" @click="closeModal">
+      <div class="ModalContent" @click.stop>
+        <h2>Change 2FA Status</h2>
+        <div>
+          <p>2FA Status: </p>
+          <button class="custom-button-1" @click="enableTFA">Enable</button>
+          <button class="custom-button-1" @click="disableTFA">Disable</button>
         </div>
       </div>
-
+    </div>
   </div>
 </template>
 
+
 <script setup lang="ts">
   import { onBeforeMount, ref } from 'vue';
-  import ImageComponent from '../Auth/ImageComponent.vue';
   import axiosInstance from '../../axiosConfig';
   import ProfileAchievements from "./ProfileAchievements.vue";
   import ProfileStats from "./ProfileStats.vue";
   import ProfileHistory from "./ProfileHistory.vue";
   import ProfileAvatar from './ProfileAvatar.vue';
-  import { removeCookie, getCookie } from '../cookie_utils';
+  import { removeCookie } from '../cookie_utils';
   import { removeDefaultAuthHeader } from '../../axiosConfig';
   import { useRouter } from 'vue-router';
+  import Toast from 'primevue/toast';
+  import { useToast } from 'primevue/usetoast';
 
   const username = ref("");
   const router = useRouter();
@@ -104,6 +110,7 @@
   const profilePicture = ref("");
   const showChangePictureModal = ref(false);
   const showChangeTfaModal = ref(false);
+  const toast = useToast();
 
   const playerId = parseInt(sessionStorage.getItem('playerId') || '0');
 
@@ -146,16 +153,27 @@
 
   const changeUsername = async () => {
   if (newName.value) {
+    var message = "";
     try {
+      if (newName.value.length > 20) {
+        message = "Username too long. Max 20 characters please!";
+        throw new Error(message);
+      }
+      else if (newName.value.length < 3) {
+        message = "Username too short. Min 3 characters please!";
+        throw new Error(message);
+      }
       const updatedUsername = await axiosInstance.patch(`player/username/${playerId}`, { username: newName.value });
       username.value = updatedUsername.data; // Update the local username value
       if (newName.value != username.value) {
-        throw new Error("Username already exists");
+        message = "Username already exists";
+        throw new Error(message);
       }
       sessionStorage.setItem('username', username.value); //update sessionstorage
       closeModal();
-    } catch (error) {
-      alert("Username already exists. Please choose a different username.");
+    }
+    catch (error) {
+      toast.add({ severity: 'error', summary: message, detail: '', life: 3000 });
       console.log(error);
     }
   }
@@ -208,23 +226,22 @@
 
 </script>
   
-  <style>
+<style scoped>
 .ProfileContainer {
-  position: absolute;
-  left: 400px;
+  position: fixed;
+  left: 50%;
   top: 50%;
-  transform: translateY(-50%);
-  width: calc(100% - 800px);
+  transform: translate(-50%, -50%);
   min-width: 1500px;
+  width: calc(100% - 800px);
   height: 75vh;
   min-height: 1000px;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  border: 2px solid black;
 }
-  
+
   .ProfileData {
     position: absolute;
     left: 12%;
@@ -232,7 +249,6 @@
     width: 20%;
     height: 50%;
     margin-top: 10px;
-    /* border: 1px solid black; */
   }
   .ProfileData .ProfilePicture {
     position: absolute;
@@ -241,7 +257,10 @@
     transform: translateX(-50%);
     width: 100%;
     height: 60%;
-    /* border: 1px solid black; */
+    background-size: cover;
+    background-position: center center;
+    background-repeat: no-repeat;
+    border-radius: 50%;
   }
   .ProfileData .ProfilePicture img {
     position: absolute;
@@ -250,7 +269,9 @@
     transform: translate(-50%, -50%);
     width: 100%;
     height: 100%;
-    border-radius: 50%;
+    background-size: cover;
+    background-position: center center;
+    background-repeat: no-repeat;
   }
   .ProfileData .ProfileInfo {
     position: absolute;
@@ -258,13 +279,12 @@
     top: 60%;
     width: 100%;
     height: 40%;
-    /* border: 1px solid black; */
   }
   
   .ProfileOptions {
     position: absolute;
-    left: 5%;
-    top: 65%;
+    left: 10%;
+    top: 55%;
     width: 25%;
     height: 30%;
     /* border: 1px solid black; */
@@ -313,7 +333,11 @@
     color: #1f6091;
     font-weight: bold;
   }
-  
+
+  .custom-dropdown {
+    font-family: 'JetBrains Mono';
+  }
+
   .ProfileStats {
     position: absolute;
     left: 40%;
@@ -358,7 +382,7 @@
   background-color: aliceblue; 
   padding: 20px;
   border: 1px solid #888;
-  border-radius: 4px;
+  border-radius: 8px;
   text-align: center;
   width: 30%; /* Adjust the width as desired */
 }
@@ -379,10 +403,43 @@
 }
 
 .ModalButtons button {
-  margin: 0 5px;
+  margin: 5 5px;
 }
 .ModalContent button:hover {
   color: #fefefe; /* Change color on hover */
   background-color: #697b8e;
 }
-  </style>
+
+.message-input {
+  font-family: 'JetBrains mono';
+  border-radius:10px;
+  border: none;
+  padding: 10px;
+  margin-bottom: 50px;
+}
+@media screen and (max-width: 1040px) {
+  .ProfileContainer {
+    flex-direction: row; /* Arrange divs in a row */
+    height: auto; /* Remove the fixed height */
+    padding: 20px; /* Add some padding for better layout */
+  }
+
+  .ProfileData {
+    order: 1; /* Set the order to 1 to appear first in the row */
+  }
+
+  .ProfileOptions {
+    order: 3; /* Set the order to 3 to appear last in the row */
+  }
+
+  .ProfileStats {
+    order: 2; /* Set the order to 2 to appear in the middle of the row */
+  }
+
+  .ProfileScrollContainer {
+    overflow-y: auto; /* Enable vertical scrolling if content overflows */
+    max-height: 75vh; /* Limit the maximum height of the container to allow scrolling */
+  }
+}
+
+</style>

@@ -9,8 +9,8 @@
 
 <script setup lang="ts">
 import { socket } from '../../socket';
-import { onBeforeMount, ref } from 'vue';
-// import Message from '@/types/Message';
+import { ref } from 'vue';
+import { useToast } from 'primevue/usetoast';
 
 const props = defineProps({
     channelId: {
@@ -19,36 +19,39 @@ const props = defineProps({
     }
 });
 
+const toast = useToast();
 const playerId = parseInt(sessionStorage.getItem('playerId') || '0');
 const content = ref('');
 
-
-// onBeforeMount(() => {
-
-// })
-
 const sendMessage = () => {
-    socket.emit('addChatmessage', { content: content.value, sender_id: playerId, channel_id: props.channelId }, () => {
-        content.value = '';
-    })
+    const trimmedContent = content.value.trim();
+    if (trimmedContent !== '') {
+        socket.emit('addChatmessage', { content: content.value, sender_id: playerId, channel_id: props.channelId }, (response) => {
+            if (response == false)
+                toast.add({ severity: 'error', summary: 'You are muted', detail: '', life: 3000 });
+            else
+                content.value = '';
+        })
+    }
 }
 
 </script>
 
-<style>
+<style scoped>
 .simple-button {
     font-family: 'JetBrains mono';
     border: none;
+    border-radius: 20%;
     cursor: pointer;
+    padding: 7px;
 }
 
 .simple-button:hover {
-    color: var(--blue-medium)
+    color: var(--blue-mediumlight);
 }
 
 .message-input {
     font-family: 'JetBrains mono';
-    font-style: italic;
     background-color: var(--gray-light);
     border-radius:10px;
     border: none;

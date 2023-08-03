@@ -7,19 +7,23 @@ import { PlayerModule } from 'src/player/player.module';
 import { FriendModule } from 'src/friend/friend.module';
 import { BlockedplayerModule } from 'src/blockedplayer/blockedplayer.module';
 import { BlockedplayerService } from 'src/blockedplayer/blockedplayer.service';
+import { AuthModule } from 'src/auth/auth.module';
+import { AuthService } from 'src/auth/auth.service';
 
 @Module({
     imports: [
         PlayerModule,
         FriendModule,
-        BlockedplayerModule
+        BlockedplayerModule,
+        AuthModule
     ],
     controllers: [ChannelmemberController],
     providers: [
         ChannelmemberService,
         FriendService,
         PlayerService,
-        BlockedplayerService
+        BlockedplayerService,
+        AuthService
     ]
 })
 export class ChannelmemberModule {}

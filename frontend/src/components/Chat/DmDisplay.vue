@@ -24,9 +24,7 @@ onBeforeMount(async () => {
     // LISTEN IF A NEW CHANNEL IS ADDED
     socket.on('newDm', (dm) => {
         socket.emit('joinRoom', { playerId: playerId, channelId: dm.channel_id }, () => {
-            console.log('dm: ', dm);
             dms.value.push(dm);
-            console.log(dms.value);
         })
     });
 })
@@ -53,7 +51,7 @@ onBeforeMount(async () => {
 
     // EVENT TO CHANGE CURRENT CHANNEL
     const changeChannel = (channel_id: number) => {
-        emit('changeChannel', channel_id, false);
+        emit('changeChannel', channel_id, false, true);
     }
 
 </script>
@@ -67,7 +65,7 @@ onBeforeMount(async () => {
     background-color: var(--white-moretransparent);
     color: var(--black-soft);
     min-height:30px; 
-    min-width: 300px;
+    width: 100%;
     text-align: left;
     transition: color 0.3s;
     padding: 20px;

@@ -6,7 +6,6 @@ Table Player {
   id Int [pk, increment]
   username String [unique, not null]
   intra_username String [not null, default: 'username']
-  avatar_url String [not null, default: 'default_avatar.png']
   avatar Bytes
   two_factor_enabled Boolean [not null, default: false]
   two_factor_code String
@@ -20,8 +19,6 @@ Table Player {
   blocked_by BlockedPlayer [not null]
   friends Friend [not null]
   friends_con Friend [not null]
-  sent_invitations GameInvitation [not null]
-  recv_invitations GameInvitation [not null]
 }
 
 Table PlayerStats {
@@ -96,16 +93,6 @@ Table Friend {
   friend Player [not null]
 }
 
-Table GameInvitation {
-  id Int [pk, increment]
-  sender_id Int [not null]
-  recipient_id Int [not null]
-  timestamp DateTime [not null]
-  accepted Boolean [not null, default: false]
-  sender Player [not null]
-  recipient Player [not null]
-}
-
 Enum PlayerStatus {
   online
   offline
@@ -118,11 +105,11 @@ Ref: Channel.owner_id > Player.id
 
 Ref: ChannelMember.member_id > Player.id
 
-Ref: ChannelMember.channel_id > Channel.id
+Ref: ChannelMember.channel_id > Channel.id [delete: Cascade]
 
 Ref: ChatMessage.sender_id > Player.id
 
-Ref: ChatMessage.channel_id > Channel.id
+Ref: ChatMessage.channel_id > Channel.id [delete: Cascade]
 
 Ref: Match.player_id > Player.id
 
@@ -135,7 +122,3 @@ Ref: BlockedPlayer.blocked_id > Player.id
 Ref: Friend.player_id > Player.id
 
 Ref: Friend.friend_id > Player.id
-
-Ref: GameInvitation.sender_id > Player.id
-
-Ref: GameInvitation.recipient_id > Player.id
