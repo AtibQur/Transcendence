@@ -14,7 +14,7 @@ w<template>
   const fetchImage = async () => {
     try {
       const accesstoken = getCookie('auth');
-      const response = await axios.get('http://localhost:3000/auth/2fa', {
+      const response = await axios.get(process.env.VUE_APP_HOST_COMPUTER + ':3000/auth/2fa', {
         headers: {
           Authorization: `Bearer ${accesstoken}`,
         }
