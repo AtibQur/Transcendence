@@ -2,8 +2,11 @@ import { Controller, Get, Post, Body, Query, Patch, Param, Delete } from '@nestj
 import { ChannelmemberService } from './channelmember.service';
 import { CreateChannelmemberDto } from './dto/create-channelmember.dto';
 import { UpdateChannelmemberDto } from './dto/update-channelmember.dto';
+import { AuthGuard } from '../auth/local.authguard';
+import { UseGuards } from '@nestjs/common';
 
 @Controller('channelmember')
+@UseGuards(AuthGuard)
 export class ChannelmemberController {
   constructor(private readonly channelmemberService: ChannelmemberService) {}
 

@@ -7,6 +7,7 @@ import { JwtStrategy } from './jwt/jwt.strategy';
 import { UserController } from './auth.endpoint.controller';
 import { Player } from 'src/player/entities/player.entity';
 import { PlayerService } from 'src/player/player.service';
+import { PlayerModule } from 'src/player/player.module';
 
 @Module({
 	imports: [

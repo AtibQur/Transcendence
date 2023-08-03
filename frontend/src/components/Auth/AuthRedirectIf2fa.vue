@@ -22,12 +22,9 @@
 </template>
 
 <script setup lang="ts">
-    import axios from 'axios';
     import AxiosInstance  from '../../axiosConfig';
     import { setDefaultAuthHeader } from '../../axiosConfig';
     import { onMounted ,ref } from 'vue';
-    import ImageComponent from './ImageComponent.vue';
-    import CookieComponent from './cookieComponent.vue';
     import { getCookie, removeCookie, setCookie } from '../../components/cookie_utils';
     import { useRouter } from 'vue-router';
 
