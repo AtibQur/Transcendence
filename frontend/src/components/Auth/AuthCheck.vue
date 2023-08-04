@@ -11,6 +11,7 @@
 		const url:string = 'https://api.intra.42.fr/oauth/authorize?client_id=' 
 		+ process.env.VUE_APP_FT_CLIENTID + '&redirect_uri=' + 
 		process.env.VUE_APP_FT_REDIRECTURI + '&response_type=code';
+		console.log(url);
 	try {
 		window.location.assign(url);
 	} catch (error) {
