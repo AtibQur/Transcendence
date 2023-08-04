@@ -8,10 +8,10 @@
       </div>
       <input type="text" v-model="newFriendName" class="friend-input" placeholder="Enter friend's name" @keydown="handleKeyPress">
       <div class="buttonContainer">
+        <Toast />
+        <ConfirmDialog/>
         <button class="add-del-block-button" @click="addFriend">ADD</button>
         <button class="add-del-block-button" @click="confirmDelete($event)">DELETE</button>
-        <Toast />
-        <ConfirmPopup></ConfirmPopup>
         <button class="add-del-block-button" @click="confirmBlock($event)">BLOCK</button>
       </div>
       <div class="friend-list">
@@ -30,7 +30,7 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import ConfirmPopup from 'primevue/confirmpopup';
+import ConfirmDialog from 'primevue/confirmdialog';
 import Toast from 'primevue/toast';
 import { useToast } from 'primevue/usetoast';
 import { useConfirm } from "primevue/useconfirm";
@@ -41,9 +41,15 @@ interface Friend {
   status: string;
 }
 
+enum Action {
+    ADD,
+    BLOCK,
+    DELETE
+}
+
 export default defineComponent({
   components: {
-    ConfirmPopup,
+    ConfirmDialog,
     Toast,
   },
   emits: ['close-menu'],
@@ -63,10 +69,10 @@ export default defineComponent({
   },
 
   methods: {
-    async confirmBlock(event) {
-      if (await this.validateInput(this.newFriendName)) {
+    async confirmBlock() {
+      if (await this.validateInput(this.newFriendName, Action.BLOCK)) {
         this.$confirm.require({
-        target: event.currentTarget,
+        header: 'Confirmation',
         message: 'Blocking this player will also remove the friendship. Are you sure you want to proceed?',
         icon: 'pi pi-exclamation-triangle',
         accept: () => {
@@ -77,10 +83,10 @@ export default defineComponent({
       }
     },
 
-    async confirmDelete(event) {
-      if (await this.validateInput(this.newFriendName)) {
+    async confirmDelete() {
+      if (await this.validateInput(this.newFriendName, Action.DELETE)) {
         this.$confirm.require({
-        target: event.currentTarget,
+        header: 'Confirmation',
         message: 'Are you sure you want to proceed?',
         icon: 'pi pi-exclamation-triangle',
         accept: () => {
@@ -99,13 +105,13 @@ export default defineComponent({
       }
     },
 
-    async validateInput(name: string) {
+    async validateInput(name: string, action: Action) {
         if (!name)
         {
             this.$toast.add({ severity: 'error', summary: 'Name required', detail: '', life: 3000 });
             return false
         }
-        if (this.friends.some((friend) => friend.username === name))
+        if (action == Action.ADD && this.friends.some((friend) => friend.username === name))
         {
             this.$toast.add({ severity: 'info', summary: 'You are already friends!', detail: '', life: 3000 });
             return false;
@@ -119,7 +125,12 @@ export default defineComponent({
         }
         if (player.data == this.playerId)
         {
-            this.$toast.add({ severity: 'error', summary: 'You cannot add yourself', detail: '', life: 3000 });
+            if (action == Action.ADD)
+                this.$toast.add({ severity: 'error', summary: 'You cannot add yourself', detail: '', life: 3000 });
+            else if (action == Action.DELETE)
+                this.$toast.add({ severity: 'error', summary: 'You cannot delete yourself', detail: '', life: 3000 });
+            else
+                this.$toast.add({ severity: 'error', summary: 'You cannot block yourself', detail: '', life: 3000 });
             return false;
         }
         return true;
@@ -127,7 +138,7 @@ export default defineComponent({
 
     async addFriend() {
       try {
-        if (await this.validateInput(this.newFriendName))
+        if (await this.validateInput(this.newFriendName, Action.ADD))
         {
             const response = await axiosInstance.post(`friend/add/${this.playerId}`, {
               friendUsername: this.newFriendName
@@ -152,21 +163,18 @@ export default defineComponent({
 
     async deleteFriend() {
       try {
-        if (await this.validateInput(this.newFriendName))
-        {
-            const response = await axiosInstance.delete(`friend/${this.playerId}`, {
-              data: {
-                friendUsername: this.newFriendName
-              }
-            });
-            if (response.data) {
-              this.$toast.add({ severity: 'success', summary: 'Successfully deleted friend', detail: '', life: 3000 });
-              this.friends = this.friends.filter(friend => friend.username !== this.newFriendName); // Update the friends array
-              this.newFriendName = '';
+        const response = await axiosInstance.delete(`friend/${this.playerId}`, {
+            data: {
+            friendUsername: this.newFriendName
             }
-            else {
-              this.$toast.add({ severity: 'error', summary: 'Error deleting friend', detail: '', life: 3000 });
-            }
+        });
+        if (response.data) {
+            this.$toast.add({ severity: 'success', summary: 'Successfully deleted friend', detail: '', life: 3000 });
+            this.friends = this.friends.filter(friend => friend.username !== this.newFriendName); // Update the friends array
+            this.newFriendName = '';
+        }
+        else {
+            this.$toast.add({ severity: 'error', summary: 'Error deleting friend', detail: '', life: 3000 });
         }
       } catch (error) {
         console.error('Error occurred while deleting friend:', error);
@@ -175,17 +183,14 @@ export default defineComponent({
 
     async blockFriend() {
       try {
-        if (await this.validateInput(this.newFriendName))
-        {
-            const response = await axiosInstance.post(`blockedplayer/add/${this.playerId}`, {
-                blockedUsername: this.newFriendName
-            });
-            if (response.data) {
-              this.$toast.add({ severity: 'success', summary: 'Successfully blocked player', detail: '', life: 3000 });
-            }
-            else {
-              this.$toast.add({ severity: 'error', summary: 'Error blocking player', detail: '', life: 3000 });
-            }
+        const response = await axiosInstance.post(`blockedplayer/add/${this.playerId}`, {
+            blockedUsername: this.newFriendName
+        });
+        if (response.data) {
+            this.$toast.add({ severity: 'success', summary: 'Successfully blocked player', detail: '', life: 3000 });
+        }
+        else {
+            this.$toast.add({ severity: 'error', summary: 'Error blocking player', detail: '', life: 3000 });
         }
       }
       catch (error) {
