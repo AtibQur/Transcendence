@@ -55,7 +55,6 @@ export class UserController {
     @Get('logout')
     async Logout(@Req() req: any, @Res() res: Response) {
         // res.clearCookie('auth');
-        // res.redirect('http://localhost/8080');
     }
 
 }

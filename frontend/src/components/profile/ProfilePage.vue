@@ -165,7 +165,7 @@
       }
       const updatedUsername = await axiosInstance.patch(`player/username/${playerId}`, { username: newName.value });
       username.value = updatedUsername.data; // Update the local username value
-      if (newName.value != username.value) {
+      if (newName.value !== username.value) {
         message = "Username already exists";
         throw new Error(message);
       }
@@ -182,7 +182,7 @@
   async function logOut() {
         removeCookie('auth');
         removeDefaultAuthHeader();
-        router.push('http://localhost:8080/')
+        router.push(process.env.VUE_APP_HOST_COMPUTER + ':8080/')
     }
 
   const cancelNameChange = () => {

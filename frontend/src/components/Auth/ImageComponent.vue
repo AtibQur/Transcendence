@@ -6,7 +6,7 @@ w<template>
 
 <script lang="ts">
   import { defineComponent, ref } from 'vue';
-  import axios from 'axios';
+  import axiosInstance from '../../axiosConfig';
   import { getCookie } from '../../components/cookie_utils';
   
   const imageData = ref<string>(null!);
@@ -14,7 +14,7 @@ w<template>
   const fetchImage = async () => {
     try {
       const accesstoken = getCookie('auth');
-      const response = await axios.get('http://localhost:3000/auth/2fa', {
+      const response = await axiosInstance.get(process.env.VUE_APP_HOST_COMPUTER + ':3000/auth/2fa', {
         headers: {
           Authorization: `Bearer ${accesstoken}`,
         }

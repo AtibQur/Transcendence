@@ -28,7 +28,7 @@ const sendMessage = () => {
     if (trimmedContent !== '') {
         socket.emit('addChatmessage', { content: content.value, sender_id: playerId, channel_id: props.channelId }, (response) => {
             if (response == false)
-                toast.add({ severity: 'error', summary: 'You are muted', detail: '', life: 3000 });
+                toast.add({ severity: 'error', summary: 'You are not allowed to send this message', detail: '', life: 3000 });
             else
                 content.value = '';
         })

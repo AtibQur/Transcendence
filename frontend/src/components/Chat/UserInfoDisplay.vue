@@ -47,6 +47,9 @@
             <div v-if="currentChannelmemberInfo.showBan">
                 <button  class="custom-button-1" @click="openConfirmDialog(Actions.BAN)">Ban</button>
             </div>
+            <div v-if="!currentChannelmemberInfo.showBan && !currentChannelmemberInfo.memberIsOwner">
+                <button  class="custom-button-1" @click="unbanChannelmember()">Unban</button>
+            </div>
             <div v-if="currentChannelmemberInfo.showDelete">
                 <button  class="custom-button-1" @click="openConfirmDialog(Actions.REMOVE);">Remove from Channel</button>
             </div>
@@ -200,17 +203,19 @@ const invite = async() => {
 }
 // MUTE CHANNELMEMBER
 const muteChannelmember = async () => {
+    const response = await axiosInstance.patch(`channelmember/mute/${playerId.toString()}`, {
+        channel_id: currentChannelId.value,
+        member_id: currentChannelmemberId.value,
+        is_muted: true
+    });
 
-    await socket.emit('muteMember', { player_id: playerId, member_id: currentChannelmemberId.value, channel_id: currentChannelId.value}, (response) => {
-        if (response)
-        {
-            toast.add({ severity: 'info', summary: 'Muted Channelmember Successfully', detail: '', life: 3000 });
-            currentChannelmemberInfo.value.showMute = false;
-            currentChannelmemberInfo.value.memberIsMuted = true;
-        }
-        else 
-            toast.add({ severity: 'error', summary: 'Error Channelmember not Muted', detail: '', life: 3000 });
-    })
+    if (response.data) {
+        toast.add({ severity: 'info', summary: 'Muted Channelmember Successfully', detail: '', life: 3000 });
+        currentChannelmemberInfo.value.showMute = false;
+        currentChannelmemberInfo.value.memberIsMuted = true;
+    }
+    else
+        toast.add({ severity: 'error', summary: 'Error Channelmember not Muted', detail: '', life: 3000 });
 }
 
 // MUTE CHANNELMEMBER
@@ -227,7 +232,7 @@ const unmuteChannelmember = async () => {
         currentChannelmemberInfo.value.memberIsMuted = false;
     }
     else
-        toast.add({ severity: 'error', summary: 'Error Channelmember not unMuted', detail: '', life: 3000 });
+        toast.add({ severity: 'error', summary: 'Error Channelmember not Unmuted', detail: '', life: 3000 });
 }
 
 // MAKE CHANNELMEMBER ADMIN
@@ -249,18 +254,36 @@ const makeAdmin = async () => {
 
 // BAN CHANNELMEMBER
 const banChannelmember = async () => {
-    const response = await axiosInstance.patch(`channelmember/ban/${playerId.toString()}`, {
-        channel_id: currentChannelId.value,
-        member_id: currentChannelmemberId.value,
-        is_banned: true
-    });
+    await socket.emit('banMember', { player_id: playerId,
+                                     member_id: currentChannelmemberId.value,
+                                     channel_id: currentChannelId.value,
+                                     toBan: true }, (response) => {
+        if (response)
+        {
+            toast.add({ severity: 'info', summary: 'Banned Channelmember Successfully', detail: '', life: 3000 });
+            currentChannelmemberInfo.value.showBan = false;
+            currentChannelmemberInfo.value.memberIsBanned = true;
+        }
+        else 
+            toast.add({ severity: 'error', summary: 'Error Channelmember not Banned', detail: '', life: 3000 });
+    })
+}
 
-    if (response.data) {
-        toast.add({ severity: 'info', summary: 'Banned Channelmember successfully', detail: '', life: 3000 });
-        currentChannelmemberInfo.value.showBan = false;
-    }
-    else
-        toast.add({ severity: 'error', summary: 'Error Channelmember not Banned', detail: '', life: 3000 });
+// BAN CHANNELMEMBER
+const unbanChannelmember = async () => {
+    await socket.emit('banMember', { player_id: playerId,
+                                     member_id: currentChannelmemberId.value,
+                                     channel_id: currentChannelId.value,
+                                     toBan: false }, (response) => {
+        if (response)
+        {
+            toast.add({ severity: 'info', summary: 'Unbanned Channelmember successfully', detail: '', life: 3000 });
+            currentChannelmemberInfo.value.showBan = true;
+            currentChannelmemberInfo.value.memberIsBanned = false;
+        }
+        else 
+        toast.add({ severity: 'error', summary: 'Error Channelmember not Unbanned', detail: '', life: 3000 });
+    })
 }
 
 // DELETE CHANNELMEMBER

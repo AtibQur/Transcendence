@@ -88,7 +88,6 @@ const router = createRouter({
 });
 
 const app = createApp(App).use(router);
-app.use(router);
 app.use(PrimeVue);
 app.use(ToastService);
 app.use(ConfirmationService);

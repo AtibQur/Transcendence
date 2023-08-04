@@ -7,7 +7,7 @@ import {
 } from '@nestjs/websockets';
 import { PongService } from '../pong.service';
 import { Server, Socket } from 'socket.io';
-
+import * as dotenv from 'dotenv';
 import { PongGame } from './../game';
 import { User } from '../interfaces/user.interface'
 import { Ball } from './../interfaces/ball.interface';
@@ -27,8 +27,8 @@ interface matchList {
 }
 
 @WebSocketGateway({
-	cors: {
-		origin: 'http://localhost:8080', // allow only from our frontend
+    cors: {
+		origin: process.env.HOST_COMPUTER + ':8080', // allow only from our frontend
 	},
 })
 export class PongGateway {
