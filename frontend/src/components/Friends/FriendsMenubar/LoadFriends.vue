@@ -111,10 +111,15 @@ export default defineComponent({
             return false;
         }
         
-        const player = await axiosInstance.get('player/exists/' + name);
-        if (player.data == false)
+        const player = await axiosInstance.get('player/profile/' + name);
+        if (!player.data)
         {
             this.$toast.add({ severity: 'error', summary: 'Player does not exist', detail: '', life: 3000 });
+            return false;
+        }
+        if (player.data == this.playerId)
+        {
+            this.$toast.add({ severity: 'error', summary: 'You cannot add yourself', detail: '', life: 3000 });
             return false;
         }
         return true;
