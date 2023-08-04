@@ -19,6 +19,7 @@ import { socket } from '@/socket';
 import axiosInstance from '../../axiosConfig';
 import { onBeforeMount, ref, watch} from 'vue'
 import Message from '@/types/Message';
+import {useToast} from 'primevue/usetoast';
 
 const props = defineProps({
     channelId: {
@@ -27,6 +28,7 @@ const props = defineProps({
     }
 });
 
+const toast = useToast();
 const emit = defineEmits(['showInfo']);
 const channelName = ref('');
 const messages = ref<Message[]>([]);
@@ -38,12 +40,25 @@ onBeforeMount(async () => {
     await fetchChatMessagesFiltered(playerId, currentChannelId.value);
     await fetchChannelName(currentChannelId.value);
 
-    
     //ADD MESSAGE TO CURRENT MESSAGES
     socket.on('chatmessage', (message: Message) => {
         console.log("new message");
-        addChatmessage(message);
+        messages.value.push(message);
     });
+
+    socket.on('banned', (channel_id: number) => {
+        socket.emit('removeFromRoom', {channel_id: channel_id}, (response) => {
+            if (response)
+                toast.add({ severity: 'error', summary: 'You got banned' , detail: '', life: 3000 });
+        })
+    })
+
+    socket.on('unbanned', (channel_id: number) => {
+        socket.emit('joinToRoom', {channel_id: channel_id}, (response) => {
+            if (response)
+                toast.add({ severity: 'error', summary: 'You are unbanned' , detail: '', life: 3000 });
+        })
+    })
 
     //TRACK WHETHER CHANNEL_ID CHANGES
     watch(() => props.channelId, async (newChannelId) => {
@@ -98,19 +113,6 @@ const getMessageBlockSize = (messageContent: string) => {
 
 const showInfo = () => {
     emit('showInfo', true);
-}
-
-async function addChatmessage(message: Message) {
-    try {
-        const username_query = 'username=' + message.sender.username;
-        const player_id = sessionStorage.getItem('playerId');
-        console.log(player_id);
-        const isBlocked = await axiosInstance.get('blockedplayer/player/' + player_id + `?${username_query}`);
-        // if (!isBlocked)
-        messages.value.push(message);
-    } catch (error) {
-        console.log('Error: adding message');
-    }
 }
 
 </script>

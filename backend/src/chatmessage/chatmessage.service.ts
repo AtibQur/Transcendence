@@ -19,9 +19,10 @@ export class ChatmessageService {
   async createChatMessage(createChatmessageDto: CreateChatmessageDto) {
     try {
         //check whether member is muted
+        const member = await this.channelmemberService.findChannelmember(createChatmessageDto.sender_id, createChatmessageDto.channel_id);
         const memberIsMuted = await this.channelmemberService.checkMute(createChatmessageDto.sender_id, createChatmessageDto.channel_id);
-
-        if (memberIsMuted)
+    
+        if (memberIsMuted || member.is_banned)
             return null; //what to return!? 
 
         const newChatMessage = await prisma.chatMessage.create({
