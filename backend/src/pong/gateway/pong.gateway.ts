@@ -10,10 +10,11 @@ import {
   } from '@nestjs/websockets';
 import { PongService } from '../pong.service';
 import { Server, Socket } from 'socket.io';
+import * as dotenv from 'dotenv';
 
 @WebSocketGateway({
     cors: {
-		origin: 'http://localhost:8080', // allow only from our frontend
+		origin: process.env.HOST_COMPUTER + ':8080', // allow only from our frontend
 	},
 })
 

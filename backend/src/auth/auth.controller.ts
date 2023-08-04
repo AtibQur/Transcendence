@@ -4,13 +4,8 @@ import * as speakeasy from 'speakeasy';
 import * as qrCode from 'qrcode';
 import e, { Request, Response, response } from 'express';
 import { AuthService } from './auth.service';
-import { Verify } from 'crypto';
-import { request } from 'http';
-import { userInfo } from 'os';
-import { AuthGuard } from './local.authguard';
 import { CreatePlayerDto } from 'src/player/dto/create-player.dto';
-import { builtinModules } from 'module';
-
+import * as dotenv from 'dotenv';
 
 @Controller('auth')
 export class AuthController {
@@ -39,17 +34,17 @@ export class AuthController {
             const jwt = await this.authService.generateToken(payload);
 
             response.cookie('auth', jwt)
-            response.status(200).redirect('http://localhost:8080');
+            response.status(200).redirect(process.env.HOST_COMPUTER + ':8080');
         } else {
             response.cookie('payload', JSON.stringify(payload));
-            response.redirect('http://localhost:8080/redirect2faverify')
+            response.redirect(process.env.HOST_COMPUTER + ':8080/redirect2faverify')
         }
     }
 
     @Get('/logout')
     async fortyTwoLogout(@Req() request: Request, @Res({passthrough: true}) response: Response) {
         response.clearCookie('auth');
-        response.redirect('http://localhost:8080/');
+        response.redirect(process.env.HOST_COMPUTER + ':8080/');
     }
     
     // @UseGuards(AuthenticatedGuard)
