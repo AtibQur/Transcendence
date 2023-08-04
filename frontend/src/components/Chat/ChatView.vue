@@ -1,5 +1,6 @@
 <template>
     <Toast :stacked="false"/>
+    <ConfirmDialog />
     <div class="chat">
         <div class="login" v-if="!playerId">
             <h3> Please log in </h3>
@@ -43,8 +44,9 @@
 <script setup lang="ts">
 import { onBeforeMount, ref } from 'vue';
 import axiosInstance from '../../axiosConfig';
-import ChannelDisplay from './ChannelDisplay.vue'
-import ChannelInfoDisplay from './ChannelInfoDisplay.vue'
+import ChannelDisplay from './ChannelDisplay.vue';
+import ChannelInfoDisplay from './ChannelInfoDisplay.vue';
+import ConfirmDialog from 'primevue/confirmdialog';
 import AddChannel from './AddChannel.vue';
 import Toast from 'primevue/toast';
 import ChatBox from './ChatBox.vue';
