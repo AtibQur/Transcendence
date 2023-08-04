@@ -28,7 +28,7 @@
             <div v-if="!isDm">
                 <button @click="sendDm()" class="custom-button-1">Send Message</button>
             </div>
-            <button class="custom-button-1">Invite To Play Pong</button>
+            <button @click="invite()" class="custom-button-1">Invite To Play Pong</button>
         </div>
         <div v-else>
             <button class="custom-button-1" @click="addFriend()">Add Friend</button>
@@ -191,6 +191,13 @@ const sendDm = async () => {
     }
 }
 
+// INVITE TO PLAY PONG
+const invite = async() => {
+	console.log("invite send to", currentChannelmemberId.value);
+	socket.emit('joinInvite', {player_id: playerId, opponent_id: currentChannelmemberId.value, socket_id: socket.id})
+	toast.add({ severity: 'success', summary: 'Invitation send', detail: '', life: 3000 });
+
+}
 // MUTE CHANNELMEMBER
 const muteChannelmember = async () => {
 

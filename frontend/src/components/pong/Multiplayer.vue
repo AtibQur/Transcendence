@@ -7,18 +7,11 @@
 				<h1 class="dynamic-text">{{ dynamicText2 }}</h1>
 			</div>
 		</div>
-		<!-- <img
-			class:="pixel-power-up"
-			src="../../assets/images/PONG_logo.png"
-			alt="Pixel Power Up"
-			:style="{ top: powerUpPos.y + 'px', left: powerUpPos.x + 'px'}"
-		/> -->
 		<GameTools :player1="player1" :player2="player2" 
 			:ball="ball" 
 			:score1="score1" :score2="score2"
 			:powerUpPixel="powerUpPixel"
 			:powerUpVisable="powerUpVisable" />
-		<!-- <PowerUp :powerUpPixel="powerUpPixel" /> -->
 	</div>
 
 	<ResultScreen v-if="showResults" 
@@ -260,7 +253,7 @@ mounted() {
 	position: absolute;
 	top: 75%;
 	left: 50%;
-	z-index: 9999;
+	z-index: 10;
 	font-size: 12px;
 	text-shadow: none;
 }

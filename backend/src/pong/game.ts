@@ -162,7 +162,6 @@ export class PongGame {
 			if (this.powerUp.new){
 				this.setUpPowerUp()
 				this.powerUp.new = false;
-				console.log("new powerUP")
 			}
 		}
 		// if (this.player1.score == 6){
@@ -179,7 +178,6 @@ export class PongGame {
 		const ballRangeY = (ball.y + this.ball.radius);
 		if (ballRangeX > this.powerUp.y && ballRangeX < powerUpRangeY && 
 			ballRangeY > this.powerUp.x && ballRangeY < powerUpRangeX){
-				console.log("COLLIDE")
 				this.powerUp.active = true;
 				this.doPowerUp(ball, player1, player2, powerUp)
 			}
@@ -198,8 +196,6 @@ export class PongGame {
 	}
 
 	updateGame(player1, player2, ball) {
-		console.log(player1.y)
-		console.log(player2.y)
 		for (let i = 0; i < ball.velocity; i++)
 			this.moveBall(player1, player2, ball);
 		

@@ -43,24 +43,24 @@ export class ChatGateway {
     //         console.log('nobody logged');
     //         client.disconnect();
     //     }
-    //     else {
-    //         console.log('logging...');
-    //         const intra_username = await this.playerService.findOneIntraUsername(playerId);
-    //         this.connectedSockets.set(intra_username, client.id)
+        // else {
+        //     console.log('logging...');
+        //     const intra_username = await this.playerService.findOneIntraUsername(playerId);
+        //     this.connectedSockets.set(intra_username, client.id)
             
-    //         const channels = await this.channelmemberService.findAllPlayerRooms(playerId);
-    //         channels.forEach(function(channel) {
-    //             client.join(channel.channel_id.toString());
-    //           });
-    //         client.join(intra_username);
+        //     const channels = await this.channelmemberService.findAllPlayerRooms(playerId);
+        //     channels.forEach(function(channel) {
+        //         client.join(channel.channel_id.toString());
+        //       });
+        //     client.join(intra_username);
 
-    //         console.log('client joined all rooms & dms');
-    //         console.log('connected sockets:', this.connectedSockets);
+        //     console.log('client joined all rooms & dms');
+        //     console.log('connected sockets:', this.connectedSockets);
             
-    //         this.playerService.updateStatus(playerId, { status: "online" });
+        //     this.playerService.updateStatus(playerId, { status: "online" });
             
-    //         this.logger.log(`client ${playerId} (${intra_username}) connected at ${client.id}`);
-    //     }
+        //     this.logger.log(`client ${playerId} (${intra_username}) connected at ${client.id}`);
+        // }
     // }
     
     // //HANDLES DISCONNECTION OF SOCKET AND REMOVES IT FROM MAP

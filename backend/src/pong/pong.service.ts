@@ -6,6 +6,12 @@ import { Ball } from './interfaces/ball.interface';
 import { Game } from './interfaces/state.interface';
 import { Match } from './match/match';
 import { MatchInstance } from './match/match-instance';
+import { PlayerService } from '../player/player.service';
+
+interface inviteList {
+	player_id: number; 
+	socket_id: string;
+}
 
 interface WaitingList {
 	player_id: number; 
@@ -14,6 +20,8 @@ interface WaitingList {
 
 @Injectable()
 export class PongService {
+	private readonly playerService = new PlayerService;
+	private inviteList: inviteList[] = [];
 	private waitingList: WaitingList[] = [];
 	private matchList: { [key: number]: MatchInstance } = {};
 
@@ -32,6 +40,35 @@ export class PongService {
 			client.emit('alreadyInMatch');
 			return ;
 		}
+	}
+
+	async handleInvite(client: Socket, player_id: number, opponent_id: number, socket_id:string): Promise<void>{
+		const playerInfo = {
+			player_id: player_id,
+			opponent_id: opponent_id,
+			socket_id: socket_id,
+		}
+		const checkInMatch = this.searchPlayerInMatch(client)
+		if (checkInMatch){
+			console.log("can't start a match, you are already in a match")
+			client.emit('alreadyInMatch', socket_id);
+			return ;
+		}
+
+		if (!this.inviteList.some((player) => player.socket_id === socket_id)) {
+			this.inviteList.push(playerInfo);
+			console.log(player_id, socket_id, 'send out an invite');
+		} else {
+			console.log(player_id, 'already send out an inivte');
+			return;
+		}
+		console.log('send an invitation to', opponent_id);
+		const Opponent = await this.playerService.findOneIntraUsername(opponent_id);
+		client.to(Opponent).emit('sendInvite', {
+			player_id: player_id,
+			opponent_id: opponent_id, 
+			socket_id: socket_id
+		});
 	}
 
 	async handleJoinMatchmaking (client: Socket, player_id: number, socket_id: string): Promise<void>{

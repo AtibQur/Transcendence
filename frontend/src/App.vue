@@ -8,11 +8,80 @@
 	<div>
 		<FriendsMenubar/>
 	</div>
+	<Dialog v-model:visible="isInvited" modal header="You got an invitation!" :style="{ width: '35vw' }" :closeButtonProps="handleCloseButton">
+		<button class="custom-button-1" @click="confirm1()" icon="pi pi-check" label="Confirm">Accept</button>
+		<button class="custom-button-1" @click="confirm2()" icon="pi pi-check" label="Delete">Decline</button>
+	</Dialog>
 </template>
 
 <script setup lang="ts">
+	import { onBeforeMount, ref } from 'vue'
+	import { socket } from './socket';
 	import Menubar from './components/Menubar/Menubar.vue';
 	import FriendsMenubar from './components/Friends/FriendsMenubar/FriendsMenubar.vue';
+	import { useConfirm } from "primevue/useconfirm";
+	import Dialog from 'primevue/dialog';
+
+	const confirm = useConfirm();
+
+	// INVITE PEOPLE TO PLAY
+	const opponentId = parseInt(sessionStorage.getItem('playerId') || '0');
+	const isInvited = ref(false);
+
+	onBeforeMount( () => {
+		socket.on('sendInvite', (data) => {
+			const p1 = data.player_id;
+			const p2 = data.opponent_id;
+			const p1_socket_id = data.socket_id;
+			isInvited.value = true
+			console.log('you got an invitation')
+	});
+})
+	// ACCEPT INVITATION
+	const confirm1 = async () => {
+		confirm.require({
+			message: 'Do you want to accept the invitation?',
+			header: 'Confirmation',
+			accept: () => {
+				console.log('accept invintation')
+				// socket.emit('acceptInvite');
+				isInvited.value = false;
+			}
+		})
+	};
+	// DECLINE INVITATION
+	const confirm2 = async () => {
+		confirm.require({
+			message: 'Do you want to decline the invitation?',
+			header: 'Confirmation',
+			accept: () => {
+				console.log('decline invintation')
+				// socket.emit('declineInvite');
+				isInvited.value = false;
+			}
+		})
+	};
+
+	const openConfirmDialog = () => {
+    confirm.require({
+        message: 'Are you sure you want to decline the invitation?',
+        header: 'Confirmation',
+        accept: () => {
+            isInvited.value = false;
+			console.log('decline invintation')
+        },
+        onShow: () => {
+            isInvited.value = true;
+        }
+    });
+	};
+
+	const handleCloseButton = {
+    'aria-label': 'Close Dialog',
+    onClick: () => {
+        openConfirmDialog()
+    },
+	};
 </script>
 
 <style>

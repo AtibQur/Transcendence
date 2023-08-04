@@ -18,18 +18,19 @@
 	import { useRouter } from 'vue-router'
 	import { socket } from '../../socket'
 	import axiosInstance from '../../axiosConfig'
+	import { useToast } from 'primevue/usetoast';
 
 export default {
 	name: 'MatchMaking',
 	setup() {
+		const toast = useToast();
 		const matchSaved = ref(false);
 		const router = useRouter(1);
 		const player = {
 			id: 0,
 			socket_id: '',
 		};
-		
-	// dots animation
+		// dots animation
 		const dotsCount = ref(1);
 		const animateDots = () => {
 			setInterval(() => {
@@ -92,13 +93,13 @@ export default {
 		
 			console.log("FRONT END MatchId", socket_match_id)
 			// console.log(match.p1, 'and', match.p2, 'are in a match');
-		
-			username1 = await fetchUsername(p1_id);
-			username2 = await fetchUsername(p2_id);
+			
+			// username1 = await fetchUsername(p1_id);
+			// username2 = await fetchUsername(p2_id);
 
 			matchSaved.value = true;
 		}
-
+		toast.add({ severity: 'info', summary: 'Match found!', detail: '', life: 3000 });
 		router.push('/play/multiplayer');
 	} catch (error) {
 		console.log('Error starting match')

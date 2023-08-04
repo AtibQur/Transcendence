@@ -37,11 +37,9 @@ data() {
 	},
 
 methods: {
-
 },
 
 mounted() {
-	console.log(this.score1, this.score2)
 	if (this.p1_socketId === socket.id){
 		if (this.score1 === 10){
 			this.win = true;

@@ -14,13 +14,12 @@ import { Ball } from './../interfaces/ball.interface';
 import { Game } from '../interfaces/state.interface';
 import { Match } from '../match/match';
 import { MatchInstance } from '../match/match-instance';
+import { PlayerService } from '../../player/player.service';
 
-interface WaitingList {
+interface inviteList {
 	player_id: number; 
 	socket_id: string;
-	client_id: Socket;
 }
-
 interface matchList {
 	match_id: string;
 	p1_socket_id: string;
@@ -36,6 +35,7 @@ export class PongGateway {
 	@WebSocketServer()
 	server: Server;
 
+	private readonly playerService = new PlayerService();
 	private pongGame: PongGame = new PongGame();
 	private ball: Ball = this.pongGame.ball;
 	private player1: User = this.pongGame.player1;
@@ -43,15 +43,25 @@ export class PongGateway {
 	private game: Game = this.pongGame.game;
 	private socket_id: string;
 
-	private matches: { [key: number]: MatchInstance } = {};
-	private waitingList: WaitingList[] = [];
-	private matchList: matchList[] = [];
-	private matchId: string;
-
 	private start: boolean = false;
 	constructor(
 		private readonly pongService: PongService
 	){}
+
+	async handleConnection(@ConnectedSocket() client: Socket){
+		const playerId = parseInt(client.handshake.auth.id);
+		if (!playerId)
+		{
+			console.log('nobody logged in');
+			client.disconnect();
+		}
+		else {
+			const intra_username = await this.playerService.findOneIntraUsername(playerId);
+			console.log('pong logging...');
+			client.join(intra_username);
+			console.log('client joined the socket pong room')
+		}
+	}
 
 	@SubscribeMessage('endGame')
 	handleEndGame(
@@ -74,6 +84,13 @@ export class PongGateway {
 			this.pongService.handleSoloMatch(client);
 	}
 
+	@SubscribeMessage('joinInvite')
+	async handleJoinInvite(
+		@ConnectedSocket() client: Socket,
+		@MessageBody() { player_id, opponent_id, socket_id}: { player_id: number; opponent_id: number; socket_id: string }) {
+			this.pongService.handleInvite(client, player_id, opponent_id, socket_id);	
+	}
+	
 	@SubscribeMessage('joinMatchmaking')
 	handleMatchmaking(
 		@ConnectedSocket() client: Socket,
