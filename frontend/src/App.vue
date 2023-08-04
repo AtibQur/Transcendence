@@ -1,24 +1,50 @@
 <template>
 	<div>
-		<Menubar/>
+		<Menubar />
 	</div>
 	<div>
-		<router-view/>
+		<router-view />
 	</div>
 	<div>
-		<FriendsMenubar/>
+		<FriendsMenubar />
 	</div>
 </template>
 
 <script setup lang="ts">
-	import Menubar from './components/Menubar/Menubar.vue';
-	import FriendsMenubar from './components/Friends/FriendsMenubar/FriendsMenubar.vue';
+import Menubar from './components/Menubar/Menubar.vue';
+import FriendsMenubar from './components/Friends/FriendsMenubar/FriendsMenubar.vue';
+import { onMounted } from 'vue';
+import { setDefaultAuthHeader } from './axiosConfig';
+import { useRouter } from 'vue-router';
+import { getCookie } from './components/cookie_utils';
+
+const router = useRouter();
+
+const checkLoggedIn = async () => {
+	const accesstoken = getCookie('auth');
+	if (accesstoken === undefined) {
+		router.push({ name: 'auth' })
+		return;
+	}
+	setDefaultAuthHeader(accesstoken);
+};
+
+onMounted(() => {
+	const accesstoken = getCookie('auth');
+	if (accesstoken === undefined) {
+		checkLoggedIn();
+	} else {
+		setDefaultAuthHeader(accesstoken);
+	}
+	})
 </script>
 
 <style>
 @import url('https://fonts.googleapis.com/css?family=JetBrains+Mono');
 
-html, body, #app {
+html,
+body,
+#app {
 	padding: 0;
 	margin: 0;
 	height: 100%;
@@ -38,7 +64,7 @@ html, body, #app {
 	--white-moretransparent: rgba(255, 255, 255, 0.3);
 	--black-soft: #30333d;
 	--blue-dark: #134279;
-	--blue-dark-transparent: rgba(31, 96, 145, 0.5);;
+	--blue-dark-transparent: rgba(31, 96, 145, 0.5);
 	--blue-dark-hover: rgb(31, 96, 145);
 	--blue-medium: #1f6091;
 	--blue-mediumlight: #76aabc;
@@ -55,5 +81,5 @@ html, body, #app {
 	--red-light: #f0a1a1;
 	--green-light: #b7ef94;
 	--yellow-soft: #ffec8c9e;
-	}
+}
 </style>
