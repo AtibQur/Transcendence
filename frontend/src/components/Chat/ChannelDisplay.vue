@@ -45,7 +45,6 @@ onBeforeMount(async () => {
     const fetchChannels = async (playerId: number) => {
         const response = await axiosInstance.get('channelmember/allchannels/' + playerId.toString());
         channels.value = response.data;
-        console.log(channels.value)
     }
 
     // EVENT TO CHANGE CURRENT CHANNEL
