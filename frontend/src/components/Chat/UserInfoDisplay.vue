@@ -34,7 +34,7 @@
             <button class="custom-button-1" @click="addFriend()">Add Friend</button>
         </div>
         
-        <div v-if="!isDm">
+        <div v-if="!isDm && isAdmin">
             <div v-if="currentChannelmemberInfo.showMute">
                 <button  class="custom-button-1" @click="openConfirmDialog(Actions.MUTE)">Mute</button>
             </div>
@@ -97,12 +97,15 @@ const currentChannelmemberUsername  = ref<string>(props.channelmember.username);
 const currentChannelId = ref<number>(props.channelId);
 const profilePicture = ref('');
 const isDm = ref(false);
+const isAdmin = ref(false);
 
 onBeforeMount(async () => {
 
     currentChannelmemberInfo.value = await fetchChannelmemberInfo(currentChannelmemberId.value);
+    console.log('info: ', currentChannelmemberInfo.value);
     profilePicture.value = await fetchAvatar(currentChannelmemberId.value);
     isDm.value = await checkIfDm(currentChannelId.value);
+    isAdmin.value = await checkIfAdmin(currentChannelId.value());
 
     //TRACK WHETHER CHANNELMEMBER_ID CHANGES
     watch(() => props.channelmember, async (newChannelmember: {username: string, id: number}) => {
@@ -136,6 +139,16 @@ const fetchAvatar = async (channelmemberId: number) => {
     else
         console.log("Error could not fetch avatar");
   };
+
+const checkIfAdmin = async (channelId: number) => {
+    const response = await axiosInstance.get('channel/dm/' + playerId.toString() + '/' + channelId.toString());
+
+    if (response.data != null) {
+        return response.data;
+    }
+    else
+        console.log('Error could not check if player is admin');
+}
 
 const checkIfDm = async (channelId: number) => {
     const response = await axiosInstance.get('channel/dm/' + channelId.toString());

@@ -267,7 +267,7 @@ export class ChannelmemberService {
       if (!player || !member) {
         throw new Error("Player or member does not exist");
       }
-
+      console.log(member);
       // Define rights of channelmember
       rights.memberIsAdmin = member.is_admin;
       rights.memberIsOwner = member.is_owner;
