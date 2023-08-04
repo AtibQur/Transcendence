@@ -99,7 +99,9 @@
 
   const setDefaultAvatar = async () => {
     const playerId = parseInt(sessionStorage.getItem('playerId') || '0');
-    const defaultAvatarPath = './default_avatar.png';
+    const randomDecimal = Math.random() ;
+    const randomNumber = Math.floor(randomDecimal * 7) + 1;
+    const defaultAvatarPath = './default_avatars/avatar_' + randomNumber + '.png';
 
     // Fetch the default avatar file
     const defaultAvatarFile = await fetch(defaultAvatarPath);
