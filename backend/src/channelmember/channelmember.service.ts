@@ -52,12 +52,13 @@ export class ChannelmemberService {
     }
   }
 
-  // FIND ALL ROOMS (channels & dms) WHERE PLAYER IS MEMBER
+  // FIND ALL ROOMS (channels & dms) WHERE PLAYER IS MEMBER AND NOT BANNED
   async findAllPlayerRooms(player_id: number) {
     try {
       return prisma.channelMember.findMany({
           where: {
-            member_id: player_id
+            member_id: player_id,
+            is_banned: false
           },
           include: {
                 member: {
@@ -418,7 +419,7 @@ export class ChannelmemberService {
   // BAN A CHANNELMEMBER
   // only possible if done by admin
   // owner can not be banned
-  async banMember(member_id: number, updateChannelmemberDto: UpdateChannelmemberDto) {
+  async banMember(member_id: number, updateChannelmemberDto: UpdateChannelmemberDto, toBan: boolean) {
     try {
       const updater = await this.findChannelmember(member_id, updateChannelmemberDto.channel_id);
       const toUpdate = await this.findChannelmember(updateChannelmemberDto.member_id, updateChannelmemberDto.channel_id);
@@ -428,11 +429,16 @@ export class ChannelmemberService {
             id: toUpdate.id
           },
           data: {
-            is_banned: true,
+            is_banned: toBan,
           }
         });
-        this.logger.log(`${updater.member.username} banned ${toUpdate.member.username}`);
-        return updatedMember;
+
+        if (toBan)
+            this.logger.log(`${updater.member.username} banned ${toUpdate.member.username}`);
+        else
+            this.logger.log(`${updater.member.username} unbanned ${toUpdate.member.username}`);
+        
+            return updatedMember;
       }
       else {
         throw new Error('Player not allowed to make this change')

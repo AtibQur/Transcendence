@@ -208,28 +208,74 @@ export class ChatGateway {
         }
     }
 
-    //MUTE MEMBER
+    // BAN/UNBAN MEMBER
     // can only be done by admin
     // returns true on success
     // returns false on failure
-    @SubscribeMessage('muteMember')
-    async muteMember(
-        @MessageBody() payload: {player_id: number, member_id: number, channel_id: number},
+    @SubscribeMessage('banMember')
+    async banMember(
+        @MessageBody() payload: {player_id: number, member_id: number, channel_id: number, toBan: boolean},
         @ConnectedSocket() client: Socket
     ) {
         try {
-            const member: UpdateChannelmemberDto = {
+            const memberData: UpdateChannelmemberDto = {
                 member_id: payload.member_id,
                 channel_id: payload.channel_id
             }
 
-            const mutedMember = await this.channelmemberService.muteMember(payload.player_id, member, true);
-            if (!mutedMember)
+            const member = await this.channelmemberService.banMember(payload.player_id, memberData, payload.toBan);
+            if (!member)
                 throw new Error();
+
+            const intraname = await this.playerService.findOneIntraUsername(member.member_id);
+
+            if (payload.toBan)
+                this.server.to(intraname).emit('banned', payload.channel_id);
+            else
+                this.server.to(intraname).emit('unbanned', payload.channel_id);
 
             return true;
         } catch (error) {
-            console.log('Error muting member: ', error);
+            console.log('Error: ', error);
+            return false;
+        }
+    }
+
+    //REMOVE FROM ROOM
+    //remove socket id from room
+    //returns true on succes
+    //returns false on error
+    @SubscribeMessage('removeFromRoom')
+    async removeFromRoom(
+        @MessageBody() payload: { channel_id: number },
+        @ConnectedSocket() client: Socket
+    ) {
+        try {
+
+            client.leave(payload.channel_id.toString());
+            this.logger.log('socket removed from room');
+            return true;
+        } catch (error) {
+            console.log('Error removing socket from room: ', error);
+            return false;
+        }
+    }
+
+    //JOIN TO ROOM
+    //remove socket id from room
+    //returns true on succes
+    //returns false on error
+    @SubscribeMessage('joinToRoom')
+    async joinToRoom(
+        @MessageBody() payload: { channel_id: number },
+        @ConnectedSocket() client: Socket
+    ) {
+        try {
+            client.join(payload.channel_id.toString());
+            this.logger.log('socket joined to room');
+            return true;
+        } catch (error) {
+            console.log('Error joining socket to room: ', error);
             return false;
         }
     }
@@ -330,6 +376,4 @@ export class ChatGateway {
             return null;
         }
     }
-
-
 }
