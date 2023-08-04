@@ -105,7 +105,7 @@ onBeforeMount(async () => {
     console.log('info: ', currentChannelmemberInfo.value);
     profilePicture.value = await fetchAvatar(currentChannelmemberId.value);
     isDm.value = await checkIfDm(currentChannelId.value);
-    isAdmin.value = await checkIfAdmin(currentChannelId.value());
+    isAdmin.value = await checkIfAdmin(currentChannelId.value);
 
     //TRACK WHETHER CHANNELMEMBER_ID CHANGES
     watch(() => props.channelmember, async (newChannelmember: {username: string, id: number}) => {
@@ -141,7 +141,7 @@ const fetchAvatar = async (channelmemberId: number) => {
   };
 
 const checkIfAdmin = async (channelId: number) => {
-    const response = await axiosInstance.get('channel/dm/' + playerId.toString() + '/' + channelId.toString());
+    const response = await axiosInstance.get('channelmember/admin/' + playerId.toString() + '/' + channelId.toString());
 
     if (response.data != null) {
         return response.data;
@@ -191,8 +191,6 @@ const addFriend = async () => {
 // SEND DM
 // if dm conversation does not already exist, create dm
 const sendDm = async () => {
-    console.log(playerId);
-    console.log(currentChannelmemberId.value);
     const response = await axiosInstance.get('channel/dm/info/' + playerId.toString() + '/' + currentChannelmemberId.value.toString());
     if (response)
     {
