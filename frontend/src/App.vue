@@ -30,16 +30,21 @@ const router = useRouter();
 const confirm = useConfirm();
 
 // INVITE PEOPLE TO PLAY
-const opponentId = parseInt(sessionStorage.getItem('playerId') || '0');
 const isInvited = ref(false);
+const player1 = ref(0);
+const player1_socketId = ref(0);
+const opponent_id = ref(0);
 
 onBeforeMount( () => {
 	socket.on('sendInvite', (data) => {
-		const p1 = data.player_id;
-		const p2 = data.opponent_id;
-		const p1_socket_id = data.socket_id;
+		player1.value = data.player_id;
+		player1_socketId.value = data.socket_id;
+		opponent_id.value = data.opponent_id;
 		isInvited.value = true
 		console.log('you got an invitation')
+	});
+	socket.on('inviteMatch', (data) => {
+		router.push({ name: 'multiplayer' })
 	});
 })
 // ACCEPT INVITATION
@@ -49,7 +54,8 @@ const confirm1 = async () => {
 		header: 'Confirmation',
 		accept: () => {
 			console.log('accept invintation')
-			// socket.emit('acceptInvite');
+			socket.emit('acceptInvite', {player1: player1.value, player1_socketId: player1_socketId.value,
+			opponent_id: opponent_id.value, opponent_id_socketId: socket.id});
 			isInvited.value = false;
 		}
 	})
@@ -61,12 +67,13 @@ const confirm2 = async () => {
 			header: 'Confirmation',
 			accept: () => {
 				console.log('decline invintation')
-				// socket.emit('declineInvite');
+				socket.emit('declineInvite', {player1: player1.value});
 				isInvited.value = false;
 			}
 		})
 };
 
+// INVITE DIALOG
 const openConfirmDialog = () => {
 	confirm.require({
 		message: 'Are you sure you want to decline the invitation?',
@@ -74,6 +81,7 @@ const openConfirmDialog = () => {
 		accept: () => {
 			isInvited.value = false;
 			console.log('decline invintation')
+			socket.emit('declineInvite', {player1: player1.value});
 		},
 		onShow: () => {
 			isInvited.value = true;
@@ -88,6 +96,7 @@ const handleCloseButton = {
 	},
 };
 
+// AUTH
 const checkLoggedIn = async () => {
 	const accesstoken = getCookie('auth');
 	if (accesstoken === undefined) {

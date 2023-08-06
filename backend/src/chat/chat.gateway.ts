@@ -34,52 +34,52 @@ export class ChatGateway {
     private logger = new Logger('ChatGateway');
     private connectedSockets: Map<string, string> = new Map<string, string>();
 
-    // //HANDLES NEW INCOMING SOCKET CONNECTION,
-    // // add user and socket id to map
-    // // and joins socket id to all rooms of player
-    // async handleConnection(@ConnectedSocket() client: Socket){
-    //     const playerId = parseInt(client.handshake.auth.id);
-    //     if (!playerId) //if nobody is logged in
-    //     {
-    //         console.log('nobody logged');
-    //         client.disconnect();
-    //     }
-        // else {
-        //     console.log('logging...');
-        //     const intra_username = await this.playerService.findOneIntraUsername(playerId);
-        //     this.connectedSockets.set(intra_username, client.id)
+    //HANDLES NEW INCOMING SOCKET CONNECTION,
+    // add user and socket id to map
+    // and joins socket id to all rooms of player
+    async handleConnection(@ConnectedSocket() client: Socket){
+        const playerId = parseInt(client.handshake.auth.id);
+        if (!playerId) //if nobody is logged in
+        {
+            console.log('nobody logged');
+            client.disconnect();
+        }
+        else {
+            console.log('logging...');
+            const intra_username = await this.playerService.findOneIntraUsername(playerId);
+            this.connectedSockets.set(intra_username, client.id)
             
-        //     const channels = await this.channelmemberService.findAllPlayerRooms(playerId);
-        //     channels.forEach(function(channel) {
-        //         client.join(channel.channel_id.toString());
-        //       });
-        //     client.join(intra_username);
+            const channels = await this.channelmemberService.findAllPlayerRooms(playerId);
+            channels.forEach(function(channel) {
+                client.join(channel.channel_id.toString());
+              });
+            client.join(intra_username);
 
-        //     console.log('client joined all rooms & dms');
-        //     console.log('connected sockets:', this.connectedSockets);
+            console.log('client joined all rooms & dms');
+            console.log('connected sockets:', this.connectedSockets);
             
-        //     this.playerService.updateStatus(playerId, { status: "online" });
+            this.playerService.updateStatus(playerId, { status: "online" });
             
-        //     this.logger.log(`client ${playerId} (${intra_username}) connected at ${client.id}`);
-        // }
-    // }
+            this.logger.log(`client ${playerId} (${intra_username}) connected at ${client.id}`);
+        }
+    }
     
-    // //HANDLES DISCONNECTION OF SOCKET AND REMOVES IT FROM MAP
-    // async handleDisconnect(@ConnectedSocket() client: Socket){
-    //     const playerId = parseInt(client.handshake.auth.id);
-    //     if (playerId)
-    //     {
-    //         console.log('logging off...');
-    //         const intra_username = await this.playerService.findOneIntraUsername(playerId);
-    //         this.connectedSockets.delete(intra_username);
-    //         console.log('connected sockets:', this.connectedSockets);
+    //HANDLES DISCONNECTION OF SOCKET AND REMOVES IT FROM MAP
+    async handleDisconnect(@ConnectedSocket() client: Socket){
+        const playerId = parseInt(client.handshake.auth.id);
+        if (playerId)
+        {
+            console.log('logging off...');
+            const intra_username = await this.playerService.findOneIntraUsername(playerId);
+            this.connectedSockets.delete(intra_username);
+            console.log('connected sockets:', this.connectedSockets);
             
-    //         this.playerService.updateStatus(playerId, { status: "offline" });
-    //         this.logger.log(`client ${playerId} (${intra_username}) disconnected ${client.id}`);
-    //     }
-    //     else
-    //         console.log('close connection');
-    // }
+            this.playerService.updateStatus(playerId, { status: "offline" });
+            this.logger.log(`client ${playerId} (${intra_username}) disconnected ${client.id}`);
+        }
+        else
+            console.log('close connection');
+    }
 
     //ADD CHANNEL
     // returns channel_id on success
@@ -378,3 +378,6 @@ export class ChatGateway {
         }
     }
 }
+ 
+
+/////////// PONG GATEWAY //////////

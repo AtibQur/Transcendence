@@ -10,7 +10,7 @@
 
 			<div v-if="powerUpVisable">
 				<img class="powerUpPixel"
-				src="../../assets/images/powerUpPixel.png"
+				src="../../assets/images/powerUpBall.png"
 				:style="{ top: powerUpPixel.x + 'px', left: powerUpPixel.y + 'px' }"
 				/>
 			</div>
@@ -115,6 +115,7 @@ html, body {
 	width: 20px;
 	height: 20px;
 	background-color:rgb(246, 125, 125);
+	border-radius: 50%;
 }
 
 .powerUpPixel {

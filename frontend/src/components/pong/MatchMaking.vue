@@ -69,6 +69,7 @@ export default {
 			console.log("P1", player1)
 			console.log("P2", player2)
 			
+
 			p1_id = match.player1.player_id;
 			p2_id = match.player2.player_id;
 			p1_socket_id = match.player1.socket_id;
@@ -99,8 +100,7 @@ export default {
 
 			matchSaved.value = true;
 		}
-		toast.add({ severity: 'info', summary: 'Match found!', detail: '', life: 3000 });
-		router.push('/play/multiplayer');
+		router.push({ name: 'multiplayer' })
 	} catch (error) {
 		console.log('Error starting match')
 	}

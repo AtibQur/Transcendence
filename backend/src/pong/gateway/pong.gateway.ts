@@ -5,26 +5,12 @@ import {
 	WebSocketGateway,
 	WebSocketServer,
 } from '@nestjs/websockets';
+
 import { PongService } from '../pong.service';
 import { Server, Socket } from 'socket.io';
-import * as dotenv from 'dotenv';
 import { PongGame } from './../game';
-import { User } from '../interfaces/user.interface'
-import { Ball } from './../interfaces/ball.interface';
 import { Game } from '../interfaces/state.interface';
-import { Match } from '../match/match';
-import { MatchInstance } from '../match/match-instance';
 import { PlayerService } from '../../player/player.service';
-
-interface inviteList {
-	player_id: number; 
-	socket_id: string;
-}
-interface matchList {
-	match_id: string;
-	p1_socket_id: string;
-	p2_socket_id: string;
-}
 
 @WebSocketGateway({
     cors: {
@@ -37,13 +23,8 @@ export class PongGateway {
 
 	private readonly playerService = new PlayerService();
 	private pongGame: PongGame = new PongGame();
-	private ball: Ball = this.pongGame.ball;
-	private player1: User = this.pongGame.player1;
-	private player2: User = this.pongGame.player2;
 	private game: Game = this.pongGame.game;
-	private socket_id: string;
 
-	private start: boolean = false;
 	constructor(
 		private readonly pongService: PongService
 	){}
@@ -53,7 +34,7 @@ export class PongGateway {
 		if (!playerId)
 		{
 			console.log('nobody logged in');
-			client.disconnect();
+			client.disconnect(); 
 		}
 		else {
 			const intra_username = await this.playerService.findOneIntraUsername(playerId);
@@ -61,6 +42,28 @@ export class PongGateway {
 			client.join(intra_username);
 			console.log('client joined the socket pong room')
 		}
+	}
+	// INVITE
+	@SubscribeMessage('acceptInvite')
+	handleAccept(
+		@ConnectedSocket() client: Socket,
+			@MessageBody() { player1, player1_socketId, opponent_id, opponent_id_socketId }:
+			{ player1: number; player1_socketId: string; opponent_id, number; opponent_id_socketId: string }): void {
+			this.pongService.handleAcceptInivite(client, player1, player1_socketId, opponent_id, opponent_id_socketId);	
+		}
+
+	@SubscribeMessage('declineInvite')
+	handleDecline(
+		@ConnectedSocket() client: Socket,
+		@MessageBody() { player1}: { player1: number}): void {
+		this.pongService.handleDeclineInivite(client, player1);	
+	}
+
+	@SubscribeMessage('joinInvite')
+	async handleJoinInvite(
+		@ConnectedSocket() client: Socket,
+		@MessageBody() { player_id, opponent_id, socket_id}: { player_id: number; opponent_id: number; socket_id: string }) {
+			this.pongService.handleInvite(client, player_id, opponent_id, socket_id);	
 	}
 
 	@SubscribeMessage('endGame')
@@ -82,13 +85,6 @@ export class PongGateway {
 		@ConnectedSocket() client: Socket,
 		@MessageBody() {}): void {
 			this.pongService.handleSoloMatch(client);
-	}
-
-	@SubscribeMessage('joinInvite')
-	async handleJoinInvite(
-		@ConnectedSocket() client: Socket,
-		@MessageBody() { player_id, opponent_id, socket_id}: { player_id: number; opponent_id: number; socket_id: string }) {
-			this.pongService.handleInvite(client, player_id, opponent_id, socket_id);	
 	}
 	
 	@SubscribeMessage('joinMatchmaking')

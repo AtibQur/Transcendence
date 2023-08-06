@@ -1,9 +1,4 @@
 import { Injectable} from '@nestjs/common';
-import { PongGame } from './game';
-import { Server, Socket } from 'socket.io';
-import { User } from './interfaces/user.interface'
-import { Ball } from './interfaces/ball.interface';
-import { Game } from './interfaces/state.interface';
 import { Match } from './match/match';
 import { MatchInstance } from './match/match-instance';
 import { PlayerService } from '../player/player.service';
@@ -42,15 +37,40 @@ export class PongService {
 		}
 	}
 
+	async handleAcceptInivite(client: Socket, player_id: number, player1_socket_id: string, 
+		opponent_id: number, opponent_id_socketId: string): Promise<void>{
+		const p1 = {
+			player_id: player_id,
+			socket_id: player1_socket_id,
+		}
+		const p2 = { 
+			player_id: opponent_id,
+			socket_id: opponent_id_socketId,
+		}
+		const player1Intra = await this.playerService.findOneIntraUsername(player_id);
+		const player2Intra = await this.playerService.findOneIntraUsername(opponent_id);
+		this.createMatch(client, p1, p2);
+		client.to(player1Intra).emit('inviteMatch', { 
+			});
+		client.emit('inviteMatch', { 
+			});
+		if (this.inviteList.some((player) => player.player_id === player_id))
+			this.inviteList.pop();
+	}
+
+	async handleDeclineInivite(client: Socket, player1: number): Promise<void>{
+		if (this.inviteList.some((player) => player1 === player1))
+			this.inviteList.pop();
+	}
+
 	async handleInvite(client: Socket, player_id: number, opponent_id: number, socket_id:string): Promise<void>{
 		const playerInfo = {
 			player_id: player_id,
-			opponent_id: opponent_id,
 			socket_id: socket_id,
 		}
 		const checkInMatch = this.searchPlayerInMatch(client)
 		if (checkInMatch){
-			console.log("can't start a match, you are already in a match")
+			console.log("can't send an invite, you are already in a match")
 			client.emit('alreadyInMatch', socket_id);
 			return ;
 		}
@@ -66,7 +86,7 @@ export class PongService {
 		const Opponent = await this.playerService.findOneIntraUsername(opponent_id);
 		client.to(Opponent).emit('sendInvite', {
 			player_id: player_id,
-			opponent_id: opponent_id, 
+			opponent_id: opponent_id,
 			socket_id: socket_id
 		});
 	}

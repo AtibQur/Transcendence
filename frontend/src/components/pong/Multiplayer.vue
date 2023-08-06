@@ -29,7 +29,6 @@
 
 	import GameTools from './GameTools.vue'
 	import ResultScreen from './ResultScreen.vue'
-	import PowerUp from './PowerUp.vue'
 
 
 	export default defineComponent({
@@ -83,7 +82,6 @@ data() {
 			x: 0,
 			y: 0,
 		},
-		// powerUpSrc: "frontend/src/components/pong/powerUp-pixel-art/power-up1.png",
 		powerUpPixel: {
 			x: 0,
 			y: 0,
@@ -139,22 +137,6 @@ methods: {
 			console.log("Finished match data:", finished_match_res.data)
 		}
 	},
-
-	// checkPowerUp(player1: any, player2: any, powerUp: any){
-	// 	// console.log("use powerUp", powerUp, "now")
-	// 	if (powerUp){
-	// 		if (powerUp.type !== 0){
-	// 			this.powerUpVisable = true;
-	// 			this.powerUpPixel.x = powerUp.x;
-	// 			this.powerUpPixel.y = powerUp.y;
-	// 			if (powerUp.active){
-	// 				this.powerUpVisable = false;
-	// 				player1.h = 150;
-	// 			}
-	// 		} // else
-	// 			// this.powerUpVisable = false;
-	// 	}
-	// },
 
 	showPowerUp(powerUp: any){
 		if (powerUp){
@@ -215,7 +197,6 @@ mounted() {
 		this.score2 = match.score2
 		this.powerUp = match.powerUp
 
-		// this.checkPowerUp(this.player1, this.player2, this.powerUp);
 		this.showPowerUp(this.powerUp);
 		if (match.state === 'end' && !this.matchSaved){
 			console.log("this match is finished")

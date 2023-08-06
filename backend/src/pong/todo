@@ -1,14 +1,31 @@
 
 TO DO:
 
-<!-- - score opslaan -->
+- misschien werken met rooms
 - score opslaan fix wanneer de game wordt gestopt vanwege een disconnection
-	<!-- - werkt niet met een score van 0 -->
 	- werkt niet wanneer player 1 disconnect
-<!-- - end screen met overview van gespeelde match en dat je daar blijft (als je page back klikt) tot dat je socket disconnect of tot dat je op exit of leaderboard drukt -->
-<!-- - alleen play wanneer je ingelogd bent -->
 - fix canvas and paddle metingen ! (ichiro)
 - power-up
   - fix dat er een candy komt wanneer de power up wordt gereset
+  - candy art fix
 - game via invite
-- toast?
+	- accept and decline functions
+
+
+thuis
+de accept and decline fixen
+socket on in app om te redirecten
+
+school
+app.vue opschonnen
+waaroom alleen op chat page
+canvas
+score opslaan player 1 disconnect
+
+
+
+DONE:
+<!--- score opslaan
+		- werkt niet met een score van 0
+	- end screen met overview van gespeelde match en dat je daar blijft (als je page back klikt) tot dat je socket disconnect of tot dat je op exit of leaderboard drukt
+	- alleen play wanneer je ingelogd bent -->
