@@ -8,8 +8,8 @@
 	<div class="gameover-container" v-if="lose">
 		<h1>DEFEAT!</h1>
 	</div>
-	<div class="disconnected-container" v-if="disconnected">
-		<h1>The other player disconnected</h1>
+	<div class="gameover-container" v-if="disconnected">
+		<h1 class="disconnected-container">The other player disconnected</h1>
 	</div>
 	<div class="gameover-container">
 		<h1 class="dynamicText">{{ dynamicScore1 }}</h1>
@@ -76,11 +76,7 @@ mounted() {
 	color: #134279;
 }
 .disconnected-container {
-	position: absolute;
-	font-size: 10px;
-	top: 70%;
-	left: 50%;
-	transform: translate(-50%, -50%);
+	font-size: 20px;
 	color: #bc2626;
 }
 

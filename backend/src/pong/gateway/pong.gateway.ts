@@ -25,25 +25,9 @@ export class PongGateway {
 	private pongGame: PongGame = new PongGame();
 	private game: Game = this.pongGame.game;
 
-	private start: boolean = false;
 	constructor(
 		private readonly pongService: PongService
 	){}
-
-	async handleConnection(@ConnectedSocket() client: Socket){
-		const playerId = parseInt(client.handshake.auth.id);
-		if (!playerId)
-		{
-			console.log('nobody logged in');
-			client.disconnect();
-		}
-		else {
-			const intra_username = await this.playerService.findOneIntraUsername(playerId);
-			console.log('pong logging...');
-			client.join(intra_username);
-			console.log('client joined the socket pong room')
-		}
-	}
 	
 	@SubscribeMessage('inviteAccepted')
 	inviteAccepted(
@@ -67,6 +51,13 @@ export class PongGateway {
 		this.pongService.handleDeclineInvite(client, player1_id)
 	}
 
+	@SubscribeMessage('joinInvite')
+	async handleJoinInvite(
+		@ConnectedSocket() client: Socket,
+		@MessageBody() { player_id, opponent_id, socket_id}: { player_id: number; opponent_id: number; socket_id: string }) {
+			this.pongService.handleInvite(client, player_id, opponent_id, socket_id);	
+	}
+
 	@SubscribeMessage('endGame')
 	handleEndGame(
 		@ConnectedSocket() client: Socket): void {
@@ -86,13 +77,6 @@ export class PongGateway {
 		@ConnectedSocket() client: Socket,
 		@MessageBody() {}): void {
 			this.pongService.handleSoloMatch(client);
-	}
-
-	@SubscribeMessage('joinInvite')
-	async handleJoinInvite(
-		@ConnectedSocket() client: Socket,
-		@MessageBody() { player_id, opponent_id, socket_id}: { player_id: number; opponent_id: number; socket_id: string }) {
-			this.pongService.handleInvite(client, player_id, opponent_id, socket_id);	
 	}
 	
 	@SubscribeMessage('joinMatchmaking')

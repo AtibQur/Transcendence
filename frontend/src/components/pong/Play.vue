@@ -9,7 +9,7 @@
 				<h3> Please log in to play online </h3>
 			</div>
 			<div class="login" v-if="playerId">
-				<button class="custom-button-1" v-if="!startMatch" @click="joinGame">Join Game</button>
+					<button class="custom-button-1" v-if="!startMatch" @click="joinGame">Join Queue</button>
 			</div>
 		</div>
 		<div v-if="showDifficulty">

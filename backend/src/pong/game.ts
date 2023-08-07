@@ -130,7 +130,6 @@ export class PongGame {
 				}
 				this.info.type = 1;	
 			}
-			console.log(player2.height)
 		}
 	}
 	resetPowerUp(player1: any, player2: any){

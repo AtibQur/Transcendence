@@ -9,7 +9,7 @@ git statuscd <template>
 		<FriendsMenubar />
 	</div>
 	<ConfirmDialog />
-	<Dialog v-model:visible="isInvited" modal header="You got an invitation!" :style="{ width: '35vw' }" :closeButtonProps="handleCloseButton">
+	<Dialog v-model:visible="isInvited" modal header="You got an invitation to play pong!" :style="{ width: '35vw' }" :closeButtonProps="handleCloseButton">
 		<button class="custom-button-1" @click="confirm1()" icon="pi pi-check" label="Confirm">Accept</button>
 		<button class="custom-button-1" @click="confirm2()" icon="pi pi-check" label="Delete">Decline</button>
 	</Dialog>
@@ -52,7 +52,7 @@ onBeforeMount( () => {
 	});
 })
 
-// ACCEPT INdededeVITATION
+// ACCEPT INVITATION
 const confirm1 = async () => {
 	confirm.require({
 		message: 'Do you want to accept the invitation?',

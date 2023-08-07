@@ -10,6 +10,10 @@ interface inviteList {
 	socket_id: string;
 }
 
+interface opponentList {
+	opponent_id: number; 
+}
+
 interface WaitingList {
 	player_id: number; 
 	socket_id: string;
@@ -18,6 +22,7 @@ interface WaitingList {
 @Injectable()
 export class PongService {
 	private readonly playerService = new PlayerService;
+	private opponentList: opponentList[] = [];
 	private inviteList: inviteList[] = [];
 	private waitingList: WaitingList[] = [];
 	private matchList: { [key: number]: MatchInstance } = {};
@@ -25,7 +30,6 @@ export class PongService {
 	// CREATE MATCH VIA INVITE
 	async inviteAccepted(client: Socket, player_id: number){
 		const id = await this.playerService.findOneIntraUsername(player_id);
-		console.log("IDIDIDID", id);
 		client.to(id).emit('redirecting', player_id);
 	}
 
@@ -59,6 +63,11 @@ export class PongService {
 			console.log('removed', player_id1, 'from the invitelist')
   			this.inviteList.splice(index, 1);
 		}
+		const index2 = this.opponentList.findIndex(player => player.opponent_id === player_id1);
+		if (index2 !== -1) {
+			console.log('player', player_id1, 'left the invite list');
+			this.inviteList.splice(index, 1);
+		}
 	}
 
 	async handleInvite(client: Socket, player_id: number, opponent_id: number, socket_id:string): Promise<void>{
@@ -69,16 +78,29 @@ export class PongService {
 		}
 		const checkInMatch = this.searchPlayerInMatch(client)
 		if (checkInMatch){
-			console.log("can't start a match, you are already in a match")
+			console.log("can't send an invite, you are already in a match")
 			client.emit('alreadyInMatch', socket_id);
 			return ;
 		}
 
-		if (!this.inviteList.some((player) => player.socket_id === socket_id)) {
+		// cant sent an invite when you are already inviting someone
+		if (!this.inviteList.some((player) => player.player_id === player_id)) {
 			this.inviteList.push(playerInfo);
 			console.log(player_id, socket_id, 'send out an invite');
 		} else {
-			console.log(player_id, 'already send out an inivte');
+			console.log(this.inviteList)
+			console.log(player_id, 'already send out an invite!!');
+			return;
+		}
+
+		// can't send an invite to someone who has already been invited
+		const opponentInfo = {
+			opponent_id: opponent_id,
+		}
+		if (!this.opponentList.some((player) => player.opponent_id === opponent_id)) {
+			this.opponentList.push(opponentInfo);
+		} else {
+			console.log(player_id, "you can't invite someone who already received an invite");
 			return;
 		}
 		console.log('send an invitation to', opponent_id);
@@ -175,9 +197,14 @@ export class PongService {
 		const disconnectedId = client.id;
 		console.log("player", client.id, "disconnecetd");
 		const index = this.waitingList.findIndex(player => player.socket_id === disconnectedId);
-		console.log('player', disconnectedId, 'left the waiting list');
 		if (index !== -1) {
+			console.log('player', disconnectedId, 'left the waiting list');
 			this.waitingList.splice(index, 1);
+		}
+		const index2 = this.inviteList.findIndex(player => player.socket_id === disconnectedId);
+		if (index2 !== -1) {
+			console.log('player', disconnectedId, 'left the invite list');
+			this.inviteList.splice(index, 1);
 		}
 		const disconnectedMatch = this.searchPlayerInMatch(client)
 		console.log("DISCONNECTED ID", disconnectedMatch)
