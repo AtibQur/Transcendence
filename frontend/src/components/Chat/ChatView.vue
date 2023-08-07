@@ -1,6 +1,5 @@
 <template>
     <Toast :stacked="false"/>
-    <ConfirmDialog />
     <div class="chat">
         <div class="login" v-if="!playerId">
             <h3> Please log in </h3>

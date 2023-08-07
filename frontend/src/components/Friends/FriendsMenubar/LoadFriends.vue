@@ -117,6 +117,12 @@ export default defineComponent({
             return false;
         }
         
+        if ((action == Action.DELETE || action === Action.BLOCK) && !this.friends.some((friend) => friend.username === name))
+        {
+            this.$toast.add({ severity: 'error', summary: 'You are not friends with this player', detail: '', life: 3000 });
+            return false;
+        }
+        
         const player = await axiosInstance.get('player/profile/' + name);
         if (!player.data)
         {
