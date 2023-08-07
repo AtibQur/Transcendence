@@ -8,10 +8,12 @@ git statuscd <template>
 	<div>
 		<FriendsMenubar />
 	</div>
+	<ConfirmDialog />
 	<Dialog v-model:visible="isInvited" modal header="You got an invitation!" :style="{ width: '35vw' }" :closeButtonProps="handleCloseButton">
 		<button class="custom-button-1" @click="confirm1()" icon="pi pi-check" label="Confirm">Accept</button>
 		<button class="custom-button-1" @click="confirm2()" icon="pi pi-check" label="Delete">Decline</button>
 	</Dialog>
+	<MatchMaking v-if="startMatch" />
 </template>
 
 <script setup lang="ts">
@@ -19,17 +21,19 @@ import { onBeforeMount, ref } from 'vue'
 import { socket } from './socket';
 import Menubar from './components/Menubar/Menubar.vue';
 import FriendsMenubar from './components/Friends/FriendsMenubar/FriendsMenubar.vue';
+import ConfirmDialog from 'primevue/confirmdialog';
 import { useConfirm } from "primevue/useconfirm";
 import Dialog from 'primevue/dialog';
 import { onMounted } from 'vue';
 import { setDefaultAuthHeader } from './axiosConfig';
 import { useRouter } from 'vue-router';
 import { getCookie } from './components/cookie_utils';
-
+import MatchMaking from '../src/components/pong/MatchMaking.vue'
 const router = useRouter();
 const confirm = useConfirm();
 
 // INVITE PEOPLE TO PLAY
+const startMatch = ref(false);
 const opponentId = parseInt(sessionStorage.getItem('playerId') || '0');
 const isInvited = ref(false);
 
@@ -43,15 +47,23 @@ onBeforeMount( () => {
 		isInvited.value = true
 		console.log('you got an invitation')
 	});
+
 })
-// ACCEPT INVITATION
+
+// ACCEPT INdededeVITATION
 const confirm1 = async () => {
 	confirm.require({
 		message: 'Do you want to accept the invitation?',
 		header: 'Confirmation',
 		accept: () => {
 			socket.emit('acceptInvite', {p1_id: player_id.value, p1_socket_id: socket_id.value, p2_id: opponentId, p2_socket_id: socket.id});
+			socket.emit('inviteAccepted', player_id.value)
+			startMatch.value = true;
 			isInvited.value = false;
+			// socket.on('redirecting'), (data) => {
+			// // console.log("WHERE ARE YOU", data.player_id)
+			// startMatch.value = true;
+			// }
 		}
 	})
 };

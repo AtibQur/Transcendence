@@ -45,6 +45,13 @@ export class PongGateway {
 		}
 	}
 	
+	@SubscribeMessage('inviteAccepted')
+	inviteAccepted(
+		@ConnectedSocket() client: Socket,
+		@MessageBody() player_id: number): void {
+			this.pongService.inviteAccepted(client, player_id);
+	}
+
 	@SubscribeMessage('acceptInvite')
 	handleAccept(
 		@ConnectedSocket() client: Socket,

@@ -22,8 +22,14 @@ export class PongService {
 	private waitingList: WaitingList[] = [];
 	private matchList: { [key: number]: MatchInstance } = {};
 
+	// CREATE MATCH VIA INVITE
+	async inviteAccepted(client: Socket, player_id: number){
+		const id = await this.playerService.findOneIntraUsername(player_id);
+		console.log("IDIDIDID", id);
+		client.to(id).emit('redirecting', player_id);
+	}
 
-	handleAcceptInvite(client: Socket, p1_id: number, p1_socket_id: string, p2_id: number, p2_socket_id: string){
+	async handleAcceptInvite(client: Socket, p1_id: number, p1_socket_id: string, p2_id: number, p2_socket_id: string){
 		const p1 = {
 			player_id: p1_id,
 			socket_id: p1_socket_id,
@@ -32,7 +38,14 @@ export class PongService {
 			player_id: p2_id,
 			socket_id: p2_socket_id,
 		}
+	
+		const player1 = await this.playerService.findOneIntraUsername(p1_id);
+		const player2 = await this.playerService.findOneIntraUsername(p2_id);
+		// CREATE MATCH
 		this.createMatch(client, p1, p2);
+		// client.to(player1).emit('startInviteMatch')
+		// client.to.emit('startInviteMatch')
+
 		const index = this.inviteList.findIndex(player => player.player_id === p1_id);
 		if (index !== -1){
 			console.log('removed', p1_id, 'from the invitelist')
@@ -77,6 +90,7 @@ export class PongService {
 		});
 	}
 
+	// CREATE MATCH VIA PLAY PAGE
 	async handleJoinMatchmaking (client: Socket, player_id: number, socket_id: string): Promise<void>{
 		const playerInfo = {
 			player_id: player_id,
