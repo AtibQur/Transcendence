@@ -47,7 +47,9 @@ onBeforeMount( () => {
 		isInvited.value = true
 		console.log('you got an invitation')
 	});
-
+	socket.on('redirecting', (data) => {
+		startMatch.value = true;
+	});
 })
 
 // ACCEPT INdededeVITATION
@@ -60,10 +62,6 @@ const confirm1 = async () => {
 			socket.emit('inviteAccepted', player_id.value)
 			startMatch.value = true;
 			isInvited.value = false;
-			// socket.on('redirecting'), (data) => {
-			// // console.log("WHERE ARE YOU", data.player_id)
-			// startMatch.value = true;
-			// }
 		}
 	})
 };
