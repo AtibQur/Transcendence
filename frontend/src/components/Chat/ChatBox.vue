@@ -1,25 +1,31 @@
 <template>
   <div>
-      <div class="channel-name-container">
-          <button class="channel-name-button" @click="showInfo()"> 
-              <b>{{ channelName }}</b>
-          </button>
-      </div>
-      <div class="messages-container" ref="messagesContainerRef">
-          <div class="messages-list" ref="messageslistRef">
-            <div v-for="message in messages" :key="message.id" :class="getMessageSenderClass(message)">
-              <div class="myMessagePosition" :style="getMessageBlockSize(message)">
-                {{ message.sender.username === username ? 'You' : message.sender.username }}
-                <div :class="getMessageClass(message)">
-                  {{ message.content }}
-                </div>
-              </div>
+    <div class="channel-name-container">
+      <button class="channel-name-button" @click="showInfo()">
+        <b>{{ channelName }}</b>
+      </button>
+    </div>
+    <div class="messages-container" ref="messagesContainerRef">
+      <div class="messages-list" ref="messageslistRef">
+        <div
+          v-for="message in messages"
+          :key="message.id"
+          :class="getMessageSenderClass(message)"
+        >
+          <div class="myMessagePosition">
+            <div class="sender-name" :class="{'you-sender': message.sender.username === username}">
+              {{ message.sender.username === username ? 'You' : message.sender.username }}
+            </div>
+            <div class="message-content" :class="getMessageClass(message)">
+              {{ message.content }}
             </div>
           </div>
+        </div>
       </div>
+    </div>
   </div>
 </template>
-  
+
   <script setup lang="ts">
   import { socket } from '@/socket';
   import axiosInstance from '../../axiosConfig';
@@ -32,7 +38,7 @@
       required: true
     }
   });
-  
+
   const emit = defineEmits(['showInfo']);
   const channelName = ref('');
   const messages = ref<Message[]>([]);
@@ -41,7 +47,7 @@
   const messageslistRef = ref<HTMLElement | null>(null);
   const playerId = parseInt(sessionStorage.getItem('playerId') || '0');
   const username = sessionStorage.getItem('username') || '0';
-  
+
   onMounted(() => {
     scrollToBottom();
   });
@@ -86,7 +92,7 @@
   };
   
 
-const getMessageClass = (message: Message) => {
+  const getMessageClass = (message: Message) => {
   return message.sender.username === username ? 'my-message' : 'friend-message';
 };
 
@@ -203,39 +209,86 @@ ul {
 }
 
 .my-message-sender {
-    color: var(--gray-medium);
-    align-self: flex-end;
-    text-align: right;
+  color: var(--gray-medium);
+  align-self: flex-end;
+  text-align: right;
 }
 
 .friend-message-sender {
-    color: var(--gray-medium);
-    align-self: flex-start;
-    text-align: left;
-    margin-left: 15px;
+  color: var(--gray-medium);
+  align-self: flex-start;
+  text-align: left;
+  margin-left: 15px;
 }
 
 .my-message {
-    background-color: rgba(230, 99, 230, 0.2);
-    color: rgba(179, 11, 179, 1);
-    border-radius: 10px;
-    padding: 8px 12px;
-    margin: 15px;
-    margin-top: 5px;
-    align-self: flex-end; /* Align to the right side */
+  background-color: rgba(230, 99, 230, 0.2);
+  color: rgba(179, 11, 179, 1);
+  border-radius: 10px;
+  padding: 8px 12px;
+  margin: 15px 0; /* Remove right margin */
+  margin-top: 5px;
+  align-self: flex-end; /* Align to the right side */
+  word-wrap: break-word; /* Prevent long words from overflowing */
+  max-width: 70%; /* Limit maximum width of message content */
 }
 
 .friend-message {
-    background-color: rgba(125, 46, 222, 0.2);
-    color: rgba(87, 11, 179, 1);
-    border-radius: 10px;
-    padding: 8px 12px;
-    margin: 15px;
-    margin-top: 5px;
+  background-color: rgba(125, 46, 222, 0.2);
+  color: rgba(87, 11, 179, 1);
+  border-radius: 10px;
+  padding: 8px 12px;
+  margin: 15px 0; /* Remove left and right margins */
+  margin-top: 5px;
+  align-self: flex-start; /* Align to the left side */
+  word-wrap: break-word; /* Prevent long words from overflowing */
+  max-width: 70%; /* Limit maximum width of message content */
 }
 
 .myMessagePosition {
-    align-self: flex-end;
+  align-self: flex-end;
+  display: flex;
+  flex-direction: column; /* Keep the default column order */
+  align-items: flex-end;
+}
+
+.message-content {
+  color: var(--black-soft); /* Adjust color as needed */
+  background-color: rgba(230, 99, 230, 0.2);
+    color: rgba(179, 11, 179, 1);
+  border-radius: 10px;
+  padding: 8px 12px;
+  margin: 5px 15px 0 0; /* Adjusted margin to the right */
+  align-self: flex-end; /* Align to the right side */
+  word-wrap: break-word; /* Prevent long words from overflowing */
+  max-width: 70%; /* Limit maximum width of message content */
+}
+
+.sender-name {
+  color: var(--gray-medium);
+  text-align: right;
+  margin-right: 10px;
+}
+
+.you-sender {
+  align-self: begin;
+}
+
+.friend-message {
+  background-color: rgba(125, 46, 222, 0.2);
+  color: rgba(87, 11, 179, 1);
+  border-radius: 10px;
+  padding: 8px 12px;
+  margin: 15px 0; /* Remove left and right margins */
+  margin-top: 5px;
+  align-self: flex-start; /* Align to the left side */
+  word-wrap: break-word; /* Prevent long words from overflowing */
+  max-width: 70%; /* Limit maximum width of message content */
+}
+
+.messages-list {
+  align-self: flex-end;
+  text-align: right;
 }
 
 </style>
