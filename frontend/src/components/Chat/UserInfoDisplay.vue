@@ -68,7 +68,9 @@
         </div>
     </div>
     <div v-else>
-        <button class="custom-button-1">Edit Profile</button>
+        <router-link to="/profile">
+                <button class="custom-button-1">Edit Profile</button>
+        </router-link>
     </div>
 </template>
 
