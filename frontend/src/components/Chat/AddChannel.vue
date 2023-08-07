@@ -1,8 +1,7 @@
 <template>
     <div class="card flex justify-content-center p-fluid">
-        <ConfirmDialog />
         <button class="custom-button-1" @click="isVisible = true">Create New Channel</button>
-        <Dialog v-model:visible="isVisible" modal header="New Channel" :style="{ width: '50vw' }" :closeButtonProps="handleCloseButton">
+        <Dialog v-model:visible="isVisible" modal header="New Channel" :style="{ width: '50vw' }">
             <form @submit.prevent="onSubmit">
                 <div class="p-field">
                     <label for="channelName">Channel Name</label>
@@ -33,7 +32,6 @@ import Dialog from 'primevue/dialog';
 import InputText from 'primevue/inputtext'
 import Password from 'primevue/password'
 import RadioButton from 'primevue/radiobutton'
-import ConfirmDialog from 'primevue/confirmdialog';
 import { useToast } from 'primevue/usetoast';
 import { useConfirm } from "primevue/useconfirm";
 
@@ -44,7 +42,6 @@ enum SecurityLevel {
 }
 
 const toast = useToast();
-const confirm = useConfirm();
 const isVisible = ref<boolean>(false);
 const playerId = parseInt(sessionStorage.getItem('playerId') || '0');
 const newChannelName = ref<string>('');
@@ -60,29 +57,6 @@ const securityOptions = ref([
 const password = ref<string>('');
 const errorMessage = ref<string>('');
 const isPrivate = ref<boolean>(false);
-
-//CONFIRM DIALOG BUTTON
-const openConfirmDialog = () => {
-    confirm.require({
-        message: 'Are you sure you want to proceed?',
-        header: 'Confirmation',
-        accept: () => {
-            resetForm();
-        },
-        onShow: () => {
-            isVisible.value = true;
-        }
-    });
-};
-
-//HANDLE CLOSE BUTTON
-//when clicked confirm dialog is shown
-const handleCloseButton = {
-    'aria-label': 'Close Dialog',
-    onClick: () => {
-        openConfirmDialog()
-    },
-};
 
 //VALIDATE FIELDS
 function validateFields() {

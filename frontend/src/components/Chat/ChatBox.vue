@@ -1,15 +1,16 @@
 <template>
     <div>
-      <button class="channel-name-button" @click="showInfo()"> 
-        <b>{{ channelName }}</b>
-      </button>
-      <div class="messages-container">
-        <div v-for="message in messages" :key="message.id" :class="getMessageSenderClass(message)">
-          {{ message.sender.username === username ? 'You' : message.sender.username }}
-          <div :class="getMessageClass(message)">
-            {{ message.content }}
-        </div>
-          </div>
+        <button class="channel-name-button" @click="showInfo()">
+            <b>{{ channelName }}</b>
+            <i class="pi pi-info-circle"></i>
+        </button>
+        <div class="messages-container">
+            <div v-for="message in messages" :key="message.id" :class="getMessageSenderClass(message)">
+                {{ message.sender.username === username ? 'You' : message.sender.username }}
+                <div :class="getMessageClass(message)">
+                    {{ message.content }}
+                </div>
+            </div>
       </div>
     </div>
   </template>
@@ -127,6 +128,9 @@ ul {
 }
 
 .channel-name-button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
     font-family: 'JetBrains Mono';
     font-weight: bold;
     border: none;
@@ -140,6 +144,11 @@ ul {
     height: 75px;
     margin-bottom: 20px;
 }
+
+.channel-name-button b {
+  margin-right: 10px; /* Adjust the value as needed */
+}
+
 .channel-name-button:hover {
     background-color: var(--gray-shadow);
     color: var(--white-softgray);

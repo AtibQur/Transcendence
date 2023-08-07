@@ -26,8 +26,10 @@
                 </div>
             </div>
             <div class="right-side-bar">
-                <div style="margin: 20px;">
-                    <img :src="profilePicture" alt="Avatar" style="width:60%; border-radius: 10%">
+                <div class="profile-container">
+                    <div class="ProfilePicture">
+                        <img :src="profilePicture" alt="Avatar" style="width:100%">
+                    </div>
                 </div>
                 <h2>{{ username }} {{ playerId }}</h2>
                 <div class="status-circle">
@@ -43,8 +45,9 @@
 <script setup lang="ts">
 import { onBeforeMount, ref } from 'vue';
 import axiosInstance from '../../axiosConfig';
-import ChannelDisplay from './ChannelDisplay.vue'
-import ChannelInfoDisplay from './ChannelInfoDisplay.vue'
+import ChannelDisplay from './ChannelDisplay.vue';
+import ChannelInfoDisplay from './ChannelInfoDisplay.vue';
+import ConfirmDialog from 'primevue/confirmdialog';
 import AddChannel from './AddChannel.vue';
 import Toast from 'primevue/toast';
 import ChatBox from './ChatBox.vue';
@@ -122,6 +125,23 @@ onBeforeMount(async () => {
     margin-top: 100px;
 }
 
+.profile-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.ProfilePicture {
+  width: 150px;
+  height: 150px;
+  overflow: hidden;
+  border-radius: 50%;
+}
+
+.ProfilePicture img {
+  height: 100%;
+  width: auto;
+}
 .status-circle {
     width: 12px;
     height: 12px;
