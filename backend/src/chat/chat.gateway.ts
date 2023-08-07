@@ -327,7 +327,6 @@ export class ChatGateway {
                 const channelData: DeleteChannelDto = {
                     id: channel.id
                 }
-                
                 this.channelService.remove(channelData);
             }
             else //notify other channelmembers that a channelmember has left the channel

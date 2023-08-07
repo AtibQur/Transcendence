@@ -1,8 +1,16 @@
 <template>
     <div>
-        <img :src="profilePicture" alt="Avatar" style="width:100%">
-        <h4 class="custom-h4"> {{ currentChannelmemberUsername }}</h4>
-        
+        <div class="profile-container">
+            <div class="ProfilePicture">
+              <img :src="profilePicture" alt="Avatar" style="width:100%">
+            </div>
+        </div>
+        <div class="name-container">
+            <div>
+                <h4 class="name"> {{ currentChannelmemberUsername }}</h4>
+            </div>
+            <div class="status-circle" :class="{ 'online': currentChannelmemberStatus === 'online', 'offline': currentChannelmemberStatus !== 'online' }"></div>
+        </div>
         <!-- for testing purposes -->
         <div v-if="!isDm">
             <div v-if="currentChannelmemberInfo.memberIsOwner">
@@ -22,7 +30,11 @@
 
     <div v-if="currentChannelmemberUsername != playerUsername">
         <div>
-            <button class="custom-button-1">View Profile</button>
+            <router-link :to="{
+                name: 'friends',
+                params: { playerName: currentChannelmemberUsername, profilePicture: profilePicture, status: currentChannelmemberStatus }}" >
+                <button class="custom-button-1">View Profile</button>
+            </router-link>
         </div>
         <div v-if="currentChannelmemberInfo.memberIsFriend">
             <div v-if="!isDm">
@@ -102,7 +114,6 @@ const isAdmin = ref(false);
 onBeforeMount(async () => {
 
     currentChannelmemberInfo.value = await fetchChannelmemberInfo(currentChannelmemberId.value);
-    console.log('info: ', currentChannelmemberInfo.value);
     profilePicture.value = await fetchAvatar(currentChannelmemberId.value);
     isDm.value = await checkIfDm(currentChannelId.value);
     isAdmin.value = await checkIfAdmin(currentChannelId.value);
@@ -308,11 +319,52 @@ const removeChannelmember = async () => {
 </script>
 
 <style scoped>
-.custom-h4 {
+
+.profile-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.ProfilePicture {
+  width: 250px;
+  height: 250px;
+  overflow: hidden;
+  border-radius: 50%;
+}
+
+.ProfilePicture img {
+  height: 100%;
+  width: auto;
+}
+
+  .name-container {
+  margin: 10px;
+  padding: 5px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.name {
     font-family: 'JetBrains Mono';
     font-weight: bolder;
     font-size: x-large;
     color: black;
     text-align: center;
-  }
+    margin-right: 10px;
+}
+  .status-circle {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+}
+
+.online {
+  background-color: var(--green-soft);
+}
+
+.offline {
+  background-color: var(--red-soft);
+}
 </style>
