@@ -1,23 +1,27 @@
 <template>
-    <div>
-      <button class="channel-name-button" @click="showInfo()"> 
-        <b>{{ channelName }}</b>
-      </button>
-      <div class="messages-container" ref="messagesContainerRef">
-        <div v-for="message in messages" :key="message.id" :class="getMessageSenderClass(message)">
-          {{ message.sender.username === username ? 'You' : message.sender.username }}
-          <div :class="getMessageClass(message)">
-            {{ message.content }}
-          </div>
-        </div>
+  <div>
+      <div class="channel-name-container">
+          <button class="channel-name-button" @click="showInfo()"> 
+              <b>{{ channelName }}</b>
+          </button>
       </div>
-    </div>
-  </template>
+      <div class="messages-container" ref="messagesContainerRef">
+          <div class="messages-list" ref="messageslistRef">
+              <div v-for="message in messages" :key="message.id" :class="getMessageSenderClass(message)">
+                  {{ message.sender.username === username ? 'You' : message.sender.username }}
+                  <div :class="getMessageClass(message)">
+                      {{ message.content }}
+                  </div>
+              </div>
+          </div>
+      </div>
+  </div>
+</template>
   
   <script setup lang="ts">
   import { socket } from '@/socket';
   import axiosInstance from '../../axiosConfig';
-  import { onBeforeMount, ref, watch, nextTick } from 'vue'
+  import { onMounted, onBeforeMount, ref, watch, nextTick } from 'vue'
   import Message from '@/types/Message';
   
   const props = defineProps({
@@ -32,9 +36,14 @@
   const messages = ref<Message[]>([]);
   const currentChannelId = ref(props.channelId);
   const messagesContainerRef = ref<HTMLElement | null>(null);
+  const messageslistRef = ref<HTMLElement | null>(null);
   const playerId = parseInt(sessionStorage.getItem('playerId') || '0');
   const username = sessionStorage.getItem('username') || '0';
   
+  onMounted(() => {
+    scrollToBottom();
+  });
+
   onBeforeMount(async () => {
     await fetchChatMessagesFiltered(playerId, currentChannelId.value);
     await fetchChannelName(currentChannelId.value);
@@ -107,7 +116,7 @@ async function addChatmessage(message: Message) {
 
 // Scroll to the bottom of the messages container
 function scrollToBottom() {
-  const container = messagesContainerRef.value;
+  const container = messageslistRef.value;
   if (container) {
     container.scrollTop = container.scrollHeight;
   }
@@ -149,12 +158,44 @@ ul {
     transition: 0.3s;
 }
 
+.channel-name-container {
+    position: sticky;
+    top: 0;
+    z-index: 1;
+    background-color: white; /* Ensure the background color covers the button */
+}
+
 .messages-container {
     display: flex;
     flex-direction: column;
     max-height: calc(100vh - 95px); /* Adjust as needed based on your layout */
     overflow-y: auto;
     overflow-x: hidden;
+    padding-right: 16px; /* Adjust this value to match the width of the browser's default scrollbar */
+}
+
+.messages-list {
+    flex: none; /* Fixed height */
+    max-height: calc(65vh); /* Adjust the height as needed */
+    overflow-y: auto;
+}
+
+.channel-name-button {
+    font-family: 'JetBrains Mono';
+    font-weight: bold;
+    border: none;
+    cursor: pointer;
+    background-color: var(--gray-light);
+    color: var(--black-soft);
+    font-size: large;
+    padding: 0;
+    margin: 0;
+    width: 100%;
+    height: 75px;
+    margin-bottom: 20px;
+    position: sticky;
+    top: 0;
+    z-index: 1;
 }
 
 .my-message-sender {
