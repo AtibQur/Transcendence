@@ -27,8 +27,10 @@
                 </div>
             </div>
             <div class="right-side-bar">
-                <div style="margin: 20px;">
-                    <img :src="profilePicture" alt="Avatar" style="width:60%; border-radius: 10%">
+                <div class="profile-container">
+                    <div class="ProfilePicture">
+                        <img :src="profilePicture" alt="Avatar" style="width:100%">
+                    </div>
                 </div>
                 <h2>{{ username }} {{ playerId }}</h2>
                 <div class="status-circle">
@@ -124,6 +126,23 @@ onBeforeMount(async () => {
     margin-top: 100px;
 }
 
+.profile-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.ProfilePicture {
+  width: 150px;
+  height: 150px;
+  overflow: hidden;
+  border-radius: 50%;
+}
+
+.ProfilePicture img {
+  height: 100%;
+  width: auto;
+}
 .status-circle {
     width: 12px;
     height: 12px;
