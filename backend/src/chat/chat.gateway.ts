@@ -14,7 +14,6 @@ import { CreateChannelDto } from 'src/channel/dto/create-channel.dto';
 import { CreateChannelmemberDto } from 'src/channelmember/dto/create-channelmember.dto';
 import { UpdateChannelmemberDto } from 'src/channelmember/dto/update-channelmember.dto';
 import { DeleteChannelDto } from 'src/channel/dto/delete-channel.dto';
-import * as dotenv from 'dotenv';
 
 @WebSocketGateway({
 	cors: {
@@ -91,11 +90,14 @@ export class ChatGateway {
     ){
         try {
             const channel_id = await this.channelService.createChannel(createChannelDto);
+            if (!channel_id)
+                throw new Error();
             client.join(channel_id.toString());
 
             // this is needed because of the format of the channel display array (channels are fetch through channelmemberservice)
             const newChannel = await this.channelmemberService.findChannelmember(createChannelDto.owner_id, channel_id);
             this.server.to(client.id).emit('newChannel', newChannel);
+
             return channel_id;
         } catch (error) {
             console.log('Error creating channel: ', error);
@@ -158,7 +160,8 @@ export class ChatGateway {
             const id = await this.playerService.findIdByUsername(payload.channelmember_name);
             if (!id)
                 throw new Error('Player does not exist');
-            const member: CreateChannelmemberDto = {
+            
+                const member: CreateChannelmemberDto = {
                 member_id: id,
                 channel_id: payload.channel_id,
                 is_admin: payload.is_admin,
@@ -252,7 +255,6 @@ export class ChatGateway {
         @ConnectedSocket() client: Socket
     ) {
         try {
-
             client.leave(payload.channel_id.toString());
             this.logger.log('socket removed from room');
             return true;
@@ -327,6 +329,7 @@ export class ChatGateway {
                 const channelData: DeleteChannelDto = {
                     id: channel.id
                 }
+
                 this.channelService.remove(channelData);
             }
             else //notify other channelmembers that a channelmember has left the channel
