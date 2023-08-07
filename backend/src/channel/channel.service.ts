@@ -264,7 +264,6 @@ export class ChannelService {
   // returns id on success, nothing on error
   async findOwnerId(id: number) {
     try {
-
         const selectedChannel = await prisma.channel.findUnique({
             where: {
                 id: id
@@ -287,17 +286,13 @@ export class ChannelService {
   //SET NEW OWNER FOR CHANNEL IF THE CURRENT OWNER WANT TO LEAVE THE CHANNEL
   // set to the 'eldest' admin (smallest member id of members)
   // if there are no members left, channel deleted?
-  // returns updated channel on succes, nothing on error (or when channel is removed)
+  // returns channel id on succes, false if there are no more members and nothing on error
   async setNewOwner(id: number) {
     try {
         console.log('finding new owner....');
         const newOwner = await this.channelmemberService.findNewOwner(id);
         if (!newOwner)
-        {
-            //remove channel?
-            this.logger.log("There are no more channelmembers");
-            return null;
-        }
+            return false;
 
         const updatedChannel = await prisma.channel.update({
             where: {
@@ -309,7 +304,7 @@ export class ChannelService {
         })
         this.logger.log(`set new owner for channel ${updatedChannel.name}`);
 
-        return updatedChannel;
+        return true;
 
     }
     catch(error) {
@@ -397,11 +392,17 @@ export class ChannelService {
   //ENCRYPT PASSWORD
   // returns hash, nothing or error;
   async encryptPassword(password: string) {
-    const saltOrRounds = 10;
-    const hash = await bcrypt.hash(password, saltOrRounds);
-    if (hash)
+    try {
+        const saltOrRounds = 10;
+        const hash = await bcrypt.hash(password, saltOrRounds);
+
+        if (hash)
         return hash;
-    return null;
+
+    } catch (error) {
+        console.log('Error encrypting password: ', error);
+        return null;
+    }
   }
 
   //REMOVE CHANNEL
@@ -409,18 +410,17 @@ export class ChannelService {
   // returns deleted channel on success, nothing on error
   async remove(player_id: number, deleteChannelDto: DeleteChannelDto) {
     try {
-        const channel_id = parseInt(deleteChannelDto.name) || 0;
-        const updater = await this.channelmemberService.findChannelmember(player_id, channel_id);
+        const updater = await this.channelmemberService.findChannelmember(player_id, deleteChannelDto.id);
 
         if (!updater.is_owner)
             throw new Error('player not allowed');
         
         const deletedChannel = await prisma.channel.delete({
             where: {
-                id: channel_id,
+                id: deleteChannelDto.id,
             },
             include: {
-                members: true, // Include the members to trigger the cascade deletion
+                members: true,
                 messages: true
             },
         });

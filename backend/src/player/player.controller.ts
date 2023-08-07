@@ -4,9 +4,12 @@ import { CreatePlayerDto } from './dto/create-player.dto';
 import { UpdatePlayerDto } from './dto/update-player.dto';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { File } from 'multer';
+import { AuthGuard } from '../auth/local.authguard';
+import { UseGuards } from '@nestjs/common';
 
 
 @Controller('player')
+@UseGuards(AuthGuard)
 export class PlayerController {
   constructor(private readonly playerService: PlayerService) {}
 

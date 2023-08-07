@@ -1,8 +1,11 @@
 import { Controller, Get, Post, Body, Param, Query } from '@nestjs/common';
 import { ChatmessageService } from './chatmessage.service';
 import { CreateChatmessageDto } from './dto/create-chatmessage.dto';
+import { AuthGuard } from '../auth/local.authguard';
+import { UseGuards } from '@nestjs/common';
 
 @Controller('chatmessage')
+@UseGuards(AuthGuard)
 export class ChatmessageController {
   constructor(private readonly chatmessageService: ChatmessageService) {}
 

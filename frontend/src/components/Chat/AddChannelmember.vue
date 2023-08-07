@@ -24,7 +24,6 @@ import { ref } from 'vue';
 import Dialog from 'primevue/dialog';
 import AutoComplete from 'primevue/autocomplete';
 import { useToast } from 'primevue/usetoast';
-import { useConfirm } from "primevue/useconfirm";
 import Checkbox from 'primevue/checkbox';
 
 const props = defineProps({
@@ -35,7 +34,6 @@ const props = defineProps({
 });
 
 const toast = useToast();
-const confirm = useConfirm();
 const isVisible = ref<boolean>(false);
 const isAdmin = ref<boolean>(false);
 const playerId = sessionStorage.getItem('playerId') || '0';
@@ -70,26 +68,12 @@ const search = (event) => {
     }, 250);
 }
 
-//CONFIRM DIALOG BUTTON
-const openConfirmDialog = () => {
-    confirm.require({
-        message: 'Are you sure you want to proceed?',
-        header: 'Confirmation',
-        accept: () => {
-            resetForm();
-        },
-        onShow: () => {
-            isVisible.value = true;
-        }
-    });
-};
-
 //HANDLE CLOSE BUTTON
 //when clicked confirm dialog is shown
 const handleCloseButton = {
     'aria-label': 'Close Dialog',
     onClick: () => {
-        openConfirmDialog()
+        resetForm();
     },
 };
 
@@ -106,6 +90,19 @@ const channelmemberExists = async () => {
     return false;
 }
 
+const channelmemberIsBanned = async () => {
+    const channelmemberId = await axiosInstance.get('player/profile/' + newChannelmember.value);
+    if (channelmemberId.data)
+    {
+        const response = await axiosInstance.get('channelmember/info/'
+                                                    + channelmemberId.data.toString()
+                                                    + '/' + props.channelId.toString());
+        if (response.data && response.data.is_banned)
+            return true
+    }
+    return false;
+}
+
 //VALIDATE FIELDS
 const validateFields = async () => {
     if (!newChannelmember.value)
@@ -116,6 +113,11 @@ const validateFields = async () => {
     if (!friends.value.includes(newChannelmember.value))
     {
         errorMessage.value = 'Invalid name of friend';
+        return false;
+    }
+    if (await channelmemberIsBanned()) // if the member is banned
+    {
+        errorMessage.value = 'Channelmember is banned from this channel!';
         return false;
     }
     if (await channelmemberExists()) // if the member already exists

@@ -7,12 +7,14 @@
       </div>
       <div class="messages-container" ref="messagesContainerRef">
           <div class="messages-list" ref="messageslistRef">
-              <div v-for="message in messages" :key="message.id" :class="getMessageSenderClass(message)">
-                  {{ message.sender.username === username ? 'You' : message.sender.username }}
-                  <div :class="getMessageClass(message)">
-                      {{ message.content }}
-                  </div>
+            <div v-for="message in messages" :key="message.id" :class="getMessageSenderClass(message)">
+              <div class="myMessagePosition" :style="getMessageBlockSize(message)">
+                {{ message.sender.username === username ? 'You' : message.sender.username }}
+                <div :class="getMessageClass(message)">
+                  {{ message.content }}
+                </div>
               </div>
+            </div>
           </div>
       </div>
   </div>
@@ -21,7 +23,7 @@
   <script setup lang="ts">
   import { socket } from '@/socket';
   import axiosInstance from '../../axiosConfig';
-  import { onMounted, onBeforeMount, ref, watch, nextTick } from 'vue'
+  import { onMounted, onBeforeMount, ref, watch, nextTick } from 'vue';
   import Message from '@/types/Message';
   
   const props = defineProps({
@@ -92,11 +94,13 @@ const getMessageSenderClass = (message: Message) => {
   return message.sender.username === username ? 'my-message-sender' : 'friend-message-sender';
 };
 
-const getMessageBlockSize = (messageContent: string) => {
-  return {
-    width: `${messageContent.length * 10}px`, // Adjust the multiplier to control the width
+const getMessageBlockSize = (message: Message) => {
+    const senderName = message.sender.username === username ? 'You' : message.sender.username;
+    const totalWidth = senderName.length * 10 + message.content.length * 10 + 20;
+    return {
+      width: `${totalWidth}px`,
+    };
   };
-};
 
 const showInfo = () => {
     emit('showInfo', true);
@@ -168,7 +172,7 @@ ul {
 .messages-container {
     display: flex;
     flex-direction: column;
-    max-height: calc(100vh - 95px); /* Adjust as needed based on your layout */
+    max-height: calc(110vh); /* Adjust as needed based on your layout */
     overflow-y: auto;
     overflow-x: hidden;
     padding-right: 16px; /* Adjust this value to match the width of the browser's default scrollbar */
@@ -176,7 +180,7 @@ ul {
 
 .messages-list {
     flex: none; /* Fixed height */
-    max-height: calc(65vh); /* Adjust the height as needed */
+    max-height: calc(71vh); /* Adjust the height as needed */
     overflow-y: auto;
 }
 
@@ -202,7 +206,6 @@ ul {
     color: var(--gray-medium);
     align-self: flex-end;
     text-align: right;
-    margin-right: 10px;
 }
 
 .friend-message-sender {
@@ -215,20 +218,23 @@ ul {
 .my-message {
     background-color: rgba(230, 99, 230, 0.2);
     color: rgba(179, 11, 179, 1);
-    border-radius:10px;
+    border-radius: 10px;
     padding: 8px 12px;
     margin: 15px;
     margin-top: 5px;
-    align-self: flex-end;
+    align-self: flex-end; /* Align to the right side */
 }
 
 .friend-message {
     background-color: rgba(125, 46, 222, 0.2);
     color: rgba(87, 11, 179, 1);
-    border-radius:10px;
+    border-radius: 10px;
     padding: 8px 12px;
     margin: 15px;
     margin-top: 5px;
+}
+
+.myMessagePosition {
     align-self: flex-end;
 }
 

@@ -484,7 +484,7 @@ async updateTfaCode(id: number, code: string) {
   // CHANGE STATUS
   async updateStatus(id: number, updatePlayerDto: UpdatePlayerDto) {
     try {
-      const updatedPlayer = await prisma.player.update({
+        const updatedPlayer = await prisma.player.update({
         where: {
           id: id,
         },

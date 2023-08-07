@@ -3,8 +3,11 @@ import { ChannelService } from './channel.service';
 import { CreateChannelDto } from './dto/create-channel.dto';
 import { UpdateChannelDto } from './dto/update-channel.dto';
 import { DeleteChannelDto } from './dto/delete-channel.dto';
+import { AuthGuard } from '../auth/local.authguard';
+import { UseGuards } from '@nestjs/common';
 
 @Controller('channel')
+@UseGuards(AuthGuard)
 export class ChannelController {
   constructor(private readonly channelService: ChannelService) {}
 

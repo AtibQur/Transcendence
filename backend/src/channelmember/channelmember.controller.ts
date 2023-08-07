@@ -2,8 +2,11 @@ import { Controller, Get, Post, Body, Query, Patch, Param, Delete } from '@nestj
 import { ChannelmemberService } from './channelmember.service';
 import { CreateChannelmemberDto } from './dto/create-channelmember.dto';
 import { UpdateChannelmemberDto } from './dto/update-channelmember.dto';
+import { AuthGuard } from '../auth/local.authguard';
+import { UseGuards } from '@nestjs/common';
 
 @Controller('channelmember')
+@UseGuards(AuthGuard)
 export class ChannelmemberController {
   constructor(private readonly channelmemberService: ChannelmemberService) {}
 
@@ -20,7 +23,7 @@ export class ChannelmemberController {
   // FIND ALL CHANNELS WHERE PLAYER IS MEMBER
   // TODO: move to channels module?
   @Get('allchannels/:player_id')
-  findPlayerChannels(@Param('player_id') player_id: string) {
+  findAllPlayerChannels(@Param('player_id') player_id: string) {
     return this.channelmemberService.findPlayerChannels(+player_id);
   }
 
@@ -70,7 +73,13 @@ export class ChannelmemberController {
   // BAN A CHANNELMEMBER
   @Patch('ban/:player_id')
   banMember(@Param('player_id') player_id: string, @Body() updateChannelmemberDto: UpdateChannelmemberDto) {
-    return this.channelmemberService.banMember(+player_id, updateChannelmemberDto);
+    return this.channelmemberService.banMember(+player_id, updateChannelmemberDto, true);
+  }
+
+  // UNBAN A CHANNELMEMBER
+  @Patch('unban/:player_id')
+  unbanMember(@Param('player_id') player_id: string, @Body() updateChannelmemberDto: UpdateChannelmemberDto) {
+    return this.channelmemberService.banMember(+player_id, updateChannelmemberDto, false);
   }
 
   // MUTE A CHANNELMEMBER

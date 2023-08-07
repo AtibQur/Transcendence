@@ -32,7 +32,8 @@ onBeforeMount(async () => {
     // UPDATE CHANNEL DISPLAY IF PLAYER LEAVE A CHANNEL
     socket.on('leftChannel', (channelName: string) => {
         const index = channels.value.findIndex((item) => item.channel.name === channelName);
-
+        console.log('all channels: ', channels.value);
+        console.log('name: ', channelName);
         if (index == -1)
             console.log(`channel not found in channels`);
         else {
@@ -46,7 +47,6 @@ onBeforeMount(async () => {
     const fetchChannels = async (playerId: number) => {
         const response = await axiosInstance.get('channelmember/allchannels/' + playerId.toString());
         channels.value = response.data;
-        console.log(channels.value)
     }
 
     // EVENT TO CHANGE CURRENT CHANNEL

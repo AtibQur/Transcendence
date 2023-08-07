@@ -1,8 +1,7 @@
 import axios, { AxiosInstance } from 'axios';
-import { removeCookie } from './components/cookie_utils';
 
 const instance: AxiosInstance = axios.create({
-  baseURL: 'http://localhost:3000/',
+  baseURL: process.env.VUE_APP_HOST_COMPUTER + ':3000/',
 });
 
 export const setDefaultAuthHeader = (accessToken: string): void => {

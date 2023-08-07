@@ -32,9 +32,9 @@
                     <img :src="profilePicture" alt="Avatar" style="width:60%; border-radius: 10%">
                 </div>
                 <h2>{{ username }} {{ playerId }}</h2>
-                <div class="status-circle" :class="{ 'online': status === 'online', 'offline': status !== 'online' }">
+                <div class="status-circle">
                     <span class="status-text">
-                        {{ status }}
+                        online
                     </span>
                 </div>
             </div>
@@ -61,7 +61,7 @@ const profilePicture = ref('');
 const inChannel = ref(false);
 const inDm = ref(false);
 const status = ref('');
-const chatBoxHeight = ref<number>(1000);
+const chatBoxHeight = ref<number>(1350);
 
 const channelId = ref<number>(0);
 const showChannelInfo = ref(false);
@@ -89,7 +89,6 @@ const showInfo = async (isVisible: boolean) => {
 onBeforeMount(async () => {
     try {
       profilePicture.value = await fetchAvatar(playerId);
-      status.value = await fetchStatus(playerId);
     } catch (error) {
       console.log("Error occurred chat profile");
     }
@@ -110,7 +109,7 @@ onBeforeMount(async () => {
     // A method to adjust the chatbox height based on the window size
     const updateChatBoxHeight = () => {
         const windowHeight = window.innerHeight;
-        chatBoxHeight.value = Math.min(windowHeight - 200, 1000); // Adjust as needed
+        chatBoxHeight.value = Math.min(windowHeight - 200, 1350); // Adjust as needed
     };
 
         // Listen to the window resize event and update the chatbox height
@@ -155,15 +154,8 @@ onBeforeMount(async () => {
     margin-right: 10px;
     margin-left: 15px;
     margin-top: 50px;
-  }
-  
-.online {
     background-color: var(--green-soft);
-}
-
-.offline {
-    background-color: var(--red-soft);
-}
+  }
 
 .status-text {
     margin-left: 40px;
@@ -179,6 +171,7 @@ onBeforeMount(async () => {
     overflow: auto;
     margin-top: 100px;
     border-top: 2px solid var(--gray-medium);
+    border-bottom: 2px solid var(--gray-medium);
     border-left: 2px solid var(--gray-medium);
     border-right: 2px solid var(--gray-medium);
     position: relative; /* Ensure relative positioning context */
