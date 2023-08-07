@@ -2,7 +2,9 @@
   <Toast />
   <div class="ProfileContainer">
     <div class="ProfileData">
-      <div class="ProfilePicture" :style="{ backgroundImage: 'url(' + profilePicture + ')' }"></div>
+      <div class="ProfilePicture">
+        <img :src="profilePicture" alt="Avatar" style="width:100%">
+      </div>
       <div class="ProfileInfo">
         <div class="ProfileName">
           <h1>{{ username }}</h1>
@@ -250,29 +252,7 @@
     height: 50%;
     margin-top: 10px;
   }
-  .ProfileData .ProfilePicture {
-    position: absolute;
-    left: 50%;
-    top: 0%;
-    transform: translateX(-50%);
-    width: 100%;
-    height: 60%;
-    background-size: cover;
-    background-position: center center;
-    background-repeat: no-repeat;
-    border-radius: 50%;
-  }
-  .ProfileData .ProfilePicture img {
-    position: absolute;
-    left: 50%;
-    top: 50%;
-    transform: translate(-50%, -50%);
-    width: 100%;
-    height: 100%;
-    background-size: cover;
-    background-position: center center;
-    background-repeat: no-repeat;
-  }
+
   .ProfileData .ProfileInfo {
     position: absolute;
     left: 0%;
@@ -289,6 +269,26 @@
     height: 30%;
     /* border: 1px solid black; */
   }
+
+  .ProfileData .ProfilePicture {
+    position: absolute;
+    left: 50%;
+    top: 0%;
+    transform: translateX(-50%);
+    width: 100%;
+    height: 60%;
+    /* border: 1px solid black; */
+  }
+  .ProfileData .ProfilePicture img {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+  }
+
   .ProfileOptions .ProfileOptionsContainer {
     position: absolute;
     left: 0%;
