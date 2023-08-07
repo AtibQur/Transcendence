@@ -26,7 +26,6 @@
 import SoloMatch from './SoloMatch.vue'
 import MatchMaking from './MatchMaking.vue'
 import { socket } from '../../socket'
-import { Socket } from 'socket.io';
 import { useRouter } from 'vue-router'
 import { defineComponent } from 'vue'
 

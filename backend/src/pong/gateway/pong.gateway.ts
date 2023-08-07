@@ -9,22 +9,8 @@ import { PongService } from '../pong.service';
 import { Server, Socket } from 'socket.io';
 import * as dotenv from 'dotenv';
 import { PongGame } from './../game';
-import { User } from '../interfaces/user.interface'
-import { Ball } from './../interfaces/ball.interface';
 import { Game } from '../interfaces/state.interface';
-import { Match } from '../match/match';
-import { MatchInstance } from '../match/match-instance';
 import { PlayerService } from '../../player/player.service';
-
-interface inviteList {
-	player_id: number; 
-	socket_id: string;
-}
-interface matchList {
-	match_id: string;
-	p1_socket_id: string;
-	p2_socket_id: string;
-}
 
 @WebSocketGateway({
     cors: {
@@ -37,11 +23,7 @@ export class PongGateway {
 
 	private readonly playerService = new PlayerService();
 	private pongGame: PongGame = new PongGame();
-	private ball: Ball = this.pongGame.ball;
-	private player1: User = this.pongGame.player1;
-	private player2: User = this.pongGame.player2;
 	private game: Game = this.pongGame.game;
-	private socket_id: string;
 
 	private start: boolean = false;
 	constructor(
@@ -61,6 +43,21 @@ export class PongGateway {
 			client.join(intra_username);
 			console.log('client joined the socket pong room')
 		}
+	}
+	
+	@SubscribeMessage('acceptInvite')
+	handleAccept(
+		@ConnectedSocket() client: Socket,
+		@MessageBody() {p1_id, p1_socket_id, p2_id, p2_socket_id}: {p1_id: number, p1_socket_id: string
+			p2_id: number, p2_socket_id: string}): void {
+		this.pongService.handleAcceptInvite(client, p1_id, p1_socket_id, p2_id, p2_socket_id)
+	}
+
+	@SubscribeMessage('declineInvite')
+	handleDecline(
+		@ConnectedSocket() client: Socket,
+		@MessageBody() player1_id: number): void {
+		this.pongService.handleDeclineInvite(client, player1_id)
 	}
 
 	@SubscribeMessage('endGame')

@@ -1,4 +1,4 @@
-<template>
+git statuscd <template>
 	<div>
 		<Menubar />
 	</div>
@@ -33,11 +33,13 @@ const confirm = useConfirm();
 const opponentId = parseInt(sessionStorage.getItem('playerId') || '0');
 const isInvited = ref(false);
 
+const player_id = ref(0);
+const socket_id = ref(0);
+
 onBeforeMount( () => {
 	socket.on('sendInvite', (data) => {
-		const p1 = data.player_id;
-		const p2 = data.opponent_id;
-		const p1_socket_id = data.socket_id;
+		player_id.value = data.player_id;
+		socket_id.value = data.socket_id;
 		isInvited.value = true
 		console.log('you got an invitation')
 	});
@@ -48,8 +50,7 @@ const confirm1 = async () => {
 		message: 'Do you want to accept the invitation?',
 		header: 'Confirmation',
 		accept: () => {
-			console.log('accept invintation')
-			// socket.emit('acceptInvite');
+			socket.emit('acceptInvite', {p1_id: player_id.value, p1_socket_id: socket_id.value, p2_id: opponentId, p2_socket_id: socket.id});
 			isInvited.value = false;
 		}
 	})
@@ -61,7 +62,7 @@ const confirm2 = async () => {
 			header: 'Confirmation',
 			accept: () => {
 				console.log('decline invintation')
-				// socket.emit('declineInvite');
+				socket.emit('declineInvite', player_id.value);
 				isInvited.value = false;
 			}
 		})
@@ -73,6 +74,7 @@ const openConfirmDialog = () => {
 		header: 'Confirmation',
 		accept: () => {
 			isInvited.value = false;
+			socket.emit('declineInvite', player_id.value);
 			console.log('decline invintation')
 		},
 		onShow: () => {

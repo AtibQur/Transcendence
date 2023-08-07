@@ -29,7 +29,6 @@
 
 	import GameTools from './GameTools.vue'
 	import ResultScreen from './ResultScreen.vue'
-	import PowerUp from './PowerUp.vue'
 
 
 	export default defineComponent({
@@ -139,22 +138,6 @@ methods: {
 			console.log("Finished match data:", finished_match_res.data)
 		}
 	},
-
-	// checkPowerUp(player1: any, player2: any, powerUp: any){
-	// 	// console.log("use powerUp", powerUp, "now")
-	// 	if (powerUp){
-	// 		if (powerUp.type !== 0){
-	// 			this.powerUpVisable = true;
-	// 			this.powerUpPixel.x = powerUp.x;
-	// 			this.powerUpPixel.y = powerUp.y;
-	// 			if (powerUp.active){
-	// 				this.powerUpVisable = false;
-	// 				player1.h = 150;
-	// 			}
-	// 		} // else
-	// 			// this.powerUpVisable = false;
-	// 	}
-	// },
 
 	showPowerUp(powerUp: any){
 		if (powerUp){

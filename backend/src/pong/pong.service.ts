@@ -1,15 +1,12 @@
 import { Injectable} from '@nestjs/common';
-import { PongGame } from './game';
-import { Server, Socket } from 'socket.io';
-import { User } from './interfaces/user.interface'
-import { Ball } from './interfaces/ball.interface';
-import { Game } from './interfaces/state.interface';
+import { Socket } from 'socket.io';
 import { Match } from './match/match';
 import { MatchInstance } from './match/match-instance';
 import { PlayerService } from '../player/player.service';
 
 interface inviteList {
 	player_id: number; 
+	opponent_id: number;
 	socket_id: string;
 }
 
@@ -25,20 +22,29 @@ export class PongService {
 	private waitingList: WaitingList[] = [];
 	private matchList: { [key: number]: MatchInstance } = {};
 
-	handleMove(client: Socket, data: any) {
-		if (!data.socket_match_id)
-			return ;
-		if (!this.matchList[data.socket_match_id])
-			return ;
-		this.matchList[data.socket_match_id].handleMove(client, data);
+
+	handleAcceptInvite(client: Socket, p1_id: number, p1_socket_id: string, p2_id: number, p2_socket_id: string){
+		const p1 = {
+			player_id: p1_id,
+			socket_id: p1_socket_id,
+		}
+		const p2 = {
+			player_id: p2_id,
+			socket_id: p2_socket_id,
+		}
+		this.createMatch(client, p1, p2);
+		const index = this.inviteList.findIndex(player => player.player_id === p1_id);
+		if (index !== -1){
+			console.log('removed', p1_id, 'from the invitelist')
+  			this.inviteList.splice(index, 1);
+		}
 	}
 
-	handleSoloMatch(client: Socket){
-		const inSolomatch = this.searchPlayerInMatch(client)
-		if (inSolomatch){
-			console.log("can't start a solo match, you are already in a match");
-			client.emit('alreadyInMatch');
-			return ;
+	handleDeclineInvite(client: Socket, player_id1: number){
+		const index = this.inviteList.findIndex(player => player.player_id === player_id1);
+		if (index !== -1){
+			console.log('removed', player_id1, 'from the invitelist')
+  			this.inviteList.splice(index, 1);
 		}
 	}
 
@@ -105,6 +111,7 @@ export class PongService {
 		// if (client.id == player1.socket_id)
 		// 	client.emit('startMatch', { player1: { player_id: player1.player_id, socket_id: player1.socket_id }, player2: { player_id: player2.player_id, socket_id: player2.socket_id }});
 		// else
+		console.log("p1", player1, "p2", player2);
 		console.log("MATCH ID:", match.id)
 		client.to(player1.socket_id).emit('startMatch', { 
 			player1: { player_id: player1.player_id, socket_id: player1.socket_id }, 
@@ -130,6 +137,23 @@ export class PongService {
 		for (const matchId in this.matchList) {
 			this.matchList[matchId].tick(client)
 			this.checkMatchEnding(this.matchList[matchId].getMatchId())
+		}
+	}
+
+	handleMove(client: Socket, data: any) {
+		if (!data.socket_match_id)
+			return ;
+		if (!this.matchList[data.socket_match_id])
+			return ;
+		this.matchList[data.socket_match_id].handleMove(client, data);
+	}
+
+	handleSoloMatch(client: Socket){
+		const inSolomatch = this.searchPlayerInMatch(client)
+		if (inSolomatch){
+			console.log("can't start a solo match, you are already in a match");
+			client.emit('alreadyInMatch');
+			return ;
 		}
 	}
 

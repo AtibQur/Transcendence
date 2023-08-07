@@ -64,6 +64,7 @@ export default {
 
 	socket.on('startMatch', async (match) => {
 	try {
+		console.log("HALLO")
 		if (!matchSaved.value){
 			const { player1, player2 } = match;
 			console.log("P1", player1)
