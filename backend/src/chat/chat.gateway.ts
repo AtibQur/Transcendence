@@ -328,7 +328,7 @@ export class ChatGateway {
                     id: channel.id
                 }
                 
-                this.channelService.remove(payload.player_id, channelData);
+                this.channelService.remove(channelData);
             }
             else //notify other channelmembers that a channelmember has left the channel
                 this.server.to(channel.id.toString()).emit('removeChannelmember', deletedMember.member_id, channel.name);
@@ -365,7 +365,7 @@ export class ChatGateway {
                 id: channel.id
             }
 
-            const deletedChannel = await this.channelService.remove(payload.player_id, channelData);
+            const deletedChannel = await this.channelService.remove(channelData);
 
             this.logger.log('removed channel');
             if (!deletedChannel)
