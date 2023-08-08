@@ -1,7 +1,7 @@
 <template>
     <button class="custom-button-1" @click="showDialog()">Create new Dm</button>
     <div class="card flex justify-content-center p-fluid">
-        <Dialog v-model:visible="isVisible" modal header="New Dm" :style="{ width: '50vw' }" :closeButtonProps="handleCloseButton">
+        <Dialog v-model:visible="isVisible" modal header="New Dm" :style="{ width: '50vw' }">
             <form @submit.prevent="onSubmit">
                 <div class="p-field">
                     <AutoComplete v-model="selectedFriend" :suggestions="filteredFriends" @complete="search" />
@@ -20,10 +20,8 @@ import { ref } from 'vue';
 import Dialog from 'primevue/dialog';
 import AutoComplete from 'primevue/autocomplete';
 import { useToast } from 'primevue/usetoast';
-import { useConfirm } from "primevue/useconfirm";
 
 const toast = useToast();
-const confirm = useConfirm();
 const isVisible = ref<boolean>(false);
 const playerId = parseInt(sessionStorage.getItem('playerId') || '0');
 const selectedFriend = ref<string>('');
@@ -56,29 +54,6 @@ const search = (event) => {
         }
     }, 250);
 }
-
-//CONFIRM DIALOG BUTTON
-const openConfirmDialog = () => {
-    confirm.require({
-        message: 'Are you sure you want to proceed?',
-        header: 'Confirmation',
-        accept: () => {
-            resetForm();
-        },
-        onShow: () => {
-            isVisible.value = true;
-        }
-    });
-};
-
-//HANDLE CLOSE BUTTON
-//when clicked confirm dialog is shown
-const handleCloseButton = {
-    'aria-label': 'Close Dialog',
-    onClick: () => {
-        openConfirmDialog()
-    },
-};
 
 const dmExists = async (friend_id: number) => {
     const dm = await axiosInstance.get('channel/dm/' + playerId.toString() + '/' + friend_id.toString());

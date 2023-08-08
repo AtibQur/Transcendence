@@ -12,15 +12,15 @@
           :key="message.id"
           :class="getMessageSenderClass(message)"
         >
-          <div class="myMessagePosition">
-            <div class="sender-name" :class="{'you-sender': message.sender.username === username}">
-              {{ message.sender.username === username ? 'You' : message.sender.username }}
-            </div>
-            <div class="message-content" :class="getMessageClass(message)">
-              {{ message.content }}
-            </div>
+        <div class="myMessagePosition">
+          <div class="sender-name" :class="{'you-sender': message.sender.username === username}">
+            {{ message.sender.username === username ? 'You' : message.sender.username }}
+          </div>
+          <div class="message-content" :class="getMessageClass(message)">
+            {{ message.content }}
           </div>
         </div>
+          </div>
       </div>
     </div>
   </div>
@@ -149,6 +149,9 @@ ul {
 }
 
 .channel-name-button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
     font-family: 'JetBrains Mono';
     font-weight: bold;
     border: none;
@@ -162,6 +165,11 @@ ul {
     height: 75px;
     margin-bottom: 20px;
 }
+
+.channel-name-button b {
+  margin-right: 10px; /* Adjust the value as needed */
+}
+
 .channel-name-button:hover {
     background-color: var(--gray-shadow);
     color: var(--white-softgray);
@@ -210,15 +218,16 @@ ul {
 
 .my-message-sender {
   color: var(--gray-medium);
-  align-self: flex-end;
   text-align: right;
+  margin-right: 10px;
+  align-self: flex-end; /* Align to the right side for 'You' sender */
 }
 
 .friend-message-sender {
   color: var(--gray-medium);
-  align-self: flex-start;
   text-align: left;
-  margin-left: 15px;
+  margin-left: 10px;
+  align-self: flex-start; /* Align to the left side for other senders */
 }
 
 .my-message {
