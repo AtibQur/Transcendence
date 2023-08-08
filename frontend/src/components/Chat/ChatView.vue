@@ -1,7 +1,7 @@
 <template>
     <Toast :stacked="false"/>
     <div class="chat">
-        <div class="login" v-if="!playerId">
+        <div v-if="!playerId">
             <h3> Please log in </h3>
         </div>
         <div class="chat-start-page" v-else>
@@ -23,7 +23,10 @@
                 :isVisible="showChannelInfo"
             />
         </div>
-        <div class="add-message-wrapper">
+        <div class="select-chat" v-else>
+            <h3> Select a channel or DM to start chatting </h3>
+        </div>
+        <div class="add-message-wrapper" v-if="inChannel || inDm">
             <AddMessage :channelId="channelId"/>
         </div>
     </div>
@@ -216,6 +219,11 @@ onBeforeMount(async () => {
     background-color: var(--white-softblue);
     border-top: 2px solid var(--gray-medium);
     box-sizing: border-box;
+}
+
+.select-chat {
+    color: var(--gray-dark);
+    padding-top: 30%;
 }
 
 </style>
