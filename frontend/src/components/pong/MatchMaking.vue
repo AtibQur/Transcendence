@@ -1,7 +1,9 @@
 <template>
-	<h1 class="loading-text">
-		Finding players <span class="loading-dots">{{ animatedDots }}</span>
-	</h1>
+	<div v-if="showLoadingText">
+		<h1 class="loading-text">
+			Finding players <span class="loading-dots">{{ animatedDots }}</span>
+		</h1>
+	</div>
 </template>
 
 <script lang="ts">
@@ -23,6 +25,7 @@
 export default {
 	name: 'MatchMaking',
 	setup() {
+		const showLoadingText = ref(true)
 		const toast = useToast();
 		const matchSaved = ref(false);
 		const router = useRouter(1);
@@ -45,11 +48,12 @@ export default {
 	});
 
 	onBeforeMount(async () => {
-		player.id = parseInt(sessionStorage.getItem('playerId') || '0');
-		player.socket_id = socket.id;
-		sessionStorage.setItem('socketID', player.socket_id);
-		console.log(player.socket_id)
-		socket.emit('joinMatchmaking', {player_id: player.id, socket_id: player.socket_id});
+		// player.id = parseInt(sessionStorage.getItem('playerId') || '0');
+		// player.socket_id = socket.id;
+		// sessionStorage.setItem('socketID', player.socket_id);
+		// console.log(player.socket_id)
+		// socket.emit('joinMatchmaking', {player_id: player.id, socket_id: player.socket_id});
+		showLoadingText.value = true;
 	});
 
 	const fetchUsername = async (player_id: number) => {
@@ -64,6 +68,7 @@ export default {
 
 	socket.on('startMatch', async (match) => {
 	try {
+		showLoadingText.value = false;
 		if (!matchSaved.value){
 			const { player1, player2 } = match;
 			console.log("P1", player1)
@@ -113,6 +118,7 @@ export default {
 
 	return {
 		animatedDots,
+		showLoadingText
 		};
 	},
 };

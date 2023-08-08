@@ -28,44 +28,40 @@ export class PongGateway {
 	constructor(
 		private readonly pongService: PongService
 	){}
-
-	async handleConnection(@ConnectedSocket() client: Socket){
-		const playerId = parseInt(client.handshake.auth.id);
-		if (!playerId)
-		{
-			console.log('nobody logged in');
-			client.disconnect(); 
-		}
-		else {
-			const intra_username = await this.playerService.findOneIntraUsername(playerId);
-			console.log('pong logging...');
-			client.join(intra_username);
-			console.log('client joined the socket pong room')
-		}
-	}
+	
 	// INVITE
+	@SubscribeMessage('inviteAccepted')
+	inviteAccepted(
+		@ConnectedSocket() client: Socket,
+		@MessageBody() player_id: number): void {
+			this.pongService.inviteAccepted(client, player_id);
+	}
+
 	@SubscribeMessage('acceptInvite')
 	handleAccept(
 		@ConnectedSocket() client: Socket,
-			@MessageBody() { player1, player1_socketId, opponent_id, opponent_id_socketId }:
-			{ player1: number; player1_socketId: string; opponent_id, number; opponent_id_socketId: string }): void {
-			this.pongService.handleAcceptInivite(client, player1, player1_socketId, opponent_id, opponent_id_socketId);	
-		}
+		@MessageBody() {p1_id, p1_socket_id, p2_id, p2_socket_id}: {p1_id: number, p1_socket_id: string
+			p2_id: number, p2_socket_id: string}) {
+			const response = this.pongService.handleAcceptInvite(client, p1_id, p1_socket_id, p2_id, p2_socket_id)
+			return (response)
+	}
 
 	@SubscribeMessage('declineInvite')
 	handleDecline(
 		@ConnectedSocket() client: Socket,
-		@MessageBody() { player1}: { player1: number}): void {
-		this.pongService.handleDeclineInivite(client, player1);	
+		@MessageBody() player1_id: number): void {
+		this.pongService.handleDeclineInvite(client, player1_id)
 	}
 
-	@SubscribeMessage('joinInvite')
-	async handleJoinInvite(
+	@SubscribeMessage('sendInvite')
+	async handleSendInvite(
 		@ConnectedSocket() client: Socket,
 		@MessageBody() { player_id, opponent_id, socket_id}: { player_id: number; opponent_id: number; socket_id: string }) {
-			this.pongService.handleInvite(client, player_id, opponent_id, socket_id);	
+			const response = this.pongService.handleSendInvite(client, player_id, opponent_id, socket_id);
+		return response
 	}
 
+	// GAME
 	@SubscribeMessage('endGame')
 	handleEndGame(
 		@ConnectedSocket() client: Socket): void {

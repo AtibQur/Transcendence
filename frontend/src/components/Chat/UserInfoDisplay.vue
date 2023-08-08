@@ -196,11 +196,19 @@ const sendDm = async () => {
 
 // INVITE TO PLAY PONG
 const invite = async() => {
-	console.log("invite send to", currentChannelmemberId.value);
-	socket.emit('joinInvite', {player_id: playerId, opponent_id: currentChannelmemberId.value, socket_id: socket.id})
-	toast.add({ severity: 'success', summary: 'Invitation send', detail: '', life: 3000 });
-
+	console.log("invite send to", currentChannelmemberId);
+	socket.emit('sendInvite', {player_id: playerId, opponent_id: currentChannelmemberId.value, socket_id: socket.id}, 
+    (response) => {
+        console.log("RESPONSE", response)
+        if (!response)   
+            toast.add({ severity: 'success', summary: 'Invitation send', detail: '', life: 3000 });
+        else if (response === 1)
+            toast.add({ severity: 'error', summary: "You can't send an invite, you are in a match", detail: '', life: 3000 });
+        else if (response === 2)
+            toast.add({ severity: 'error', summary: "That player already received an invite", detail: '', life: 3000 });
+    })
 }
+
 // MUTE CHANNELMEMBER
 const muteChannelmember = async () => {
     const response = await axiosInstance.patch(`channelmember/mute/${playerId.toString()}`, {

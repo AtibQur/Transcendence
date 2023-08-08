@@ -10,7 +10,7 @@
 
 			<div v-if="powerUpVisable">
 				<img class="powerUpPixel"
-				src="../../assets/images/powerUpBall.png"
+				src="../../assets/images/PONG_logo.png"
 				:style="{ top: powerUpPixel.x + 'px', left: powerUpPixel.y + 'px' }"
 				/>
 			</div>

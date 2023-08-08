@@ -9,7 +9,7 @@
 				<h3> Please log in to play online </h3>
 			</div>
 			<div class="login" v-if="playerId">
-				<button class="custom-button-1" v-if="!startMatch" @click="joinGame">Join Game</button>
+					<button class="custom-button-1" v-if="!startMatch" @click="joinGame">Join Queue</button>
 			</div>
 		</div>
 		<div v-if="showDifficulty">
@@ -26,7 +26,6 @@
 import SoloMatch from './SoloMatch.vue'
 import MatchMaking from './MatchMaking.vue'
 import { socket } from '../../socket'
-import { Socket } from 'socket.io';
 import { useRouter } from 'vue-router'
 import { defineComponent } from 'vue'
 
@@ -45,6 +44,10 @@ data() {
 	},
 methods: {
 	joinGame(){
+		this.playerId = parseInt(sessionStorage.getItem('playerId') || '0');
+		sessionStorage.setItem('socketID', socket.id);
+		console.log(socket.id)
+		socket.emit('joinMatchmaking', {player_id: this.playerId, socket_id: socket.id});
 		this.startMatch = true;
 	},
 	selectDifficulty(difficulty){

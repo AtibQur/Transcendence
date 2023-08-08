@@ -35,6 +35,7 @@ const routes: RouteRecordRaw[] = [
     },
 	{
 		path: '/play/multiplayer',
+    name: 'multiplayer',
 		component: Multiplayer,
 	},
     {
