@@ -1,10 +1,12 @@
 <template>
     <h4>Channels</h4>
-    <ul id="channelList">
-        <li v-for="(channel, index) in channels" :key="index">
-            <button class="channel-display-button" @click="changeChannel(channel.channel_id)"> {{ channel.channel.name }} </button>
-        </li>
-    </ul>
+    <div class="channel-list-container">
+        <ul id="channelList">
+            <li v-for="(channel, index) in channels" :key="index">
+                <button class="channel-display-button" @click="changeChannel(channel.channel_id)"> {{ channel.channel.name }} </button>
+            </li>
+        </ul>
+    </div>
 </template>
 
 <script setup lang="ts">
@@ -74,4 +76,8 @@ onBeforeMount(async () => {
         color: var(--white-softblue);
         transition: 0.3s;
     }
+    .channel-list-container {
+    max-height: 275px; /* Adjust the max height as needed */
+    overflow-y: auto;
+}
 </style>

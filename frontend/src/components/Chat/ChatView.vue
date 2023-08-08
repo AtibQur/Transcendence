@@ -1,7 +1,7 @@
 <template>
     <Toast :stacked="false"/>
     <div class="chat">
-        <div class="login" v-if="!playerId">
+        <div v-if="!playerId">
             <h3> Please log in </h3>
         </div>
         <div class="chat-start-page" v-else>
@@ -12,19 +12,24 @@
                 <AddDm/>
                 <JoinChannel/>
             </div>
-            <div class="chat-box">
-                <div v-if="inChannel || inDm">
-                    <ChatBox @showInfo="showInfo" :channelId="channelId"/>
-                    <AddMessage :channelId="channelId"/>
-                    <ChannelInfoDisplay 
-                        @showInfo="showInfo"
-                        @changeChannel="changeChannel"
-                        :channelId="channelId"
-                        :isDm="inDm"
-                        :isVisible="showChannelInfo"
-                    />
-                </div>
-            </div>
+            <div class="chat-box" :style="{ height: chatBoxHeight + 'px' }">
+        <div class="chat-content" v-if="inChannel || inDm">
+            <ChatBox @showInfo="showInfo" :channelId="channelId"/>
+            <ChannelInfoDisplay 
+                @showInfo="showInfo"
+                @changeChannel="changeChannel"
+                :channelId="channelId"
+                :isDm="inDm"
+                :isVisible="showChannelInfo"
+            />
+        </div>
+        <div class="select-chat" v-else>
+            <h3> Select a channel or DM to start chatting </h3>
+        </div>
+        <div class="add-message-wrapper" v-if="inChannel || inDm">
+            <AddMessage :channelId="channelId"/>
+        </div>
+    </div>
             <div class="right-side-bar">
                 <div class="profile-container">
                     <div class="ProfilePicture">
@@ -43,7 +48,7 @@
 </template>
 
 <script setup lang="ts">
-import { onBeforeMount, ref } from 'vue';
+import { onBeforeMount, ref, onMounted, onUnmounted } from 'vue';
 import axiosInstance from '../../axiosConfig';
 import ChannelDisplay from './ChannelDisplay.vue';
 import ChannelInfoDisplay from './ChannelInfoDisplay.vue';
@@ -61,6 +66,8 @@ const username = sessionStorage.getItem('username') || '0';
 const profilePicture = ref('');
 const inChannel = ref(false);
 const inDm = ref(false);
+const status = ref('');
+const chatBoxHeight = ref<number>(1350);
 
 const channelId = ref<number>(0);
 const showChannelInfo = ref(false);
@@ -100,6 +107,27 @@ onBeforeMount(async () => {
     imageUrl.value = URL.createObjectURL(new Blob([imageBytes]));
     return imageUrl.value;
   };
+
+  const fetchStatus = async (player_id: number) => {
+    const response = await axiosInstance.get('player/status/' + player_id.toString());
+    return response.data;
+  }
+    // A method to adjust the chatbox height based on the window size
+    const updateChatBoxHeight = () => {
+        const windowHeight = window.innerHeight;
+        chatBoxHeight.value = Math.min(windowHeight - 200, 1350); // Adjust as needed
+    };
+
+        // Listen to the window resize event and update the chatbox height
+        onMounted(() => {
+        updateChatBoxHeight(); // Initial update
+        window.addEventListener('resize', updateChatBoxHeight);
+    });
+    // Clean up the event listener when the component is unmounted
+    onUnmounted(() => {
+        window.removeEventListener('resize', updateChatBoxHeight);
+    });
+
 
 </script>
 
@@ -160,14 +188,42 @@ onBeforeMount(async () => {
 /* Chat Box */
 .chat-box {
     flex: 3;
+    display: flex;
     flex-direction: column;
     background: var(--white-softblue);
     overflow: auto;
     margin-top: 100px;
     border-top: 2px solid var(--gray-medium);
+    border-bottom: 2px solid var(--gray-medium);
     border-left: 2px solid var(--gray-medium);
     border-right: 2px solid var(--gray-medium);
+    position: relative; /* Ensure relative positioning context */
 }
 
+/* Chat Content */
+.chat-content {
+    flex: 1; /* Allow chat content to grow and push the AddMessage button to the bottom */
+}
+
+/* AddMessage Button */
+.add-message-wrapper {
+    margin-top: auto; /* Push the AddMessage button to the bottom */
+}
+
+/* Positioning the AddMessage button container at the bottom */
+.add-message-container {
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    padding: 10px;
+    background-color: var(--white-softblue);
+    border-top: 2px solid var(--gray-medium);
+    box-sizing: border-box;
+}
+
+.select-chat {
+    color: var(--gray-dark);
+    padding-top: 30%;
+}
 
 </style>

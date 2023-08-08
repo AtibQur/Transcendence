@@ -14,6 +14,7 @@ import { CreateChannelDto } from 'src/channel/dto/create-channel.dto';
 import { CreateChannelmemberDto } from 'src/channelmember/dto/create-channelmember.dto';
 import { UpdateChannelmemberDto } from 'src/channelmember/dto/update-channelmember.dto';
 import { DeleteChannelDto } from 'src/channel/dto/delete-channel.dto';
+import * as dotenv from 'dotenv';
 
 @WebSocketGateway({
 	cors: {

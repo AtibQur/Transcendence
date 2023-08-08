@@ -1,7 +1,7 @@
 <template>
     <div class="new-message">
         <form @submit.prevent="sendMessage">
-            <input v-model="content" placeholder='Write a message' class="message-input"/>
+            <input v-model="content" placeholder='Write a message' class="message-input" :maxlength="200"/>
             <button class="simple-button" type="submit">Send</button>
         </form>
     </div>
@@ -25,13 +25,15 @@ const content = ref('');
 
 const sendMessage = () => {
     const trimmedContent = content.value.trim();
-    if (trimmedContent !== '') {
-        socket.emit('addChatmessage', { content: content.value, sender_id: playerId, channel_id: props.channelId }, (response) => {
+    if (trimmedContent !== '' && trimmedContent.length <= 200) {
+        socket.emit('addChatmessage', { content: trimmedContent, sender_id: playerId, channel_id: props.channelId }, (response) => {
             if (response == false)
                 toast.add({ severity: 'error', summary: 'You are not allowed to send this message', detail: '', life: 3000 });
             else
                 content.value = '';
         })
+    } else if (trimmedContent.length > 200) {
+        toast.add({ severity: 'warn', summary: 'Message is too long. Max 200 characters allowed.', detail: '', life: 3000 });
     }
 }
 

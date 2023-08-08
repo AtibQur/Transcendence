@@ -1,6 +1,6 @@
 <template>
     <h4>Direct Messages</h4>
-    <ul id="dmList">
+    <ul id="dmList" class="dm-list">
         <li v-for="(dm, index) in dms" :key="index">
             <button class="dm-display-button" @click="changeChannel(dm.channel_id)"> {{ dm.friend_username }} </button>
         </li>
@@ -57,6 +57,10 @@ onBeforeMount(async () => {
 </script>
 
 <style>
+.dm-list {
+    max-height: 275px;
+    overflow-y: auto;
+}
 .dm-display-button {
     font-family: 'JetBrains Mono';
     background-color: transparent;
