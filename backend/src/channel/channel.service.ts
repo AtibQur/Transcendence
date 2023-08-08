@@ -408,13 +408,8 @@ export class ChannelService {
   //REMOVE CHANNEL
   // can only be done by the owner or if the last member wants to leave the channel
   // returns deleted channel on success, nothing on error
-  async remove(player_id: number, deleteChannelDto: DeleteChannelDto) {
+  async remove(deleteChannelDto: DeleteChannelDto) {
     try {
-        const updater = await this.channelmemberService.findChannelmember(player_id, deleteChannelDto.id);
-
-        if (!updater.is_owner)
-            throw new Error('player not allowed');
-        
         const deletedChannel = await prisma.channel.delete({
             where: {
                 id: deleteChannelDto.id,
@@ -424,6 +419,8 @@ export class ChannelService {
                 messages: true
             },
         });
+
+        console.log('deleting channel');
 
         return deletedChannel;
     } catch (error) {

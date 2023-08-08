@@ -19,8 +19,7 @@ import { MatchInstanceModule } from './pong/match/match-instance.module';
   imports: [
     GoogleModule,
     AuthModule,
-    // CrudModule,
-	  PongModule,
+    PongModule,
     PlayerModule,
     ChannelModule,
     ChannelmemberModule,

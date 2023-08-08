@@ -101,34 +101,6 @@ export class PongGame {
 		const paddleBottom = player1.y + player1.height / 2;
 		const paddleTop2 = player2.y - player2.height / 2;
 		const paddleBottom2 = player2.y + player2.height / 2;
-		const ballCenter = ball.y + (this.ball.radius / 2);
-		//left paddle
-		// if (ball.x == 15){
-		// 	if ((ball.y + 21) > paddleTop && (ball.y) < paddleBottom) {
-		// 		ball.dX =- ball.dX;
-		// 	}
-		// }
-		// // right paddle corner
-		// if ((ball.x) < 15) {
-		// 	if ((ball.y + 21) > paddleTop && (ball.y) < paddleBottom) {
-		// 		ball.dY = 0;
-		// 	}
-		// }
-
-
-		// // right paddle
-		// if ((ball.x + 21) == 833) {
-		// 	if ((ball.y + 21) > paddleTop2 && (ball.y) < paddleBottom2) {
-		// 		ball.dX =- ball.dX;
-		// 	}
-		// }
-		// // right paddle corner
-		// if ((ball.x + 21) > 833) {
-		// 	if ((ball.y + 21) > paddleTop2 && (ball.y) < paddleBottom2) {
-		// 		ball.dY = 0;
-		// 	}
-		// }
-
 
 		// left paddle
 		if (ball.x <= 15) {

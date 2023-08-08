@@ -25,7 +25,7 @@ export class BlockedplayerController {
   }
 
   //FIND IF USER BLOCKED A PLAYER
-  // returns true is player is blocked, or false on failure
+  // returns true if player is blocked, or false on failure
   @Get('player/:id')
   findIfBlocked(@Param('id') id: string, @Query('username') username: string) {
     return this.blockedplayerService.isBlocked(+id, username);
