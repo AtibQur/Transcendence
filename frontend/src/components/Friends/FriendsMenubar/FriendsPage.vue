@@ -120,13 +120,14 @@ export default {
         const blockPlayerResponse = await axiosInstance.post(`blockedplayer/add/${playerId}`, {blockedUsername: playerName.value});
         if (blockPlayerResponse.data)
         {
-            const deleteFriendship = await axiosInstance.delete(`friend/${playerId}`, { data: {friendUsername: playerName.value}});
-            if (deleteFriendship.data)
+            if (isFriend.value == true)
             {
-                toast.add({ severity: 'success', summary: 'Blocked player successfully', detail: '', life: 3000 });
+              const deleteFriendship = await axiosInstance.delete(`friend/${playerId}`, { data: {friendUsername: playerName.value}});
+              if (deleteFriendship.data)
                 isFriend.value = false;
-                isBlocked.value = true;
             }
+            isBlocked.value = true;
+            toast.add({ severity: 'success', summary: 'Blocked player successfully', detail: '', life: 3000 });
         }
         else
             toast.add({ severity: 'error', summary: 'Error blocking player', detail: '', life: 3000 });
