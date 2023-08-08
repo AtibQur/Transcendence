@@ -15,6 +15,7 @@ import { CreateChannelmemberDto } from 'src/channelmember/dto/create-channelmemb
 import { UpdateChannelmemberDto } from 'src/channelmember/dto/update-channelmember.dto';
 import { DeleteChannelDto } from 'src/channel/dto/delete-channel.dto';
 import * as dotenv from 'dotenv';
+import { BlockedplayerService } from 'src/blockedplayer/blockedplayer.service';
 
 @WebSocketGateway({
 	cors: {
@@ -29,6 +30,7 @@ export class ChatGateway {
         private readonly channelmemberService: ChannelmemberService,
         private readonly channelService: ChannelService,
         private readonly chatmessageService: ChatmessageService,
+        private readonly blockedplayerService: BlockedplayerService
         ) {}
         
     private logger = new Logger('ChatGateway');
@@ -138,6 +140,17 @@ export class ChatGateway {
         @MessageBody() createChatmessageDto: CreateChatmessageDto,
     ){
         try {
+            const isDm = await this.channelService.isDm(createChatmessageDto.channel_id);
+            if (isDm) {
+                const members = await this.channelmemberService.findAllChannelmembers(createChatmessageDto.channel_id);
+                if (members.length == 2)
+                {
+                    const isBlocked = await this.blockedplayerService.isBlocked(members[0].id, members[1].id);
+                    if (isBlocked)
+                        return false;
+                }
+            }
+
             const chatmessage = await this.chatmessageService.createChatMessage(createChatmessageDto);
             if (!chatmessage)
                 return false;

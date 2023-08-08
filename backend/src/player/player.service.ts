@@ -3,6 +3,7 @@ import { CreatePlayerDto } from './dto/create-player.dto';
 import { UpdatePlayerDto } from './dto/update-player.dto';
 import { PrismaService } from '../../prisma/prisma.service';
 import { File } from 'multer';
+import { BlockedplayerService } from 'src/blockedplayer/blockedplayer.service';
 
 const prisma = PrismaService.getClient();
 
