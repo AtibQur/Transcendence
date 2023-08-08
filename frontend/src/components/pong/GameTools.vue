@@ -112,10 +112,10 @@ html, body {
 
 .ball {
 	position: absolute;
-	width: 20px;
-	height: 20px;
+	width: 21px;
+	height: 21px;
 	background-color:rgb(246, 125, 125);
-	border-radius: 50%;
+	/* border-radius: 50%; */
 }
 
 .powerUpPixel {

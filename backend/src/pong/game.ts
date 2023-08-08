@@ -12,6 +12,7 @@ interface resetInfo {
 }
 
 export class PongGame {
+	private isFirstBallMove = true;
 	private canvasWidth = 858;
 	private canvasHeight = 526;
 	private _player1: User = {
@@ -29,12 +30,12 @@ export class PongGame {
 		new: 0,
 	};
 	private _ball: Ball = {
-		x: 422,
+		x: 419,
 		y: 251,
-		radius: 10,
+		radius: 10.5,
 		dX: 1,
 		dY: 1,
-		velocity: 2,
+		velocity: 4,
 	};
 	private _game: Game = {
 		state: 'start',
@@ -73,7 +74,7 @@ export class PongGame {
 	resetBall(ball) {
 		ball.x = this.canvasWidth / 2;
 		ball.y = this.canvasHeight / 2;
-		ball.velocity = 2;
+		this.ball.velocity += 0.25;
 		ball.dX = Math.random() > 0.5 ? 1 : - 1;
 		ball.dY = Math.random() > 0.5 ? 1 : - 1;
 		ball.y = Math.min(Math.max((Math.random() * this.canvasHeight), 100), 
@@ -82,14 +83,14 @@ export class PongGame {
 
 	canvasCollision(player1, player2, ball) {
 		// top and bottom
-		if (ball.y + this.ball.radius > this.canvasHeight - 20 || ball.y < 0) {
+		if (ball.y + this.ball.radius > this.canvasHeight - 21 || ball.y < 0) {
 			ball.dY =- ball.dY;
 		}
 		if (ball.x < 0){
 			player2.score++;
 			this.resetBall(ball);
 		}
-		if (ball.x > 843){
+		if (ball.x > 831){
 			player1.score++;
 			this.resetBall(ball);
 		}
@@ -98,18 +99,64 @@ export class PongGame {
 	paddleCollision(player1, player2, ball) {
 		const paddleTop = player1.y - player1.height / 2;
 		const paddleBottom = player1.y + player1.height / 2;
+		const paddleTop2 = player2.y - player2.height / 2;
+		const paddleBottom2 = player2.y + player2.height / 2;
 		const ballCenter = ball.y + (this.ball.radius / 2);
-		// Left Paddle
-		if (ball.x < 20 && ball.x > 15 && ballCenter >= paddleTop && 
-			ballCenter <= paddleBottom) {
-			ball.dX =- ball.dX;
-			ball.velocity += 0.001;
+		//left paddle
+		// if (ball.x == 15){
+		// 	if ((ball.y + 21) > paddleTop && (ball.y) < paddleBottom) {
+		// 		ball.dX =- ball.dX;
+		// 	}
+		// }
+		// // right paddle corner
+		// if ((ball.x) < 15) {
+		// 	if ((ball.y + 21) > paddleTop && (ball.y) < paddleBottom) {
+		// 		ball.dY = 0;
+		// 	}
+		// }
+
+
+		// // right paddle
+		// if ((ball.x + 21) == 833) {
+		// 	if ((ball.y + 21) > paddleTop2 && (ball.y) < paddleBottom2) {
+		// 		ball.dX =- ball.dX;
+		// 	}
+		// }
+		// // right paddle corner
+		// if ((ball.x + 21) > 833) {
+		// 	if ((ball.y + 21) > paddleTop2 && (ball.y) < paddleBottom2) {
+		// 		ball.dY = 0;
+		// 	}
+		// }
+
+
+		// left paddle
+		if (ball.x <= 15) {
+			if (ball.x == 15){
+				if ((ball.y + 21) > paddleTop && (ball.y) < paddleBottom) {
+					ball.dX =- ball.dX;
+				}
+			}
+			// left paddle corner
+			else {
+				if ((ball.y + 21) > paddleTop && (ball.y) < paddleBottom) {
+					ball.dY = 0;
+				}
+			}
 		}
-		// Right Paddle
-		if (ball.x < this.canvasWidth - 20 && ball.x > this.canvasWidth - 50 && 
-			ballCenter >= player2.y - 45 && ballCenter <= player2.y + 45) {
-			ball.dX =- ball.dX;
-			ball.velocity += 0.001;
+		// right paddle
+		if ((ball.x + 21) >= 833) {
+			if ((ball.x + 21) == 833) {
+				if ((ball.y + 21) > paddleTop2 && (ball.y) < paddleBottom2) {
+					ball.dX =- ball.dX;
+				}
+			}
+			// right paddle corner
+			else {
+				if ((ball.y + 21) > paddleTop2 && (ball.y) < paddleBottom2) {
+					ball.dY = 0;
+				}
+			}
 		}
 	}
 
@@ -183,8 +230,8 @@ export class PongGame {
 		}
 		
 	moveBall(player1, player2, ball) {
-		ball.x += ball.dX * ball.velocity;
-		ball.y += ball.dY * ball.velocity;
+		ball.x += ball.dX;
+		ball.y += ball.dY;
 		player2.y = player2.new;
 		player1.y = player1.new;
 
@@ -195,15 +242,34 @@ export class PongGame {
 	}
 
 	updateGame(player1, player2, ball) {
-		for (let i = 0; i < ball.velocity; i++)
-			this.moveBall(player1, player2, ball);
-		
+		// wait a couple of seconds before starting game
+		if (this.isFirstBallMove) {
+			setTimeout(() => {
+				this.moveBall(player1, player2, ball);
+				this.isFirstBallMove = false; 
+			}, 2000); // beginning delay
+		} else {
+			for (let i = 0; i < this.ball.velocity; i++)
+				this.moveBall(player1, player2, ball);
+		}
 		if (this.powerUp.new)
-			this.checkPowerUp()
+			this.checkPowerUp();
 		if (this.powerUp.active)
 			this.resetPowerUp(player1, player2);
-
+	
 		if (player1.score === 10 || player2.score === 10)
-			this.game.state = 'end'
+			this.game.state = 'end';
 	}
+	// updateGame(player1, player2, ball) {
+	// 	for (let i = 0; i < ball.velocity; i++)
+	// 		this.moveBall(player1, player2, ball);
+		
+	// 	if (this.powerUp.new)
+	// 		this.checkPowerUp()
+	// 	if (this.powerUp.active)
+	// 		this.resetPowerUp(player1, player2);
+
+	// 	if (player1.score === 10 || player2.score === 10)
+	// 		this.game.state = 'end'
+	// }
 }
