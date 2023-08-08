@@ -103,7 +103,7 @@ export class ChannelController {
   }
 
   @Delete('delete/:player_id')
-  remove(@Param('player_id') player_id: string, @Body() deleteChannelDto: DeleteChannelDto) {
-    return this.channelService.remove(+player_id, deleteChannelDto);
+  remove(@Body() deleteChannelDto: DeleteChannelDto) {
+    return this.channelService.remove(deleteChannelDto);
   }
 }
