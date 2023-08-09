@@ -3,7 +3,7 @@ module.exports = defineConfig({
   transpileDependencies: true,
   devServer: {
     allowedHosts: [
-      process.env.VUE_APP_POSITION + '.codam.nl',
+      process.env.VUE_APP_POSITION,
       'localhost',
     ],
   },
