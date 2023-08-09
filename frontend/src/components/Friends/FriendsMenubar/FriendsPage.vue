@@ -1,5 +1,4 @@
 <template>
-  <Toast/>
   <div class="ProfileContainer">
     <div class="ProfileData">
       <div class="ProfilePicture">
@@ -58,15 +57,13 @@ import { useRoute, useRouter } from 'vue-router';
 import FriendsStats from './FriendsStats.vue';
 import FriendsHistory from './FriendsHistory.vue';
 import FriendsAchievements from './FriendsAchievements.vue';
-import Toast from 'primevue/toast';
 import { useToast } from 'primevue/usetoast';
 
 export default {
   components: {
     FriendsAchievements,
     FriendsHistory,
-    FriendsStats,
-    Toast
+    FriendsStats
   },
   setup() {
     const route = useRoute();

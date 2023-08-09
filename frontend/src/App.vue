@@ -8,6 +8,7 @@ git statuscd <template>
 	<div>
 		<FriendsMenubar />
 	</div>
+    <Toast/>
 	<ConfirmDialog />
 	<Dialog v-model:visible="isInvited" modal header="You got an invitation to play pong!" :style="{ width: '35vw' }" :closeButtonProps="handleCloseButton">
 		<button class="custom-button-1" @click="confirm1()" icon="pi pi-check" label="Confirm">Accept</button>
@@ -25,6 +26,7 @@ import ConfirmDialog from 'primevue/confirmdialog';
 import { useConfirm } from "primevue/useconfirm";
 import { useToast } from 'primevue/usetoast';
 import Dialog from 'primevue/dialog';
+import Toast from 'primevue/toast'
 import { onMounted } from 'vue';
 import { setDefaultAuthHeader } from './axiosConfig';
 import { useRouter } from 'vue-router';
