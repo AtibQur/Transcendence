@@ -3,16 +3,16 @@
     <div class="PongLogo">
       <h1>PONG</h1>
     </div>
-    <form @submit.prevent="initPlayerData">	
-            <input v-model="username" placeholder='Enter username'/>	
-            <button type="submit">Log in</button>	
-    </form>	
-    <p></p>	
-    <div v-if="intraName">	
-      <label> Intraname logged:   {{ intraName }}</label>	
-      <p></p>	
-      <label> Logged for testing: {{ logged_user }}</label>	
-    </div>	
+    <form @submit.prevent="initPlayerData">
+            <input v-model="username" placeholder='Enter username'/>
+            <button type="submit">Log in</button>
+    </form>
+    <p></p>
+    <div v-if="intraName">
+      <label> Intraname logged:   {{ intraName }}</label>
+      <p></p>
+      <label> Logged for testing: {{ logged_user }}</label>
+    </div>
     <p></p>
     <div class="PongTable">
       <ul>
