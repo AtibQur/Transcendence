@@ -100,16 +100,8 @@ export class BlockedplayerService {
       }
       const existingBlock = await prisma.blockedPlayer.findFirst({
         where: {
-            OR: [
-                {
-                    player_id: id,
-                    blocked_id: blockedId,
-                },
-                {
-                    player_id: blockedId,
-                    blocked_id: id,
-                },
-            ],
+            player_id: id,
+            blocked_id: blockedId,
         },
       });
 
@@ -137,4 +129,26 @@ export class BlockedplayerService {
       return false;
     }
   }
+
+  // CHECK IF ONE OF THE PLAYERS HAS BLOCKED THE OTHER
+//   async checkBlock(player_id: number, member_id: number) {
+//     try {
+//         const existingBlock = await prisma.blockedPlayer.findFirst({
+//             where: {
+//                 OR: [
+//                     {
+//                         player_id: player_id,
+//                         blocked_id: blockedId,
+//                     },
+//                     {
+//                         player_id: blockedId,
+//                         blocked_id: player_id,
+//                     },
+//                 ],
+//             },
+//         });
+//     } catch (error) {
+
+//     }
+//   }
 }
