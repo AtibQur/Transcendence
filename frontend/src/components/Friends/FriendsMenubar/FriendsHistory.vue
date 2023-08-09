@@ -7,10 +7,10 @@
           :key="index"
           class="border-row"
           :class="['border-value', { 
-            'green-bg': player === match.player.username && match.player_points > match.opponent_points,
-            'red-bg': player === match.player.username && match.player_points < match.opponent_points,
-            'green-bg1': player !== match.player.username && match.player_points > match.opponent_points,
-            'red-bg1': player != match.player.username && match.player_points > match.opponent_points,
+            'green-bg': playerName === match.player.username && match.player_points > match.opponent_points,
+            'red-bg': playerName === match.player.username && match.player_points < match.opponent_points,
+            'green-bg1': playerName != match.player.username && match.player_points < match.opponent_points,
+            'red-bg1': playerName != match.player.username && match.player_points > match.opponent_points,
           }]"
         >
           <div class="border-value blue-text player-username">{{ match.player.username }}</div>
