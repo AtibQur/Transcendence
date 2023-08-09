@@ -12,6 +12,7 @@ import { MatchModule } from './match/match.module';
 import { ChatModule } from './chat/chat.module';
 import { FriendModule } from './friend/friend.module';
 import { BlockedplayerModule } from './blockedplayer/blockedplayer.module';
+import { MatchInstanceModule } from './pong/match/match-instance.module';
 
 
 @Module({
@@ -27,6 +28,7 @@ import { BlockedplayerModule } from './blockedplayer/blockedplayer.module';
     ChatModule,
     FriendModule,
     BlockedplayerModule,
+	MatchInstanceModule,
   ],
   controllers: [AppController],
   providers: [AppService],

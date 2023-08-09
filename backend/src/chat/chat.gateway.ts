@@ -381,3 +381,6 @@ export class ChatGateway {
         }
     }
 }
+ 
+
+/////////// PONG GATEWAY //////////

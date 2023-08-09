@@ -2,4 +2,5 @@
 .DS_Store
 db
 migrations
+node_modules
 # .env

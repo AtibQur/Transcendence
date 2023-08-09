@@ -1,7 +1,8 @@
 export interface Ball {
 	x: number;
 	y: number;
-	dirX: number;
-	dirY: number;
-	speed: number;
+	radius: number;
+	dX: number;
+	dY: number;
+	velocity: number;
 }
