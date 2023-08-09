@@ -3,17 +3,6 @@
     <div class="PongLogo">
       <h1>PONG</h1>
     </div>
-    <form @submit.prevent="initPlayerData">
-            <input v-model="username" placeholder='Enter username'/>
-            <button type="submit">Log in</button>
-    </form>
-    <p></p>
-    <div v-if="intraName">
-      <label> Intraname logged:   {{ intraName }}</label>
-      <p></p>
-      <label> Logged for testing: {{ logged_user }}</label>
-    </div>
-    <p></p>
     <div class="PongTable">
       <ul>
         <li><router-link to="/play">Play</router-link></li>
@@ -22,7 +11,6 @@
         <li><router-link to="/profile">Profile</router-link></li>
       </ul>
     </div>
-    <button class="custom-button-1" @click="logOut">Log out</button>
   </div>
 </template>
 
@@ -38,9 +26,7 @@
   const intraName = ref("");
   const router = useRouter();
   const logged_user = sessionStorage.getItem('username') || '';
-//   import router from '@/router';
 
-//   const intraName = ref("");
   const logged = ref(false);
   
   const initPlayerData = async () => {
