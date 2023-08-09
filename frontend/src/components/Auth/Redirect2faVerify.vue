@@ -16,7 +16,7 @@
 
 <script setup lang="ts">
     import ImageComponent from './ImageComponent.vue';
-    import { onMounted, ref } from 'vue';
+    import { onMounted } from 'vue';
     import axiosInstance from '../../axiosConfig';
 
     const enableTFA = async () => {
