@@ -145,7 +145,9 @@ export class ChatGateway {
                 const members = await this.channelmemberService.findAllChannelmembers(createChatmessageDto.channel_id);
                 if (members.length == 2)
                 {
-                    const isBlocked = await this.blockedplayerService.isBlocked(members[0].member_id, members[1].member.username);
+                    const blocked_username = members.find((item) => item.member_id == createChatmessageDto.sender_id).member.username;
+                    const blocker_id = members.find((item) => item.member.username !== blocked_username).member_id;
+                    const isBlocked = await this.blockedplayerService.isBlocked(blocker_id, blocked_username);
                     if (isBlocked)
                         return false;
                 }
