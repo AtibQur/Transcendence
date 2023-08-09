@@ -1,5 +1,4 @@
 <template>
-  <Toast/>
   <div class="ProfileContainer">
     <div class="ProfileData">
       <div class="ProfilePicture">
@@ -58,15 +57,13 @@ import { useRoute, useRouter } from 'vue-router';
 import FriendsStats from './FriendsStats.vue';
 import FriendsHistory from './FriendsHistory.vue';
 import FriendsAchievements from './FriendsAchievements.vue';
-import Toast from 'primevue/toast';
 import { useToast } from 'primevue/usetoast';
 
 export default {
   components: {
     FriendsAchievements,
     FriendsHistory,
-    FriendsStats,
-    Toast
+    FriendsStats
   },
   setup() {
     const route = useRoute();
@@ -120,13 +117,14 @@ export default {
         const blockPlayerResponse = await axiosInstance.post(`blockedplayer/add/${playerId}`, {blockedUsername: playerName.value});
         if (blockPlayerResponse.data)
         {
-            const deleteFriendship = await axiosInstance.delete(`friend/${playerId}`, { data: {friendUsername: playerName.value}});
-            if (deleteFriendship.data)
+            if (isFriend.value == true)
             {
-                toast.add({ severity: 'success', summary: 'Blocked player successfully', detail: '', life: 3000 });
+              const deleteFriendship = await axiosInstance.delete(`friend/${playerId}`, { data: {friendUsername: playerName.value}});
+              if (deleteFriendship.data)
                 isFriend.value = false;
-                isBlocked.value = true;
             }
+            isBlocked.value = true;
+            toast.add({ severity: 'success', summary: 'Blocked player successfully', detail: '', life: 3000 });
         }
         else
             toast.add({ severity: 'error', summary: 'Error blocking player', detail: '', life: 3000 });

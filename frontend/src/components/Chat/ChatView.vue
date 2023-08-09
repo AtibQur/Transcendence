@@ -1,5 +1,4 @@
 <template>
-    <Toast :stacked="false"/>
     <div class="chat">
         <div v-if="!playerId">
             <h3> Please log in </h3>
@@ -36,7 +35,7 @@
                         <img :src="profilePicture" alt="Avatar" style="width:100%">
                     </div>
                 </div>
-                <h2>{{ username }} {{ playerId }}</h2>
+                <h2>{{ username }}</h2>
                 <div class="status-circle">
                     <span class="status-text">
                         online
@@ -52,9 +51,7 @@ import { onBeforeMount, ref, onMounted, onUnmounted } from 'vue';
 import axiosInstance from '../../axiosConfig';
 import ChannelDisplay from './ChannelDisplay.vue';
 import ChannelInfoDisplay from './ChannelInfoDisplay.vue';
-import ConfirmDialog from 'primevue/confirmdialog';
 import AddChannel from './AddChannel.vue';
-import Toast from 'primevue/toast';
 import ChatBox from './ChatBox.vue';
 import AddMessage from './AddMessage.vue';
 import DmDisplay from './DmDisplay.vue';
@@ -66,7 +63,6 @@ const username = sessionStorage.getItem('username') || '0';
 const profilePicture = ref('');
 const inChannel = ref(false);
 const inDm = ref(false);
-const status = ref('');
 const chatBoxHeight = ref<number>(1350);
 
 const channelId = ref<number>(0);
@@ -108,10 +104,6 @@ onBeforeMount(async () => {
     return imageUrl.value;
   };
 
-  const fetchStatus = async (player_id: number) => {
-    const response = await axiosInstance.get('player/status/' + player_id.toString());
-    return response.data;
-  }
     // A method to adjust the chatbox height based on the window size
     const updateChatBoxHeight = () => {
         const windowHeight = window.innerHeight;

@@ -14,7 +14,7 @@
                     <Password id="password" inputId="add" v-model="password" toggleMask :feedback="false" />
                 </div>
                 <small id="text-error" class="p-error">{{ errorMessage }}</small>
-                <button type="submit">Submit</button>
+                <button class="custom-button-1" type="submit" style="background-color: var(--blue-lightest); margin-top: 20px;">Submit</button>
             </form>
         </Dialog>
     </div>
@@ -25,7 +25,6 @@ import {ref, onBeforeMount, watch } from 'vue'
 import axiosInstance from '../../axiosConfig';
 import Password from 'primevue/password'
 import Dialog from 'primevue/dialog';
-import ConfirmDialog from 'primevue/confirmdialog';
 import { useToast } from 'primevue/usetoast';
 import { useConfirm } from "primevue/useconfirm";
 

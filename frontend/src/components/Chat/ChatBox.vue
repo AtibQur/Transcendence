@@ -38,28 +38,33 @@ const props = defineProps({
   const username = sessionStorage.getItem('username') || null;
   const messagesContainer = ref<HTMLElement | null>(null);
   
+  onMounted(() => {
+  // Scroll to the bottom of the messages container when the component is mounted
+    scrollToBottom();
+  });
+
   onBeforeMount(async () => {
     await fetchChatMessagesFiltered(playerId, currentChannelId.value);
     await fetchChannelName(currentChannelId.value);
     
     //ADD MESSAGE TO CURRENT MESSAGES
-    socket.on('chatmessage', (message: Message) => {
-    console.log("new message");
-    messages.value.push(message);
+    socket.on('chatmessage', async (message: Message) => {
+      await axiosInstance.get(`blockedplayer/player/${playerId.toString()}?username=${message.sender.username}`)
+        .then((response) => {
+          if (response.data == false && message.channel_id == currentChannelId.value) {
+            messages.value.push(message);
+          }
+        });
 
-    // Use nextTick to ensure that the DOM is updated before scrolling
-    nextTick(() => {
-      // Scroll to the bottom of the messages container
-      if (messagesContainer.value) {
-        messagesContainer.value.scrollTop = messagesContainer.value.scrollHeight;
-      }
+      // Use nextTick to ensure that the DOM is updated before scrolling
+      nextTick(() => {
+        // Scroll to the bottom of the messages container
+        if (messagesContainer.value) {
+          messagesContainer.value.scrollTop = messagesContainer.value.scrollHeight;
+        }
+      });
     });
-});
 
-onMounted(() => {
-  // Scroll to the bottom of the messages container when the component is mounted
-  scrollToBottom();
-});
   socket.on('banned', (channel_id: number) => {
       socket.emit('removeFromRoom', {channel_id: channel_id}, (response) => {
           if (response)

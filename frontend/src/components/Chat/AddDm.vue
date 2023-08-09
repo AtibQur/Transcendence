@@ -7,7 +7,7 @@
                     <AutoComplete v-model="selectedFriend" :suggestions="filteredFriends" @complete="search" />
                 </div>
                 <small id="text-error" class="p-error">{{ errorMessage }}</small>
-                <button type="submit">Create</button>
+                <button class="custom-button-1" type="submit" style="background-color: var(--blue-lightest); margin-top: 20px;">Create</button>
             </form>
         </Dialog>
     </div>

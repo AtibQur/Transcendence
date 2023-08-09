@@ -3,6 +3,7 @@ import { CreatePlayerDto } from './dto/create-player.dto';
 import { UpdatePlayerDto } from './dto/update-player.dto';
 import { PrismaService } from '../../prisma/prisma.service';
 import { File } from 'multer';
+import { BlockedplayerService } from 'src/blockedplayer/blockedplayer.service';
 
 const prisma = PrismaService.getClient();
 
@@ -332,6 +333,8 @@ async findIntraByUsername(username: string) {
     try {
       const playerStats = await this.findOneStats(id);
       const totalGames = playerStats.wins + playerStats.losses;
+      if (!totalGames)
+        return (0);
       return (playerStats.wins / totalGames * 100);
     } catch (error) {
       console.error('Error occurred:', error);

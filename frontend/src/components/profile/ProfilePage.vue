@@ -1,5 +1,4 @@
 <template>
-  <Toast />
   <div class="ProfileContainer">
     <div class="ProfileData">
       <div class="ProfilePicture">
@@ -99,7 +98,6 @@
   import { removeCookie } from '../cookie_utils';
   import { removeDefaultAuthHeader } from '../../axiosConfig';
   import { useRouter } from 'vue-router';
-  import Toast from 'primevue/toast';
   import { useToast } from 'primevue/usetoast';
 
   const username = ref("");

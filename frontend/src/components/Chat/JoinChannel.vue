@@ -43,7 +43,7 @@
 <script setup lang="ts">
 import { socket } from '@/socket';
 import axiosInstance from '../../axiosConfig';
-import { ref, onBeforeMount } from 'vue';
+import { ref } from 'vue';
 import Password from 'primevue/password'
 import Dialog from 'primevue/dialog';
 import VirtualScroller from 'primevue/virtualscroller';
