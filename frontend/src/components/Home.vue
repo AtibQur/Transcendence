@@ -38,9 +38,7 @@
   const intraName = ref("");
   const router = useRouter();
   const logged_user = sessionStorage.getItem('username') || '';
-//   import router from '@/router';
 
-//   const intraName = ref("");
   const logged = ref(false);
   
   const initPlayerData = async () => {
@@ -99,7 +97,9 @@
 
   const setDefaultAvatar = async () => {
     const playerId = parseInt(sessionStorage.getItem('playerId') || '0');
-    const defaultAvatarPath = './default_avatar.png';
+    const randomDecimal = Math.random() ;
+    const randomNumber = Math.floor(randomDecimal * 7) + 1;
+    const defaultAvatarPath = './default_avatars/avatar_' + randomNumber + '.png';
 
     // Fetch the default avatar file
     const defaultAvatarFile = await fetch(defaultAvatarPath);

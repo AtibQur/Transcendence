@@ -51,8 +51,9 @@ const props = defineProps({
     socket.on('chatmessage', async (message: Message) => {
       await axiosInstance.get(`blockedplayer/player/${playerId.toString()}?username=${message.sender.username}`)
         .then((response) => {
-          if (response.data == false)
+          if (response.data == false && message.channel_id == currentChannelId.value) {
             messages.value.push(message);
+          }
         });
 
       // Use nextTick to ensure that the DOM is updated before scrolling
