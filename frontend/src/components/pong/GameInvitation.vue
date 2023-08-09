@@ -38,7 +38,7 @@ onBeforeMount( () => {
 		invitorUsername.value = await fetchUsername(player_id.value);
 	});
 	// redirecting to a accepted match
-	socket.on('redirecting', (data) => {
+	socket.on('redirecting', () => {
 		startMatch.value = true;
 	});
 })

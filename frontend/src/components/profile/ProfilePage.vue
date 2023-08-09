@@ -101,7 +101,6 @@
   const status = ref("");
   const selectedOption = ref("Achievements");
   const showChangeNameModal = ref(false);
-  const showQRCode = ref(false);
   const newName = ref('');
   const profilePicture = ref("");
   const showChangePictureModal = ref(false);
@@ -208,7 +207,7 @@
     }
   };
 
-  const handleAvatarUploaded = async (avatarBytes: Uint8Array) => {
+  const handleAvatarUploaded = async () => {
     showChangePictureModal.value = false;
     profilePicture.value = await fetchAvatar(playerId)
   };
