@@ -34,7 +34,7 @@
           <h2>{{ player.player.username }}</h2>
         </div>
         <div class="Leaderboard-games">
-          <h2>{{ player.wins }}</h2>
+          <h2>{{ player.ladder_level }}</h2>
         </div>
         <div style="display: none;">{{ playerRankIndex = index + 1 }}</div>
       </div>
