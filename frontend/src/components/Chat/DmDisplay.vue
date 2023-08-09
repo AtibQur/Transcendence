@@ -1,11 +1,16 @@
 <template>
     <h4>Direct Messages</h4>
-    <ul id="dmList" class="dm-list">
-        <li v-for="(dm, index) in dms" :key="index">
-            <button class="dm-display-button" @click="changeChannel(dm.channel_id)"> {{ dm.friend_username }} </button>
-        </li>
-    </ul>
-    <p></p>
+    <div class="dm-container">
+        <div v-if="text" class="txtmsg">
+            <small>{{ text }}</small>
+        </div>
+        <ul id="dmList" class="dm-list">
+            <li v-for="(dm, index) in dms" :key="index">
+                <button class="dm-display-button" @click="changeChannel(dm.channel_id)"> {{ dm.friend_username }} </button>
+            </li>
+        </ul>
+    </div>
+    <!-- <p></p> -->
 </template>
 
 <script setup lang="ts">
@@ -16,6 +21,8 @@ import { onBeforeMount, ref} from 'vue'
 const emit = defineEmits(['changeChannel']);
 const playerId = parseInt(sessionStorage.getItem('playerId') || '0');
 const dms = ref([]);
+const text = ref('');
+
 
 onBeforeMount(async () => {
     
@@ -25,6 +32,7 @@ onBeforeMount(async () => {
     socket.on('newDm', (dm) => {
         socket.emit('joinRoom', { playerId: playerId, channelId: dm.channel_id }, () => {
             dms.value.push(dm);
+            text.value = '';
         })
     });
 })
@@ -34,6 +42,9 @@ onBeforeMount(async () => {
         const response = await axiosInstance.get('channelmember/alldms/' + playerId.toString());
         if (response.data)
         {
+            if (response.data.length == 0)
+                text.value = 'No Dms yet';
+
             response.data.forEach((item) => {
                 const friend = item.channel.members.find((member) => member.member_id !== playerId);
 
@@ -57,6 +68,13 @@ onBeforeMount(async () => {
 </script>
 
 <style>
+
+.dm-container {
+    height: 275px;
+    background-color: var(--white-moretransparent);
+    margin-bottom: 10%;
+}
+
 .dm-list {
     max-height: 275px;
     overflow-y: auto;
@@ -81,5 +99,11 @@ onBeforeMount(async () => {
     color: var(--white-softblue);
     transition: 0.3s;
 }
+
+.txtmsg {
+        color: var(--gray-dark);
+        padding: 30px;
+    }
+
 
 </style>
