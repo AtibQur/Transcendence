@@ -32,7 +32,7 @@
 
     <div class="ProfileStats">
       <select v-model="selectedOption">
-        <option value="Achievements">{{ playerName }}'s Achievements</option>
+        <option value="Achievements">Achievements</option>
         <option value="Stats">Stats</option>
         <option value="Match History">Match History</option>
       </select>
