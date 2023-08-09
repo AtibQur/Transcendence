@@ -3,23 +3,23 @@
         <button class="custom-button-1" @click="isVisible = true">Create New Channel</button>
         <Dialog v-model:visible="isVisible" modal header="New Channel" :style="{ width: '50vw' }">
             <form @submit.prevent="onSubmit">
-                <div class="p-field">
-                    <label for="channelName">Channel Name</label>
+                <p class="p-field">
+                    <label for="channelName">Channel Name  </label>
                     <InputText id="channelName" v-model="newChannelName" />
-                </div>
+                </p>
                 <div class="flex flex-wrap gap-3">
                     <div v-for="option in securityOptions" :key="option.type" class="flex align-items-center">
                         <RadioButton @click="selectedSecurityType = option.type" v-model="securityType" :inputId="option.type.toString()" :value="option.name" />
                         <label :for="option.type.toString" class="ml-2">{{ option.name }}</label>
                     </div>
                 </div>
-                <div class="p-field">
-                    <label for="password">Password</label>
+                <p class="p-field">
+                    <label for="password">Password  </label>
                     <Password id="password" v-if="selectedSecurityType === SecurityLevel.PUBLIC" disabled placeholder="Disabled" />
                     <Password id="password" v-else v-model="password" toggleMask :feedback="false" />
-                </div>
+                </p>
                 <small id="text-error" class="p-error">{{ errorMessage }}</small>
-                <button type="submit">Create</button>
+                <button class="custom-button-1" type="submit" style="background-color: var(--blue-lightest); margin-top: 20px;">Create</button>
             </form>
         </Dialog>
     </div>
@@ -110,5 +110,4 @@ const onSubmit = () => {
             toast.add({ severity: 'error', summary: 'Error Channel not Created', detail: '', life: 3000 });
     }
 };
-
 </script>

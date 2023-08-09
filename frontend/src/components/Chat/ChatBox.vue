@@ -51,14 +51,8 @@ const props = defineProps({
     socket.on('chatmessage', async (message: Message) => {
       await axiosInstance.get(`blockedplayer/player/${playerId.toString()}?username=${message.sender.username}`)
         .then((response) => {
-          if (response.data == false)
-          {
-            if (message.channel_id == currentChannelId.value) {
-              messages.value.push(message);
-            }
-            if (message.sender.username != username) {
-              toast.add({ severity: 'success', summary: 'New message from ' + message.sender.username , detail: 'test', life: 3000 });
-            }
+          if (response.data == false && message.channel_id == currentChannelId.value) {
+            messages.value.push(message);
           }
         });
 
