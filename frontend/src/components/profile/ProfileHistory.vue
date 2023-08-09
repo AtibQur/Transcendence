@@ -6,7 +6,12 @@
           v-for="(match, index) in matches"
           :key="index"
           class="border-row"
-          :class="['border-value', { 'green-bg': match.player_points > match.opponent_points, 'red-bg': match.player_points < match.opponent_points, 'yellow-bg': match.player_points === match.opponent_points }]"
+          :class="['border-value', { 
+            'green-bg': props.username === match.player.username && match.player_points > match.opponent_points,
+            'red-bg': props.username === match.player.username && match.player_points < match.opponent_points,
+            'green-bg1': props.username !== match.player.username && match.player_points < match.opponent_points,
+            'red-bg1': props.username != match.player.username && match.player_points > match.opponent_points,
+          }]"
         >
           <div class="border-value blue-text player-username">{{ match.player.username }}</div>
           <div class="border-value black-text"  style="font-weight: bold">{{ match.player_points }}</div>
@@ -20,15 +25,21 @@
 </template>
 
 <script setup lang="ts">
-import { onBeforeMount, ref } from 'vue';
+import { PropType, onBeforeMount, ref } from 'vue';
 import axiosInstance from '../../axiosConfig';
 
 const matches = ref([]);
 const playerId = parseInt(sessionStorage.getItem('playerId') || '0');
+const playerName = ref("");
+
+const props = defineProps({
+  username: String as PropType<string>,
+});
 
 onBeforeMount(async () => {
   try {
     matches.value = await fetchMatches(playerId);
+    playerName.value = await fetchPlayerName(playerId);
     console.log(matches.value);
   } catch (error) {
     console.log("Error occurred:", error);
@@ -40,6 +51,11 @@ const fetchMatches = async (playerId: number) => {
   const reversedMatches = response.data.reverse(); // Reverse the order of matches
   return reversedMatches;
 };
+
+const fetchPlayerName = async (playerId: string) => {
+  const name = await axiosInstance.get('player/username/' + playerId.toString());
+  return name;
+}
 </script>
 
 <style scoped>
@@ -81,6 +97,13 @@ const fetchMatches = async (playerId: number) => {
 }
 
 .red-bg {
+  background-color: var(--red-light);
+}
+.green-bg1 {
+  background-color: var(--green-light);
+}
+
+.red-bg1 {
   background-color: var(--red-light);
 }
 

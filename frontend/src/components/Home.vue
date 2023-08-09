@@ -38,9 +38,7 @@
   const intraName = ref("");
   const router = useRouter();
   const logged_user = sessionStorage.getItem('username') || '';
-//   import router from '@/router';
 
-//   const intraName = ref("");
   const logged = ref(false);
   
   const initPlayerData = async () => {

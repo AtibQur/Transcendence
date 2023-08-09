@@ -44,7 +44,7 @@
         <FriendsStats :friendId="Number(friendId)" />
       </div>
       <div v-else-if="selectedOption === 'Match History'" class="show">
-        <FriendsHistory :friendId="Number(friendId)" />
+        <FriendsHistory :friendId="Number(friendId)" :playerName="playerName" />
       </div>
     </div>
   </div>

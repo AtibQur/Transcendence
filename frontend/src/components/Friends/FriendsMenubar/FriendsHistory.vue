@@ -6,7 +6,12 @@
           v-for="(match, index) in matches"
           :key="index"
           class="border-row"
-          :class="['border-value', { 'green-bg': match.player_points > match.opponent_points, 'red-bg': match.player_points < match.opponent_points, 'yellow-bg': match.player_points === match.opponent_points }]"
+          :class="['border-value', { 
+            'green-bg': playerName === match.player.username && match.player_points > match.opponent_points,
+            'red-bg': playerName === match.player.username && match.player_points < match.opponent_points,
+            'green-bg1': playerName != match.player.username && match.player_points < match.opponent_points,
+            'red-bg1': playerName != match.player.username && match.player_points > match.opponent_points,
+          }]"
         >
           <div class="border-value blue-text player-username">{{ match.player.username }}</div>
           <div class="border-value black-text"  style="font-weight: bold">{{ match.player_points }}</div>
@@ -29,26 +34,32 @@ export default {
       type: Number,
       required: true
     },
+    playerName: {
+      type: String
+    },
   },
   setup(props) {
     const { matches } = useFriendsHistory(props.friendId);
 
     return {
-      matches
+      matches,
     };
   }
 };
 
 const useFriendsHistory = (friendId) => {
   const matches = ref('');
+  const player = ref("");
 
   onBeforeMount(async () => {
-    try {
-      matches.value = await fetchMatches(friendId);
-    } catch (error) {
-      console.log("Error occurred");
-    }
-  });
+  try {
+    matches.value = await fetchMatches(friendId);
+    player.value = await fetchPlayerName(friendId);
+    console.log(player.value);
+  } catch (error) {
+    console.error("Error occurred:", error);
+  }
+});
 
   const fetchMatches = async (friendId) => {
     const response = await axiosInstance.get(`match/history/` + friendId.toString());
@@ -56,8 +67,20 @@ const useFriendsHistory = (friendId) => {
     return reversedMatches;
   };
 
+  const fetchPlayerName = async (playerId: string) => {
+  try {
+    const response = await axiosInstance.get('player/username/' + playerId.toString());
+    const name = response.data; // Extract the data from the response
+    return name;
+  } catch (error) {
+    console.error("Error fetching player name:", error);
+    throw error; // Rethrow the error to be caught in the onBeforeMount block
+  }
+};
+
   return {
-    matches
+    matches,
+    player,
   };
 };
 
@@ -102,6 +125,13 @@ const useFriendsHistory = (friendId) => {
 }
 
 .red-bg {
+  background-color: var(--red-light);
+}
+.green-bg1 {
+  background-color: var(--green-light);
+}
+
+.red-bg1 {
   background-color: var(--red-light);
 }
 

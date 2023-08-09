@@ -30,7 +30,7 @@
           <ProfileStats />
         </div>
         <div v-else-if="selectedOption === 'Match History'" class="show">
-          <ProfileHistory />
+          <ProfileHistory :username="username" />
         </div>
       </div>
 
