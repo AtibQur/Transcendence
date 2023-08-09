@@ -100,10 +100,11 @@ export class BlockedplayerService {
       }
       const existingBlock = await prisma.blockedPlayer.findFirst({
         where: {
-              player_id: id,
-              blocked_id: blockedId,
+            player_id: id,
+            blocked_id: blockedId,
         },
       });
+
       return existingBlock;
     }
     catch (error) {
@@ -128,4 +129,5 @@ export class BlockedplayerService {
       return false;
     }
   }
+
 }

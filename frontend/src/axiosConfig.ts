@@ -4,6 +4,16 @@ const instance: AxiosInstance = axios.create({
   baseURL: process.env.VUE_APP_HOST_COMPUTER + ':3000/',
 });
 
+instance.interceptors.response.use(
+  (response) => response,
+  (error) => {
+    if (error.response && error.response.status === 401) {
+      window.location.href = '/auth';
+    }
+    return Promise.reject(error);
+  }
+);
+
 export const setDefaultAuthHeader = (accessToken: string): void => {
   instance.defaults.headers.common["Authorization"] = `Bearer ${accessToken}`;
 };

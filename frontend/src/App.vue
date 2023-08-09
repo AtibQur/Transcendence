@@ -1,4 +1,4 @@
-git statuscd <template>
+<template>
 	<div>
 		<Menubar />
 	</div>
@@ -7,6 +7,10 @@ git statuscd <template>
 	</div>
 	<div>
 		<FriendsMenubar />
+	</div>
+	<Toast/>
+	<div>
+		<ChatNotification />
 	</div>
 	<ConfirmDialog />
 	<Dialog v-model:visible="isInvited" modal header="You got an invitation to play pong!" :style="{ width: '35vw' }" :closeButtonProps="handleCloseButton">
@@ -17,21 +21,20 @@ git statuscd <template>
 </template>
 
 <script setup lang="ts">
-import { onBeforeMount, ref } from 'vue'
+import { onBeforeMount, onMounted, ref } from 'vue'
 import { socket } from './socket';
-import Menubar from './components/Menubar/Menubar.vue';
-import FriendsMenubar from './components/Friends/FriendsMenubar/FriendsMenubar.vue';
-import ConfirmDialog from 'primevue/confirmdialog';
-import { useConfirm } from "primevue/useconfirm";
-import { useToast } from 'primevue/usetoast';
-import Dialog from 'primevue/dialog';
-import { onMounted } from 'vue';
 import { setDefaultAuthHeader } from './axiosConfig';
 import { useRouter } from 'vue-router';
 import { getCookie } from './components/cookie_utils';
+import { useConfirm } from "primevue/useconfirm";
+import ConfirmDialog from 'primevue/confirmdialog';
+import Dialog from 'primevue/dialog';
+import Toast from 'primevue/toast'
+import Menubar from './components/Menubar/Menubar.vue';
+import FriendsMenubar from './components/Friends/FriendsMenubar/FriendsMenubar.vue';
 import MatchMaking from '../src/components/pong/MatchMaking.vue'
+import ChatNotification from './components/Chat/ChatNotification.vue';
 
-const toast = useToast();
 const router = useRouter();
 const confirm = useConfirm();
 
@@ -40,8 +43,6 @@ const startMatch = ref(false);
 const opponentId = parseInt(sessionStorage.getItem('playerId') || '0');
 const isInvited = ref(false);
 const player1 = ref(0);
-const player1_socketId = ref(0);
-const opponent_id = ref(0);
 
 const player_id = ref(0);
 const socket_id = ref(0);
@@ -176,5 +177,8 @@ body,
 	--red-light: #f0a1a1;
 	--green-light: #b7ef94;
 	--yellow-soft: #ffec8c9e;
+}
+.p-confirm-dialog, .p-toast, .p-dialog {
+	font-family: 'JetBrains Mono';
 }
 </style>

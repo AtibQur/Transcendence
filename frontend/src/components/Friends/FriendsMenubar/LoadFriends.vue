@@ -8,8 +8,6 @@
       </div>
       <input type="text" v-model="newFriendName" class="friend-input" placeholder="Enter friend's name" @keydown="handleKeyPress">
       <div class="buttonContainer">
-        <Toast />
-        <ConfirmDialog/>
         <button class="add-del-block-button" @click="addFriend">ADD</button>
         <button class="add-del-block-button" @click="confirmDelete($event)">DELETE</button>
         <button class="add-del-block-button" @click="confirmBlock($event)">BLOCK</button>
@@ -30,8 +28,6 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import ConfirmDialog from 'primevue/confirmdialog';
-import Toast from 'primevue/toast';
 import { useToast } from 'primevue/usetoast';
 import { useConfirm } from "primevue/useconfirm";
 import axiosInstance from '../../../axiosConfig';
@@ -48,10 +44,6 @@ enum Action {
 }
 
 export default defineComponent({
-  components: {
-    ConfirmDialog,
-    Toast,
-  },
   emits: ['close-menu'],
   data() {
     return {
