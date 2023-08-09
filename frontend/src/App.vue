@@ -13,7 +13,10 @@
 		<ChatNotification />
 	</div>
 	<ConfirmDialog />
-	<Dialog v-model:visible="isInvited" modal header="You got an invitation to play pong!" :style="{ width: '35vw' }" :closeButtonProps="handleCloseButton">
+	<Dialog v-model:visible="isInvited" modal :style="{ width: '35vw' }" :closeButtonProps="handleCloseButton">
+		<template #header>
+			You got an invitation from {{ invitorUsername }} to play pong!
+		</template>
 		<button class="custom-button-1" @click="confirm1()" icon="pi pi-check" label="Confirm">Accept</button>
 		<button class="custom-button-1" @click="confirm2()" icon="pi pi-check" label="Delete">Decline</button>
 	</Dialog>
@@ -34,6 +37,7 @@ import Menubar from './components/Menubar/Menubar.vue';
 import FriendsMenubar from './components/Friends/FriendsMenubar/FriendsMenubar.vue';
 import MatchMaking from '../src/components/pong/MatchMaking.vue'
 import ChatNotification from './components/Chat/ChatNotification.vue';
+import axiosInstance from './axiosConfig';
 
 const router = useRouter();
 const confirm = useConfirm();
@@ -43,17 +47,18 @@ const startMatch = ref(false);
 const opponentId = parseInt(sessionStorage.getItem('playerId') || '0');
 const isInvited = ref(false);
 const player1 = ref(0);
+const invitorUsername = ref("");
 
 const player_id = ref(0);
 const socket_id = ref(0);
 
 onBeforeMount( () => {
 	// send an invite to a player
-	socket.on('sendInvite', (data) => {
+	socket.on('sendInvite', async (data) => {
 		player_id.value = data.player_id;
 		socket_id.value = data.socket_id;
 		isInvited.value = true
-		console.log('you got an invitation')
+		invitorUsername.value = await fetchUsername(player_id.value);
 	});
 	// redirecting to a accepted match
 	socket.on('redirecting', (data) => {
@@ -91,7 +96,7 @@ const confirm2 = async () => {
 };
 
 // INVITE DIALOG
-const openConfirmDialog = () => {
+const openConfirmDialog = async () => {
 	confirm.require({
 		message: 'Are you sure you want to decline the invitation?',
 		header: 'Confirmation',
@@ -124,6 +129,11 @@ const checkLoggedIn = async () => {
 	}
 	setDefaultAuthHeader(accesstoken);
 };
+
+const fetchUsername = async (player_id: number) => {
+	const response = await axiosInstance.get('player/username/' + player_id.toString());
+	return response.data;
+}
 
 onMounted(() => {
 	const accesstoken = getCookie('auth');
