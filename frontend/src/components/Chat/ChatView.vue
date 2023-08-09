@@ -35,7 +35,7 @@
                         <img :src="profilePicture" alt="Avatar" style="width:100%">
                     </div>
                 </div>
-                <h2>{{ username }} {{ playerId }}</h2>
+                <h2>{{ username }}</h2>
                 <div class="status-circle">
                     <span class="status-text">
                         online
