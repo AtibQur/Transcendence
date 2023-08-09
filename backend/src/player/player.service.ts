@@ -333,6 +333,8 @@ async findIntraByUsername(username: string) {
     try {
       const playerStats = await this.findOneStats(id);
       const totalGames = playerStats.wins + playerStats.losses;
+      if (!totalGames)
+        return (0);
       return (playerStats.wins / totalGames * 100);
     } catch (error) {
       console.error('Error occurred:', error);
