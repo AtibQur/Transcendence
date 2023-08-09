@@ -1,7 +1,7 @@
 <template>
     <h4>Direct Messages</h4>
     <div class="dm-container">
-        <div class="txtmsg">
+        <div v-if="text" class="txtmsg">
             <small>{{ text }}</small>
         </div>
         <ul id="dmList" class="dm-list">
@@ -72,6 +72,7 @@ onBeforeMount(async () => {
 .dm-container {
     height: 275px;
     background-color: var(--white-moretransparent);
+    margin-bottom: 10%;
 }
 
 .dm-list {
