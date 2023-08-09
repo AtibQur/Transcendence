@@ -33,7 +33,6 @@ import InputText from 'primevue/inputtext'
 import Password from 'primevue/password'
 import RadioButton from 'primevue/radiobutton'
 import { useToast } from 'primevue/usetoast';
-import { useConfirm } from "primevue/useconfirm";
 
 enum SecurityLevel {
     PUBLIC,

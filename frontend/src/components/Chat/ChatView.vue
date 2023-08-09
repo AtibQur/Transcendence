@@ -63,7 +63,6 @@ const username = sessionStorage.getItem('username') || '0';
 const profilePicture = ref('');
 const inChannel = ref(false);
 const inDm = ref(false);
-const status = ref('');
 const chatBoxHeight = ref<number>(1350);
 
 const channelId = ref<number>(0);
@@ -105,10 +104,6 @@ onBeforeMount(async () => {
     return imageUrl.value;
   };
 
-  const fetchStatus = async (player_id: number) => {
-    const response = await axiosInstance.get('player/status/' + player_id.toString());
-    return response.data;
-  }
     // A method to adjust the chatbox height based on the window size
     const updateChatBoxHeight = () => {
         const windowHeight = window.innerHeight;

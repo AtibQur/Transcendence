@@ -25,7 +25,6 @@ import {ref, onBeforeMount, watch } from 'vue'
 import axiosInstance from '../../axiosConfig';
 import Password from 'primevue/password'
 import Dialog from 'primevue/dialog';
-import ConfirmDialog from 'primevue/confirmdialog';
 import { useToast } from 'primevue/usetoast';
 import { useConfirm } from "primevue/useconfirm";
 

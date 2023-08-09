@@ -23,9 +23,6 @@ import axiosInstance from '../../axiosConfig';
 import { onBeforeMount, ref, watch } from 'vue'
 import Sidebar from 'primevue/sidebar';
 import UserInfoDisplay from './UserInfoDisplay.vue';
-import { useToast } from 'primevue/usetoast';
-
-const toast = useToast();
 
 const props = defineProps({
     channelId: {
