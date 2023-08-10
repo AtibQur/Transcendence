@@ -26,7 +26,7 @@
     </div>
 
     <div class="Leaderboard-player-stats">
-      <div class="Leaderboard-row" v-for="(player, index) in limitedLeaderboardData" :key="index">
+      <div class="Leaderboard-row" v-for="(player, index) in leaderboardData" :key="index">
         <div class="Leaderboard-rank">
           <h2>{{ index + 1 }}</h2>
         </div>
@@ -36,7 +36,7 @@
         <div class="Leaderboard-games">
           <h2>{{ player.ladder_level }}</h2>
         </div>
-        <div style="display: none;">{{ playerRankIndex = index + 1 }}</div>
+        <!-- <div style="display: none;">{{ playerRankIndex = index + 1 }}</div> -->
       </div>
     </div>
 
@@ -45,70 +45,39 @@
 </template>
 
 <script setup lang="ts">
-  import { computed, onMounted, ref } from 'vue';
+  import { onBeforeMount, ref } from 'vue';
   import axiosInstance from '../axiosConfig';
 
   const leaderboardData = ref("");
-  const playerId = parseInt(sessionStorage.getItem('playerId') || '0');
-  const playerName = ref("");
-  const playerWins = ref("");
-  const playerRank = ref("");
   const maxPlayersToShow = 15;
 
-  onMounted(async () => {
-    try {
-      leaderboardData.value = await fetchLeaderboardData();
-    } catch (error) {
-      console.error('Failed to fetch leaderboard data:', error);
-    }
+  onBeforeMount(async () => {
+        await fetchLeaderboardData();
   });
-
-  const fetchPlayerWins = async (player_id: number) => {
-    const response = await axiosInstance.get('player/stats/' + player_id.toString());
-    console.log(response.data);
-    return response.data;
-  }
-
-  const fetchPlayerName = async (player_id: number) => {
-    const response = await axiosInstance.get('player/username/' + player_id.toString());
-    console.log(response.data);
-    return response.data;
-  }
 
   const fetchLeaderboardData = async () => {
     const response = await axiosInstance.get('player/leaderboard');
-    return response.data
+    if (response.data)
+        leaderboardData.value = response.data.slice(0, maxPlayersToShow);
+    else
+      console.error('Failed to fetch leaderboard data:');
   }
 
-  const limitedLeaderboardData = computed(() => {
-    if (!leaderboardData.value) {
-      return [];
-    }
-    return leaderboardData.value.slice(0, maxPlayersToShow);
-  });
+//waarvoor is dit nodig??
 
-  const playerRankIndex = computed(() => {
-    if (!leaderboardData.value || leaderboardData.value.length === 0) {
-      console.log("No leaderboard data");
-      return -1;
-    }
+//   const playerRankIndex = computed(() => {
+//     if (!leaderboardData.value || leaderboardData.value.length === 0) {
+//       console.log("No leaderboard data");
+//       return -1;
+//     }
 
-    const playerIndex = leaderboardData.value.findIndex(
-      (player) => player.player.id === playerId
-    );
+//     const playerIndex = leaderboardData.value.findIndex(
+//       (player) => player.player.id === playerId
+//     );
 
-    return playerIndex >= 0 ? playerIndex + 1 : -1; // Return the rank/index if found, otherwise -1
-  });
+//     return playerIndex >= 0 ? playerIndex + 1 : -1; // Return the rank/index if found, otherwise -1
+//   });
 
-  onMounted(async () => {
-    try {
-      playerWins.value = await fetchPlayerWins(playerId);
-      playerName.value = await fetchPlayerName(playerId);
-      playerRank.value = playerRankIndex.value;
-    } catch (error) {
-      console.error('Failed to fetch player data:', error);
-    }
-  });
 
 </script>
 
