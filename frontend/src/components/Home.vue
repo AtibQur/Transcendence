@@ -11,19 +11,11 @@
         <li><router-link to="/profile">Profile</router-link></li>
       </ul>
     </div>
-    <button class="custom-button-1" @click="logOut">Log out</button>
   </div>
 </template>
 
 <script setup lang="ts">
   import { defineComponent } from 'vue';
-  import { socket } from '@/socket';
-
-  const logOut = async () => {
-    socket.disconnect();
-    sessionStorage.removeItem('playerId');
-    sessionStorage.removeItem('username');
-  }
 
   defineComponent({
     name: 'HomeScreen'
