@@ -1,15 +1,17 @@
 <template>
 	<Menubar />
 	<router-view />
-	<FriendsMenubar />
 	<Toast/>
 	<ConfirmDialog />
-	<ChatNotification />
-	<GameInvitation />
+	<template v-if="sessionVariablesAreSet">
+		<FriendsMenubar />
+		<ChatNotification />
+		<GameInvitation />
+	</template>
 </template>
 
 <script setup lang="ts">
-import { onMounted } from 'vue'
+import { onMounted, ref } from 'vue'
 import { setDefaultAuthHeader } from './axiosConfig';
 import { useRouter } from 'vue-router';
 import { getCookie } from './components/cookie_utils';
@@ -23,6 +25,7 @@ import ChatNotification from './components/Chat/ChatNotification.vue';
 import axiosInstance from './axiosConfig';
 
 const router = useRouter();
+const sessionVariablesAreSet = ref(false);
 
 // AUTH
 const checkLoggedIn = async () => {
@@ -54,6 +57,7 @@ onMounted( async () => {
 		sessionStorage.setItem('playerId', responsePlayerId.data);
 		sessionStorage.setItem('intraUsername', responseIntraname.data);
 		sessionStorage.setItem('username', responseUsername.data);
+		sessionVariablesAreSet.value = true;
 
 		// set default avatar
 		if (!hasAvatar.data) {
