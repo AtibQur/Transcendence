@@ -97,6 +97,9 @@ export class ChatGateway {
                 throw new Error();
             client.join(channel_id.toString());
 
+            if (createChannelDto.password)
+                this.channelService.setPassword(channel_id, createChannelDto.owner_id, {password: createChannelDto.password});
+            
             // this is needed because of the format of the channel display array (channels are fetch through channelmemberservice)
             const newChannel = await this.channelmemberService.findChannelmember(createChannelDto.owner_id, channel_id);
             this.server.to(client.id).emit('newChannel', newChannel);
