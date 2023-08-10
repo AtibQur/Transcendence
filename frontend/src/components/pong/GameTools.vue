@@ -115,7 +115,7 @@ html, body {
 	width: 21px;
 	height: 21px;
 	background-color:rgb(246, 125, 125);
-	/* border-radius: 50%; */
+	border-radius: 25%;
 }
 
 .powerUpPixel {

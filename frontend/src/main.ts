@@ -10,6 +10,7 @@ import App from './App.vue';
 import Home from './components/Home.vue';
 import Play from './components/pong/Play.vue';
 import Multiplayer from './components/pong/Multiplayer.vue';
+import InviteMultiplayer from './components/pong/InviteMultiplayer.vue';
 import Tfa from './components/Auth/Redirect2faVerify.vue';
 import Auth from './components/Auth/AuthCheck.vue';
 import Login from './components/Auth/AuthRedirectIf2fa.vue';
@@ -35,8 +36,13 @@ const routes: RouteRecordRaw[] = [
     },
 	{
 		path: '/play/multiplayer',
-    name: 'multiplayer',
+		name: 'multiplayer',
 		component: Multiplayer,
+	},
+	{
+		path: '/play/multiplayer',
+		name: 'inviteMultiplayer',
+		component: InviteMultiplayer,
 	},
     {
       path: '/2fa',

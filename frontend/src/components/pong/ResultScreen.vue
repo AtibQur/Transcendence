@@ -3,10 +3,10 @@
 		<h1>PONG</h1>
 	</div>
 	<div class="gameover-container" v-if="win">
-		<h1>VICTORY!</h1>
+		<h1 style="color: #1fb01f">VICTORY!</h1>
 	</div>
 	<div class="gameover-container" v-if="lose">
-		<h1>DEFEAT!</h1>
+		<h1 style="color: #bf2e2e">DEFEAT!</h1>
 	</div>
 	<div class="gameover-container" v-if="disconnected">
 		<h1 class="disconnected-container">The other player disconnected</h1>

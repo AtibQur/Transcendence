@@ -23,7 +23,14 @@
 <script lang="ts">
 	import { socket } from '../../socket'
 	import { defineComponent } from 'vue'
-	import {socket_match_id, p1_socket_id, p2_socket_id, username1, username2, match_id} from './MatchMaking.vue'
+	import {
+	p1_id,
+	p2_id,
+	p1_socket_id,
+	p2_socket_id,
+	match_id,
+	socket_match_id,
+	} from './shared';
 	import { useRouter } from 'vue-router'
 	import axiosInstance from '../../axiosConfig'
 
@@ -152,18 +159,18 @@ methods: {
 	},
 
 	printInfo() {
-		this.moveInfo.socket_match_id = socket_match_id;
+		this.moveInfo.socket_match_id = socket_match_id.value;
 		// console.log("p1 username: ", username1, "p2 username :", username2)
 		// this.dynamicText1 = username1;
 		// this.dynamicText2 = username2;
 		console.log("this user:", socket.id)
 		if (socket.id === undefined)
 			this.$router.push('/play');
-		this.p1_socketId = p1_socket_id;
-		this.p2_socketId = p2_socket_id;
-		console.log("Player1 ID: ", p1_socket_id)
-		console.log("Player2 ID: ", p2_socket_id)
-		console.log("match Id:", socket_match_id)
+		this.p1_socketId = p1_socket_id.value;
+		this.p2_socketId = p2_socket_id.value;
+		console.log("Player1 ID: ", p1_socket_id.value)
+		console.log("Player2 ID: ", p2_socket_id.value)
+		console.log("match Id:", socket_match_id.value)
 	}
 },
 
@@ -200,14 +207,14 @@ mounted() {
 		this.showPowerUp(this.powerUp);
 		if (match.state === 'end' && !this.matchSaved){
 			console.log("this match is finished")
-			this.saveFinishedMatch(match_id, socket_match_id, this.score1, this.score2)
+			this.saveFinishedMatch(match_id.value, socket_match_id.value, this.score1, this.score2)
 			this.showResults = true;
 			this.matchSaved = true;
 		}
 		if (match.state === 'stop' && !this.matchSaved){
 			this.stop = true;	
 			console.log("this match is canceled")
-			this.saveFinishedMatch(match_id, socket_match_id, this.score1, this.score2)
+			this.saveFinishedMatch(match_id.value, socket_match_id.value, this.score1, this.score2)
 			this.showResults = true;
 			this.matchSaved = true;
 		}
@@ -215,9 +222,9 @@ mounted() {
 
 	window.addEventListener('keyup', this.keyUp);
 	window.addEventListener('keydown', this.keyDown);
-	if (p1_socket_id === socket.id)
+	if (p1_socket_id.value === socket.id)
 		setInterval(this.moveP1, 1)
-	if (p2_socket_id=== socket.id)
+	if (p2_socket_id.value === socket.id)
 		setInterval(this.moveP2, 1)
 	}
 
