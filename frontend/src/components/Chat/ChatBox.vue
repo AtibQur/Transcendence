@@ -135,12 +135,6 @@ const getMessageSenderClass = (message: Message) => {
 return message.sender.username === username ? 'my-message-sender' : 'friend-message-sender';
 };
 
-const getMessageBlockSize = (messageContent: string) => {
-return {
-  width: `${messageContent.length * 10}px`, // Adjust the multiplier to control the width
-};
-};
-
 const showInfo = () => {
   emit('showInfo', true);
 }
