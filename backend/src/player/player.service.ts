@@ -13,6 +13,7 @@ export class PlayerService {
   // CREATE NEW PLAYER
   async createPlayer(createPlayerDto: CreatePlayerDto) {
     try {
+      console.log("CREATING NEW PLAYER")
       const achievements = {
         'First win': false,
         '10 wins': false,
@@ -101,6 +102,24 @@ export class PlayerService {
     }
 }
 
+  // GET ID BY INTRA USERNAME
+  async findIdByIntraUsername(intraUsername: string) {
+    try {
+        const selectedPlayer = await prisma.player.findFirst({
+          where: {
+            intra_username: intraUsername,
+          },
+          select: {
+            id: true,
+          },
+        });
+        return selectedPlayer.id;
+      } catch (error) {
+        console.error('Error searching for user:', error);
+        return null;
+    }
+}
+
 // GET INTRANAME BY USERNAME
 async findIntraByUsername(username: string) {
   try {
@@ -113,6 +132,25 @@ async findIntraByUsername(username: string) {
         },
       });
       return selectedPlayer.intra_username;
+    }
+    catch (error) {
+      console.error('Error searching for user:', error);
+      return null;
+    }
+}
+
+// GET USERNAME BY INTRANAME
+async findUsernameByIntra(intraUsername: string) {
+  try {
+      const selectedPlayer = await prisma.player.findFirst({
+        where: {
+          intra_username: intraUsername,
+        },
+        select: {
+          username: true,
+        },
+      });
+      return selectedPlayer.username;
     }
     catch (error) {
       console.error('Error searching for user:', error);
@@ -325,6 +363,23 @@ async findIntraByUsername(username: string) {
     catch (error) {
       console.error('Error occurred:', error);
       return null;
+    }
+  }
+
+  // CHECK IF AVATAR IS SET
+  async hasAvatar(id: number) {
+    try {
+      const avatar = await this.findOneAvatar(id);
+      if (avatar) {
+        return true;
+      }
+      else {
+        return false;
+      }
+    }
+    catch (error) {
+      console.error('Error occurred:', error);
+      return false;
     }
   }
 

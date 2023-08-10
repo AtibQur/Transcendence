@@ -57,11 +57,24 @@ export class PlayerController {
     return this.playerService.findOneUsername(+id);
   }
 
+  // GET USERNAME BY INTRANAME
+  @Get('intrausername/:intraUsername')
+  findUsernameByIntra(@Param('intraUsername') intraUsername: string) {
+    return this.playerService.findUsernameByIntra(intraUsername);
+  }
+
   // GET AVATAR
   // returns avatar as bytes
   @Get('avatar/:id')
   findOneAvatar(@Param('id') id: string) {
     return this.playerService.findOneAvatar(+id);
+  }
+
+  // CHECK IF AVATAR IS SET
+  // returns true or false
+  @Get('hasavatar/:id')
+  hasAvatar(@Param('id') id: string) {
+    return this.playerService.hasAvatar(+id);
   }
 
   // GET PERCENTAGE WINS

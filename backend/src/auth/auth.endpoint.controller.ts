@@ -11,9 +11,17 @@ export class UserController {
     constructor(private readonly authService: AuthService,
         private readonly playerService: PlayerService) {}
 
+    @Get('intraname')
+    @UseGuards(AuthGuard)
+    async GetAuthIntraname(@Req() request: Request) {
+        const token = request.header('Authorization').split(' ')[1];
+        const payload = await this.authService.validateToken(token as string);
+        return payload.intraname;
+    }
+
     @Get('username')
     @UseGuards(AuthGuard)
-    async GetAuthStatus(@Req() request: Request) {
+    async GetAuthUsername(@Req() request: Request) {
         const token = request.header('Authorization').split(' ')[1];
         const payload = await this.authService.validateToken(token as string);
         return payload.username;
