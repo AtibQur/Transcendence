@@ -119,7 +119,6 @@
       username.value = await fetchUsername(playerId);
       profilePicture.value = await fetchAvatar(playerId);
       status.value = await fetchStatus(playerId);
-      console.log(username.value);
     } catch (error) {
       console.log("Error occurred profpage");
     }
