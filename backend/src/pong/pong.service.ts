@@ -40,7 +40,7 @@ export class PongService {
 	async handleAcceptInvite(client: Socket, p1_id: number, p1_socket_id: string, p2_id: number, p2_socket_id: string){
 		if (!this.inviteList || this.inviteList.length === 0){
 			console.log("can't start an match, a player disconnected")
-			return (1);
+			return 1;
 		}
 		const p1 = {
 			player_id: p1_id,
@@ -50,20 +50,15 @@ export class PongService {
 			player_id: p2_id,
 			socket_id: p2_socket_id,
 		}
-	
-		const player1 = await this.playerService.findOneIntraUsername(p1_id);
-		const player2 = await this.playerService.findOneIntraUsername(p2_id);
 		// CREATE INVITE MATCH
 		this.createMatch(client, p1, p2);
-		// client.to(player1).emit('startInviteMatch')
-		// client.to.emit('startInviteMatch')
 
 		const index = this.inviteList.findIndex(player => player.player_id === p1_id);
 		if (index !== -1){
 			console.log('removed', p1_id, 'from the invitelist')
   			this.inviteList.splice(index, 1);
 		}
-		return (0)
+		return 0;
 	}
 
 	// HANDLE DECLINING INVITE
@@ -123,17 +118,17 @@ export class PongService {
 			player_id: player_id,
 			socket_id: socket_id,
 		}
-		if (!this.waitingList.some((player) => player.socket_id === socket_id)) {
-			this.waitingList.push(playerInfo);
-			console.log('added', player_id, socket_id, 'to waitinglist');
-		} else {
-			console.log(socket_id, 'is already in the waiting list');
-		}
 		const checkInMatch = this.searchPlayerInMatch(client)
 		if (checkInMatch){
 			console.log("can't start a match, you are already in a match")
 			client.emit('alreadyInMatch', socket_id);
 			return ;
+		}
+		if (!this.waitingList.some((player) => player.socket_id === socket_id)) {
+			this.waitingList.push(playerInfo);
+			console.log('added', player_id, socket_id, 'to waitinglist');
+		} else {
+			console.log(socket_id, 'is already in the waiting list');
 		}
 		if (this.waitingList.length >= 2){
 			console.log('two people in waiting list');
@@ -154,7 +149,7 @@ export class PongService {
 		// 	client.emit('startMatch', { player1: { player_id: player1.player_id, socket_id: player1.socket_id }, player2: { player_id: player2.player_id, socket_id: player2.socket_id }});
 		// else
 		console.log("p1", player1, "p2", player2);
-		console.log("MATCH ID:", match.id)
+		console.log("Match Id:", match.id)
 		client.to(player1.socket_id).emit('startMatch', { 
 			player1: { player_id: player1.player_id, socket_id: player1.socket_id }, 
 			player2: { player_id: player2.player_id, socket_id: player2.socket_id },
