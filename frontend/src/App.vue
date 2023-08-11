@@ -14,14 +14,14 @@
 import { onMounted, ref } from 'vue'
 import { setDefaultAuthHeader } from './axiosConfig';
 import { useRouter } from 'vue-router';
-import { getCookie } from './components/cookie_utils';
+import { getCookie } from './utils/cookie_utils';
 import Toast from 'primevue/toast'
 import ConfirmDialog from 'primevue/confirmdialog';
 import Menubar from './components/Menubar/Menubar.vue';
 import FriendsMenubar from './components/Friends/FriendsMenubar/FriendsMenubar.vue';
 import GameInvitation from './components/pong/GameInvitation.vue'
 import ChatNotification from './components/Chat/ChatNotification.vue';
-import { loginPlayer } from './components/Auth/initPlayer';
+import { loginPlayer } from './utils/initPlayer';
 
 const router = useRouter();
 const sessionVariablesAreSet = ref(false);

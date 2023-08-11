@@ -86,13 +86,12 @@
 
 <script setup lang="ts">
   import { onBeforeMount, ref } from 'vue';
-  import axiosInstance from '../../axiosConfig';
   import ProfileAchievements from "./ProfileAchievements.vue";
   import ProfileStats from "./ProfileStats.vue";
   import ProfileHistory from "./ProfileHistory.vue";
   import ProfileAvatar from './ProfileAvatar.vue';
-  import { removeCookie } from '../cookie_utils';
-  import { removeDefaultAuthHeader } from '../../axiosConfig';
+  import { removeCookie } from '../../utils/cookie_utils';
+  import axiosInstance, { removeDefaultAuthHeader } from '../../utils/axiosConfig';
   import { useRouter } from 'vue-router';
   import { useToast } from 'primevue/usetoast';
 

@@ -16,8 +16,8 @@
 
 <script setup lang="ts">
 import { ref, onBeforeMount, watch } from 'vue';
-import { socket } from '@/socket';
-import axiosInstance from '../../axiosConfig';
+import { socket } from '../../utils/socket';
+import axiosInstance from '../../utils/axiosConfig';
 import ChannelmemberDisplay from './ChannelmemberDisplay.vue';
 import AddChannelmember from './AddChannelmember.vue';
 import PasswordSettings from './PasswordSettings.vue'

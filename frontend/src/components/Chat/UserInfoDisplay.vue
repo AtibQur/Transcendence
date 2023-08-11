@@ -76,7 +76,7 @@
 
 <script setup lang="ts">
 import axiosInstance from '../../axiosConfig';
-import { socket } from '@/socket';
+import { socket } from '../../utils/socket';
 import { onBeforeMount, ref, watch } from 'vue'
 import { useToast } from 'primevue/usetoast';
 import { useConfirm } from "primevue/useconfirm";

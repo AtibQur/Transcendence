@@ -7,7 +7,7 @@
 </template>
 
 <script setup lang="ts">
-  import { socket } from '@/socket';
+  import { socket } from '../../utils/socket';
   import Toast from 'primevue/toast'
   import Message from '@/types/Message';
   import axiosInstance from '../../axiosConfig';

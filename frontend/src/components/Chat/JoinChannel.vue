@@ -41,7 +41,7 @@
 </template>
 
 <script setup lang="ts">
-import { socket } from '@/socket';
+import { socket } from '../../utils/socket';
 import axiosInstance from '../../axiosConfig';
 import { ref } from 'vue';
 import Password from 'primevue/password'

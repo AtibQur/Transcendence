@@ -26,7 +26,7 @@
 </template>
 
 <script setup lang="ts">
-import { socket } from '../../socket';
+import { socket } from '../../utils/socket';
 import { ref } from 'vue';
 import Dialog from 'primevue/dialog';
 import InputText from 'primevue/inputtext'

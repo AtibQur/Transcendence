@@ -16,7 +16,7 @@
 </template>
 
 <script setup lang="ts">
-import { socket } from '@/socket';
+import { socket } from '../../utils/socket';
 import axiosInstance from '../../axiosConfig';
 import { onMounted, onBeforeMount, ref, watch, nextTick, onUpdated} from 'vue'
 import Message from '@/types/Message';

@@ -21,7 +21,7 @@
     import AxiosInstance  from '../../axiosConfig';
     import { setDefaultAuthHeader } from '../../axiosConfig';
     import { ref } from 'vue';
-    import { getCookie, removeCookie, setCookie } from '../../components/cookie_utils';
+    import { getCookie, removeCookie, setCookie } from '../../utils/cookie_utils';
     import { useRouter } from 'vue-router';
 
 
