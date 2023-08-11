@@ -36,7 +36,6 @@ const playerId = localStorage.getItem('playerId');
 const toast = useToast();
 
 const addFriend = async (avatarPath: string) => {
-  // Logic to add friend here
   const username = avatarPath.replace('.png', '');
   console.log(`Added ${username} as a friend`);
   const response = await axiosInstance.post(`friend/add/${playerId}`, {
