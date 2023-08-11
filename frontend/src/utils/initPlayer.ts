@@ -30,7 +30,7 @@ export const loginPlayer = async () => {
 
 export async function setDefaultAvatar(playerId: string) {
   const randomDecimal = Math.random() ;
-  const randomNumber = Math.floor(randomDecimal * 7) + 1;
+  const randomNumber = Math.floor(randomDecimal * 15) + 1;
   const defaultAvatarPath = './default_avatars/avatar_' + randomNumber + '.png';
 
   // Fetch the default avatar file
