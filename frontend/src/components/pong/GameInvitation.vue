@@ -43,7 +43,6 @@ const router = useRouter();
 
 // INVITE PEOPLE TO PLAY
 const startMatch = ref(false);
-const matchSaved = ref(false);
 const opponentId = parseInt(sessionStorage.getItem('playerId') || '0');
 const isInvited = ref(false);
 const player1 = ref(0);
@@ -72,7 +71,6 @@ onBeforeMount( () => {
 const startThisMatch = () => {
 	socket.on('startMatch', async (match) => {
 	try {
-		if (!matchSaved.value){
 			const { player1, player2 } = match;
 			console.log("P1:", player1)
 			console.log("P2:", player2)
@@ -87,9 +85,8 @@ const startThisMatch = () => {
 				// Player 1's logic
 				console.log('I am player 1, ID:', player1.player_id);
 				console.log('Opponent player ID:', player2.player_id);
-
 				//starting match saves here
-				const match_id_response = await axiosInstance.post('match/create', {player_id: p1_id, opponent_id: p2_id});
+				const match_id_response = await axiosInstance.post('match/create', {player_id: p1_id.value, opponent_id: p2_id.value});
 				match_id.value = match_id_response.data.id;
 			} else if (player2.socket_id === socket.id) {
 				// Player 2's logic
@@ -98,8 +95,6 @@ const startThisMatch = () => {
 			}
 		
 			console.log("MatchId:", socket_match_id.value)
-			matchSaved.value = true;
-		}
 		router.push({ name: 'inviteMultiplayer' })
 	} catch (error) {
 		console.log('Error starting match')

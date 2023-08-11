@@ -86,8 +86,9 @@ export class PongGateway {
 	@SubscribeMessage('joinMatchmaking')
 	handleMatchmaking(
 		@ConnectedSocket() client: Socket,
-		@MessageBody() { player_id, socket_id}: { player_id: number; socket_id: string }): void {
-			this.pongService.handleJoinMatchmaking(client, player_id, socket_id);
+		@MessageBody() { player_id, socket_id}: { player_id: number; socket_id: string }) {
+			const response = this.pongService.handleJoinMatchmaking(client, player_id, socket_id);
+			return response
 		}
 
 	afterInit(@ConnectedSocket() client: Socket): void {

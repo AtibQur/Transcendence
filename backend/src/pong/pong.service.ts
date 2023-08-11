@@ -4,16 +4,11 @@ import { Match } from './match/match';
 import { MatchInstance } from './match/match-instance';
 import { PlayerService } from '../player/player.service';
 
-// list for players who send out the invite
+// list for players who send out the invite and opponets who received an invite
 interface inviteList {
 	player_id: number; 
 	opponent_id: number;
 	socket_id: string;
-}
-
-// list for players who received an invite
-interface opponentList {
-	opponent_id: number; 
 }
 
 // list for players in queue
@@ -22,12 +17,19 @@ interface WaitingList {
 	socket_id: string;
 }
 
+// list for player who are in a match
+interface inMatch {
+	p1: number;
+	p2: number;
+	match_id: number;
+}
+
 @Injectable()
 export class PongService {
 	private readonly playerService = new PlayerService;
-	private opponentList: opponentList[] = [];
 	private inviteList: inviteList[] = [];
 	private waitingList: WaitingList[] = [];
+	private inMatch: inMatch[] = [];
 	private matchList: { [key: number]: MatchInstance } = {};
 
 	// CREATE MATCH VIA INVITE
@@ -66,11 +68,6 @@ export class PongService {
 		const index = this.inviteList.findIndex(player => player.player_id === player_id1);
 		if (index !== -1){
 			console.log('removed', player_id1, 'from the invitelist')
-  			this.inviteList.splice(index, 1);
-		}
-		const index2 = this.opponentList.findIndex(player => player.opponent_id === player_id1);
-		if (index2 !== -1) {
-			console.log('player', player_id1, 'left the invite list');
 			this.inviteList.splice(index, 1);
 		}
 	}
@@ -90,8 +87,15 @@ export class PongService {
 		}
 		if (this.inviteList.some((player) => player.opponent_id === opponent_id)) {
 			console.log(player_id, "you can't invite someone who already received an invite");
-			// this.opponentList.push(opponentInfo);
 			return 2;
+		}
+		// can't send an invite to someone who is in a match 
+		console.log("in match:", this.inMatch)
+		for (const match of this.inMatch){
+			if (match.p1 == opponent_id || match.p2 == opponent_id){
+				console.log("you can't invite someone who is in a match")
+				return 3;
+			}
 		}
 		// cant sent an invite when you are already inviting someone
 		if (!this.inviteList.some((player) => player.player_id === player_id)) {
@@ -112,6 +116,7 @@ export class PongService {
 		return (0);
 	}
 
+
 	// CREATE MATCH VIA PLAY PAGE
 	async handleJoinMatchmaking (client: Socket, player_id: number, socket_id: string): Promise<void>{
 		const playerInfo = {
@@ -122,7 +127,10 @@ export class PongService {
 		if (checkInMatch){
 			console.log("can't start a match, you are already in a match")
 			client.emit('alreadyInMatch', socket_id);
-			return ;
+			return 1
+		}
+		// can't start a match when you've invited someone
+		if (this.inviteList.some((player) => player.player_id === player_id)) {
 		}
 		if (!this.waitingList.some((player) => player.socket_id === socket_id)) {
 			this.waitingList.push(playerInfo);
@@ -138,18 +146,24 @@ export class PongService {
 				return ;
 			this.createMatch(client, p1, p2);
 		}
+		return 0
 	}
 
 	// CREATE A NEW MATCH INSTANCE
 	createMatch(client: Socket, player1: any, player2: any): Match {
+		// create match instance
 		const match = new Match(player1, player2);
 		this.matchList[match.id] = new MatchInstance(match);
 		this.matchList[match.id].startGame();
-		// if (client.id == player1.socket_id)
-		// 	client.emit('startMatch', { player1: { player_id: player1.player_id, socket_id: player1.socket_id }, player2: { player_id: player2.player_id, socket_id: player2.socket_id }});
-		// else
-		console.log("p1", player1, "p2", player2);
-		console.log("Match Id:", match.id)
+
+		// add to inMatch list
+		const info = {
+			p1: player1.player_id,
+			p2: player2.player_id,
+			match_id: match.id,
+		}
+		this.inMatch.push(info)
+
 		client.to(player1.socket_id).emit('startMatch', { 
 			player1: { player_id: player1.player_id, socket_id: player1.socket_id }, 
 			player2: { player_id: player2.player_id, socket_id: player2.socket_id },
@@ -167,6 +181,11 @@ export class PongService {
 		if (match.score1 === 10 || match.score2 === 10){
 			delete this.matchList[match.id]
 			console.log("match", match.id, "deleted")
+			const index = this.inMatch.findIndex(p => p.match_id === match.id)
+				if (index !== -1) {
+					console.log('delete match in inMatch list');
+					this.inMatch.splice(index, 1);
+			}
 		}
 	}
 
@@ -210,14 +229,25 @@ export class PongService {
 		const index2 = this.inviteList.findIndex(player => player.socket_id === disconnectedId);
 		if (index2 !== -1) {
 			console.log('player', disconnectedId, 'left the invite list');
-			this.inviteList.splice(index, 1);
+			this.inviteList.splice(index2, 1);
 		}
 		const playerId = parseInt(client.handshake.auth.id);
 		if (playerId){
 			const index3 = this.inviteList.findIndex(player => player.opponent_id === playerId);
 			if (index3 !== -1) {
 				console.log('player', playerId, 'left the opponent invite list');
-				this.inviteList.splice(index, 1);
+				this.inviteList.splice(index3, 1);
+			}
+			// delete inMatch
+			const index4 = this.inMatch.findIndex(p => p.p1 === playerId)
+			if (index4 !== -1) {
+				console.log('delete match in inMatchList');
+				this.inMatch.splice(index4, 1);
+			}
+			const index5 = this.inMatch.findIndex(p => p.p2 === playerId);
+			if (index5 !== -1) {
+				console.log('delete match in inMatchList');
+				this.inMatch.splice(index5, 1);
 			}
 		}
 		const disconnectedMatch = this.searchPlayerInMatch(client)

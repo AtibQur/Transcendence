@@ -230,7 +230,9 @@ const invite = async() => {
             toast.add({ severity: 'error', summary: "You can't send an invite, you are in a match", detail: '', life: 3000 });
         else if (response === 2)
             toast.add({ severity: 'error', summary: "That player already received an invite", detail: '', life: 3000 });
-    })
+		else if (response === 3)
+			toast.add({ severity: 'error', summary: "You can't send an invite to a player who is in a match", detail: '', life: 3000 });
+	})
 }
 
 // MUTE CHANNELMEMBER

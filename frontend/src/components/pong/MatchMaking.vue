@@ -27,7 +27,6 @@ export default {
 	setup() {
 		const showLoadingText = ref(true)
 		const toast = useToast();
-		const matchSaved = ref(false);
 		const router = useRouter(1);
 		// dots animation
 		const dotsCount = ref(1);
@@ -60,7 +59,6 @@ export default {
 	socket.on('startMatch', async (match) => {
 	try {
 		showLoadingText.value = false;
-		if (!matchSaved.value){
 			const { player1, player2 } = match;
 			console.log("P1:", player1)
 			console.log("P2:", player2)
@@ -86,9 +84,6 @@ export default {
 			}
 		
 			console.log("MatchId:", socket_match_id)
-
-			matchSaved.value = true;
-		}
 		router.push({ name: 'multiplayer' })
 	} catch (error) {
 		console.log('Error starting match')
@@ -97,7 +92,7 @@ export default {
 
 	socket.on('alreadyInMatch', () => {
 		console.log("you are already in a match, redirecting...")
-		router.push('/play/multiplayer');
+		router.push({ name: 'multiplayer' })
 	});
 
 	return {

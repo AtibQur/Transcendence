@@ -28,6 +28,7 @@ import MatchMaking from './MatchMaking.vue'
 import { socket } from '../../socket'
 import { useRouter } from 'vue-router'
 import { defineComponent } from 'vue'
+// import { useToast } from 'primevue/usetoast';
 
 export default defineComponent({
 	name: "PlayGame",
@@ -47,7 +48,12 @@ methods: {
 		this.playerId = parseInt(sessionStorage.getItem('playerId') || '0');
 		sessionStorage.setItem('socketID', socket.id);
 		console.log(socket.id)
-		socket.emit('joinMatchmaking', {player_id: this.playerId, socket_id: socket.id});
+		socket.emit('joinMatchmaking', {player_id: this.playerId, socket_id: socket.id}, 
+		(response) => {
+			if (response === 1)
+				console.log('response', response)
+				// toast.add({ severity: 'error', summary: "Error starting match", detail: '', life: 3000 });
+		});
 		this.startMatch = true;
 	},
 	selectDifficulty(difficulty){
