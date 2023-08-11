@@ -36,7 +36,6 @@
         <div class="Leaderboard-games">
           <h2>{{ player.ladder_level }}</h2>
         </div>
-        <!-- <div style="display: none;">{{ playerRankIndex = index + 1 }}</div> -->
       </div>
     </div>
 
@@ -62,22 +61,6 @@
     else
       console.error('Failed to fetch leaderboard data:');
   }
-
-//waarvoor is dit nodig??
-
-//   const playerRankIndex = computed(() => {
-//     if (!leaderboardData.value || leaderboardData.value.length === 0) {
-//       console.log("No leaderboard data");
-//       return -1;
-//     }
-
-//     const playerIndex = leaderboardData.value.findIndex(
-//       (player) => player.player.id === playerId
-//     );
-
-//     return playerIndex >= 0 ? playerIndex + 1 : -1; // Return the rank/index if found, otherwise -1
-//   });
-
 
 </script>
 
