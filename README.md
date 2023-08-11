@@ -1,16 +1,20 @@
 # Transcendence
 
-<img src="https://github.com/AtibQur/Transcendence/blob/fixPassword/Homepage.png" alt="Your image title" width="900"/>
+<img src="https://github.com/AtibQur/Transcendence/blob/main/Homepage.png" alt="Your image title" width="900"/>
 
 ## Table of Contents
-* [Project Overview](#project-overview)
-* [Tech Stack](#tech-stack)
-* [Usage](#usage)
-* [Docker Container Setup](#docker-container-setup)
-* [Database](#database)
-* [Features](#features)
-* [Security](#security)
-* [Contributors](#contributors)
+- [Transcendence](#transcendence)
+  - [Table of Contents](#table-of-contents)
+  - [Project Overview](#project-overview)
+  - [Tech Stack](#tech-stack)
+    - [Backend Technologies](#backend-technologies)
+    - [Frontend Technologies](#frontend-technologies)
+  - [Usage](#usage)
+  - [Docker Container Setup](#docker-container-setup)
+  - [Database](#database)
+  - [Features](#features)
+  - [Security](#security)
+  - [Contributors](#contributors)
 
 ## Project Overview
 
