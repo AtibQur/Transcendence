@@ -100,6 +100,7 @@ const onSubmit = () => {
         if (selectedSecurityType.value == SecurityLevel.PRIVATE)
             isPrivate.value = true;
         
+        console.log(password.value);
         socket.emit('addChannel', {name: newChannelName.value, is_private: isPrivate.value, owner_id: playerId, password: password.value}, (channel_id: number) => {
             resetForm();
             toast.add({ severity: 'info', summary: 'New Channel Created Successfully!', detail: '', life: 3000 });

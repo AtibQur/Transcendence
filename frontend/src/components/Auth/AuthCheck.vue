@@ -6,8 +6,6 @@
 
 <script setup lang="ts">
 	async function StartAuth() {
-		console.log("CLIENT ID FROM ENV: ", process.env.VUE_APP_FT_CLIENTID);
-		
 		const url:string = 'https://api.intra.42.fr/oauth/authorize?client_id=' 
 		+ process.env.VUE_APP_FT_CLIENTID + '&redirect_uri=' + 
 		process.env.VUE_APP_FT_REDIRECTURI + '&response_type=code';

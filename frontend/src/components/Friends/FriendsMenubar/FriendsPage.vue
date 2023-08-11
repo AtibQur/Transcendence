@@ -32,7 +32,7 @@
 
     <div class="ProfileStats">
       <select v-model="selectedOption">
-        <option value="Achievements">{{ playerName }}'s Achievements</option>
+        <option value="Achievements">Achievements</option>
         <option value="Stats">Stats</option>
         <option value="Match History">Match History</option>
       </select>
@@ -89,7 +89,7 @@ export default {
         friendId.value = idResponse.data;
         profilePicture.value = URL.createObjectURL(new Blob([new Uint8Array(avatarResponse.data.data)]));
         friendStatus.value = statusResponse.data;
-        selectedOption.value = 'Achievements'; // Set selectedOption to 'Achievements' whenever a new profile is loaded
+        selectedOption.value = 'Achievements';
         
         const isFriendResponse = await axiosInstance.get(`friend/exists/${playerId}/${friendId.value.toString()}`);
         isFriend.value = isFriendResponse.data;
@@ -141,12 +141,10 @@ export default {
             toast.add({ severity: 'error', summary: 'Error unblocking player', detail: '', life: 3000 });
     }
 
-    // Watch for changes in route params and fetch friend data
     watch(route, () => {
       fetchFriendData();
     });
 
-    // Watch for changes in playerName and navigate to the current profile page
     watch(playerName, () => {
       router.push({
         name: 'friends',
@@ -206,7 +204,6 @@ export default {
     width: 20%;
     height: 50%;
     margin-top: 10px;
-    /* border: 1px solid black; */
   }
   .ProfileData .ProfilePicture {
     position: absolute;
@@ -215,7 +212,6 @@ export default {
     transform: translateX(-50%);
     width: 100%;
     height: 60%;
-    /* border: 1px solid black; */
   }
   .ProfileData .ProfilePicture img {
     position: absolute;
@@ -232,7 +228,6 @@ export default {
     top: 60%;
     width: 100%;
     height: 40%;
-    /* border: 1px solid black; */
   }
   
   .ProfileOptions {
@@ -241,7 +236,6 @@ export default {
     top: 55%;
     width: 25%;
     height: 30%;
-    /* border: 1px solid black; */
   }
   .ProfileOptions .ProfileOptionsContainer {
     position: absolute;
@@ -249,7 +243,6 @@ export default {
     top: 15%;
     width: 100%;
     height: 70%;
-    /* border: 1px solid black; */
   }
   .ProfileOptions .ProfileOptionsContainer ul {
     position: absolute;
@@ -258,7 +251,6 @@ export default {
     transform: translate(-50%, -50%);
     width: 100%;
     height: 75%;
-    /* border: 1px solid black; */
     list-style-type: none;
     margin: 0;
     padding: 0;
@@ -269,12 +261,12 @@ export default {
   font-size: 22px;
   font-weight: 400;
   text-align: left;
-  cursor: pointer; /* Add cursor style to indicate interactivity */
-  transition: color 0.3s, background-color 0.3s; /* Add transition for smooth effect */
+  cursor: pointer;
+  transition: color 0.3s, background-color 0.3s;
 }
 
 .ProfileOptions .ProfileOptionsContainer ul li:hover {
-  color: #1f6091; /* Change color on hover */
+  color: #1f6091;
 }
 
   .ProfileOptions .ProfileOptionsContainer ul li a {
@@ -338,7 +330,7 @@ export default {
   border: 1px solid #888;
   border-radius: 8px;
   text-align: center;
-  width: 30%; /* Adjust the width as desired */
+  width: 30%;
 }
 
 .ModalContent h2 {
@@ -360,7 +352,7 @@ export default {
   margin: 5 5px;
 }
 .ModalContent button:hover {
-  color: #fefefe; /* Change color on hover */
+  color: #fefefe;
   background-color: #697b8e;
 }
 

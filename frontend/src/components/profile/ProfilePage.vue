@@ -13,8 +13,6 @@
         </div>
       </div>
     </div>
-
-    <!-- Wrap .ProfileStats and .ProfileOptions inside a scrollable container -->
     <div class="ProfileScrollContainer">
       <div class="ProfileStats">
         <select v-model="selectedOption" class="custom-dropdown">
@@ -45,8 +43,6 @@
         </div>
       </div>
     </div>
-
-    <!-- ... Rest of the template ... -->
 
     <div v-if="showChangeNameModal" class="Modal" @click="closeModal">
       <div class="ModalContent" @click.stop>
@@ -105,7 +101,6 @@
   const status = ref("");
   const selectedOption = ref("Achievements");
   const showChangeNameModal = ref(false);
-  const showQRCode = ref(false);
   const newName = ref('');
   const profilePicture = ref("");
   const showChangePictureModal = ref(false);
@@ -119,7 +114,6 @@
       username.value = await fetchUsername(playerId);
       profilePicture.value = await fetchAvatar(playerId);
       status.value = await fetchStatus(playerId);
-      console.log(username.value);
     } catch (error) {
       console.log("Error occurred profpage");
     }
@@ -164,12 +158,12 @@
         throw new Error(message);
       }
       const updatedUsername = await axiosInstance.patch(`player/username/${playerId}`, { username: newName.value });
-      username.value = updatedUsername.data; // Update the local username value
+      username.value = updatedUsername.data;
       if (newName.value !== username.value) {
         message = "Username already exists";
         throw new Error(message);
       }
-      sessionStorage.setItem('username', username.value); //update sessionstorage
+      sessionStorage.setItem('username', username.value);
       closeModal();
     }
     catch (error) {
@@ -213,7 +207,7 @@
     }
   };
 
-  const handleAvatarUploaded = async (avatarBytes: Uint8Array) => {
+  const handleAvatarUploaded = async () => {
     showChangePictureModal.value = false;
     profilePicture.value = await fetchAvatar(playerId)
   };
@@ -265,7 +259,6 @@
     top: 55%;
     width: 25%;
     height: 30%;
-    /* border: 1px solid black; */
   }
 
   .ProfileData .ProfilePicture {
@@ -275,7 +268,6 @@
     transform: translateX(-50%);
     width: 100%;
     height: 60%;
-    /* border: 1px solid black; */
   }
   .ProfileData .ProfilePicture img {
     position: absolute;
@@ -293,7 +285,6 @@
     top: 15%;
     width: 100%;
     height: 70%;
-    /* border: 1px solid black; */
   }
   .ProfileOptions .ProfileOptionsContainer ul {
     position: absolute;
@@ -302,7 +293,6 @@
     transform: translate(-50%, -50%);
     width: 100%;
     height: 75%;
-    /* border: 1px solid black; */
     list-style-type: none;
     margin: 0;
     padding: 0;
@@ -313,12 +303,12 @@
   font-size: 22px;
   font-weight: 400;
   text-align: left;
-  cursor: pointer; /* Add cursor style to indicate interactivity */
-  transition: color 0.3s, background-color 0.3s; /* Add transition for smooth effect */
+  cursor: pointer;
+  transition: color 0.3s, background-color 0.3s;
 }
 
 .ProfileOptions .ProfileOptionsContainer ul li:hover {
-  color: #1f6091; /* Change color on hover */
+  color: #1f6091;
 }
 
   .ProfileOptions .ProfileOptionsContainer ul li a {
@@ -382,7 +372,7 @@
   border: 1px solid #888;
   border-radius: 8px;
   text-align: center;
-  width: 30%; /* Adjust the width as desired */
+  width: 30%;
 }
 
 .ModalContent h2 {
@@ -404,7 +394,7 @@
   margin: 5 5px;
 }
 .ModalContent button:hover {
-  color: #fefefe; /* Change color on hover */
+  color: #fefefe;
   background-color: #697b8e;
 }
 
@@ -417,26 +407,26 @@
 }
 @media screen and (max-width: 1040px) {
   .ProfileContainer {
-    flex-direction: row; /* Arrange divs in a row */
-    height: auto; /* Remove the fixed height */
-    padding: 20px; /* Add some padding for better layout */
+    flex-direction: row;
+    height: auto;
+    padding: 20px;
   }
 
   .ProfileData {
-    order: 1; /* Set the order to 1 to appear first in the row */
+    order: 1;
   }
 
   .ProfileOptions {
-    order: 3; /* Set the order to 3 to appear last in the row */
+    order: 3;
   }
 
   .ProfileStats {
-    order: 2; /* Set the order to 2 to appear in the middle of the row */
+    order: 2;
   }
 
   .ProfileScrollContainer {
-    overflow-y: auto; /* Enable vertical scrolling if content overflows */
-    max-height: 75vh; /* Limit the maximum height of the container to allow scrolling */
+    overflow-y: auto;
+    max-height: 75vh;
   }
 }
 

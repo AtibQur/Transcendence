@@ -16,7 +16,7 @@
 </template>
 
 <script lang="ts">
-import { onBeforeMount, ref, SetupContext, watch } from 'vue';
+import { onBeforeMount, ref, watch } from 'vue';
 import axiosInstance from '../../../axiosConfig';
 
 export default {
@@ -26,7 +26,7 @@ export default {
     required: true
   },
 },
-  setup(props: any, context: SetupContext) {
+  setup(props: { friendId: number; }) {
     const achievements = ref({});
 
     const fetchAchievements = async (friendId: number) => {

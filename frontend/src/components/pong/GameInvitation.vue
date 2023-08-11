@@ -62,9 +62,7 @@ onBeforeMount( () => {
 	});
 	// redirecting to a accepted match
 	socket.on('redirecting', (data) => {
-		startThisMatch()
-		// startMatch.value = true;
-		// router.push({name: 'multiplayer'});
+		startMatch.value = true;
 	});
 	socket.on('alreadyInMatch', () => {
 			toast.add({ severity: 'info', summary: "You are in a match", detail: '', life: 3000 });

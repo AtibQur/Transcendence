@@ -13,11 +13,15 @@
             'red-bg1': props.username != match.player.username && match.player_points > match.opponent_points,
           }]"
         >
-          <div class="border-value blue-text player-username">{{ match.player.username }}</div>
+        <div class="border-value blue-text player-username">
+            {{ match.player.username == props.username ? 'You' : match.player.username}}
+          </div>
           <div class="border-value black-text"  style="font-weight: bold">{{ match.player_points }}</div>
           <div class="border-value black-text"> VS </div>
           <div class="border-value black-text" style="font-weight: bold">{{ match.opponent_points }}</div>
-          <div class="border-value blue-text enemy-username">{{ match.opponent.username }}</div>
+          <div class="border-value blue-text enemy-username">
+            {{ match.opponent.username == props.username ? 'You' : match.opponent.username}}
+          </div>
         </div>
       </div>
     </div>
@@ -40,7 +44,6 @@ onBeforeMount(async () => {
   try {
     matches.value = await fetchMatches(playerId);
     playerName.value = await fetchPlayerName(playerId);
-    console.log(matches.value);
   } catch (error) {
     console.log("Error occurred:", error);
   }
@@ -48,11 +51,11 @@ onBeforeMount(async () => {
 
 const fetchMatches = async (playerId: number) => {
   const response = await axiosInstance.get('match/history/' + playerId.toString());
-  const reversedMatches = response.data.reverse(); // Reverse the order of matches
+  const reversedMatches = response.data.reverse();
   return reversedMatches;
 };
 
-const fetchPlayerName = async (playerId: string) => {
+const fetchPlayerName = async (playerId: number) => {
   const name = await axiosInstance.get('player/username/' + playerId.toString());
   return name;
 }
