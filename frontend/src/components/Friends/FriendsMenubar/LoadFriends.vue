@@ -48,7 +48,7 @@ export default defineComponent({
   data() {
     return {
       playerId: parseInt(sessionStorage.getItem('playerId') || '0'),
-      friends: [] as Friend[], // Specify the type for the friends property
+      friends: [] as Friend[],
       hover: false,
       newFriendName: '',
       toast: useToast(),
@@ -168,7 +168,7 @@ export default defineComponent({
         });
         if (response.data) {
             this.$toast.add({ severity: 'success', summary: 'Successfully deleted friend', detail: '', life: 3000 });
-            this.friends = this.friends.filter(friend => friend.username !== this.newFriendName); // Update the friends array
+            this.friends = this.friends.filter(friend => friend.username !== this.newFriendName);
             this.newFriendName = '';
         }
         else {
@@ -236,8 +236,8 @@ export default defineComponent({
 }
 
 .friend-list {
-  max-height: 820px; /* Set a fixed height for the scrollable area */
-  overflow-y: auto; /* Enable vertical scrolling */
+  max-height: 820px;
+  overflow-y: auto;
 }
 
 .friend-input {
@@ -250,7 +250,6 @@ export default defineComponent({
 }
 
 .name-container {
-  /* border: 1px solid #000; */
   margin: 10px;
   padding: 10px;
   border-radius: 8px;

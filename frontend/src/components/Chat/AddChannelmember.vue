@@ -115,12 +115,12 @@ const validateFields = async () => {
         errorMessage.value = 'Invalid name of friend';
         return false;
     }
-    if (await channelmemberIsBanned()) // if the member is banned
+    if (await channelmemberIsBanned())
     {
         errorMessage.value = 'Channelmember is banned from this channel!';
         return false;
     }
-    if (await channelmemberExists()) // if the member already exists
+    if (await channelmemberExists())
     {
         errorMessage.value = 'Channelmember already exists!';
         return false;
@@ -129,7 +129,6 @@ const validateFields = async () => {
     return true;
 }
 
-//RESET FORM
 function resetForm() {
     newChannelmember.value = '';
     isAdmin.value = false;
@@ -137,7 +136,6 @@ function resetForm() {
     errorMessage.value = '';
 }
 
-//SUMBIT FORM
 const onSubmit = async() => {
     if (await validateFields())
     {
