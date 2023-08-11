@@ -33,16 +33,11 @@ export async function setDefaultAvatar(playerId: string) {
   const randomNumber = Math.floor(randomDecimal * 15) + 1;
   const defaultAvatarPath = './default_avatars/avatar_' + randomNumber + '.png';
 
-  // Fetch the default avatar file
   const defaultAvatarFile = await fetch(defaultAvatarPath);
   const defaultAvatarBlob = await defaultAvatarFile.blob();
   const defaultAvatar = new File([defaultAvatarBlob], 'default_avatar.png');
 
-  // Send the default avatar file to the server
   const formData = new FormData();
   formData.append('avatar', defaultAvatar);
-
-  console.log("avatar: ", defaultAvatarBlob);
-  console.log("playerid: ", playerId);
   await axiosInstance.post('player/avatar/upload/' + playerId, formData);
 }
