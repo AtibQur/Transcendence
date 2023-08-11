@@ -88,7 +88,6 @@
     async function fetchPlayerId() {
         try {
             const response = await axiosInstance.get('/user/id');
-            // sessionStorage.setItem('playerId', response.data);
         } catch (error) {
             console.log("Error: Could not fetch player id");
         }
@@ -101,7 +100,6 @@
     const randomNumber = Math.floor(randomDecimal * 7) + 1;
     const defaultAvatarPath = './default_avatars/avatar_' + randomNumber + '.png';
 
-    // Fetch the default avatar file
     const defaultAvatarFile = await fetch(defaultAvatarPath);
     const defaultAvatarBlob = await defaultAvatarFile.blob();
     const defaultAvatar = new File([defaultAvatarBlob], 'default_avatar.png');
@@ -144,7 +142,7 @@
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    height: 100vh; /* set the height of the container to the full height of the viewport */
+    height: 100vh;
   }
   
   .PongLogo {
@@ -184,7 +182,6 @@
     text-decoration: none;
   }
 
-  /* great for light blue bg */
   .custom-button-1 {
     font-family: 'JetBrains Mono';
     font-weight: bolder;

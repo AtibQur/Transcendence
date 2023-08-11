@@ -158,12 +158,12 @@
         throw new Error(message);
       }
       const updatedUsername = await axiosInstance.patch(`player/username/${playerId}`, { username: newName.value });
-      username.value = updatedUsername.data; // Update the local username value
+      username.value = updatedUsername.data;
       if (newName.value !== username.value) {
         message = "Username already exists";
         throw new Error(message);
       }
-      sessionStorage.setItem('username', username.value); //update sessionstorage
+      sessionStorage.setItem('username', username.value);
       closeModal();
     }
     catch (error) {

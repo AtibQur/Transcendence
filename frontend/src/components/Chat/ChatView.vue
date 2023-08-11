@@ -104,18 +104,15 @@ onBeforeMount(async () => {
     return imageUrl.value;
   };
 
-    // A method to adjust the chatbox height based on the window size
     const updateChatBoxHeight = () => {
         const windowHeight = window.innerHeight;
-        chatBoxHeight.value = Math.min(windowHeight - 200, 1350); // Adjust as needed
+        chatBoxHeight.value = Math.min(windowHeight - 200, 1350);
     };
 
-        // Listen to the window resize event and update the chatbox height
-        onMounted(() => {
-        updateChatBoxHeight(); // Initial update
+    onMounted(() => {
+        updateChatBoxHeight();
         window.addEventListener('resize', updateChatBoxHeight);
     });
-    // Clean up the event listener when the component is unmounted
     onUnmounted(() => {
         window.removeEventListener('resize', updateChatBoxHeight);
     });
@@ -176,8 +173,6 @@ onBeforeMount(async () => {
     margin-left: 40px;
     font-weight: bold;
   }
-
-/* Chat Box */
 .chat-box {
     flex: 3;
     display: flex;
@@ -189,20 +184,15 @@ onBeforeMount(async () => {
     border-bottom: 2px solid var(--gray-medium);
     border-left: 2px solid var(--gray-medium);
     border-right: 2px solid var(--gray-medium);
-    position: relative; /* Ensure relative positioning context */
+    position: relative;
 }
 
-/* Chat Content */
 .chat-content {
-    flex: 1; /* Allow chat content to grow and push the AddMessage button to the bottom */
+    flex: 1;
 }
-
-/* AddMessage Button */
 .add-message-wrapper {
-    margin-top: auto; /* Push the AddMessage button to the bottom */
+    margin-top: auto;
 }
-
-/* Positioning the AddMessage button container at the bottom */
 .add-message-container {
     position: absolute;
     bottom: 0;
