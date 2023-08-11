@@ -73,7 +73,7 @@ export default {
     const friendStatus = ref('');
     const profilePicture = ref('');
     const selectedOption = ref('Achievements');
-    const playerId = sessionStorage.getItem('playerId') || '0';
+    const playerId = localStorage.getItem('playerId') || '0';
     const isFriend = ref(false);
     const isBlocked = ref(false);
     const toast = useToast();

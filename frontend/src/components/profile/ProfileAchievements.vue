@@ -20,7 +20,7 @@
   import axiosInstance from '../../axiosConfig';
   
   const achievements = ref({});
-  const playerId = parseInt(sessionStorage.getItem('playerId') || '0');
+  const playerId = parseInt(localStorage.getItem('playerId') || '0');
 
   onBeforeMount(async () => {
       try {

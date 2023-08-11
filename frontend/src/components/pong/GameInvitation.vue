@@ -21,7 +21,7 @@ const confirm = useConfirm();
 
 // INVITE PEOPLE TO PLAY
 const startMatch = ref(false);
-const opponentId = parseInt(sessionStorage.getItem('playerId') || '0');
+const opponentId = parseInt(localStorage.getItem('playerId') || '0');
 const isInvited = ref(false);
 const player1 = ref(0);
 const invitorUsername = ref("");

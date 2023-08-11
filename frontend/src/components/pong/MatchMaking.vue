@@ -48,9 +48,9 @@ export default {
 	});
 
 	onBeforeMount(async () => {
-		// player.id = parseInt(sessionStorage.getItem('playerId') || '0');
+		// player.id = parseInt(localStorage.getItem('playerId') || '0');
 		// player.socket_id = socket.id;
-		// sessionStorage.setItem('socketID', player.socket_id);
+		// localStorage.setItem('socketID', player.socket_id);
 		// console.log(player.socket_id)
 		// socket.emit('joinMatchmaking', {player_id: player.id, socket_id: player.socket_id});
 		showLoadingText.value = true;

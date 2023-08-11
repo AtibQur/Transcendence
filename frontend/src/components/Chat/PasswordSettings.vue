@@ -42,7 +42,7 @@ const props = defineProps({
 
 const toast = useToast();
 const confirm = useConfirm();
-const playerId = sessionStorage.getItem('playerId') || '0';
+const playerId = localStorage.getItem('playerId') || '0';
 const selectedAction = ref<number>(-1);
 const isProtected = ref<boolean>(false);
 const isVisible = ref<boolean>(false);

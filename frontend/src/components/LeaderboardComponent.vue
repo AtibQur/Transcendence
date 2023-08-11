@@ -49,7 +49,7 @@
   import axiosInstance from '../axiosConfig';
 
   const leaderboardData = ref("");
-  const playerId = parseInt(sessionStorage.getItem('playerId') || '0');
+  const playerId = parseInt(localStorage.getItem('playerId') || '0');
   const playerName = ref("");
   const playerWins = ref("");
   const playerRank = ref("");

@@ -107,7 +107,7 @@
   const showChangeTfaModal = ref(false);
   const toast = useToast();
 
-  const playerId = parseInt(sessionStorage.getItem('playerId') || '0');
+  const playerId = parseInt(localStorage.getItem('playerId') || '0');
 
   onBeforeMount(async () => {
     try {
@@ -163,7 +163,7 @@
         message = "Username already exists";
         throw new Error(message);
       }
-      sessionStorage.setItem('username', username.value); //update sessionstorage
+      localStorage.setItem('username', username.value); //update localStorage
       closeModal();
     }
     catch (error) {

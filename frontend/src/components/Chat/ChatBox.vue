@@ -34,8 +34,8 @@ const props = defineProps({
   const channelName = ref('');
   const messages = ref<Message[]>([]);
   const currentChannelId = ref(props.channelId);
-  const playerId = parseInt(sessionStorage.getItem('playerId') || '0');
-  const username = sessionStorage.getItem('username') || null;
+  const playerId = parseInt(localStorage.getItem('playerId') || '0');
+  const username = localStorage.getItem('username') || null;
   const messagesContainer = ref<HTMLElement | null>(null);
   
   onMounted(() => {

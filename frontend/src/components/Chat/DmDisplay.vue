@@ -19,7 +19,7 @@ import axiosInstance from '../../axiosConfig';
 import { onBeforeMount, ref} from 'vue'
 
 const emit = defineEmits(['changeChannel']);
-const playerId = parseInt(sessionStorage.getItem('playerId') || '0');
+const playerId = parseInt(localStorage.getItem('playerId') || '0');
 const dms = ref([]);
 const text = ref('');
 

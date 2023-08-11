@@ -102,8 +102,8 @@ const emit = defineEmits(['changeChannel', 'removeChannelmember']);
 
 const toast = useToast();
 const confirm = useConfirm();
-const playerUsername = sessionStorage.getItem('username') || '0';
-const playerId = parseInt(sessionStorage.getItem('playerId') || '0');
+const playerUsername = localStorage.getItem('username') || '0';
+const playerId = parseInt(localStorage.getItem('playerId') || '0');
 const currentChannelmemberInfo = ref({});
 const currentChannelmemberId = ref<number>(props.channelmember.id);
 const currentChannelmemberStatus = ref<string>('');

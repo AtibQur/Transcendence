@@ -15,8 +15,8 @@
   import { useToast } from 'primevue/usetoast';
 
   const toast = useToast();
-  const playerId = parseInt(sessionStorage.getItem('playerId') || '0');
-  const username = sessionStorage.getItem('username') || null;
+  const playerId = parseInt(localStorage.getItem('playerId') || '0');
+  const username = localStorage.getItem('username') || null;
 
   onMounted(async () => {
     socket.on('chatmessage', async (message: Message) => {

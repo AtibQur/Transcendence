@@ -27,7 +27,7 @@
     { label: "Total Achievements", value: totalAchievements.value },
   ]);
 
-  const playerId = parseInt(sessionStorage.getItem('playerId') || '0');
+  const playerId = parseInt(localStorage.getItem('playerId') || '0');
 
   onBeforeMount(async () => {
     try {

@@ -23,7 +23,7 @@ import { useToast } from 'primevue/usetoast';
 
 const toast = useToast();
 const isVisible = ref<boolean>(false);
-const playerId = parseInt(sessionStorage.getItem('playerId') || '0');
+const playerId = parseInt(localStorage.getItem('playerId') || '0');
 const selectedFriend = ref<string>('');
 const errorMessage = ref<string>('');
 const friends = ref<string[]>([]);

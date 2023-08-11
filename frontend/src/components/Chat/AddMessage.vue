@@ -20,7 +20,7 @@ const props = defineProps({
 });
 
 const toast = useToast();
-const playerId = parseInt(sessionStorage.getItem('playerId') || '0');
+const playerId = parseInt(localStorage.getItem('playerId') || '0');
 const content = ref('');
 
 const sendMessage = () => {

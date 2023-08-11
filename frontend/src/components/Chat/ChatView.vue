@@ -58,8 +58,8 @@ import DmDisplay from './DmDisplay.vue';
 import AddDm from './AddDm.vue';
 import JoinChannel from './JoinChannel.vue';
 
-const playerId = parseInt(sessionStorage.getItem('playerId') || '0');
-const username = sessionStorage.getItem('username') || '0';
+const playerId = parseInt(localStorage.getItem('playerId') || '0');
+const username = localStorage.getItem('username') || '0';
 const profilePicture = ref('');
 const inChannel = ref(false);
 const inDm = ref(false);

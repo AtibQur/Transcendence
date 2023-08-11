@@ -11,9 +11,9 @@ export const loginPlayer = async () => {
   const playerId = parseInt(responsePlayerId.data);
 
   // set data in session storage
-  sessionStorage.setItem('playerId', responsePlayerId.data);
-  sessionStorage.setItem('intraUsername', responseIntraname.data);
-  sessionStorage.setItem('username', responseUsername.data);
+  localStorage.setItem('playerId', responsePlayerId.data);
+  localStorage.setItem('intraUsername', responseIntraname.data);
+  localStorage.setItem('username', responseUsername.data);
 
   // set default avatar
   if (!hasAvatar.data) {

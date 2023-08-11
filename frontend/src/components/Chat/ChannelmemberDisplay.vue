@@ -33,7 +33,7 @@ const props = defineProps({
 
 const emit = defineEmits(['changeChannel']);
 const channelmembers = ref([]);
-const playerUsername = sessionStorage.getItem('username') || null;
+const playerUsername = localStorage.getItem('username') || null;
 const currentChannelId = ref<number>(props.channelId);
 const selectedChannelmember = ref({});
 const visible = ref<boolean>(false);
