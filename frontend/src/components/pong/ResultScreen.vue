@@ -22,6 +22,7 @@
 <script lang="ts">
 import { defineComponent } from 'vue'
 import { socket } from '../../socket'
+import { useToast } from 'primevue/usetoast';
 
 export default defineComponent({
 	name: "ResultScreen",
@@ -33,6 +34,7 @@ data() {
 		disconnected: false,
 		dynamicScore1: '',
 		dynamicScore2: '',
+		toast: useToast(),
 		};
 	},
 
@@ -44,7 +46,8 @@ mounted() {
 		if (this.score1 === 10){
 			this.win = true;
 			if (this.stop == true){
-				this.disconnected = true;
+				// this.disconnected = true;
+				this.$toast.add({ severity: 'warn', summary: "The other player disconnected", detail: '', life: 3000 });
 			}
 		}
 		else
@@ -55,7 +58,8 @@ mounted() {
 		if (this.score2 === 10){
 			this.win = true;
 			if (this.stop == true){
-				this.disconnected = true;
+				// this.disconnected = true;
+				this.$toast.add({ severity: 'warn', summary: "The other player disconnected", detail: '', life: 3000 });
 			}
 		}
 		else

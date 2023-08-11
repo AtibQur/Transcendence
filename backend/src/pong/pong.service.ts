@@ -82,9 +82,10 @@ export class PongService {
 		const checkInMatch = this.searchPlayerInMatch(client)
 		if (checkInMatch){
 			console.log("can't send an invite, you are already in a match")
-			client.emit('alreadyInMatch', socket_id);
+			// client.emit('alreadyInMatch', socket_id);
 			return 1;
 		}
+		// can't send an invite to someone who already received an invite
 		if (this.inviteList.some((player) => player.opponent_id === opponent_id)) {
 			console.log(player_id, "you can't invite someone who already received an invite");
 			return 2;
@@ -97,6 +98,14 @@ export class PongService {
 				return 3;
 			}
 		}
+		// can't send an invite to someone who already send out an invite
+		if (this.inviteList.some((player) => player.player_id === opponent_id)) {
+			console.log(player_id, "you can't invite someone who already send out an invite");
+			return 4;
+		}
+		// can't send an invite when you or the opponent is in the waiting room
+		if (this.waitingList.some((player) => playerInfo.player_id === player_id)){ return 5 }
+		if (this.waitingList.some((player) => playerInfo.player_id === opponent_id)){ return 5 }
 		// cant sent an invite when you are already inviting someone
 		if (!this.inviteList.some((player) => player.player_id === player_id)) {
 			this.inviteList.push(playerInfo);
@@ -118,32 +127,35 @@ export class PongService {
 
 
 	// CREATE MATCH VIA PLAY PAGE
-	async handleJoinMatchmaking (client: Socket, player_id: number, socket_id: string): Promise<void>{
+	async handleJoinMatchmaking (client: Socket, player_id: number, socket_id: string) {
 		const playerInfo = {
 			player_id: player_id,
 			socket_id: socket_id,
 		}
 		const checkInMatch = this.searchPlayerInMatch(client)
 		if (checkInMatch){
-			console.log("can't start a match, you are already in a match")
+			console.log("can't start a match, you are already in a match!")
 			client.emit('alreadyInMatch', socket_id);
-			return 1
+			return ;
 		}
 		// can't start a match when you've invited someone
 		if (this.inviteList.some((player) => player.player_id === player_id)) {
+			console.log("you can't start a match when you invited someone")
+			return 1
 		}
 		if (!this.waitingList.some((player) => player.socket_id === socket_id)) {
 			this.waitingList.push(playerInfo);
 			console.log('added', player_id, socket_id, 'to waitinglist');
 		} else {
 			console.log(socket_id, 'is already in the waiting list');
+			return 2;
 		}
 		if (this.waitingList.length >= 2){
 			console.log('two people in waiting list');
 			const p1 = this.waitingList.shift()
 			const p2 = this.waitingList.shift()
 			if (!p1 || !p2)
-				return ;
+				return;
 			this.createMatch(client, p1, p2);
 		}
 		return 0

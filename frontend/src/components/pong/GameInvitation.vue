@@ -66,6 +66,12 @@ onBeforeMount( () => {
 		// startMatch.value = true;
 		// router.push({name: 'multiplayer'});
 	});
+	socket.on('alreadyInMatch', () => {
+			toast.add({ severity: 'info', summary: "You are in a match", detail: '', life: 3000 });
+			router.push({ name: 'inviteMultiplayer' })
+			return ;
+		});
+
 })
 
 const startThisMatch = () => {

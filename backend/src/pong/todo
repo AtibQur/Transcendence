@@ -1,11 +1,17 @@
 
-- invite not working T.T the second time
-- can't invite a player when its already in match
+<!-- - invite not working T.T the second time -->
+<!-- - can't invite a player when its already in match -->
 <!-- - cant receive an invtie when you already received one -->
-- can't receive an invite when someone already invited someone
-- warning if join queue will cancel invite
-- game not saving when player 1 disconnects
+<!-- - can't receive an invite when someone already invited someone -->
+<!-- - cant start match when in waiting room -->
 <!-- - paddle afmeting fixen met ichiro -->
-
-- player not redirecting when in result screen page
 <!-- - player inviting when disconnected / game not starting but text showing -->
+
+- toast when match found
+<!-- - toast when already in queue -->
+
+- game not saving in database when player 1 disconnects
+- player not redirecting when in result screen page
+- warning if join queue will cancel invite ??
+
+- CLEAN UP

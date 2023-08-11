@@ -28,7 +28,7 @@ import MatchMaking from './MatchMaking.vue'
 import { socket } from '../../socket'
 import { useRouter } from 'vue-router'
 import { defineComponent } from 'vue'
-// import { useToast } from 'primevue/usetoast';
+import { useToast } from 'primevue/usetoast';
 
 export default defineComponent({
 	name: "PlayGame",
@@ -41,6 +41,7 @@ data() {
 			startSolo: false,
 			startMatch: false,
 			router: useRouter(1),
+			toast: useToast(),
 		};
 	},
 methods: {
@@ -50,23 +51,21 @@ methods: {
 		console.log(socket.id)
 		socket.emit('joinMatchmaking', {player_id: this.playerId, socket_id: socket.id}, 
 		(response) => {
-			if (response === 1)
-				console.log('response', response)
-				// toast.add({ severity: 'error', summary: "Error starting match", detail: '', life: 3000 });
+			if (response === 1){
+				this.$toast.add({ severity: 'error', summary: "You can't start a match when you've send out an invite", detail: '', life: 3000 });
+			}
+			if (response === 2){
+				this.$toast.add({ severity: 'info', summary: "You are already in the queue", detail: '', life: 3000 });
+			}
+			else {
+				this.$toast.add({ severity: 'info', summary: "You joined the queue", detail: '', life: 3000 });
+				this.startMatch = true;
+			}
 		});
-		this.startMatch = true;
 	},
 	selectDifficulty(difficulty){
 
 		socket.emit('soloMatchStarted', socket.id)
-
-		socket.on('alreadyInMatch', () => {
-			console.log("you are already in a match, redirecting...")
-			this.router.push('/play/multiplayer');
-			this.startSolo = false;
-			return ;
-		});
-
 		console.log("Solo match started");
 		this.selectedDifficulty = difficulty;
 		console.log('difficulty:', difficulty);
