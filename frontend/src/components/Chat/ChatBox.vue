@@ -39,7 +39,6 @@ const props = defineProps({
   const messagesContainer = ref<HTMLElement | null>(null);
   
   onMounted(() => {
-  // Scroll to the bottom of the messages container when the component is mounted
     scrollToBottom();
   });
 
@@ -58,7 +57,6 @@ const props = defineProps({
 
       // Use nextTick to ensure that the DOM is updated before scrolling
       nextTick(() => {
-        // Scroll to the bottom of the messages container
         if (messagesContainer.value) {
           messagesContainer.value.scrollTop = messagesContainer.value.scrollHeight;
         }
@@ -117,7 +115,6 @@ const fetchChannelName = async (channelId: number) => {
 };
 
 onUpdated(() => {
-  // Scroll to the bottom of the messages container after an update (e.g., when new messages are added)
   scrollToBottom();
 });
 
@@ -169,7 +166,7 @@ ul {
 }
 
 .channel-name-button b {
-margin-right: 10px; /* Adjust the value as needed */
+margin-right: 10px;
 }
 
 .channel-name-button:hover {
@@ -220,7 +217,7 @@ margin-right: 10px; /* Adjust the value as needed */
 .messages-container {
     display: flex;
     flex-direction: column;
-    overflow-y: auto; /* Add vertical scroll when content overflows */
-    max-height: 70vh; /* Adjust this value as needed */
+    overflow-y: auto;
+    max-height: 70vh;
 }
 </style>

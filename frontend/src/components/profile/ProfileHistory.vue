@@ -51,7 +51,7 @@ onBeforeMount(async () => {
 
 const fetchMatches = async (playerId: number) => {
   const response = await axiosInstance.get('match/history/' + playerId.toString());
-  const reversedMatches = response.data.reverse(); // Reverse the order of matches
+  const reversedMatches = response.data.reverse();
   return reversedMatches;
 };
 

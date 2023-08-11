@@ -30,7 +30,7 @@
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    height: 100vh; /* set the height of the container to the full height of the viewport */
+    height: 100vh;
   }
   
   .PongLogo {
@@ -70,7 +70,6 @@
     text-decoration: none;
   }
 
-  /* great for light blue bg */
   .custom-button-1 {
     font-family: 'JetBrains Mono';
     font-weight: bolder;

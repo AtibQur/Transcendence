@@ -36,7 +36,6 @@
         <div class="Leaderboard-games">
           <h2>{{ player.ladder_level }}</h2>
         </div>
-        <!-- <div style="display: none;">{{ playerRankIndex = index + 1 }}</div> -->
       </div>
     </div>
 
@@ -62,22 +61,6 @@
     else
       console.error('Failed to fetch leaderboard data:');
   }
-
-//waarvoor is dit nodig??
-
-//   const playerRankIndex = computed(() => {
-//     if (!leaderboardData.value || leaderboardData.value.length === 0) {
-//       console.log("No leaderboard data");
-//       return -1;
-//     }
-
-//     const playerIndex = leaderboardData.value.findIndex(
-//       (player) => player.player.id === playerId
-//     );
-
-//     return playerIndex >= 0 ? playerIndex + 1 : -1; // Return the rank/index if found, otherwise -1
-//   });
-
 
 </script>
 
@@ -212,35 +195,29 @@
    }
 
    .Leaderboard-player-stats {
-   /* Add styles to match Leaderboard-header */
    position: absolute;
-   top: 160px; /* Adjust as needed */
+   top: 160px;
    width: 100%;
-   height: 72%; /* Adjust as needed */
-   overflow-y: auto; /* Add scrollbars if needed */
- 
-   /* Hide the scrollbar */
+   height: 72%;
+   overflow-y: auto;
    scrollbar-width: thin;
-   scrollbar-color: transparent transparent; /* Adjust color if needed */
+   scrollbar-color: transparent transparent;
  }
  
- /* Hide the scrollbar track and thumb */
  .Leaderboard-player-stats::-webkit-scrollbar {
    width: 0;
    height: 0;
  }
  
    .Leaderboard-row {
-     /* Styles to match Leaderboard-header */
      display: flex;
      align-items: center;
      justify-content: center;
-     height: 80px; /* Adjust as needed */
+     height: 80px;
      margin: 15px;
    }
  
    .Leaderboard-row .Leaderboard-rank {
-     /* Styles to match Leaderboard-info */
      display: flex;
      align-items: center;
      justify-content: center;
@@ -252,7 +229,6 @@
    }
  
    .Leaderboard-row .Leaderboard-name {
-     /* Styles to match Leaderboard-info */
      display: flex;
      align-items: center;
      width: 60%;
@@ -274,13 +250,12 @@
      padding-top: 3%;
    }
    .Leaderboard-row .Leaderboard-games {
-     /* Styles to match Leaderboard-info */
      display: flex;
      align-items: center;
      justify-content: center;
      width: 20%;
      height: 100%;
-     border-right: none; /* Remove border on the last column */
+     border-right: none;
      background-color: var(--yellow-soft);
      border-radius: 50px;
    }
@@ -288,15 +263,14 @@
    .Leaderboard-row .Leaderboard-rank h2,
    .Leaderboard-row .Leaderboard-name h2,
    .Leaderboard-row .Leaderboard-games h2 {
-     /* Styles to match Leaderboard-info */
      font-family: 'JetBrains Mono';
      font-style: normal;
      line-height: 127px;
      color: var(--black-soft);
      font-weight: bold;
      font-size: 24px;
-     border-right: none; /* Remove border on the last column */
+     border-right: none;
      padding: 30px;
    }
- 
+
    </style>

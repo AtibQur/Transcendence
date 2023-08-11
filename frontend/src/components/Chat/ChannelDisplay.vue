@@ -70,7 +70,7 @@ onBeforeMount(async () => {
     }
 
     .channel-list {
-        max-height: 275px; /* Adjust the max height as needed */
+        max-height: 275px;
         overflow-y: auto;
     }
 
