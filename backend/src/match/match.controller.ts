@@ -37,4 +37,11 @@ export class MatchController {
   findTotalMatches(@Param('id') id: string) {
     return this.matchService.findTotalMatches(+id);
   }
+
+  // CHECK IF A MATCH HAS ALREADY STARTED
+  // returns id if started, nothing if not/error
+  @Get('started/:player_id/:opponent_id')
+  checkHasStarted(@Param('player_id') player_id: string, @Param('opponent_id') opponent_id: string) {
+    return this.matchService.hasStarted(+player_id, +opponent_id);
+  }
 }

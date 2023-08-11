@@ -89,16 +89,29 @@ const startThisMatch = () => {
 				// Player 1's logic
 				console.log('I am player 1, ID:', player1.player_id);
 				console.log('Opponent player ID:', player2.player_id);
-				//starting match saves here
-				const match_id_response = await axiosInstance.post('match/create', {player_id: p1_id.value, opponent_id: p2_id.value});
-				match_id.value = match_id_response.data.id;
+
+				//check if match has already started
+				await axiosInstance.get(`match/started/${player1.player_id}/${player2.player_id}`)
+					.then(async (response) => {
+						if (!response.data) // match has not started yet
+						{
+							const match_id_response = await axiosInstance.post('match/create', {player_id: p1_id.value, opponent_id: p2_id.value});
+							match_id.value = match_id_response.data.id;
+						}
+						else // match has already started
+							match_id.value = response.data
+					})
+					.catch((error) => {
+						throw new Error(error);
+					});
+				
 			} else if (player2.socket_id === socket.id) {
 				// Player 2's logic
 				console.log('I am player 2, ID:', player2.player_id);
 				console.log('Opponent player ID:', player1.player_id);
 			}
 		
-			console.log("MatchId:", socket_match_id.value)
+		console.log("MatchId:", socket_match_id.value)
 		router.push({ name: 'inviteMultiplayer' })
 	} catch (error) {
 		console.log('Error starting match')

@@ -58,7 +58,7 @@ export class PongService {
 		const index = this.inviteList.findIndex(player => player.player_id === p1_id);
 		if (index !== -1){
 			console.log('removed', p1_id, 'from the invitelist')
-  			this.inviteList.splice(index, 1);
+			this.inviteList.splice(index, 1);
 		}
 		return 0;
 	}
@@ -175,7 +175,7 @@ export class PongService {
 			match_id: match.id,
 		}
 		this.inMatch.push(info)
-
+		
 		client.to(player1.socket_id).emit('startMatch', { 
 			player1: { player_id: player1.player_id, socket_id: player1.socket_id }, 
 			player2: { player_id: player2.player_id, socket_id: player2.socket_id },
