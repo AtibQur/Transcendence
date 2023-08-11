@@ -104,18 +104,15 @@ onBeforeMount(async () => {
     return imageUrl.value;
   };
 
-    // A method to adjust the chatbox height based on the window size
     const updateChatBoxHeight = () => {
         const windowHeight = window.innerHeight;
         chatBoxHeight.value = Math.min(windowHeight - 200, 1350);
     };
 
-    // Listen to the window resize event and update the chatbox height
     onMounted(() => {
-        updateChatBoxHeight(); // Initial update
+        updateChatBoxHeight();
         window.addEventListener('resize', updateChatBoxHeight);
     });
-    // Clean up the event listener when the component is unmounted
     onUnmounted(() => {
         window.removeEventListener('resize', updateChatBoxHeight);
     });
