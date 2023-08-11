@@ -110,7 +110,6 @@ const startThisMatch = () => {
 				console.log('I am player 2, ID:', player2.player_id);
 				console.log('Opponent player ID:', player1.player_id);
 			}
-		
 		console.log("MatchId:", socket_match_id.value)
 		router.push({ name: 'inviteMultiplayer' })
 	} catch (error) {
