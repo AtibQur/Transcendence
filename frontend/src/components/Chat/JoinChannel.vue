@@ -11,7 +11,7 @@
                     <label for="password" >New Password </label>
                     <Password id="password" inputId="add" v-model="password" toggleMask :feedback="false" />
                     <small id="text-error" class="p-error">{{ errorMessage }}</small>
-                    <button class="custom-button-1" type="submit">Join</button>
+                    <button class="custom-button-1" type="submit" style="background-color: var(--blue-lightest)">Join</button>
                 </div>
             </form>
         </Dialog>
@@ -27,10 +27,10 @@
                         </div>
                         <div class="join-button">
                             <div v-if="!item.joined">
-                                <button @click="checkPermission(item)" class="custom-button-1">Join</button>
+                                <button @click="checkPermission(item)" class="custom-button-1" style="background-color: var(--blue-lightest)">Join</button>
                             </div>
                             <div v-else>
-                                <button class="custom-button-1">Joined!</button>
+                                <button class="custom-button-1" style="background-color: var(--blue-lightest)">Joined!</button>
                             </div>
                         </div>
                     </div>

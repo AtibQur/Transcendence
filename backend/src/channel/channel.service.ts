@@ -352,7 +352,7 @@ export class ChannelService {
             if (!hash)
                 throw new Error('Encrypting password failed');
         }
-        
+
         const updatedChannel = await prisma.channel.update({
             where: {
                 id: id
@@ -378,7 +378,7 @@ export class ChannelService {
     try {
         const hash: string = await this.findPassword(id);
         if (!hash)
-            throw new Error();
+        throw new Error();
 
         const isMatch = await bcrypt.compare(password, hash);
         return isMatch;
