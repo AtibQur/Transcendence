@@ -122,4 +122,35 @@ export class MatchService {
       return null;
     }
   }
+
+  // CHECK IF A MATCH HAS ALREADY STARTED
+  // returns id if started, nothing if not/error
+  async hasStarted(playerId1: number, playerId2: number)
+  {
+    try {
+        const selectedMatch = await prisma.match.findFirst({
+            where: {
+                OR: [
+                    {
+                        player_id: playerId1,
+                        opponent_id: playerId2,
+                    },
+                    {
+                        player_id: playerId2,
+                        opponent_id: playerId1,
+                    },
+                ],
+                player_points: 0,
+                opponent_points: 0
+            }
+        })
+
+        if (!selectedMatch)
+            return null;
+        return selectedMatch.id;
+    } catch (error) {
+        console.log('Error occurred: ', error);
+        return null;
+    }
+  }
 }
