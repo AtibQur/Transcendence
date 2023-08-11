@@ -35,6 +35,9 @@ onMounted( async () => {
 		setDefaultAuthHeader(accesstoken);
 		if (!localStorage.getItem('logged')) {
 			sessionVariablesAreSet.value = await loginPlayer();
+			if (localStorage.getItem('newUser')) {
+				router.push({ name: 'welcome'});
+			}
 		}
 	}
 })

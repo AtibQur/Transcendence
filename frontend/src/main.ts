@@ -20,6 +20,7 @@ import ChatView from './components/Chat/ChatView.vue';
 import Redirect2faVerify from './components/Auth/AuthRedirectIf2fa.vue';
 import FriendsPage from './components/Friends/FriendsMenubar/FriendsPage.vue';
 import WrongTfa from './components/Auth/WrongTfa.vue';
+import WelcomePage from './components/profile/WelcomePage.vue'
 import PrimeVue from 'primevue/config';
 import ToastService from 'primevue/toastservice';
 import ConfirmationService from 'primevue/confirmationservice';
@@ -86,6 +87,11 @@ const routes: RouteRecordRaw[] = [
       name: 'friends',
       path: '/profile/:playerName',
       component: FriendsPage,
+    },
+    {
+      name: 'welcome',
+      path: '/welcome',
+      component: WelcomePage,
     },
 ];
 

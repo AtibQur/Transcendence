@@ -18,6 +18,7 @@ export const loginPlayer = async () => {
   // set default avatar
   if (!hasAvatar.data) {
     await setDefaultAvatar(responsePlayerId.data);
+    localStorage.setItem('newUser', 'true');
   }
 
   socket.auth = { id: playerId };
