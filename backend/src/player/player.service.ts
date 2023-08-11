@@ -147,7 +147,8 @@ async findIntraByUsername(username: string) {
         select: {
           player: {
             select: {
-              username: true,
+              id: true,
+              username: true
             },
           },
           wins: true,

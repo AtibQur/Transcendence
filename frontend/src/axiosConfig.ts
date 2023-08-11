@@ -1,12 +1,12 @@
-import axios, { AxiosInstance } from 'axios';
+import axios, { AxiosInstance, AxiosResponse, AxiosError } from 'axios';
 
 const instance: AxiosInstance = axios.create({
   baseURL: process.env.VUE_APP_HOST_COMPUTER + ':3000/',
 });
 
 instance.interceptors.response.use(
-  (response) => response,
-  (error) => {
+  (response: AxiosResponse) => response,
+  (error: AxiosError ) => {
     if (error.response && error.response.status === 401) {
       window.location.href = '/auth';
     }
@@ -22,8 +22,8 @@ export const removeDefaultAuthHeader = (): void => {
   delete instance.defaults.headers.common["Authorization"];
 };
 
-export const sendVerifyToken = async (payload: any, submittedValue: string): Promise<any> => {
-  await instance.post('auth/2fa/verify', {payload, submittedValue});
+export const sendVerifyToken = async (payload: any, submittedValue: string) => {
+  await instance.post('auth/2fa/verify', { payload, submittedValue });
 }
 
 export default instance;

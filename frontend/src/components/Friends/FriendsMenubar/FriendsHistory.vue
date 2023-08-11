@@ -13,11 +13,15 @@
             'red-bg1': playerName != match.player.username && match.player_points > match.opponent_points,
           }]"
         >
-          <div class="border-value blue-text player-username">{{ match.player.username }}</div>
+          <div class="border-value blue-text player-username">
+            {{ match.player.username == playerName ? 'You' : match.player.username}}
+          </div>
           <div class="border-value black-text"  style="font-weight: bold">{{ match.player_points }}</div>
           <div class="border-value black-text"> VS </div>
           <div class="border-value black-text" style="font-weight: bold">{{ match.opponent_points }}</div>
-          <div class="border-value blue-text enemy-username">{{ match.opponent.username }}</div>
+          <div class="border-value blue-text enemy-username">
+            {{ match.opponent.username == playerName ? 'You' : match.opponent.username}}
+          </div>
         </div>
       </div>
     </div>
@@ -55,7 +59,6 @@ const useFriendsHistory = (friendId) => {
   try {
     matches.value = await fetchMatches(friendId);
     player.value = await fetchPlayerName(friendId);
-    console.log(player.value);
   } catch (error) {
     console.error("Error occurred:", error);
   }
@@ -70,7 +73,7 @@ const useFriendsHistory = (friendId) => {
   const fetchPlayerName = async (playerId: string) => {
   try {
     const response = await axiosInstance.get('player/username/' + playerId.toString());
-    const name = response.data; // Extract the data from the response
+    const name = response.data;
     return name;
   } catch (error) {
     console.error("Error fetching player name:", error);
