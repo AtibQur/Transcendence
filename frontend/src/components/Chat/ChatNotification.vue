@@ -11,16 +11,14 @@
   import Toast from 'primevue/toast'
   import Message from '@/types/Message';
   import axiosInstance from '../../axiosConfig';
-  import { onBeforeMount } from 'vue'
+  import { onMounted } from 'vue';
   import { useToast } from 'primevue/usetoast';
-
 
   const toast = useToast();
   const playerId = parseInt(sessionStorage.getItem('playerId') || '0');
   const username = sessionStorage.getItem('username') || null;
 
-  onBeforeMount(async () => {
-    //ADD MESSAGE TO CURRENT MESSAGES
+  onMounted(async () => {
     socket.on('chatmessage', async (message: Message) => {
       await axiosInstance.get(`blockedplayer/player/${playerId.toString()}?username=${message.sender.username}`)
         .then((response) => {
