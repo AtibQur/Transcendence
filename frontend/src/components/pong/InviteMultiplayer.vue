@@ -21,7 +21,7 @@
 </template>
 
 <script lang="ts">
-	import { socket } from '../../socket'
+	import { socket } from '../../utils/socket'
 	import { defineComponent } from 'vue'
 	import {
 	p1_id,
@@ -32,7 +32,7 @@
 	socket_match_id,
 	} from './shared';
 	import { useRouter } from 'vue-router'
-	import axiosInstance from '../../axiosConfig'
+	import axiosInstance from '../../utils/axiosConfig'
 
 	import GameTools from './GameTools.vue'
 	import ResultScreen from './ResultScreen.vue'

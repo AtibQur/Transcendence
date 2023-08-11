@@ -15,6 +15,7 @@
 <script lang="ts">
 import { defineComponent } from 'vue';
 import LoadFriends from "./LoadFriends.vue";
+
 export default defineComponent({
   data() {
     return {

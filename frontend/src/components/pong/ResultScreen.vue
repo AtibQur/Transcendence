@@ -21,7 +21,7 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue'
-import { socket } from '../../socket'
+import { socket } from '../../utils/socket'
 
 export default defineComponent({
 	name: "ResultScreen",

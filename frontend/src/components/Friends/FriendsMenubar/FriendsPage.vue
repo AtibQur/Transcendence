@@ -52,7 +52,7 @@
 
 <script lang="ts">
 import { onMounted, watch, ref } from 'vue';
-import axiosInstance from '../../../axiosConfig';
+import axiosInstance from '../../../utils/axiosConfig'
 import { useRoute, useRouter } from 'vue-router';
 import FriendsStats from './FriendsStats.vue';
 import FriendsHistory from './FriendsHistory.vue';

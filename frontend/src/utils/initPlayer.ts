@@ -1,5 +1,5 @@
-import { socket } from '@/socket';
-import axiosInstance from '../../axiosConfig';
+import { socket } from '@/utils/socket';
+import axiosInstance from './axiosConfig';
 
 export const loginPlayer = async () => {
   // load intraname from cookie, done after intra login auth

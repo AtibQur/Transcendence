@@ -30,7 +30,7 @@
 
 <script lang="ts">
 import { ref, onBeforeMount } from 'vue';
-import axiosInstance from '../../../axiosConfig';
+import axiosInstance from '../../../utils/axiosConfig'
 
 export default {
   props: {

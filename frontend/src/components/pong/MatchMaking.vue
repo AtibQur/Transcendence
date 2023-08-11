@@ -18,8 +18,8 @@
 
 	import { onMounted, onBeforeMount, ref, computed} from 'vue'
 	import { useRouter } from 'vue-router'
-	import { socket } from '../../socket'
-	import axiosInstance from '../../axiosConfig'
+	import { socket } from '../../utils/socket'
+	import axiosInstance from '../../utils/axiosConfig'
 	import { useToast } from 'primevue/usetoast';
 
 export default {

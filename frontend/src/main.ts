@@ -5,7 +5,7 @@ import "primeicons/primeicons.css";
 
 import { createApp } from 'vue';
 import { createRouter, createWebHistory, RouteRecordRaw } from 'vue-router';
-import axiosInstance from './axiosConfig';
+import axiosInstance from './utils/axiosConfig';
 import App from './App.vue';
 import Home from './components/Home.vue';
 import Play from './components/pong/Play.vue';
