@@ -7,7 +7,7 @@
   
   <script setup lang="ts">
   import { ref } from 'vue';
-  import axiosInstance from '../../axiosConfig';
+  import axiosInstance from '@/utils/axiosConfig';
   
   const file = ref<File | null>(null);
   const emit = defineEmits(["avatarUploaded"]);

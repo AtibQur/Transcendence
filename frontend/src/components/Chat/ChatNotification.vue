@@ -10,7 +10,7 @@
   import { socket } from '../../utils/socket';
   import Toast from 'primevue/toast'
   import Message from '@/types/Message';
-  import axiosInstance from '../../axiosConfig';
+  import axiosInstance from '@/utils/axiosConfig';
   import { onMounted } from 'vue';
   import { useToast } from 'primevue/usetoast';
 

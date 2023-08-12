@@ -18,10 +18,9 @@
 </template>
 
 <script setup lang="ts">
-    import AxiosInstance  from '../../axiosConfig';
-    import { setDefaultAuthHeader } from '../../axiosConfig';
+    import AxiosInstance, { setDefaultAuthHeader } from '@/utils/axiosConfig';
     import { ref } from 'vue';
-    import { getCookie, removeCookie, setCookie } from '../../utils/cookie_utils';
+    import { getCookie, removeCookie, setCookie } from '@/utils/cookie_utils';
     import { useRouter } from 'vue-router';
 
 

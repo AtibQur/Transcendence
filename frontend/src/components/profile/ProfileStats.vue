@@ -13,7 +13,7 @@
 
 <script setup lang="ts">
   import { onBeforeMount, ref, computed } from 'vue';
-  import axiosInstance from '../../axiosConfig';
+  import axiosInstance from '@/utils/axiosConfig';
 
   const totalAchievements = ref(0);
   const percentageWon = ref(0);

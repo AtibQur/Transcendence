@@ -17,7 +17,7 @@
 
 <script setup lang="ts">
   import { onBeforeMount, ref } from 'vue';
-  import axiosInstance from '../../axiosConfig';
+  import axiosInstance from '@/utils/axiosConfig';
   
   const achievements = ref({});
   const playerId = parseInt(localStorage.getItem('playerId') || '0');

@@ -45,7 +45,7 @@
 
 <script setup lang="ts">
   import { onBeforeMount, ref } from 'vue';
-  import axiosInstance from '../axiosConfig';
+  import axiosInstance from '@/utils/axiosConfig';
 
   const leaderboardData = ref("");
   const maxPlayersToShow = 15;

@@ -30,7 +30,7 @@
 
 <script setup lang="ts">
 import { PropType, onBeforeMount, ref } from 'vue';
-import axiosInstance from '../../axiosConfig';
+import axiosInstance from '@/utils/axiosConfig';
 
 const matches = ref([]);
 const playerId = parseInt(localStorage.getItem('playerId') || '0');

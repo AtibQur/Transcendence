@@ -12,7 +12,7 @@
 
 <script setup lang="ts">
 import { onMounted, ref } from 'vue'
-import { setDefaultAuthHeader } from './axiosConfig';
+import { setDefaultAuthHeader } from './utils/axiosConfig.ts';
 import { useRouter } from 'vue-router';
 import { getCookie } from './utils/cookie_utils';
 import Toast from 'primevue/toast'

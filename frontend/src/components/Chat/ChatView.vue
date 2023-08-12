@@ -48,7 +48,7 @@
 
 <script setup lang="ts">
 import { onBeforeMount, ref, onMounted, onUnmounted } from 'vue';
-import axiosInstance from '../../axiosConfig';
+import axiosInstance from '@/utils/axiosConfig';
 import ChannelDisplay from './ChannelDisplay.vue';
 import ChannelInfoDisplay from './ChannelInfoDisplay.vue';
 import AddChannel from './AddChannel.vue';

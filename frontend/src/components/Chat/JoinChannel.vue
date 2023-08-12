@@ -42,7 +42,7 @@
 
 <script setup lang="ts">
 import { socket } from '../../utils/socket';
-import axiosInstance from '../../axiosConfig';
+import axiosInstance from '@/utils/axiosConfig';
 import { ref } from 'vue';
 import Password from 'primevue/password'
 import Dialog from 'primevue/dialog';

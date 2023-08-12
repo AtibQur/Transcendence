@@ -7,7 +7,7 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import AxiosInstance, { sendVerifyToken }  from '../../axiosConfig';
+import AxiosInstance, { sendVerifyToken }  from '@/utils/axiosConfig';
 import { getCookie } from '../cookie_utils';
 
 export default defineComponent({

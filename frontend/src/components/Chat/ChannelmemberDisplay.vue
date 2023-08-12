@@ -19,7 +19,7 @@
 
 <script setup lang="ts">
 import { socket } from '../../utils/socket';
-import axiosInstance from '../../axiosConfig';
+import axiosInstance from '@/utils/axiosConfig';
 import { onBeforeMount, ref, watch } from 'vue'
 import Sidebar from 'primevue/sidebar';
 import UserInfoDisplay from './UserInfoDisplay.vue';
