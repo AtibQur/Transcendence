@@ -64,6 +64,7 @@
     <div v-if="showChangePictureModal" class="Modal" @click="closeModal">
       <div class="ModalContent" @click.stop>
         <h2>Profile Picture Change</h2>
+        <button class="custom-button-2" onclick="window.open('https://getavataaars.com/', '_blank');">Design your own avatar!</button>
         <div v-if="showChangePictureModal" class="show">
           <ProfileAvatar @avatarUploaded="handleAvatarUploaded" />
         </div>
@@ -428,5 +429,23 @@
     max-height: 75vh;
   }
 }
+
+  .custom-button-2 {
+    font-family: 'JetBrains Mono';
+    font-weight: bolder;
+    position: relative;
+    border:none; 
+    border-radius:20px; 
+    padding:25px;
+    margin: 25px;
+    min-height:30px; 
+    min-width: 120px;
+    background-color: var(--yellow-soft);
+    color: var(--black-soft);
+    cursor: pointer;
+  }
+  .custom-button-2:hover {
+    transition: 0.3s;
+  }
 
 </style>

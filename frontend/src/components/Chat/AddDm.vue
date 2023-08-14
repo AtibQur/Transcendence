@@ -107,7 +107,7 @@ const onSubmit = async () => {
 
 </script>
 
-<style>
+<style scoped>
   .custom-button-1 {
     font-family: 'JetBrains Mono';
     font-weight: bolder;

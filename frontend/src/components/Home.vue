@@ -73,7 +73,8 @@
   .custom-button-1 {
     font-family: 'JetBrains Mono';
     font-weight: bolder;
-    position: absolute;
+    position: relative;
+    margin: 5px;
     border:none; 
     border-radius:10px; 
     padding:15px;

@@ -7,7 +7,7 @@
   <h3> Welcome to the coolest place to play PONG! </h3>
   <div class="welcome-text">
     This platform is more than just a place where you can <router-link class="custom-link" to="/play">play PONG</router-link>. 
-    Chat your friends, have a look at the <router-link class="custom-link" to="/leaderboard">leaderboard</router-link> or check at your stats and achievements on your <router-link class="custom-link" to="/profile">profile</router-link>.
+    <router-link class="custom-link" to="/chat">Chat</router-link> your friends, have a look at the <router-link class="custom-link" to="/leaderboard">leaderboard</router-link> or check at your stats and achievements on your <router-link class="custom-link" to="/profile">profile</router-link>.
     <br><br>
     Get ready to bounce, chat, and conquer the virtual ping-pong arena with your pals!
     <br><br>
