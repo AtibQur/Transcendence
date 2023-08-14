@@ -1,6 +1,6 @@
 <template>
   <div class="menu-wrapper">
-    <div class="Friends-Menu">
+    <div ref="target" class="Friends-Menu">
       <div class="bar" @click="toggleMenu">
         <h1>{{ buttonText }}</h1>
       </div>
@@ -12,30 +12,37 @@
     </div>
   </div>
 </template>
+
 <script lang="ts">
-import { defineComponent } from 'vue';
+import { ref, defineComponent } from 'vue';
 import LoadFriends from "./LoadFriends.vue";
+import { onClickOutside } from '@vueuse/core'
+
 export default defineComponent({
   data() {
     return {
-      isOpen: false,
       buttonText: 'Friends'
     };
   },
-  methods: {
-    toggleMenu() {
-      this.isOpen = !this.isOpen;
-    },
-    closeMenu() {
-      this.isOpen = false;
-      this.buttonText = 'Friends';
+  setup() {
+    const target = ref(null)
+    const isOpen = ref(false);
+
+    onClickOutside(target, async (event) => await closeMenu())
+
+    const toggleMenu = () => {
+      isOpen.value = !isOpen.value;
     }
-  },
-  created() {
-    this.$router.afterEach(() => {
-      this.isOpen = false;
-      this.buttonText = 'Friends';
-    });
+
+    const closeMenu = () => {
+      isOpen.value = false;
+    }
+
+    return { 
+        target,
+        isOpen,
+        toggleMenu,
+        closeMenu }
   },
   components: {
     LoadFriends
