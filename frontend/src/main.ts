@@ -14,13 +14,12 @@ import InviteMultiplayer from './components/pong/InviteMultiplayer.vue';
 import Tfa from './components/Auth/Redirect2faVerify.vue';
 import Auth from './components/Auth/AuthCheck.vue';
 import Login from './components/Auth/AuthRedirectIf2fa.vue';
+import Redirect2faVerify from './components/Auth/AuthRedirectIf2fa.vue';
+import TfaConfirm from './components/Auth/TfaConfirm.vue';
 import ProfilePage from './components/profile/ProfilePage.vue';
 import Leaderboard from './components/LeaderboardComponent.vue';
 import ChatView from './components/Chat/ChatView.vue';
-import Redirect2faVerify from './components/Auth/AuthRedirectIf2fa.vue';
 import FriendsPage from './components/Friends/FriendsMenubar/FriendsPage.vue';
-import TfaConfirm from './components/Auth/TfaConfirm.vue';
-import WrongTfa from './components/Auth/WrongTfa.vue';
 import WelcomePage from './components/profile/WelcomePage.vue'
 import PrimeVue from 'primevue/config';
 import ToastService from 'primevue/toastservice';
@@ -85,10 +84,6 @@ const routes: RouteRecordRaw[] = [
       path: '/redirect2faverify',
       name: "TFA_VERIFY",
       component: Redirect2faVerify,
-    },
-    {
-      path: '/wrong2fa',
-      component: WrongTfa
     },
     {
       name: 'friends',
