@@ -1,6 +1,6 @@
 # Transcendence
 
-<img src="https://github.com/AtibQur/Transcendence/blob/fixPassword/Homepage.png" alt="Your image title" width="900"/>
+<img src="https://github.com/AtibQur/Transcendence/blob/main/Homepage.png" alt="Your image title" width="900"/>
 
 ## Table of Contents
 * [Project Overview](#project-overview)
