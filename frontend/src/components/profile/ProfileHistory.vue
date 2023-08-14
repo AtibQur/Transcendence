@@ -14,13 +14,15 @@
           }]"
         >
         <div class="border-value blue-text player-username">
-            {{ match.player.username == props.username ? 'You' : match.player.username}}
+            <div v-if="props.username === match.player.username">You</div>
+            <div v-else-if="props.username != match.player.username"> {{ match.player.username }}</div>
           </div>
           <div class="border-value black-text"  style="font-weight: bold">{{ match.player_points }}</div>
           <div class="border-value black-text"> VS </div>
           <div class="border-value black-text" style="font-weight: bold">{{ match.opponent_points }}</div>
           <div class="border-value blue-text enemy-username">
-            {{ match.opponent.username == props.username ? 'You' : match.opponent.username}}
+            <div v-if="props.username === match.player.username">{{ match.opponent.username }}</div>
+            <div v-else-if="props.username != match.player.username"> You </div>
           </div>
         </div>
       </div>
