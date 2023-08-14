@@ -653,7 +653,7 @@ async updateTfaCode(id: number, code: string) {
   // CHECK IF PLAYER EXISTS
   async isExistingIntraPlayer(intraUsername: string) {
     try {
-      const existingPlayer = await prisma.player.findUnique({
+      const existingPlayer = await prisma.player.findFirst({
           where: {
             intra_username: intraUsername,
           },
