@@ -30,10 +30,14 @@
 import { ref } from 'vue';
 import axiosInstance from '@/utils/axiosConfig'
 import { useToast } from 'primevue/usetoast';
+import { useRouter } from 'vue-router';
+
 
 const avatars = ref<string[]>(['haseeb.png', 'maria.png', 'raav.png', 'ster.png', 'tessa.png']);
 const playerId = localStorage.getItem('playerId');
 const toast = useToast();
+const router = useRouter();
+
 
 const addFriend = async (avatarPath: string) => {
   const username = avatarPath.replace('.png', '');
@@ -43,6 +47,9 @@ const addFriend = async (avatarPath: string) => {
             });
   if (response.data) {
     toast.add({ severity: 'success', summary: 'Successfully added friend', detail: '', life: 3000 });
+  }
+  else {
+    router.push({ name: 'friends', params: { playerName: username }});
   }
 };
 </script>

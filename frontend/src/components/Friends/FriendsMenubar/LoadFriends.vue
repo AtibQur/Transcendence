@@ -15,7 +15,7 @@
       <div class="friend-list">
         <router-link v-for="friend in friends" :key="friend.username" :to="{
           name: 'friends',
-          params: { playerName: friend.username, profilePicture: friend.profilePicture, status: friend.status }
+          params: { playerName: friend.username }
         }" class="name-container" style="text-decoration: none; color: inherit;">
           <div class="status-circle" :class="{ 'online': friend.status === 'online', 'offline': friend.status !== 'online' }"></div>
           <div class="name">{{ friend.username }}</div>
