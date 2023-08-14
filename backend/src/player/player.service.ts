@@ -3,7 +3,6 @@ import { CreatePlayerDto } from './dto/create-player.dto';
 import { UpdatePlayerDto } from './dto/update-player.dto';
 import { PrismaService } from '../../prisma/prisma.service';
 import { File } from 'multer';
-import { BlockedplayerService } from 'src/blockedplayer/blockedplayer.service';
 
 const prisma = PrismaService.getClient();
 
@@ -31,12 +30,9 @@ export class PlayerService {
         'First chat messages sent': false,
         '10 chat messages sent': false,
       };
-
-      // TODO: change to intra username later?
-      if (await this.isExistingPlayer(createPlayerDto.username)) {
-        return await this.findIdByUsername(createPlayerDto.username);
+      if (await this.isExistingIntraPlayer(createPlayerDto.username)) {
+        return await this.findIdByIntraUsername(createPlayerDto.username);
       }
-
       const newPlayer = await prisma.player.create({
         data: {
           username: createPlayerDto.username,
@@ -640,6 +636,26 @@ async updateTfaCode(id: number, code: string) {
       const existingPlayer = await prisma.player.findUnique({
           where: {
             username: username,
+          },
+      });
+      if (existingPlayer) {
+        return true;
+      }
+      else {
+        return false;
+      }
+    }
+    catch (error) {
+      return false;
+    }
+  }
+
+  // CHECK IF PLAYER EXISTS
+  async isExistingIntraPlayer(intraUsername: string) {
+    try {
+      const existingPlayer = await prisma.player.findUnique({
+          where: {
+            intra_username: intraUsername,
           },
       });
       if (existingPlayer) {
