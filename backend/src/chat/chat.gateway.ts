@@ -44,7 +44,6 @@ export class ChatGateway {
         if (!playerId) //if nobody is logged in
         {
             console.log('nobody logged');
-            client.disconnect();
         }
         else {
             console.log('logging...');
