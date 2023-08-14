@@ -215,6 +215,7 @@
     try {
       await axiosInstance.get('user/disable2fa');
       alert("Two Factor Authorization disabled");
+      showChangeTfaModal.value = false;
     } catch (error) {
       alert("Two Factor Authorization could not be disabled");
     }
