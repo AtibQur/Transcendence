@@ -4,16 +4,13 @@
         <form @submit="handleSubmit">
             <label for="digitInput">Enter your verification code: </label>
             <input type="number" v-model="inputValue" name="digitInput" maxlength="6" minlength="6">
-            <input type="submit" value="Submit">
+            <input class="custom-button-1" type="submit" value="Submit">
         </form>
     </div>
     <div>
         <h2>
             If you lost your account or phone please email us at tranceanddance123@gmail.com
         </h2>
-        <h1>
-            Ya Dumb Bitch
-        </h1>
     </div>
 </template>
 
@@ -53,6 +50,8 @@
     }
 </script>
 
-<style>
-    
+<style scoped>
+.custom-button-1 {
+    border-radius: 10px;
+}
 </style>
