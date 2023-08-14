@@ -13,7 +13,7 @@
 
 <script setup lang="ts">
 import { onBeforeMount, ref, computed } from 'vue';
-import axiosInstance from '../../../utils/axiosConfig'
+import axiosInstance from '@/utils/axiosConfig'
 
 const props = defineProps({
   friendId: {

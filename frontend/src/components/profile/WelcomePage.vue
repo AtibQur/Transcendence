@@ -28,7 +28,7 @@
 
 <script setup lang="ts">
 import { ref } from 'vue';
-import axiosInstance from '../../utils/axiosConfig'
+import axiosInstance from '@/utils/axiosConfig'
 import { useToast } from 'primevue/usetoast';
 
 const avatars = ref<string[]>(['haseeb.png', 'maria.png', 'raav.png', 'ster.png', 'tessa.png']);

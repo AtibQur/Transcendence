@@ -25,7 +25,7 @@
 <script lang="ts">
 import SoloMatch from './SoloMatch.vue'
 import MatchMaking from './MatchMaking.vue'
-import { socket } from '../../utils/socket'
+import { socket } from '@/utils/socket'
 import { useRouter } from 'vue-router'
 import { defineComponent } from 'vue'
 

@@ -14,7 +14,7 @@
 </template>
 
 <script setup lang="ts">
-import { socket } from '../../utils/socket';
+import { socket } from '@/utils/socket';
 import axiosInstance from '@/utils/axiosConfig';
 import { onBeforeMount, ref} from 'vue'
 

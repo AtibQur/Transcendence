@@ -3,8 +3,8 @@
 	<router-view />
 	<Toast/>
 	<ConfirmDialog />
+	<FriendsMenubar />
 	<template v-if="sessionVariablesAreSet">
-		<FriendsMenubar />
 		<ChatNotification />
 		<GameInvitation />
 	</template>

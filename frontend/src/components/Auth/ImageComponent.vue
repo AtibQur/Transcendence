@@ -6,8 +6,8 @@ w<template>
 
 <script lang="ts">
   import { defineComponent, ref } from 'vue';
-  import axiosInstance from '../../utils/axiosConfig';
-  import { getCookie } from '../../utils/cookie_utils';
+  import axiosInstance from '@/utils/axiosConfig';
+  import { getCookie } from '@/utils/cookie_utils';
   
   const imageData = ref<string>(null!);
 

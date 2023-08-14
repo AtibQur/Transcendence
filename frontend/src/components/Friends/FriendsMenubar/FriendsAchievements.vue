@@ -17,7 +17,7 @@
 
 <script lang="ts">
 import { onBeforeMount, ref, watch } from 'vue';
-import axiosInstance from '../../../utils/axiosConfig'
+import axiosInstance from '@/utils/axiosConfig'
 
 export default {
   props: {

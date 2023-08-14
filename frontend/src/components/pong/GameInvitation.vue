@@ -12,12 +12,12 @@
 <script setup lang="ts">
 
 import { onBeforeMount, ref } from 'vue'
-import { socket } from '../../utils/socket';
+import { socket } from '@/utils/socket';
 import { useConfirm } from "primevue/useconfirm";
 import { useToast } from 'primevue/usetoast';
 import Dialog from 'primevue/dialog';
 import MatchMaking from './MatchMaking.vue'
-import axiosInstance from '../../utils/axiosConfig'
+import axiosInstance from '@/utils/axiosConfig'
 import { useRouter } from 'vue-router';
 import {
 	p1_id,

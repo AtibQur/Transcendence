@@ -30,7 +30,7 @@
 import { defineComponent } from 'vue';
 import { useToast } from 'primevue/usetoast';
 import { useConfirm } from "primevue/useconfirm";
-import axiosInstance from '../../../utils/axiosConfig'
+import axiosInstance from '@/utils/axiosConfig'
 
 interface Friend {
   username: string;

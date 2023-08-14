@@ -90,8 +90,8 @@
   import ProfileStats from "./ProfileStats.vue";
   import ProfileHistory from "./ProfileHistory.vue";
   import ProfileAvatar from './ProfileAvatar.vue';
-  import { removeCookie } from '../../utils/cookie_utils';
-  import axiosInstance, { removeDefaultAuthHeader } from '../../utils/axiosConfig';
+  import { removeCookie } from '@/utils/cookie_utils';
+  import axiosInstance, { removeDefaultAuthHeader } from '@/utils/axiosConfig';
   import { useRouter } from 'vue-router';
   import { useToast } from 'primevue/usetoast';
 
