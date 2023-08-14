@@ -215,6 +215,7 @@
   const closeModal = () => {
     showChangeNameModal.value = false;
     showChangePictureModal.value = false;
+    showChangeTfaModal.value = false;
     newName.value = '';
   };
 
