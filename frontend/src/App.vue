@@ -3,7 +3,7 @@
 	<router-view />
 	<Toast/>
 	<ConfirmDialog />
-	<template v-if="sessionVariablesAreSet">
+	<template v-if="localVariablesAreSet">
 		<FriendsMenubar />
 		<ChatNotification />
 		<GameInvitation />
