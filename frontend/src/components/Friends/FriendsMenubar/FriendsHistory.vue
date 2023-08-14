@@ -14,14 +14,16 @@
           }]"
         >
           <div class="border-value blue-text player-username">
-            <div v-if="playerName === match.player.username">{{ playerName }}</div>
+            <div v-if="match.player.username === playerUsername">You</div>
+            <div v-else-if="playerName === match.player.username">{{ playerName }}</div>
             <div v-else-if="playerName != match.player.username">{{ match.player.username }}</div>
           </div>
           <div class="border-value black-text"  style="font-weight: bold">{{ match.player_points }}</div>
           <div class="border-value black-text"> VS </div>
           <div class="border-value black-text" style="font-weight: bold">{{ match.opponent_points }}</div>
           <div class="border-value blue-text enemy-username">
-            <div v-if="playerName === match.player.username">{{ match.opponent.username }}</div>
+            <div v-if="match.opponent.username === playerUsername ">You</div>
+            <div v-else-if="playerName === match.player.username">{{ match.opponent.username }}</div>
             <div v-else-if="playerName != match.player.username">{{ playerName }}</div>
           </div>
         </div>
@@ -45,10 +47,11 @@ export default {
     },
   },
   setup(props) {
-    const { matches } = useFriendsHistory(props.friendId);
+    const { matches, playerUsername} = useFriendsHistory(props.friendId);
 
     return {
       matches,
+      playerUsername,
     };
   }
 };
@@ -56,11 +59,14 @@ export default {
 const useFriendsHistory = (friendId) => {
   const matches = ref('');
   const player = ref("");
+  const playerId = parseInt(sessionStorage.getItem('playerId') || '0');
+  const playerUsername = ref(""); // name that you use to log in
 
   onBeforeMount(async () => {
   try {
     matches.value = await fetchMatches(friendId);
     player.value = await fetchPlayerName(friendId);
+    playerUsername.value = await fetchUserName(playerId);
   } catch (error) {
     console.error("Error occurred:", error);
   }
@@ -68,7 +74,7 @@ const useFriendsHistory = (friendId) => {
 
   const fetchMatches = async (friendId) => {
     const response = await axiosInstance.get(`match/history/` + friendId.toString());
-    const reversedMatches = response.data.reverse(); // Reverse the order of matches
+    const reversedMatches = response.data.reverse();
     return reversedMatches;
   };
 
@@ -79,13 +85,26 @@ const useFriendsHistory = (friendId) => {
     return name;
   } catch (error) {
     console.error("Error fetching player name:", error);
-    throw error; // Rethrow the error to be caught in the onBeforeMount block
+    throw error;
   }
 };
+
+  const fetchUserName = async (playerId: number) => {
+  try {
+    const response = await axiosInstance.get('player/username/' + playerId.toString());
+    const name = response.data;
+    return name;
+  } catch (error) {
+    console.error("Error fetching player name:", error);
+    throw error;
+  }
+
+  };
 
   return {
     matches,
     player,
+    playerUsername,
   };
 };
 
