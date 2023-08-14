@@ -40,7 +40,7 @@
                     removeCookie('payload');
                     const accessToken = getCookie('auth');
                     setDefaultAuthHeader(accessToken);
-                    router.push(process.env.VUE_APP_HOST_COMPUTER + ":8080/");
+                    router.push( { name: "TFA_CONFIRM"} );
                 }
             }
             )
