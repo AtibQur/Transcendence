@@ -1,14 +1,16 @@
 # Transcendence
 
-<img src="https://github.com/AtibQur/Transcendence/blob/main/Homepage.png" alt="Your image title" width="900"/>
+<img src="https://github.com/AtibQur/Transcendence/blob/main/Homepage.png" alt="HomePage" width="900"/>
 
 ## Table of Contents
 * [Project Overview](#project-overview)
 * [Tech Stack](#tech-stack)
 * [Usage](#usage)
 * [Docker Container Setup](#docker-container-setup)
-* [Database](#database)
-* [Features](#features)
+* [Database](#database-schema)
+* [User Account](#user-account)
+* [Chat](#chat)
+* [Game](#game)
 * [Security](#security)
 * [Contributors](#contributors)
 
@@ -101,9 +103,43 @@ In our project, we've adopted a containerized approach using Docker to ensure co
 - Our PostgreSQL database is contained within this Docker container.
 - The container communicates via port 5432.
 
-## Database
+## Database Schema
 
-## Features
+<img src="https://github.com/AtibQur/Transcendence/blob/main/Database.png" alt="DatabaseSchema" width="900"/>
+
+## User Account
+
+- **Secure Login:** Seamlessly log in through OAuth using the 42 intranet, ensuring both accessibility and account security.
+
+- **Customization:** Personalize your identity by choosing your own username and avatar, visible across the website.
+
+- **Two-Factor Authentication:** Strengthen account security with options like Google Authenticator or SMS verification.
+
+- **Friend Connections:** Add other users as friends to stay informed about their online status, gaming activities, and interactions.
+
+- **Stats and Achievements:** Showcase your gaming prowess with detailed stats, wins, losses, ladder levels, and achievements displayed on your profile.
+
+- **Match History:** Relive your gaming journey through an extensive Match History, encompassing 1v1 games, ladder matches, and more.
+
+## Chat
+
+- **Channel Creation:** Create public, private, or password-protected chat rooms tailored to your preferences.
+
+- **Direct Messaging:** Establish one-on-one connections with fellow gamers through direct messaging.
+
+- **User Blocking:** Exercise control over your interactions by blocking users, ensuring a focused and comfortable environment.
+
+- **Channel Ownership:** Initiate channels and become the automatic owner, with the ability to set, change, and manage passwords.
+
+- **Channel Administration:** Channel owners can designate administrators, empowering them to maintain a respectful atmosphere and regulate user activities.
+
+- **Invitations and Profiles:** Seamlessly send game invitations and access player profiles for a comprehensive understanding of your fellow gamers.
+
+## Game
+
+- **Real-time game:** Engage in real-time Pong matches, bringing the classic game to life through seamless online play.
+
+- **Matchmaking:** Experience fair and exciting matchups through our automated matchmaking system. Join a queue and get paired with opponents for competitive Pong action.
 
 ## Security
 
