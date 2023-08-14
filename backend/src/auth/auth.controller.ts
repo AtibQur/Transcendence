@@ -37,6 +37,7 @@ export class AuthController {
             response.status(200).redirect(process.env.HOST_COMPUTER + ':8080');
         } else {
             response.cookie('payload', JSON.stringify(payload));
+            response.cookie('auth', 'HALVE_TOKEN');
             response.redirect(process.env.HOST_COMPUTER + ':8080/redirect2faverify')
         }
     }

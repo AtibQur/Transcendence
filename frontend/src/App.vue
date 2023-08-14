@@ -36,7 +36,11 @@ onMounted(() => {
 	const accesstoken = getCookie('auth');
 	if (accesstoken === undefined) {
 		checkLoggedIn();
-	} else {
+	}
+	else if (accesstoken === 'HALVE_TOKEN') {
+		router.push({ name: 'TFA_VERIFY' })
+	}
+	else {
 		setDefaultAuthHeader(accesstoken);
 	}
 	})
