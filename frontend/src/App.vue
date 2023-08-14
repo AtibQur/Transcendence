@@ -3,8 +3,8 @@
 	<router-view />
 	<Toast/>
 	<ConfirmDialog />
-	<FriendsMenubar />
 	<template v-if="sessionVariablesAreSet">
+		<FriendsMenubar />
 		<ChatNotification />
 		<GameInvitation />
 	</template>
@@ -24,7 +24,7 @@ import ChatNotification from './components/Chat/ChatNotification.vue';
 import { loginPlayer } from './utils/initPlayer';
 
 const router = useRouter();
-const sessionVariablesAreSet = ref(false);
+const localVariablesAreSet = ref(false);
 
 onMounted( async () => {
 	const accesstoken = getCookie('auth');
@@ -34,10 +34,13 @@ onMounted( async () => {
 	else {
 		setDefaultAuthHeader(accesstoken);
 		if (!localStorage.getItem('logged')) {
-			sessionVariablesAreSet.value = await loginPlayer();
+			localVariablesAreSet.value = await loginPlayer();
 			if (localStorage.getItem('newUser')) {
 				router.push({ name: 'welcome'});
 			}
+		}
+		else {
+			localVariablesAreSet.value = true;
 		}
 	}
 })
