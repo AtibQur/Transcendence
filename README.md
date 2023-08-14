@@ -1,6 +1,6 @@
 # Transcendence
 
-<img src="https://github.com/AtibQur/Transcendence/blob/fixPassword/Homepage.png" alt="Your image title" width="900"/>
+<img src="https://github.com/AtibQur/Transcendence/blob/main/Homepage.png" alt="Your image title" width="900"/>
 
 ## Table of Contents
 * [Project Overview](#project-overview)
@@ -70,6 +70,8 @@ In our project, we've adopted a containerized approach using Docker to ensure co
 
 - Our PostgreSQL database is contained within this Docker container.
 - The container communicates via port 5432.
+
+<img src="https://github.com/AtibQur/Transcendence/blob/main/Container.png" alt="Your image title" width="400"/>
 
 ## Database
 
