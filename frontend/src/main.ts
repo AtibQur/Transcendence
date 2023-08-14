@@ -19,6 +19,7 @@ import Leaderboard from './components/LeaderboardComponent.vue';
 import ChatView from './components/Chat/ChatView.vue';
 import Redirect2faVerify from './components/Auth/AuthRedirectIf2fa.vue';
 import FriendsPage from './components/Friends/FriendsMenubar/FriendsPage.vue';
+import TfaConfirm from './components/Auth/TfaConfirm.vue';
 import WrongTfa from './components/Auth/WrongTfa.vue';
 import WelcomePage from './components/profile/WelcomePage.vue'
 import PrimeVue from 'primevue/config';
@@ -54,6 +55,11 @@ const routes: RouteRecordRaw[] = [
       path: '/auth',
       name: 'auth',
       component: Auth,
+    },
+    {
+      path: '/tfaconfirm',
+      name: 'TFA_CONFIRM',
+      component: TfaConfirm,
     },
     {
       path: '/login',
