@@ -9,9 +9,10 @@
     This platform is more than just a place where you can <router-link class="custom-link" to="/play">play PONG</router-link>. 
     <router-link class="custom-link" to="/chat">Chat</router-link> your friends, have a look at the <router-link class="custom-link" to="/leaderboard">leaderboard</router-link> or check at your stats and achievements on your <router-link class="custom-link" to="/profile">profile</router-link>.
     <br><br>
-    Get ready to bounce, chat, and conquer the virtual ping-pong arena with your pals!
+    Get ready to bounce, chat, and conquer the virtual ping-pong arena with your pals! 🏓
     <br><br>
     Love,
+    <br>
     Haseeb, Maria, Raav, Ster and Tessa
   </div>
 
@@ -21,6 +22,10 @@
         <img :src="`/trance_avatars/${avatar}`" alt="Avatar" class="avatar" />
       </button>
     </div>
+  </div>
+  <br>
+  <div style="color: var(--blue-dark);">
+    Click our avatars to become friends :)
   </div>
 </div>
 </div>
