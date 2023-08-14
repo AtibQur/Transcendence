@@ -77,6 +77,7 @@ const routes: RouteRecordRaw[] = [
     },
     {
       path: '/redirect2faverify',
+      name: "TFA_VERIFY",
       component: Redirect2faVerify,
     },
     {

@@ -31,6 +31,9 @@ onMounted( async () => {
 	if (accesstoken === undefined) {
 		router.push({ name: 'auth' })
 	}
+	else if (accesstoken == "HALF_TOKEN") {
+		router.push({ name: 'TFA_VERIFY'});
+	}
 	else {
 		setDefaultAuthHeader(accesstoken);
 		if (!localStorage.getItem('logged')) {
