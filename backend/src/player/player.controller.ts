@@ -39,6 +39,12 @@ export class PlayerController {
     return this.playerService.findOneStats(+id);
   }
 
+  // GET PLAYERS 2FA STATUS
+  @Get('twofastatus/:id')
+  findOne2FA(@Param('id') id: string) {
+    return this.playerService.findOne2FA(+id);
+  }
+
   // GET PLAYERS ACHIEVEMENTS
   @Get('achievements/:id')
   findOneAchievements(@Param('id') id: string) {

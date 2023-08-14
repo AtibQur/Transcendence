@@ -75,9 +75,9 @@
       <div class="ModalContent" @click.stop>
         <h2>Change 2FA Status</h2>
         <div>
-          <p>2FA Status: </p>
-          <button class="custom-button-1" @click="enableTFA">Enable</button>
-          <button class="custom-button-1" @click="disableTFA">Disable</button>
+          <p>Two-factor authentication is currently <strong>{{ twofastatus }}</strong></p>
+          <button v-if="twofastatus === 'disabled'" class="custom-button-1" @click="enableTFA">Enable</button>
+          <button v-else-if="twofastatus === 'enabled'" class="custom-button-1" @click="disableTFA">Disable</button>
         </div>
       </div>
     </div>
@@ -109,11 +109,14 @@
 
   const playerId = parseInt(localStorage.getItem('playerId') || '0');
 
+  const twofastatus = ref('');
+
   onBeforeMount(async () => {
     try {
       username.value = await fetchUsername(playerId);
       profilePicture.value = await fetchAvatar(playerId);
       status.value = await fetchStatus(playerId);
+      twofastatus.value = await fetchTwoFAStatus(playerId);
     } catch (error) {
       console.log("Error occurred profpage");
     }
@@ -127,6 +130,16 @@
   const fetchStatus = async (player_id: number) => {
     const response = await axiosInstance.get('player/status/' + player_id.toString());
     return response.data;
+  }
+
+  const fetchTwoFAStatus = async (player_id: number) => {
+    const response = await axiosInstance.get('player/twofastatus/' + player_id.toString());
+    if (response.data) {
+      return 'enabled';
+    }
+    else {
+      return 'disabled';
+    }
   }
 
   const fetchAvatar = async (player_id: number) => {

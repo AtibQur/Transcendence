@@ -223,7 +223,6 @@ async findUsernameByIntra(intraUsername: string) {
   }
 
   // GET 2FA STATUS
-
   async findOne2FA(id: number) {
     try {
       const selectedPlayer = await prisma.player.findUnique({
