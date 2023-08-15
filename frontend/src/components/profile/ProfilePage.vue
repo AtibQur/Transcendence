@@ -227,8 +227,8 @@
   top: 50%;
   transform: translate(-50%, -50%);
   min-width: 1500px;
-  width: calc(100% - 800px);
-  height: 75vh;
+  width: 100%;
+  height: 100%;
   min-height: 1000px;
   display: flex;
   flex-direction: column;
@@ -266,8 +266,8 @@
     left: 50%;
     top: 0%;
     transform: translateX(-50%);
-    width: 100%;
-    height: 60%;
+    width: 300px;
+    height: 300px;
   }
   .ProfileData .ProfilePicture img {
     position: absolute;
