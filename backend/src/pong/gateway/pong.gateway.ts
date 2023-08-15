@@ -10,7 +10,6 @@ import { PongService } from '../pong.service';
 import { Server, Socket } from 'socket.io';
 import { PongGame } from './../game';
 import { Game } from '../interfaces/state.interface';
-import { PlayerService } from '../../player/player.service';
 
 @WebSocketGateway({
     cors: {
@@ -21,21 +20,12 @@ export class PongGateway {
 	@WebSocketServer()
 	server: Server;
 
-	private readonly playerService = new PlayerService();
 	private pongGame: PongGame = new PongGame();
 	private game: Game = this.pongGame.game;
 
 	constructor(
 		private readonly pongService: PongService
 	){}
-	
-	// INVITE
-	@SubscribeMessage('inviteAccepted')
-	inviteAccepted(
-		@ConnectedSocket() client: Socket,
-		@MessageBody() player_id: number): void {
-			this.pongService.inviteAccepted(client, player_id);
-	}
 
 	@SubscribeMessage('acceptInvite')
 	handleAccept(
@@ -73,21 +63,14 @@ export class PongGateway {
 		@ConnectedSocket() client: Socket,
 		@MessageBody() data: any): void {
 		this.pongService.handleMove(client, data)
-		// this.server.emit('state', data);
-	}
-
-	@SubscribeMessage('soloMatchStarted')
-	handleSoloMatch(
-		@ConnectedSocket() client: Socket,
-		@MessageBody() {}): void {
-			this.pongService.handleSoloMatch(client);
 	}
 	
 	@SubscribeMessage('joinMatchmaking')
 	handleMatchmaking(
 		@ConnectedSocket() client: Socket,
-		@MessageBody() { player_id, socket_id}: { player_id: number; socket_id: string }): void {
-			this.pongService.handleJoinMatchmaking(client, player_id, socket_id);
+		@MessageBody() { player_id, socket_id}: { player_id: number; socket_id: string }) {
+			const response = this.pongService.handleJoinMatchmaking(client, player_id, socket_id);
+			return response;
 		}
 
 	afterInit(@ConnectedSocket() client: Socket): void {

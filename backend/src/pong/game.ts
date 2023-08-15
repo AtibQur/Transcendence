@@ -172,7 +172,6 @@ export class PongGame {
 		}
 	}
 	setUpPowerUp(){
-		// this.powerUp.type = Math.floor(Math.random() * 2) + 1;
 		this.powerUp.type = 1;
 		this.powerUp.x = Math.floor(Math.random() * 490);
 		this.powerUp.y = Math.floor(Math.random() * 615) + 205;
@@ -184,12 +183,6 @@ export class PongGame {
 				this.powerUp.new = false;
 			}
 		}
-		// if (this.player1.score == 6){
-		// 	if (this.powerUp.new){
-		// 		this.setUpPowerUp()
-		// 		this.powerUp.new = false;
-		// 	}
-		// }
 	}
 	candyPickUp(ball, player1, player2, powerUp: any){
 		const powerUpRangeX = this.powerUp.x + 32;
@@ -234,16 +227,4 @@ export class PongGame {
 		if (player1.score === 10 || player2.score === 10)
 			this.game.state = 'end';
 	}
-	// updateGame(player1, player2, ball) {
-	// 	for (let i = 0; i < ball.velocity; i++)
-	// 		this.moveBall(player1, player2, ball);
-		
-	// 	if (this.powerUp.new)
-	// 		this.checkPowerUp()
-	// 	if (this.powerUp.active)
-	// 		this.resetPowerUp(player1, player2);
-
-	// 	if (player1.score === 10 || player2.score === 10)
-	// 		this.game.state = 'end'
-	// }
 }

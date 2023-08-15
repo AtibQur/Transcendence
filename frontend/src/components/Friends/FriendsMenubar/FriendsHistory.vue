@@ -59,7 +59,7 @@ export default {
 const useFriendsHistory = (friendId) => {
   const matches = ref('');
   const player = ref("");
-  const playerId = parseInt(sessionStorage.getItem('playerId') || '0');
+  const playerId = parseInt(localStorage.getItem('playerId') || '0');
   const playerUsername = ref(""); // name that you use to log in
 
   onBeforeMount(async () => {
