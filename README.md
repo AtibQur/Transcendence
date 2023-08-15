@@ -40,7 +40,7 @@ A single-page web application with real-time chat functionality
 
 ## Usage
 
-To use philosophers, you must first clone this repository.
+To use our application, you must first clone this repository.
 
 ```console
 git clone https://github.com/AtibQur/Transcendence.git
@@ -52,7 +52,7 @@ Once you have the source code, you can compile it using the provided Makefile.
 make
 ```
 
-This will start tjdeployment of our project using Docker Compose. 
+This will start the deployment of our project using Docker Compose. 
 
 ## Docker Container Setup
 
