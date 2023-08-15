@@ -77,7 +77,7 @@ In our project, we've adopted a containerized approach using Docker to ensure co
 
 ## Database Schema
 
-<img src="https://github.com/AtibQur/Transcendence/blob/main/Database.png" alt="DatabaseSchema" width="900"/>
+<img src="https://github.com/AtibQur/Transcendence/blob/fixReadMe/Database.png" alt="DatabaseSchema" width="900"/>
 
 ## User Account
 
@@ -115,4 +115,20 @@ In our project, we've adopted a containerized approach using Docker to ensure co
 
 ## Security
 
+At our platform, we've implemented a robust system to ensure the protection of user data and privacy. When users log in, we leverage the **OAuth system of the 42 network**, a trusted and secure authentication mechanism. This means that your login credentials are never directly exposed to our platform, enhancing the overall safety of your account.
+
+To maintain the confidentiality of user information, we employ **JSON Web Tokens (JWT)** for token-based authentication. JWTs are used to securely store user data and provide a streamlined way to verify a user's identity during their session. These tokens are tamper-proof and cryptographically signed, making them a reliable means of user authentication and authorization.
+
+Furthermore, user passwords are never stored in their original form in our database. Instead, we use the **bcrypt hashing algorithm** to hash passwords before storing them. Bcrypt is known for its security and resistance to brute-force attacks, adding an additional layer of protection against unauthorized access.
+
 ## Contributors
+
+[//]: contributor-faces
+<a href="https://github.com/AtibQur"><img src="https://github.com/AtibQur/Transcendence/blob/all_merged/frontend/public/trance_avatars/haseeb.png" alt="Haseeb" width="175"></a>
+<a href="https://github.com/mariadaan"><img src="https://github.com/AtibQur/Transcendence/blob/all_merged/frontend/public/trance_avatars/maria.png" alt="Maria" width="175"></a>
+<a href="https://github.com/steryu"><img src="https://github.com/AtibQur/Transcendence/blob/all_merged/frontend/public/trance_avatars/ster.png" alt="Ster" width="175"></a>
+<a href="https://github.com/rkoper"><img src="https://github.com/AtibQur/Transcendence/blob/all_merged/frontend/public/trance_avatars/raav.png" alt="Raav" width="175"></a>
+<a href="https://github.com/tessavdvorst"><img src="https://github.com/AtibQur/Transcendence/blob/all_merged/frontend/public/trance_avatars/tessa.png" alt="Tessa" width="175"></a>
+
+[//]: contributor-faces
+
