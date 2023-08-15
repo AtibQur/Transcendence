@@ -35,7 +35,6 @@ methods: {
 	joinGame(){
 		this.playerId = parseInt(sessionStorage.getItem('playerId') || '0');
 		sessionStorage.setItem('socketID', socket.id);
-		console.log(socket.id)
 		socket.emit('joinMatchmaking', {player_id: this.playerId, socket_id: socket.id}, 
 		(response) => {
 			if (response === 1){

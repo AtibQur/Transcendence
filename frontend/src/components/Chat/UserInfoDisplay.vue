@@ -220,10 +220,8 @@ const sendDm = async () => {
 
 // INVITE TO PLAY PONG
 const invite = async() => {
-	console.log("invite send to", currentChannelmemberId);
 	socket.emit('sendInvite', {player_id: playerId, opponent_id: currentChannelmemberId.value, socket_id: socket.id}, 
     (response) => {
-        console.log("RESPONSE", response)
         if (!response)   
             toast.add({ severity: 'success', summary: 'Invitation send', detail: '', life: 3000 });
         else if (response === 1)

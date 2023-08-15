@@ -31,6 +31,7 @@ const routes: RouteRecordRaw[] = [
     },
     {
       path: '/play', 
+      name:'play',
       component: Play,
     },
 	{

@@ -10,7 +10,6 @@
 </template>
 
 <script setup lang="ts">
-
 import { onBeforeMount, ref } from 'vue'
 import { socket } from '../../socket';
 import { useConfirm } from "primevue/useconfirm";
@@ -56,53 +55,25 @@ onBeforeMount( () => {
 			router.push({ name: 'inviteMultiplayer' })
 			return ;
 		});
-
 })
 
 const startThisMatch = () => {
 	socket.on('startMatch', async (match) => {
 	try {
 			showLoadingText.value = false;
-			const { player1, player2 } = match;
-			console.log("P1:", player1)
-			console.log("P2:", player2)
 
 			p1_id.value = match.player1.player_id;
 			p2_id.value = match.player2.player_id;
 			p1_socket_id.value = match.player1.socket_id;
 			p2_socket_id.value = match.player2.socket_id;
 			socket_match_id.value = match.matchId;
+			match_id.value = match.data;
 
-			if (player1.socket_id === socket.id) {
-				// Player 1's logic
-				console.log('I am player 1, ID:', player1.player_id);
-				console.log('Opponent player ID:', player2.player_id);
-
-				//check if match has already started
-				await axiosInstance.get(`match/started/${player1.player_id}/${player2.player_id}`)
-					.then(async (response) => {
-						if (!response.data) // match has not started yet
-						{
-							const match_id_response = await axiosInstance.post('match/create', {player_id: p1_id.value, opponent_id: p2_id.value});
-							match_id.value = match_id_response.data.id;
-						}
-						else // match has already started
-							match_id.value = response.data
-					})
-					.catch((error) => {
-						throw new Error(error);
-					});
-				
-			} else if (player2.socket_id === socket.id) {
-				// Player 2's logic
-				console.log('I am player 2, ID:', player2.player_id);
-				console.log('Opponent player ID:', player1.player_id);
-			}
-		console.log("MatchId:", socket_match_id.value)
 		router.push({ name: 'inviteMultiplayer' })
 	} catch (error) {
 		console.log('Error starting match')
 	}
+
 	});
 }
 
@@ -112,13 +83,12 @@ const confirm1 = async () => {
 		message: 'Do you want to accept the invitation?',
 		header: 'Confirmation',
 		accept: () => {
+			router.push({ name: 'play' })
 			socket.emit('acceptInvite', {p1_id: player_id.value, p1_socket_id: socket_id.value, p2_id: opponentId, p2_socket_id: socket.id},
 			(response) => {
 				if (response === 1)
 					toast.add({ severity: 'error', summary: "Error starting match", detail: '', life: 3000 });
 			});
-			// socket.emit('inviteAccepted', player_id.value)
-			// startMatch.value = true;
 			startThisMatch()
 			isInvited.value = false;
 		}
@@ -130,7 +100,6 @@ const confirm2 = async () => {
 			message: 'Do you want to decline the invitation?',
 			header: 'Confirmation',
 			accept: () => {
-				console.log('decline invintation')
 				socket.emit('declineInvite', player_id.value);
 				isInvited.value = false;
 			}
@@ -145,7 +114,6 @@ const openConfirmDialog = async () => {
 		accept: () => {
 			isInvited.value = false;
 			socket.emit('declineInvite', player_id.value);
-			console.log('decline invintation')
 			socket.emit('declineInvite', {player1: player1.value});
 		},
 		onShow: () => {
@@ -166,7 +134,6 @@ const fetchUsername = async (player_id: number) => {
 	const response = await axiosInstance.get('player/username/' + player_id.toString());
 	return response.data;
 }
-
 
 </script>
 

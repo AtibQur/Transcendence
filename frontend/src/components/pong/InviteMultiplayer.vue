@@ -132,16 +132,9 @@ methods: {
 	},
 
 	async saveFinishedMatch(match_id: number, socket_match_id: number, score1: number, score2: number) {
-
-		console.log("match_id: ", socket_match_id)
-		console.log("this.score1: ", score1)
-		console.log("this.score2: ", score2)
-
-		// finished match saves here
 		let finished_match_res;
 		if (match_id){
 			finished_match_res = await axiosInstance.patch('match/finish/' + match_id.toString(), {player_points: score1, opponent_points: score2});
-			console.log("Finished match data:", finished_match_res.data)
 		}
 	},
 
@@ -160,28 +153,21 @@ methods: {
 
 	printInfo() {
 		this.moveInfo.socket_match_id = socket_match_id.value;
-		// console.log("p1 username: ", username1, "p2 username :", username2)
-		
 		// this.dynamicText1 = username1;
 		// this.dynamicText2 = username2;
-		console.log("this user:", socket.id)
 		if (socket.id === undefined)
 			this.$router.push('/play');
 		this.p1_socketId = p1_socket_id.value;
 		this.p2_socketId = p2_socket_id.value;
-		console.log("Player1 ID: ", p1_socket_id.value)
-		console.log("Player2 ID: ", p2_socket_id.value)
-		console.log("match Id:", socket_match_id.value)
 	}
 },
 
 mounted() {
-	socket.on('connect', () => console.log('Socket Connected!'));
-	if (!socket) {
-		console.log('Socket not connected')
+	if (!socket){
+		console.log("Error: Socket not connected")
 		return;
 	}
-
+	this.showResults = false;
 	if (!this.matchSaved){
 		this.printInfo();
 	}
@@ -206,15 +192,13 @@ mounted() {
 		this.powerUp = match.powerUp
 
 		this.showPowerUp(this.powerUp);
-		if (match.state === 'end' && !this.matchSaved){
-			console.log("this match is finished")
+		if (match.state === 'end'){
 			this.saveFinishedMatch(match_id.value, socket_match_id.value, this.score1, this.score2)
-			this.showResults = true;
+			this.showResults = true
 			this.matchSaved = true;
 		}
-		if (match.state === 'stop' && !this.matchSaved){
+		if (match.state === 'stop'){
 			this.stop = true;	
-			console.log("this match is canceled")
 			this.saveFinishedMatch(match_id.value, socket_match_id.value, this.score1, this.score2)
 			this.showResults = true;
 			this.matchSaved = true;

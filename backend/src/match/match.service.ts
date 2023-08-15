@@ -37,7 +37,7 @@ export class MatchService {
           }
         },
       });
-      return newMatch;
+      return newMatch.id;
     }
     catch (error) {
       console.error('Error occurred:', error);
@@ -144,7 +144,6 @@ export class MatchService {
                 opponent_points: 0
             }
         })
-
         if (!selectedMatch)
             return null;
         return selectedMatch.id;

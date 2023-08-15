@@ -10,7 +10,6 @@ import { PongService } from '../pong.service';
 import { Server, Socket } from 'socket.io';
 import { PongGame } from './../game';
 import { Game } from '../interfaces/state.interface';
-import { PlayerService } from '../../player/player.service';
 
 @WebSocketGateway({
     cors: {
@@ -21,7 +20,6 @@ export class PongGateway {
 	@WebSocketServer()
 	server: Server;
 
-	private readonly playerService = new PlayerService();
 	private pongGame: PongGame = new PongGame();
 	private game: Game = this.pongGame.game;
 
@@ -65,14 +63,6 @@ export class PongGateway {
 		@ConnectedSocket() client: Socket,
 		@MessageBody() data: any): void {
 		this.pongService.handleMove(client, data)
-		// this.server.emit('state', data);
-	}
-
-	@SubscribeMessage('soloMatchStarted')
-	handleSoloMatch(
-		@ConnectedSocket() client: Socket,
-		@MessageBody() {}): void {
-			this.pongService.handleSoloMatch(client);
 	}
 	
 	@SubscribeMessage('joinMatchmaking')
