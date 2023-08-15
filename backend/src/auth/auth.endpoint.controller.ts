@@ -60,9 +60,4 @@ export class UserController {
         await this.playerService.updateTfaCode(payload.id, null);
     }
 
-    @Get('logout')
-    async Logout(@Req() req: any, @Res() res: Response) {
-        // res.clearCookie('auth');
-    }
-
 }
