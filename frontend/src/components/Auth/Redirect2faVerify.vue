@@ -17,7 +17,7 @@
 <script setup lang="ts">
     import ImageComponent from './ImageComponent.vue';
     import { onMounted } from 'vue';
-    import axiosInstance from '../../axiosConfig';
+    import axiosInstance from '@/utils/axiosConfig';
 
     const enableTFA = async () => {
         await axiosInstance.get('/user/enable2fa');

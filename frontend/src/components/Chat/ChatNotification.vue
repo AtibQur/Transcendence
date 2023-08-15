@@ -7,20 +7,18 @@
 </template>
 
 <script setup lang="ts">
-  import { socket } from '@/socket';
+  import { socket } from '@/utils/socket';
   import Toast from 'primevue/toast'
   import Message from '@/types/Message';
-  import axiosInstance from '../../axiosConfig';
-  import { onBeforeMount } from 'vue'
+  import axiosInstance from '@/utils/axiosConfig';
+  import { onMounted } from 'vue';
   import { useToast } from 'primevue/usetoast';
 
-
   const toast = useToast();
-  const playerId = parseInt(sessionStorage.getItem('playerId') || '0');
-  const username = sessionStorage.getItem('username') || null;
+  const playerId = parseInt(localStorage.getItem('playerId') || '0');
+  const username = localStorage.getItem('username') || null;
 
-  onBeforeMount(async () => {
-    //ADD MESSAGE TO CURRENT MESSAGES
+  onMounted(async () => {
     socket.on('chatmessage', async (message: Message) => {
       await axiosInstance.get(`blockedplayer/player/${playerId.toString()}?username=${message.sender.username}`)
         .then((response) => {

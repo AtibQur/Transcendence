@@ -4,24 +4,20 @@
         <form @submit="handleSubmit">
             <label for="digitInput">Enter your verification code: </label>
             <input type="number" v-model="inputValue" name="digitInput" maxlength="6" minlength="6">
-            <input type="submit" value="Submit">
+            <input class="custom-button-1" type="submit" value="Submit">
         </form>
     </div>
     <div>
         <h2>
             If you lost your account or phone please email us at tranceanddance123@gmail.com
         </h2>
-        <h1>
-            Ya Dumb Bitch
-        </h1>
     </div>
 </template>
 
 <script setup lang="ts">
-    import AxiosInstance  from '../../axiosConfig';
-    import { setDefaultAuthHeader } from '../../axiosConfig';
+    import AxiosInstance, { setDefaultAuthHeader } from '@/utils/axiosConfig';
     import { ref } from 'vue';
-    import { getCookie, removeCookie, setCookie } from '../../components/cookie_utils';
+    import { getCookie, removeCookie, setCookie } from '@/utils/cookie_utils';
     import { useRouter } from 'vue-router';
 
 
@@ -44,7 +40,7 @@
                     removeCookie('payload');
                     const accessToken = getCookie('auth');
                     setDefaultAuthHeader(accessToken);
-                    router.push(process.env.VUE_APP_HOST_COMPUTER + ":8080/");
+                    router.push( { name: "TFA_CONFIRM"} );
                 }
             }
             )
@@ -54,6 +50,8 @@
     }
 </script>
 
-<style>
-    
+<style scoped>
+.custom-button-1 {
+    border-radius: 10px;
+}
 </style>

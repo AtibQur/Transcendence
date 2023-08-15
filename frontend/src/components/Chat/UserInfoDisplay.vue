@@ -75,8 +75,8 @@
 </template>
 
 <script setup lang="ts">
-import axiosInstance from '../../axiosConfig';
-import { socket } from '@/socket';
+import axiosInstance from '@/utils/axiosConfig';
+import { socket } from '@/utils/socket';
 import { onBeforeMount, ref, watch } from 'vue'
 import { useToast } from 'primevue/usetoast';
 import { useConfirm } from "primevue/useconfirm";
@@ -102,8 +102,8 @@ const emit = defineEmits(['changeChannel', 'removeChannelmember']);
 
 const toast = useToast();
 const confirm = useConfirm();
-const playerUsername = sessionStorage.getItem('username') || '0';
-const playerId = parseInt(sessionStorage.getItem('playerId') || '0');
+const playerUsername = localStorage.getItem('username') || '0';
+const playerId = parseInt(localStorage.getItem('playerId') || '0');
 const currentChannelmemberInfo = ref({});
 const currentChannelmemberId = ref<number>(props.channelmember.id);
 const currentChannelmemberStatus = ref<string>('');
@@ -220,17 +220,23 @@ const sendDm = async () => {
 
 // INVITE TO PLAY PONG
 const invite = async() => {
-	console.log("invite send to", currentChannelmemberId);
 	socket.emit('sendInvite', {player_id: playerId, opponent_id: currentChannelmemberId.value, socket_id: socket.id}, 
     (response) => {
-        console.log("RESPONSE", response)
         if (!response)   
             toast.add({ severity: 'success', summary: 'Invitation send', detail: '', life: 3000 });
         else if (response === 1)
-            toast.add({ severity: 'error', summary: "You can't send an invite, you are in a match", detail: '', life: 3000 });
+            toast.add({ severity: 'error', summary: "You can't send an invite, you are already in a match", detail: '', life: 3000 });
         else if (response === 2)
-            toast.add({ severity: 'error', summary: "That player already received an invite", detail: '', life: 3000 });
-    })
+            toast.add({ severity: 'error', summary: "You already send out an invite", detail: '', life: 3000 });
+		else if (response === 3)
+			toast.add({ severity: 'error', summary: "You can't send an invite to a player who is in a match", detail: '', life: 3000 });
+		else if (response === 4)
+			toast.add({ severity: 'error', summary: "You can't send an invite to a player who already send out an invite", detail: '', life: 3000 });
+		else if (response === 5)
+			toast.add({ severity: 'error', summary: "You can't send an invite if you of the opponent is in the queue", detail: '', life: 3000 });
+		else if (response === 6)
+			toast.add({ severity: 'error', summary: "That player already received an invite", detail: '', life: 3000 });
+		})
 }
 
 // MUTE CHANNELMEMBER

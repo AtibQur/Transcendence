@@ -15,7 +15,7 @@
       <div class="friend-list">
         <router-link v-for="friend in friends" :key="friend.username" :to="{
           name: 'friends',
-          params: { playerName: friend.username, profilePicture: friend.profilePicture, status: friend.status }
+          params: { playerName: friend.username }
         }" class="name-container" style="text-decoration: none; color: inherit;">
           <div class="status-circle" :class="{ 'online': friend.status === 'online', 'offline': friend.status !== 'online' }"></div>
           <div class="name">{{ friend.username }}</div>
@@ -30,7 +30,7 @@
 import { defineComponent } from 'vue';
 import { useToast } from 'primevue/usetoast';
 import { useConfirm } from "primevue/useconfirm";
-import axiosInstance from '../../../axiosConfig';
+import axiosInstance from '@/utils/axiosConfig'
 
 interface Friend {
   username: string;
@@ -47,7 +47,7 @@ export default defineComponent({
   emits: ['close-menu'],
   data() {
     return {
-      playerId: parseInt(sessionStorage.getItem('playerId') || '0'),
+      playerId: parseInt(localStorage.getItem('playerId') || '0'),
       friends: [] as Friend[],
       hover: false,
       newFriendName: '',

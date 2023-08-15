@@ -3,7 +3,6 @@ import { CreatePlayerDto } from './dto/create-player.dto';
 import { UpdatePlayerDto } from './dto/update-player.dto';
 import { PrismaService } from '../../prisma/prisma.service';
 import { File } from 'multer';
-import { BlockedplayerService } from 'src/blockedplayer/blockedplayer.service';
 
 const prisma = PrismaService.getClient();
 
@@ -13,6 +12,7 @@ export class PlayerService {
   // CREATE NEW PLAYER
   async createPlayer(createPlayerDto: CreatePlayerDto) {
     try {
+      console.log("CREATING NEW PLAYER")
       const achievements = {
         'First win': false,
         '10 wins': false,
@@ -30,12 +30,9 @@ export class PlayerService {
         'First chat messages sent': false,
         '10 chat messages sent': false,
       };
-
-      // TODO: change to intra username later?
-      if (await this.isExistingPlayer(createPlayerDto.username)) {
-        return await this.findIdByUsername(createPlayerDto.username);
+      if (await this.isExistingIntraPlayer(createPlayerDto.username)) {
+        return await this.findIdByIntraUsername(createPlayerDto.username);
       }
-
       const newPlayer = await prisma.player.create({
         data: {
           username: createPlayerDto.username,
@@ -101,6 +98,24 @@ export class PlayerService {
     }
 }
 
+  // GET ID BY INTRA USERNAME
+  async findIdByIntraUsername(intraUsername: string) {
+    try {
+        const selectedPlayer = await prisma.player.findFirst({
+          where: {
+            intra_username: intraUsername,
+          },
+          select: {
+            id: true,
+          },
+        });
+        return selectedPlayer.id;
+      } catch (error) {
+        console.error('Error searching for user:', error);
+        return null;
+    }
+}
+
 // GET INTRANAME BY USERNAME
 async findIntraByUsername(username: string) {
   try {
@@ -113,6 +128,25 @@ async findIntraByUsername(username: string) {
         },
       });
       return selectedPlayer.intra_username;
+    }
+    catch (error) {
+      console.error('Error searching for user:', error);
+      return null;
+    }
+}
+
+// GET USERNAME BY INTRANAME
+async findUsernameByIntra(intraUsername: string) {
+  try {
+      const selectedPlayer = await prisma.player.findFirst({
+        where: {
+          intra_username: intraUsername,
+        },
+        select: {
+          username: true,
+        },
+      });
+      return selectedPlayer.username;
     }
     catch (error) {
       console.error('Error searching for user:', error);
@@ -189,7 +223,6 @@ async findIntraByUsername(username: string) {
   }
 
   // GET 2FA STATUS
-
   async findOne2FA(id: number) {
     try {
       const selectedPlayer = await prisma.player.findUnique({
@@ -326,6 +359,23 @@ async findIntraByUsername(username: string) {
     catch (error) {
       console.error('Error occurred:', error);
       return null;
+    }
+  }
+
+  // CHECK IF AVATAR IS SET
+  async hasAvatar(id: number) {
+    try {
+      const avatar = await this.findOneAvatar(id);
+      if (avatar) {
+        return true;
+      }
+      else {
+        return false;
+      }
+    }
+    catch (error) {
+      console.error('Error occurred:', error);
+      return false;
     }
   }
 
@@ -585,6 +635,26 @@ async updateTfaCode(id: number, code: string) {
       const existingPlayer = await prisma.player.findUnique({
           where: {
             username: username,
+          },
+      });
+      if (existingPlayer) {
+        return true;
+      }
+      else {
+        return false;
+      }
+    }
+    catch (error) {
+      return false;
+    }
+  }
+
+  // CHECK IF PLAYER EXISTS
+  async isExistingIntraPlayer(intraUsername: string) {
+    try {
+      const existingPlayer = await prisma.player.findFirst({
+          where: {
+            intra_username: intraUsername,
           },
       });
       if (existingPlayer) {

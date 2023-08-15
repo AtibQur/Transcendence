@@ -22,7 +22,7 @@
 
 <script setup lang="ts">
 import {ref, onBeforeMount, watch } from 'vue'
-import axiosInstance from '../../axiosConfig';
+import axiosInstance from '@/utils/axiosConfig';
 import Password from 'primevue/password'
 import Dialog from 'primevue/dialog';
 import { useToast } from 'primevue/usetoast';
@@ -42,7 +42,7 @@ const props = defineProps({
 
 const toast = useToast();
 const confirm = useConfirm();
-const playerId = sessionStorage.getItem('playerId') || '0';
+const playerId = localStorage.getItem('playerId') || '0';
 const selectedAction = ref<number>(-1);
 const isProtected = ref<boolean>(false);
 const isVisible = ref<boolean>(false);

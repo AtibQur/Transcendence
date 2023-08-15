@@ -18,8 +18,8 @@
 </template>
 
 <script setup lang="ts">
-import { socket } from '../../socket';
-import axiosInstance from '../../axiosConfig';
+import { socket } from '@/utils/socket';
+import axiosInstance from '@/utils/axiosConfig';
 import { ref } from 'vue';
 import Dialog from 'primevue/dialog';
 import AutoComplete from 'primevue/autocomplete';
@@ -36,7 +36,7 @@ const props = defineProps({
 const toast = useToast();
 const isVisible = ref<boolean>(false);
 const isAdmin = ref<boolean>(false);
-const playerId = sessionStorage.getItem('playerId') || '0';
+const playerId = localStorage.getItem('playerId') || '0';
 const newChannelmember = ref<string>('');
 const errorMessage = ref<string>('');
 const friends = ref<string[]>([]);

@@ -4,7 +4,6 @@ import * as speakeasy from 'speakeasy';
 import * as qrCode from 'qrcode';
 import e, { Request, Response, response } from 'express';
 import { AuthService } from './auth.service';
-import { CreatePlayerDto } from 'src/player/dto/create-player.dto';
 import * as dotenv from 'dotenv';
 
 @Controller('auth')
@@ -20,13 +19,23 @@ export class AuthController {
 
         const intra = await this.authService.validateUser(request.query.code);
         const userData = await this.authService.getIntraDatabyToken(intra.access_token);
-        const createPlayerDto = new CreatePlayerDto();
-        createPlayerDto.username = userData.login;
-        const playerId = await this.playerService.createPlayer(createPlayerDto);
+        
+        // check database whether user with that intraname exists
+        var playerUsername = await this.playerService.findUsernameByIntra(userData.login);
+
+        var playerId: number;
+        if (!playerUsername) { // if player does not exist, create it
+            playerId = await this.playerService.createPlayer({username: userData.login});
+            playerUsername = userData.login;
+        }
+        else { // if player already exists, set playerid accordingly
+            playerId = await this.playerService.findIdByIntraUsername(userData.login);
+        }
 
         const payload = {
             id: playerId,
-            username: userData.login,
+            intraname: userData.login,
+            username: playerUsername,
             sub: userData.id,
         };
 
@@ -37,6 +46,7 @@ export class AuthController {
             response.status(200).redirect(process.env.HOST_COMPUTER + ':8080');
         } else {
             response.cookie('payload', JSON.stringify(payload));
+            response.cookie('auth', 'HALF_TOKEN')
             response.redirect(process.env.HOST_COMPUTER + ':8080/redirect2faverify')
         }
     }
@@ -78,7 +88,6 @@ export class AuthController {
         if (verified) {
             const jwt = await this.authService.generateToken(payload);
             
-            console.log("verifieeedd")
             response.cookie('auth', jwt)
             return jwt;
         }

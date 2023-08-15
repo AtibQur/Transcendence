@@ -14,8 +14,8 @@
 </template>
 
 <script setup lang="ts">
-import { socket } from '../../socket';
-import axiosInstance from '../../axiosConfig';
+import { socket } from '@/utils/socket';
+import axiosInstance from '@/utils/axiosConfig';
 import { ref } from 'vue';
 import Dialog from 'primevue/dialog';
 import AutoComplete from 'primevue/autocomplete';
@@ -23,7 +23,7 @@ import { useToast } from 'primevue/usetoast';
 
 const toast = useToast();
 const isVisible = ref<boolean>(false);
-const playerId = parseInt(sessionStorage.getItem('playerId') || '0');
+const playerId = parseInt(localStorage.getItem('playerId') || '0');
 const selectedFriend = ref<string>('');
 const errorMessage = ref<string>('');
 const friends = ref<string[]>([]);
@@ -107,7 +107,7 @@ const onSubmit = async () => {
 
 </script>
 
-<style>
+<style scoped>
   .custom-button-1 {
     font-family: 'JetBrains Mono';
     font-weight: bolder;

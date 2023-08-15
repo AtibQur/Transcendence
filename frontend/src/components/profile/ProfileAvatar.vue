@@ -7,11 +7,11 @@
   
   <script setup lang="ts">
   import { ref } from 'vue';
-  import axiosInstance from '../../axiosConfig';
+  import axiosInstance from '@/utils/axiosConfig';
   
   const file = ref<File | null>(null);
   const emit = defineEmits(["avatarUploaded"]);
-  const playerId = parseInt(sessionStorage.getItem('playerId') || '0');
+  const playerId = parseInt(localStorage.getItem('playerId') || '0');
 
   const handleFileChange = (event: Event) => {
     const target = event.target as HTMLInputElement;

@@ -45,7 +45,7 @@ export class MatchInstance {
 
 	handleMove(client: Socket, data: any): void {
 		if (!client) {
-			console.log("no client")
+			console.log("Error: no client")
 			return ;
 		}
 		if (client.id == this.player1.user.socket_id){
@@ -58,7 +58,7 @@ export class MatchInstance {
 
 	handleMoveLeft(client: Socket, data: any): void {
 		if (!client) {
-			console.log("no left movement client")
+			console.log("Error: no left movement client")
 			return ;
 		}
 			this.player1.new = data;
@@ -66,7 +66,7 @@ export class MatchInstance {
 
 	handleMoveRight(client: Socket, data: any): void {
 		if (!client) {
-			console.log("no right movement client")
+			console.log("Error: no right movement client")
 			return ;
 		}
 		this.player2.new = data;
@@ -79,8 +79,6 @@ export class MatchInstance {
 		this.pongGame.updateGame(this.player1, this.player2, this.ball);
 		this.match.updateScore(this.player1.score, this.player2.score)
 
-		// console.log("powerup", this.powerUp)
-		// this.sendMatchStateUpdate(client);
 
 		client.to(this.player1.user.socket_id).emit('match', {
 			state: this.game.state,
@@ -125,7 +123,6 @@ export class MatchInstance {
 	}
 
 	handleDisconnect(client: Socket): void {
-		console.log("This match is getting diconnected");
 		this.game.state = 'stop'
 		if (this.player1.user.socket_id === client.id){
 			this.player1.score = 0;
@@ -136,23 +133,5 @@ export class MatchInstance {
 		}
 
 		this.sendMatchStateUpdate(client);
-		// client.to(this.player1.user.socket_id).emit('match', {
-		// 	state: this.game.state,
-		// 	ball: this.ball,
-		// 	player1: this.player1.new,
-		// 	player2: this.player2.new,
-		// 	score1: this.player1.score,
-		// 	score2: this.player2.score,
-		// },
-		// );
-		// client.to(this.player2.user.socket_id).emit('match', {
-		// 	state: this.game.state,
-		// 	ball: this.ball,
-		// 	player1: this.player1.new,
-		// 	player2: this.player2.new,
-		// 	score1: this.player1.score,
-		// 	score2: this.player2.score,
-		// },
-		// );
 	}
 }

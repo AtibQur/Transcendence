@@ -3,10 +3,10 @@
 		<h1>PONG</h1>
 	</div>
 	<div class="gameover-container" v-if="win">
-		<h1>VICTORY!</h1>
+		<h1 style="color: #1fb01f">VICTORY!</h1>
 	</div>
 	<div class="gameover-container" v-if="lose">
-		<h1>DEFEAT!</h1>
+		<h1 style="color: #bf2e2e">DEFEAT!</h1>
 	</div>
 	<div class="gameover-container" v-if="disconnected">
 		<h1 class="disconnected-container">The other player disconnected</h1>
@@ -21,7 +21,8 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue'
-import { socket } from '../../socket'
+import { socket } from '@/utils/socket'
+import { useToast } from 'primevue/usetoast';
 
 export default defineComponent({
 	name: "ResultScreen",
@@ -33,6 +34,7 @@ data() {
 		disconnected: false,
 		dynamicScore1: '',
 		dynamicScore2: '',
+		toast: useToast(),
 		};
 	},
 
@@ -45,6 +47,7 @@ mounted() {
 			this.win = true;
 			if (this.stop == true){
 				this.disconnected = true;
+				this.$toast.add({ severity: 'warn', summary: "The other player disconnected", detail: '', life: 3000 });
 			}
 		}
 		else
@@ -56,6 +59,7 @@ mounted() {
 			this.win = true;
 			if (this.stop == true){
 				this.disconnected = true;
+				this.$toast.add({ severity: 'warn', summary: "The other player disconnected", detail: '', life: 3000 });
 			}
 		}
 		else

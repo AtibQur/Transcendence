@@ -41,7 +41,7 @@ mounted() {
 
 <style>
 html, body {
-  background-color: rgb(178, 218, 231); /* Set your desired background color here */
+  background-color: rgb(178, 218, 231);
   margin: 0;
   padding: 0;
   height: 100%;
@@ -50,7 +50,6 @@ html, body {
 	position: relative;
 	font-size: 50px;
 	padding: 100px;
-	/* top: 100px; */
 }
 .container {
 	display: flex;
@@ -87,7 +86,6 @@ html, body {
 	top: 50%;
 	width: 15px;
 	height: 80px;
-	/* left: 5px; */
 	background-color: rgb(90, 92, 159);
 	transform: translateY(-50%);
 }
@@ -103,7 +101,6 @@ html, body {
 
 .line {
 	position: absolute;
-	/* left: 427px; */
 	width: 4px;
 	height: 100%;
 	background-color: rgb(250, 250, 250);
@@ -115,7 +112,7 @@ html, body {
 	width: 21px;
 	height: 21px;
 	background-color:rgb(246, 125, 125);
-	/* border-radius: 50%; */
+	border-radius: 25%;
 }
 
 .powerUpPixel {

@@ -5,20 +5,21 @@ import "primeicons/primeicons.css";
 
 import { createApp } from 'vue';
 import { createRouter, createWebHistory, RouteRecordRaw } from 'vue-router';
-import axiosInstance from './axiosConfig';
+import axiosInstance from './utils/axiosConfig';
 import App from './App.vue';
 import Home from './components/Home.vue';
 import Play from './components/pong/Play.vue';
-import Multiplayer from './components/pong/Multiplayer.vue';
+import InviteMultiplayer from './components/pong/InviteMultiplayer.vue';
 import Tfa from './components/Auth/Redirect2faVerify.vue';
 import Auth from './components/Auth/AuthCheck.vue';
 import Login from './components/Auth/AuthRedirectIf2fa.vue';
+import Redirect2faVerify from './components/Auth/AuthRedirectIf2fa.vue';
+import TfaConfirm from './components/Auth/TfaConfirm.vue';
 import ProfilePage from './components/profile/ProfilePage.vue';
 import Leaderboard from './components/LeaderboardComponent.vue';
 import ChatView from './components/Chat/ChatView.vue';
-import Redirect2faVerify from './components/Auth/AuthRedirectIf2fa.vue';
 import FriendsPage from './components/Friends/FriendsMenubar/FriendsPage.vue';
-import WrongTfa from './components/Auth/WrongTfa.vue';
+import WelcomePage from './components/profile/WelcomePage.vue'
 import PrimeVue from 'primevue/config';
 import ToastService from 'primevue/toastservice';
 import ConfirmationService from 'primevue/confirmationservice';
@@ -31,12 +32,13 @@ const routes: RouteRecordRaw[] = [
     },
     {
       path: '/play', 
+      name:'play',
       component: Play,
     },
 	{
 		path: '/play/multiplayer',
-    name: 'multiplayer',
-		component: Multiplayer,
+		name: 'inviteMultiplayer',
+		component: InviteMultiplayer,
 	},
     {
       path: '/2fa',
@@ -47,6 +49,11 @@ const routes: RouteRecordRaw[] = [
       path: '/auth',
       name: 'auth',
       component: Auth,
+    },
+    {
+      path: '/tfaconfirm',
+      name: 'TFA_CONFIRM',
+      component: TfaConfirm,
     },
     {
       path: '/login',
@@ -70,16 +77,18 @@ const routes: RouteRecordRaw[] = [
     },
     {
       path: '/redirect2faverify',
+      name: "TFA_VERIFY",
       component: Redirect2faVerify,
-    },
-    {
-      path: '/wrong2fa',
-      component: WrongTfa
     },
     {
       name: 'friends',
       path: '/profile/:playerName',
       component: FriendsPage,
+    },
+    {
+      name: 'welcome',
+      path: '/welcome',
+      component: WelcomePage,
     },
 ];
 

@@ -1,45 +1,53 @@
 <template>
 	<Menubar />
 	<router-view />
-	<FriendsMenubar />
 	<Toast/>
 	<ConfirmDialog />
-	<ChatNotification />
-	<GameInvitation />
+	<template v-if="localVariablesAreSet">
+		<FriendsMenubar />
+		<ChatNotification />
+		<GameInvitation />
+	</template>
 </template>
 
 <script setup lang="ts">
-import { onMounted } from 'vue'
-import { setDefaultAuthHeader } from './axiosConfig';
+import { onMounted, ref } from 'vue'
+import { setDefaultAuthHeader } from './utils/axiosConfig.ts';
 import { useRouter } from 'vue-router';
-import { getCookie } from './components/cookie_utils';
+import { getCookie } from './utils/cookie_utils';
 import Toast from 'primevue/toast'
 import ConfirmDialog from 'primevue/confirmdialog';
 import Menubar from './components/Menubar/Menubar.vue';
 import FriendsMenubar from './components/Friends/FriendsMenubar/FriendsMenubar.vue';
-import ChatNotification from './components/Chat/ChatNotification.vue';
 import GameInvitation from './components/pong/GameInvitation.vue'
+import ChatNotification from './components/Chat/ChatNotification.vue';
+import { loginPlayer } from './utils/initPlayer';
 
 const router = useRouter();
+const localVariablesAreSet = ref(false);
 
-// AUTH
-const checkLoggedIn = async () => {
+onMounted( async () => {
 	const accesstoken = getCookie('auth');
 	if (accesstoken === undefined) {
 		router.push({ name: 'auth' })
-		return;
 	}
-	setDefaultAuthHeader(accesstoken);
-};
-
-onMounted(() => {
-	const accesstoken = getCookie('auth');
-	if (accesstoken === undefined) {
-		checkLoggedIn();
-	} else {
+	else if (accesstoken == "HALF_TOKEN") {
+		router.push({ name: 'TFA_VERIFY'});
+	}
+	else {
 		setDefaultAuthHeader(accesstoken);
+		if (!localStorage.getItem('logged')) {
+			localVariablesAreSet.value = await loginPlayer();
+			if (localStorage.getItem('newUser')) {
+				router.push({ name: 'welcome'});
+			}
+		}
+		else {
+			localVariablesAreSet.value = true;
+		}
 	}
-	})
+})
+
 </script>
 
 <style>

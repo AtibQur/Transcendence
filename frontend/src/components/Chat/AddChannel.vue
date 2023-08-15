@@ -26,7 +26,7 @@
 </template>
 
 <script setup lang="ts">
-import { socket } from '../../socket';
+import { socket } from '@/utils/socket';
 import { ref } from 'vue';
 import Dialog from 'primevue/dialog';
 import InputText from 'primevue/inputtext'
@@ -42,7 +42,7 @@ enum SecurityLevel {
 
 const toast = useToast();
 const isVisible = ref<boolean>(false);
-const playerId = parseInt(sessionStorage.getItem('playerId') || '0');
+const playerId = parseInt(localStorage.getItem('playerId') || '0');
 const newChannelName = ref<string>('');
 
 const securityType = ref<number>(-1);

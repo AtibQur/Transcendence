@@ -11,9 +11,17 @@ export class UserController {
     constructor(private readonly authService: AuthService,
         private readonly playerService: PlayerService) {}
 
+    @Get('intraname')
+    @UseGuards(AuthGuard)
+    async GetAuthIntraname(@Req() request: Request) {
+        const token = request.header('Authorization').split(' ')[1];
+        const payload = await this.authService.validateToken(token as string);
+        return payload.intraname;
+    }
+
     @Get('username')
     @UseGuards(AuthGuard)
-    async GetAuthStatus(@Req() request: Request) {
+    async GetAuthUsername(@Req() request: Request) {
         const token = request.header('Authorization').split(' ')[1];
         const payload = await this.authService.validateToken(token as string);
         return payload.username;
@@ -50,11 +58,6 @@ export class UserController {
         const payload = await this.authService.validateToken(token as string);
         await this.playerService.update2FA(payload.id, false);
         await this.playerService.updateTfaCode(payload.id, null);
-    }
-
-    @Get('logout')
-    async Logout(@Req() req: any, @Res() res: Response) {
-        // res.clearCookie('auth');
     }
 
 }

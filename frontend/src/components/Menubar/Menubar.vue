@@ -11,6 +11,7 @@
       </div>
       <ul>
         <li><router-link to="/" @click="closeMenu">Home</router-link></li>
+        <li><router-link to="/welcome" @click="closeMenu">About</router-link></li>
         <li><router-link to="/play" @click="closeMenu">Play</router-link></li>
         <li><router-link to="/leaderboard" @click="closeMenu">Leaderboard</router-link></li>
         <li><router-link to="/chat" @click="closeMenu">Chat</router-link></li>

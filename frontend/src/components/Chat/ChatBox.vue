@@ -16,8 +16,8 @@
 </template>
 
 <script setup lang="ts">
-import { socket } from '@/socket';
-import axiosInstance from '../../axiosConfig';
+import { socket } from '@/utils/socket';
+import axiosInstance from '@/utils/axiosConfig';
 import { onMounted, onBeforeMount, ref, watch, nextTick, onUpdated} from 'vue'
 import Message from '@/types/Message';
 import {useToast} from 'primevue/usetoast';
@@ -34,8 +34,8 @@ const props = defineProps({
   const channelName = ref('');
   const messages = ref<Message[]>([]);
   const currentChannelId = ref(props.channelId);
-  const playerId = parseInt(sessionStorage.getItem('playerId') || '0');
-  const username = sessionStorage.getItem('username') || null;
+  const playerId = parseInt(localStorage.getItem('playerId') || '0');
+  const username = localStorage.getItem('username') || null;
   const messagesContainer = ref<HTMLElement | null>(null);
   
   onMounted(() => {

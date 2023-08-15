@@ -39,6 +39,12 @@ export class PlayerController {
     return this.playerService.findOneStats(+id);
   }
 
+  // GET PLAYERS 2FA STATUS
+  @Get('twofastatus/:id')
+  findOne2FA(@Param('id') id: string) {
+    return this.playerService.findOne2FA(+id);
+  }
+
   // GET PLAYERS ACHIEVEMENTS
   @Get('achievements/:id')
   findOneAchievements(@Param('id') id: string) {
@@ -57,11 +63,24 @@ export class PlayerController {
     return this.playerService.findOneUsername(+id);
   }
 
+  // GET USERNAME BY INTRANAME
+  @Get('intrausername/:intraUsername')
+  findUsernameByIntra(@Param('intraUsername') intraUsername: string) {
+    return this.playerService.findUsernameByIntra(intraUsername);
+  }
+
   // GET AVATAR
   // returns avatar as bytes
   @Get('avatar/:id')
   findOneAvatar(@Param('id') id: string) {
     return this.playerService.findOneAvatar(+id);
+  }
+
+  // CHECK IF AVATAR IS SET
+  // returns true or false
+  @Get('hasavatar/:id')
+  hasAvatar(@Param('id') id: string) {
+    return this.playerService.hasAvatar(+id);
   }
 
   // GET PERCENTAGE WINS

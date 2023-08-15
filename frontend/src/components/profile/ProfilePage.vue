@@ -64,6 +64,7 @@
     <div v-if="showChangePictureModal" class="Modal" @click="closeModal">
       <div class="ModalContent" @click.stop>
         <h2>Profile Picture Change</h2>
+        <button class="custom-button-2" onclick="window.open('https://getavataaars.com/', '_blank');">Design your own avatar!</button>
         <div v-if="showChangePictureModal" class="show">
           <ProfileAvatar @avatarUploaded="handleAvatarUploaded" />
         </div>
@@ -74,9 +75,9 @@
       <div class="ModalContent" @click.stop>
         <h2>Change 2FA Status</h2>
         <div>
-          <p>2FA Status: </p>
-          <button class="custom-button-1" @click="enableTFA">Enable</button>
-          <button class="custom-button-1" @click="disableTFA">Disable</button>
+          <p>Two-factor authentication is currently <strong>{{ twofastatus }}</strong></p>
+          <button v-if="twofastatus === 'disabled'" class="custom-button-1" @click="enableTFA">Enable</button>
+          <button v-else-if="twofastatus === 'enabled'" class="custom-button-1" @click="disableTFA">Disable</button>
         </div>
       </div>
     </div>
@@ -86,13 +87,12 @@
 
 <script setup lang="ts">
   import { onBeforeMount, ref } from 'vue';
-  import axiosInstance from '../../axiosConfig';
   import ProfileAchievements from "./ProfileAchievements.vue";
   import ProfileStats from "./ProfileStats.vue";
   import ProfileHistory from "./ProfileHistory.vue";
   import ProfileAvatar from './ProfileAvatar.vue';
-  import { removeCookie } from '../cookie_utils';
-  import { removeDefaultAuthHeader } from '../../axiosConfig';
+  import { removeCookie } from '@/utils/cookie_utils';
+  import axiosInstance, { removeDefaultAuthHeader } from '@/utils/axiosConfig';
   import { useRouter } from 'vue-router';
   import { useToast } from 'primevue/usetoast';
 
@@ -107,13 +107,16 @@
   const showChangeTfaModal = ref(false);
   const toast = useToast();
 
-  const playerId = parseInt(sessionStorage.getItem('playerId') || '0');
+  const playerId = parseInt(localStorage.getItem('playerId') || '0');
+
+  const twofastatus = ref('');
 
   onBeforeMount(async () => {
     try {
       username.value = await fetchUsername(playerId);
       profilePicture.value = await fetchAvatar(playerId);
       status.value = await fetchStatus(playerId);
+      twofastatus.value = await fetchTwoFAStatus(playerId);
     } catch (error) {
       console.log("Error occurred profpage");
     }
@@ -127,6 +130,16 @@
   const fetchStatus = async (player_id: number) => {
     const response = await axiosInstance.get('player/status/' + player_id.toString());
     return response.data;
+  }
+
+  const fetchTwoFAStatus = async (player_id: number) => {
+    const response = await axiosInstance.get('player/twofastatus/' + player_id.toString());
+    if (response.data) {
+      return 'enabled';
+    }
+    else {
+      return 'disabled';
+    }
   }
 
   const fetchAvatar = async (player_id: number) => {
@@ -163,7 +176,7 @@
         message = "Username already exists";
         throw new Error(message);
       }
-      sessionStorage.setItem('username', username.value);
+      localStorage.setItem('username', username.value); //update localStorage
       closeModal();
     }
     catch (error) {
@@ -202,6 +215,7 @@
     try {
       await axiosInstance.get('user/disable2fa');
       alert("Two Factor Authorization disabled");
+      showChangeTfaModal.value = false;
     } catch (error) {
       alert("Two Factor Authorization could not be disabled");
     }
@@ -215,6 +229,7 @@
   const closeModal = () => {
     showChangeNameModal.value = false;
     showChangePictureModal.value = false;
+    showChangeTfaModal.value = false;
     newName.value = '';
   };
 
@@ -227,8 +242,8 @@
   top: 50%;
   transform: translate(-50%, -50%);
   min-width: 1500px;
-  width: calc(100% - 800px);
-  height: 75vh;
+  width: 100%;
+  height: 100%;
   min-height: 1000px;
   display: flex;
   flex-direction: column;
@@ -266,8 +281,8 @@
     left: 50%;
     top: 0%;
     transform: translateX(-50%);
-    width: 100%;
-    height: 60%;
+    width: 300px;
+    height: 300px;
   }
   .ProfileData .ProfilePicture img {
     position: absolute;
@@ -429,5 +444,23 @@
     max-height: 75vh;
   }
 }
+
+  .custom-button-2 {
+    font-family: 'JetBrains Mono';
+    font-weight: bolder;
+    position: relative;
+    border:none; 
+    border-radius:20px; 
+    padding:25px;
+    margin: 25px;
+    min-height:30px; 
+    min-width: 120px;
+    background-color: var(--yellow-soft);
+    color: var(--black-soft);
+    cursor: pointer;
+  }
+  .custom-button-2:hover {
+    transition: 0.3s;
+  }
 
 </style>

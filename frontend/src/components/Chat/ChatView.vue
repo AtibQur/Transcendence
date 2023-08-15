@@ -12,23 +12,23 @@
                 <JoinChannel/>
             </div>
             <div class="chat-box" :style="{ height: chatBoxHeight + 'px' }">
-        <div class="chat-content" v-if="inChannel || inDm">
-            <ChatBox @showInfo="showInfo" :channelId="channelId"/>
-            <ChannelInfoDisplay 
-                @showInfo="showInfo"
-                @changeChannel="changeChannel"
-                :channelId="channelId"
-                :isDm="inDm"
-                :isVisible="showChannelInfo"
-            />
-        </div>
-        <div class="select-chat" v-else>
-            <h3> Select a channel or DM to start chatting </h3>
-        </div>
-        <div class="add-message-wrapper" v-if="inChannel || inDm">
-            <AddMessage :channelId="channelId"/>
-        </div>
-    </div>
+                 <div class="chat-content" v-if="inChannel || inDm">
+                    <ChatBox @showInfo="showInfo" :channelId="channelId"/>
+                    <ChannelInfoDisplay 
+                        @showInfo="showInfo"
+                        @changeChannel="changeChannel"
+                        :channelId="channelId"
+                        :isDm="inDm"
+                        :isVisible="showChannelInfo"
+                    />
+                </div>
+                <div class="select-chat" v-else>
+                    <h3> Select a channel or DM to start chatting </h3>
+                </div>
+                <div class="add-message-wrapper" v-if="inChannel || inDm">
+                    <AddMessage :channelId="channelId"/>
+                </div>
+            </div>
             <div class="right-side-bar">
                 <div class="profile-container">
                     <div class="ProfilePicture">
@@ -48,7 +48,7 @@
 
 <script setup lang="ts">
 import { onBeforeMount, ref, onMounted, onUnmounted } from 'vue';
-import axiosInstance from '../../axiosConfig';
+import axiosInstance from '@/utils/axiosConfig';
 import ChannelDisplay from './ChannelDisplay.vue';
 import ChannelInfoDisplay from './ChannelInfoDisplay.vue';
 import AddChannel from './AddChannel.vue';
@@ -58,8 +58,8 @@ import DmDisplay from './DmDisplay.vue';
 import AddDm from './AddDm.vue';
 import JoinChannel from './JoinChannel.vue';
 
-const playerId = parseInt(sessionStorage.getItem('playerId') || '0');
-const username = sessionStorage.getItem('username') || '0';
+const playerId = parseInt(localStorage.getItem('playerId') || '0');
+const username = localStorage.getItem('username') || '0';
 const profilePicture = ref('');
 const inChannel = ref(false);
 const inDm = ref(false);

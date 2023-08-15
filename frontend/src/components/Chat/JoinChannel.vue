@@ -41,8 +41,8 @@
 </template>
 
 <script setup lang="ts">
-import { socket } from '@/socket';
-import axiosInstance from '../../axiosConfig';
+import { socket } from '@/utils/socket';
+import axiosInstance from '@/utils/axiosConfig';
 import { ref } from 'vue';
 import Password from 'primevue/password'
 import Dialog from 'primevue/dialog';
@@ -53,8 +53,8 @@ const allChannels = ref(null);
 const toast = useToast();
 const showJoinDialog = ref<boolean>(false);
 const showPasswordDialog = ref<boolean>(false);
-const playerId = parseInt(sessionStorage.getItem('playerId') || '0');
-const playerUsername = sessionStorage.getItem('username') || '';
+const playerId = parseInt(localStorage.getItem('playerId') || '0');
+const playerUsername = localStorage.getItem('username') || '';
 const password = ref<string>('');
 const errorMessage = ref<string>('');
 const protectedChannel = ref(null);
