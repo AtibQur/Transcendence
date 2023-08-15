@@ -88,7 +88,6 @@ export class AuthController {
         if (verified) {
             const jwt = await this.authService.generateToken(payload);
             
-            console.log("verifieeedd")
             response.cookie('auth', jwt)
             return jwt;
         }

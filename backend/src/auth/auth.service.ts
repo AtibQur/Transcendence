@@ -40,9 +40,6 @@ export class AuthService {
                 Authorization: `Bearer ${token}`,
             },
         });
-        /*
-        als de user niet bestaat in de database, maak hier een nieuwe user aan
-        */
         return response.data;
     }
 }
