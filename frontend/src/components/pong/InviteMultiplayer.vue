@@ -161,6 +161,7 @@ methods: {
 	printInfo() {
 		this.moveInfo.socket_match_id = socket_match_id.value;
 		// console.log("p1 username: ", username1, "p2 username :", username2)
+		
 		// this.dynamicText1 = username1;
 		// this.dynamicText2 = username2;
 		console.log("this user:", socket.id)

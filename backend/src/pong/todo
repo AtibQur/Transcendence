@@ -7,10 +7,11 @@
 <!-- - paddle afmeting fixen met ichiro -->
 <!-- - player inviting when disconnected / game not starting but text showing -->
 
-- toast when match found
+<!-- - toast when match found -->
 <!-- - toast when already in queue -->
 
 - game not saving in database when player 1 disconnects (idk)
 - player not redirecting when in result screen page (easy?)
+- leave match no result screen
 
 - CLEAN UP!!

@@ -28,15 +28,6 @@ import {
 	socket_match_id,
 	} from './shared';
 
-// const p1_id = ref<number>(0);
-// const p2_id = ref<number>(0);
-// const p1_socket_id = ref<string>('');
-// const p2_socket_id = ref<string>('');
-// const username1 = ref<string>('');
-// const username2 = ref<string>('');
-// const match_id = ref<number>(0);
-// const socket_match_id = ref<number>(0);
-
 const confirm = useConfirm();
 const toast = useToast();
 const router = useRouter();
@@ -59,10 +50,6 @@ onBeforeMount( () => {
 		socket_id.value = data.socket_id;
 		isInvited.value = true
 		invitorUsername.value = await fetchUsername(player_id.value);
-	});
-	// redirecting to a accepted match
-	socket.on('redirecting', (data) => {
-		// startMatch.value = true;
 	});
 	socket.on('alreadyInMatch', () => {
 			toast.add({ severity: 'info', summary: "You are in a match", detail: '', life: 3000 });
@@ -130,7 +117,7 @@ const confirm1 = async () => {
 				if (response === 1)
 					toast.add({ severity: 'error', summary: "Error starting match", detail: '', life: 3000 });
 			});
-			socket.emit('inviteAccepted', player_id.value)
+			// socket.emit('inviteAccepted', player_id.value)
 			// startMatch.value = true;
 			startThisMatch()
 			isInvited.value = false;

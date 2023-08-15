@@ -46,7 +46,7 @@ mounted() {
 		if (this.score1 === 10){
 			this.win = true;
 			if (this.stop == true){
-				// this.disconnected = true;
+				this.disconnected = true;
 				this.$toast.add({ severity: 'warn', summary: "The other player disconnected", detail: '', life: 3000 });
 			}
 		}
@@ -58,7 +58,7 @@ mounted() {
 		if (this.score2 === 10){
 			this.win = true;
 			if (this.stop == true){
-				// this.disconnected = true;
+				this.disconnected = true;
 				this.$toast.add({ severity: 'warn', summary: "The other player disconnected", detail: '', life: 3000 });
 			}
 		}

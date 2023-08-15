@@ -3,27 +3,17 @@
 		<h1>PONG</h1>
 	</div>
 	<div class="btns">
-		<!-- <button class="custom-button-1" v-if="!showDifficulty && !startMatch" @click="showDifficulty = true">Solo Game</button> -->
-		<div v-if="!showDifficulty">
-			<div class="login" v-if="!playerId">
-				<h3> Please log in to play online </h3>
-			</div>
-			<div class="login" v-if="playerId">
-					<button class="custom-button-1" v-if="!startMatch" @click="joinGame">Join Queue</button>
-			</div>
+		<div class="login" v-if="!playerId">
+			<h3> Please log in to play online </h3>
 		</div>
-		<div v-if="showDifficulty">
-			<button class="custom-button-1" v-if="!startSolo" @click="selectDifficulty('easy')">Easy</button>
-			<button class="custom-button-1" v-if="!startSolo" @click="selectDifficulty('medium')">Medium</button>
-			<button class="custom-button-1" v-if="!startSolo" @click="selectDifficulty('hard')">Hard</button>
+		<div class="login" v-if="playerId">
+				<button class="custom-button-1" v-if="!startMatch" @click="joinGame">Join Queue</button>
 		</div>
 	</div>
 	<MatchMaking v-if="startMatch" />
-	<SoloMatch v-if="startSolo" :selectedDifficulty="selectedDifficulty"/>
 </template>
 
 <script lang="ts">
-import SoloMatch from './SoloMatch.vue'
 import MatchMaking from './MatchMaking.vue'
 import { socket } from '../../socket'
 import { useRouter } from 'vue-router'
@@ -32,13 +22,10 @@ import { useToast } from 'primevue/usetoast';
 
 export default defineComponent({
 	name: "PlayGame",
-	components: {SoloMatch, MatchMaking},
+	components: {MatchMaking},
 data() {
 	return {
 			playerId: 0,
-			showDifficulty: false,
-			selectedDifficulty: 'easy',
-			startSolo: false,
 			startMatch: false,
 			router: useRouter(1),
 			toast: useToast(),
@@ -53,6 +40,7 @@ methods: {
 		(response) => {
 			if (response === 1){
 				this.$toast.add({ severity: 'error', summary: "You can't start a match when you've send out an invite", detail: '', life: 3000 });
+				return ;
 			}
 			if (response === 2){
 				this.$toast.add({ severity: 'info', summary: "You are already in the queue", detail: '', life: 3000 });
@@ -63,14 +51,6 @@ methods: {
 			}
 		});
 	},
-	selectDifficulty(difficulty){
-
-		socket.emit('soloMatchStarted', socket.id)
-		console.log("Solo match started");
-		this.selectedDifficulty = difficulty;
-		console.log('difficulty:', difficulty);
-		this.startSolo = true;
-	}
 },
 mounted() {
 	this.playerId = parseInt(sessionStorage.getItem('playerId') || '0');

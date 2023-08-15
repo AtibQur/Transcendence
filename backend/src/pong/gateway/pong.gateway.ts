@@ -28,14 +28,6 @@ export class PongGateway {
 	constructor(
 		private readonly pongService: PongService
 	){}
-	
-	// INVITE
-	@SubscribeMessage('inviteAccepted')
-	inviteAccepted(
-		@ConnectedSocket() client: Socket,
-		@MessageBody() player_id: number): void {
-			this.pongService.inviteAccepted(client, player_id);
-	}
 
 	@SubscribeMessage('acceptInvite')
 	handleAccept(

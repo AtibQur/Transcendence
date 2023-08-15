@@ -32,12 +32,6 @@ export class PongService {
 	private inMatch: inMatch[] = [];
 	private matchList: { [key: number]: MatchInstance } = {};
 
-	// CREATE MATCH VIA INVITE
-	async inviteAccepted(client: Socket, player_id: number){
-		const id = await this.playerService.findOneIntraUsername(player_id);
-		client.to(id).emit('redirecting', player_id);
-	}
-
 	// HANDLE ACCEPTING INVITE
 	async handleAcceptInvite(client: Socket, p1_id: number, p1_socket_id: string, p2_id: number, p2_socket_id: string){
 		if (!this.inviteList || this.inviteList.length === 0){
@@ -88,7 +82,7 @@ export class PongService {
 		// can't send an invite to someone who already received an invite
 		if (this.inviteList.some((player) => player.opponent_id === opponent_id)) {
 			console.log(player_id, "you can't invite someone who already received an invite");
-			return 2;
+			return 6;
 		}
 		// can't send an invite to someone who is in a match 
 		console.log("in match:", this.inMatch)
@@ -104,8 +98,8 @@ export class PongService {
 			return 4;
 		}
 		// can't send an invite when you or the opponent is in the waiting room
-		if (this.waitingList.some((player) => playerInfo.player_id === player_id)){ return 5 }
-		if (this.waitingList.some((player) => playerInfo.player_id === opponent_id)){ return 5 }
+		if (this.waitingList.some((player) => player.player_id === player_id)){ return 5 }
+		if (this.waitingList.some((player) => player.player_id === opponent_id)){ return 5 }
 		// cant sent an invite when you are already inviting someone
 		if (!this.inviteList.some((player) => player.player_id === player_id)) {
 			this.inviteList.push(playerInfo);

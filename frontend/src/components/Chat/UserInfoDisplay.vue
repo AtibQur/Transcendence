@@ -229,13 +229,15 @@ const invite = async() => {
         else if (response === 1)
             toast.add({ severity: 'error', summary: "You can't send an invite, you are already in a match", detail: '', life: 3000 });
         else if (response === 2)
-            toast.add({ severity: 'error', summary: "That player already received an invite", detail: '', life: 3000 });
+            toast.add({ severity: 'error', summary: "You already send out an invite", detail: '', life: 3000 });
 		else if (response === 3)
 			toast.add({ severity: 'error', summary: "You can't send an invite to a player who is in a match", detail: '', life: 3000 });
 		else if (response === 4)
 			toast.add({ severity: 'error', summary: "You can't send an invite to a player who already send out an invite", detail: '', life: 3000 });
 		else if (response === 5)
 			toast.add({ severity: 'error', summary: "You can't send an invite if you of the opponent is in the queue", detail: '', life: 3000 });
+		else if (response === 6)
+			toast.add({ severity: 'error', summary: "That player already received an invite", detail: '', life: 3000 });
 		})
 }
 
