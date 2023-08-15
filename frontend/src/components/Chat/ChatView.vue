@@ -12,23 +12,23 @@
                 <JoinChannel/>
             </div>
             <div class="chat-box" :style="{ height: chatBoxHeight + 'px' }">
-        <div class="chat-content" v-if="inChannel || inDm">
-            <ChatBox @showInfo="showInfo" :channelId="channelId"/>
-            <ChannelInfoDisplay 
-                @showInfo="showInfo"
-                @changeChannel="changeChannel"
-                :channelId="channelId"
-                :isDm="inDm"
-                :isVisible="showChannelInfo"
-            />
-        </div>
-        <div class="select-chat" v-else>
-            <h3> Select a channel or DM to start chatting </h3>
-        </div>
-        <div class="add-message-wrapper" v-if="inChannel || inDm">
-            <AddMessage :channelId="channelId"/>
-        </div>
-    </div>
+                 <div class="chat-content" v-if="inChannel || inDm">
+                    <ChatBox @showInfo="showInfo" :channelId="channelId"/>
+                    <ChannelInfoDisplay 
+                        @showInfo="showInfo"
+                        @changeChannel="changeChannel"
+                        :channelId="channelId"
+                        :isDm="inDm"
+                        :isVisible="showChannelInfo"
+                    />
+                </div>
+                <div class="select-chat" v-else>
+                    <h3> Select a channel or DM to start chatting </h3>
+                </div>
+                <div class="add-message-wrapper" v-if="inChannel || inDm">
+                    <AddMessage :channelId="channelId"/>
+                </div>
+            </div>
             <div class="right-side-bar">
                 <div class="profile-container">
                     <div class="ProfilePicture">
