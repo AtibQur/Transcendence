@@ -3,7 +3,7 @@
 		<h1>PONG</h1>
 	</div>
 	<div class="btns">
-		<button class="custom-button-1" v-if="!showDifficulty && !startMatch" @click="showDifficulty = true">Solo Game</button>
+		<!-- <button class="custom-button-1" v-if="!showDifficulty && !startMatch" @click="showDifficulty = true">Solo Game</button> -->
 		<div v-if="!showDifficulty">
 			<div class="login" v-if="!playerId">
 				<h3> Please log in to play online </h3>

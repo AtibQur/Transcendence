@@ -111,10 +111,10 @@ export default {
 	// }
 	// });
 
-	socket.on('alreadyInMatch', () => {
-		console.log("you are already in a match, redirecting...")
-		router.push({ name: 'multiplayer' })
-	});
+	// socket.on('alreadyInMatch', () => {
+	// 	console.log("you are already in a match, redirecting...")
+	// 	router.push({ name: 'multiplayer' })
+	// });
 
 	return {
 		animatedDots,

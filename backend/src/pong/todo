@@ -10,8 +10,7 @@
 - toast when match found
 <!-- - toast when already in queue -->
 
-- game not saving in database when player 1 disconnects
-- player not redirecting when in result screen page
-- warning if join queue will cancel invite ??
+- game not saving in database when player 1 disconnects (idk)
+- player not redirecting when in result screen page (easy?)
 
-- CLEAN UP
+- CLEAN UP!!

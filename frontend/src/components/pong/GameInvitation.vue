@@ -6,7 +6,7 @@
 		<button class="custom-button-1" @click="confirm1()" icon="pi pi-check" label="Confirm">Accept</button>
 		<button class="custom-button-1" @click="confirm2()" icon="pi pi-check" label="Delete">Decline</button>
 	</Dialog>
-	<MatchMaking v-if="startMatch" />
+	<MatchMaking v-if="showLoadingText" />
 </template>
 
 <script setup lang="ts">
@@ -42,7 +42,7 @@ const toast = useToast();
 const router = useRouter();
 
 // INVITE PEOPLE TO PLAY
-const startMatch = ref(false);
+const showLoadingText = ref(false);
 const opponentId = parseInt(sessionStorage.getItem('playerId') || '0');
 const isInvited = ref(false);
 const player1 = ref(0);
@@ -62,7 +62,7 @@ onBeforeMount( () => {
 	});
 	// redirecting to a accepted match
 	socket.on('redirecting', (data) => {
-		startMatch.value = true;
+		// startMatch.value = true;
 	});
 	socket.on('alreadyInMatch', () => {
 			toast.add({ severity: 'info', summary: "You are in a match", detail: '', life: 3000 });
@@ -75,6 +75,7 @@ onBeforeMount( () => {
 const startThisMatch = () => {
 	socket.on('startMatch', async (match) => {
 	try {
+			showLoadingText.value = false;
 			const { player1, player2 } = match;
 			console.log("P1:", player1)
 			console.log("P2:", player2)
