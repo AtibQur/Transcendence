@@ -597,7 +597,7 @@ async updateTfaCode(id: number, code: string) {
     const playerStatsData = await this.findOneStats(id);
     const achievements = await this.findOneAchievements(id);
     const achievedCount = Object.values(achievements).filter(value => value === true).length;
-    let ladderLevel = (playerStatsData.wins * 2) - playerStatsData.losses + (achievedCount * 5);
+    let ladderLevel = (playerStatsData.wins * 2) - playerStatsData.losses + achievedCount;
     ladderLevel = Math.max(ladderLevel, 1);
 
     this.updateLadderLevel(id, ladderLevel);
