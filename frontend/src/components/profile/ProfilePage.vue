@@ -176,7 +176,7 @@
         message = "Username already exists";
         throw new Error(message);
       }
-      localStorage.setItem('username', username.value); //update localStorage
+      localStorage.setItem('username', username.value);
       closeModal();
     }
     catch (error) {

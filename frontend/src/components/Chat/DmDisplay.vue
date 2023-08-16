@@ -10,7 +10,6 @@
             </li>
         </ul>
     </div>
-    <!-- <p></p> -->
 </template>
 
 <script setup lang="ts">
