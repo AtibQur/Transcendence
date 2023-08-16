@@ -117,11 +117,6 @@ In our project, we've adopted a containerized approach using Docker to ensure co
 
 ## Chat
 
-<p align="center">
-    <img width="49%" src="https://github.com/amplication/amplication/assets/73097785/62c8d533-8475-4290-abc8-c433c095e68a.png" alt="plugins"/>
-&nbsp;
-    <img width="49%" src="https://github.com/amplication/amplication/assets/73097785/9c67a354-a06f-47d1-a118-ab89b775bf91.png" alt="microservices"/>
-</p> 
 
 - **Channel Creation:** Create public, private, or password-protected chat rooms tailored to your preferences.
 
@@ -137,11 +132,6 @@ In our project, we've adopted a containerized approach using Docker to ensure co
 
 ## Game
 
-<p align="center">
-    <img width="49%" src="https://github.com/amplication/amplication/assets/73097785/62c8d533-8475-4290-abc8-c433c095e68a.png" alt="plugins"/>
-&nbsp;
-    <img width="49%" src="https://github.com/amplication/amplication/assets/73097785/9c67a354-a06f-47d1-a118-ab89b775bf91.png" alt="microservices"/>
-</p> 
 
 - **Real-time game:** Engage in real-time Pong matches, bringing the classic game to life through seamless online play.
 
