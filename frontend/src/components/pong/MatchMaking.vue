@@ -47,6 +47,7 @@ export default {
   animation: loadingAnimation 1s infinite;
   opacity: 100%;
   font-size: 40px;
+  /* margin-top: 30px */
 }
 
 @keyframes loadingAnimation {

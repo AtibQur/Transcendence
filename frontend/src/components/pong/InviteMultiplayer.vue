@@ -1,17 +1,11 @@
 <template>
 	<div v-if="!showResults">
-		<div class="PongLogo">
-			<h1>PONG</h1>
-			<div class="text-wrapper">
-				<h1 class="dynamic-text">{{ dynamicText1 }}</h1>
-				<h1 class="dynamic-text">{{ dynamicText2 }}</h1>
-			</div>
-		</div>
 		<GameTools :player1="player1" :player2="player2" 
 			:ball="ball" 
 			:score1="score1" :score2="score2"
 			:powerUpPixel="powerUpPixel"
-			:powerUpVisable="powerUpVisable" />
+			:powerUpVisable="powerUpVisable" 
+			:dynamicText1="dynamicText1" :dynamicText2="dynamicText2" />
 	</div>
 
 	<ResultScreen v-if="showResults" 
@@ -24,10 +18,10 @@
 	import { socket } from '@/utils/socket'
 	import { defineComponent } from 'vue'
 	import {
-	p1_id,
-	p2_id,
 	p1_socket_id,
 	p2_socket_id,
+	username1,
+	username2,
 	match_id,
 	socket_match_id,
 	} from './shared';
@@ -131,7 +125,7 @@ methods: {
 		}
 	},
 
-	async saveFinishedMatch(match_id: number, socket_match_id: number, score1: number, score2: number) {
+	async saveFinishedMatch(match_id: number, score1: number, score2: number) {
 		let finished_match_res;
 		if (match_id){
 			finished_match_res = await axiosInstance.patch('match/finish/' + match_id.toString(), {player_points: score1, opponent_points: score2});
@@ -153,8 +147,8 @@ methods: {
 
 	printInfo() {
 		this.moveInfo.socket_match_id = socket_match_id.value;
-		// this.dynamicText1 = username1;
-		// this.dynamicText2 = username2;
+		this.dynamicText1 = username1.value;
+		this.dynamicText2 = username2.value;
 		if (socket.id === undefined)
 			this.$router.push('/play');
 		this.p1_socketId = p1_socket_id.value;
@@ -193,13 +187,13 @@ mounted() {
 
 		this.showPowerUp(this.powerUp);
 		if (match.state === 'end'){
-			this.saveFinishedMatch(match_id.value, socket_match_id.value, this.score1, this.score2)
+			this.saveFinishedMatch(match_id.value, this.score1, this.score2)
 			this.showResults = true
 			this.matchSaved = true;
 		}
 		if (match.state === 'stop'){
 			this.stop = true;	
-			this.saveFinishedMatch(match_id.value, socket_match_id.value, this.score1, this.score2)
+			this.saveFinishedMatch(match_id.value, this.score1, this.score2)
 			this.showResults = true;
 			this.matchSaved = true;
 		}
@@ -229,13 +223,6 @@ mounted() {
 	z-index: 10;
 	font-size: 12px;
 	text-shadow: none;
-}
-
-.dynamic-text {
-	/* position: absolute; */
-	/* left: 50%; */
-  margin: 250px;
-  /* transform: translate(-50%, -50%); */
 }
 
 </style>

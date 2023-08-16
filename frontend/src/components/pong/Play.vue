@@ -1,14 +1,9 @@
 <template>
-	<div class="PongLogo">
+	<div class="PongLogo2">
 		<h1>PONG</h1>
 	</div>
 	<div class="btns">
-		<div class="login" v-if="!playerId">
-			<h3> Please log in to play online </h3>
-		</div>
-		<div class="login" v-if="playerId">
-				<button class="custom-button-1" v-if="!startMatch" @click="joinGame">Join Queue</button>
-		</div>
+		<button class="custom-button-1" v-if="!startMatch" @click="joinGame">Join Queue</button>
 	</div>
 	<MatchMaking v-if="startMatch" />
 </template>
@@ -44,29 +39,26 @@ methods: {
 			if (response === 2){
 				this.$toast.add({ severity: 'info', summary: "You are already in the queue", detail: '', life: 3000 });
 			}
+			if (response === 3){
+				this.$toast.add({ severity: 'error', summary: "Error starting match, please refresh the page", detail: '', life: 3000 });
+				return ;
+			}
 			else {
 				this.$toast.add({ severity: 'info', summary: "You joined the queue", detail: '', life: 3000 });
 				this.startMatch = true;
 			}
 		});
 	},
-},
-mounted() {
-	this.playerId = parseInt(localStorage.getItem('playerId') || '0');
-},
+}
 })
 </script>
 
 <style>
 .btns {
-	position: absolute;
-	top: 40%;
-	left: 50%;
-	transform: translate(-50%, -50%);
+	margin-top: 100px;
 }
 .start-button{
 	display: block;
-	margin-top: 10px;
 	width: 200px; 
 	height: 60px; 
 	font-size: 16px;

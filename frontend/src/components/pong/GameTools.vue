@@ -1,6 +1,11 @@
 <template>
+	<div class="PongLogo2">
+		<h1>PONG</h1>
+	</div>
 	<div class="container">
 		<div class="canvas" :style="{ width: 858 + 'px', height: 526 + 'px' }" ref="canvas">
+			<h1 class="dynamicText1">{{ dynamicText1 }}</h1>
+			<h1 class="dynamicText2">{{ dynamicText2 }}</h1>
 			<div class="player1" :style="{ top: player1.y + 'px', left: player1.x + 'px', height: player1.h + 'px' }"></div>
 			<div class="player2" :style="{ top: player2.y + 'px', left: player2.x + 'px', height: player2.h + 'px' }"></div>
 			<div class="score1"> {{ score1 }}</div>
@@ -23,7 +28,7 @@ import { defineComponent } from 'vue'
 export default defineComponent({
     name: "GameTools",
 	components: {},
-	props: ['player1', 'player2', 'ball', 'score1', 'score2', 'powerUpPixel', 'powerUpVisable'],
+	props: ['player1', 'player2', 'ball', 'score1', 'score2', 'powerUpPixel', 'powerUpVisable', 'dynamicText1', 'dynamicText2'],
 data() {
 	return {
 		center: 0,
@@ -46,16 +51,38 @@ html, body {
   padding: 0;
   height: 100%;
 }
-.PongLogo {
-	position: relative;
-	font-size: 50px;
-	padding: 100px;
+
+.PongLogo2 {
+	font-family: 'JetBrains Mono';
+	font-style: normal;
+	font-weight: 400;
+	font-size: 60px;
+	line-height: 127px;
+	color: #134279;
+	text-shadow: -3px 3px var(--gray-shadow);
+	padding: 4%;
 }
+
+.dynamicText1 {
+	position: absolute;
+	font-size: 20px;
+	left: 15%;
+	top: -65px;
+	color: rgb(90, 92, 159);
+}
+
+.dynamicText2 {
+	position: absolute;
+	font-size: 20px;
+	right: 15%;
+	top: -65px;
+	color: rgb(90, 92, 159);
+}
+
 .container {
 	display: flex;
 	align-items: center;
 	justify-content: center;
-	height: 30vh;
 }
 .canvas{
 	position: relative;
