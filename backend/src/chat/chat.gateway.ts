@@ -121,7 +121,7 @@ export class ChatGateway {
             client.join(dm_id.toString());
 
             const playerUsername = await this.playerService.findOneUsername(payload.player_id);
-            const friendUsername = await this.playerService.findOneIntraUsername(payload.friend_id);
+            const friendUsername = await this.playerService.findOneUsername(payload.friend_id);
             this.server.to(client.id).emit('newDm', {channel_id: dm_id, friend_username: friendUsername});
             this.server.to(friendUsername).emit('newDm', {channel_id: dm_id, friend_username: playerUsername});
             
