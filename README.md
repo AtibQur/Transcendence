@@ -1,6 +1,6 @@
 # Transcendence
 
-<img src="https://github.com/AtibQur/Transcendence/blob/main/Homepage.png" alt="HomePage" width="900"/>
+<img src="https://github.com/AtibQur/Transcendence/blob/main/img/Homepage.png" alt="HomePage" width="900"/>
 
 ## Table of Contents
 - [Transcendence](#transcendence)
@@ -148,11 +148,11 @@ Furthermore, user passwords are never stored in their original form in our datab
 ## Contributors
 
 [//]: contributor-faces
-<a href="https://github.com/AtibQur"><img src="https://github.com/AtibQur/Transcendence/blob/main/img/frontend/public/trance_avatars/haseeb.png" alt="Haseeb" width="175"></a>
-<a href="https://github.com/mariadaan"><img src="https://github.com/AtibQur/Transcendence/blob/main/img/frontend/public/trance_avatars/maria.png" alt="Maria" width="175"></a>
-<a href="https://github.com/steryu"><img src="https://github.com/AtibQur/Transcendence/blob/main/img/frontend/public/trance_avatars/ster.png" alt="Ster" width="175"></a>
-<a href="https://github.com/rkoper"><img src="https://github.com/AtibQur/Transcendence/blob/main/img/frontend/public/trance_avatars/raav.png" alt="Raav" width="175"></a>
-<a href="https://github.com/tessavdvorst"><img src="https://github.com/AtibQur/Transcendence/blob/main/img/frontend/public/trance_avatars/tessa.png" alt="Tessa" width="175"></a>
+<a href="https://github.com/AtibQur"><img src="https://github.com/AtibQur/Transcendence/blob/main/frontend/public/trance_avatars/haseeb.png" alt="Haseeb" width="175"></a>
+<a href="https://github.com/mariadaan"><img src="https://github.com/AtibQur/Transcendence/blob/main/frontend/public/trance_avatars/maria.png" alt="Maria" width="175"></a>
+<a href="https://github.com/steryu"><img src="https://github.com/AtibQur/Transcendence/blob/main/frontend/public/trance_avatars/ster.png" alt="Ster" width="175"></a>
+<a href="https://github.com/rkoper"><img src="https://github.com/AtibQur/Transcendence/blob/main/frontend/public/trance_avatars/raav.png" alt="Raav" width="175"></a>
+<a href="https://github.com/tessavdvorst"><img src="https://github.com/AtibQur/Transcendence/blob/main/frontend/public/trance_avatars/tessa.png" alt="Tessa" width="175"></a>
 
 [//]: contributor-faces
 
