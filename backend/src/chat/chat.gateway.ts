@@ -42,9 +42,7 @@ export class ChatGateway {
     async handleConnection(@ConnectedSocket() client: Socket){
         const playerId = parseInt(client.handshake.auth.id);
         if (!playerId) //if nobody is logged in
-        {
             console.log('nobody logged');
-        }
         else {
             console.log('logging...');
             const intra_username = await this.playerService.findOneIntraUsername(playerId);

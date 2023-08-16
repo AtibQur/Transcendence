@@ -55,8 +55,13 @@ const addFriend = async (avatarPath: string) => {
     toast.add({ severity: 'success', summary: 'Successfully added friend', detail: '', life: 3000 });
   }
   else {
-    router.push({ name: 'friends', params: { playerName: username }});
-  }
+        await axiosInstance
+            .get(`player/exists/${username}`)
+            .then ((response) => {
+                if (response.data == true)
+                    router.push({ name: 'friends', params: { playerName: username }});
+            })
+}
 };
 </script>
 
