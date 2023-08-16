@@ -166,16 +166,16 @@ export class PongService {
 		}
 
 		const data = await this.matchService.createMatch(newData);
-		if (!data) // check this return!!!
+		if (!data)
 			return ;
 
-		client.to(player1.socket_id).emit('startMatch', { 
+		client.to(player1.socket_id).emit('startMatch', {
 			player1: { player_id: player1.player_id, socket_id: player1.socket_id }, 
 			player2: { player_id: player2.player_id, socket_id: player2.socket_id },
 			matchId: match.id,
 			data: data
 		});
-		client.emit('startMatch', { 
+		client.emit('startMatch', {
 			player1: { player_id: player1.player_id, socket_id: player1.socket_id },
 			player2: { player_id: player2.player_id, socket_id: player2.socket_id },
 			matchId: match.id,

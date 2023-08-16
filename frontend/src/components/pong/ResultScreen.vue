@@ -1,5 +1,5 @@
 <template>
-	<div class="PongLogo">
+	<div class="PongLogo2">
 		<h1>PONG</h1>
 	</div>
 	<div class="gameover-container" v-if="win">
@@ -78,6 +78,7 @@ mounted() {
     justify-content: center;
 	font-size: 40px;
 	color: #134279;
+	margin-top: 300px;
 }
 .disconnected-container {
 	font-size: 20px;

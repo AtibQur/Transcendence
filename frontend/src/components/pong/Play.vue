@@ -1,5 +1,5 @@
 <template>
-	<div class="PongLogo">
+	<div class="PongLogo2">
 		<h1>PONG</h1>
 	</div>
 	<div class="btns">
@@ -44,6 +44,10 @@ methods: {
 			if (response === 2){
 				this.$toast.add({ severity: 'info', summary: "You are already in the queue", detail: '', life: 3000 });
 			}
+			if (response === 3){
+				this.$toast.add({ severity: 'error', summary: "Error starting match, please refresh the page", detail: '', life: 3000 });
+				return ;
+			}
 			else {
 				this.$toast.add({ severity: 'info', summary: "You joined the queue", detail: '', life: 3000 });
 				this.startMatch = true;
@@ -59,14 +63,14 @@ mounted() {
 
 <style>
 .btns {
-	position: absolute;
+	/* position: absolute;
 	top: 40%;
 	left: 50%;
-	transform: translate(-50%, -50%);
+	transform: translate(-50%, -50%); */
+	margin-top: 100px;
 }
 .start-button{
 	display: block;
-	margin-top: 10px;
 	width: 200px; 
 	height: 60px; 
 	font-size: 16px;

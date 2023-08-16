@@ -35,7 +35,7 @@ export class PongGame {
 		radius: 10.5,
 		dX: 1,
 		dY: 1,
-		velocity: 4,
+		velocity: 5,
 	};
 	private _game: Game = {
 		state: 'start',
@@ -74,7 +74,7 @@ export class PongGame {
 	resetBall(ball) {
 		ball.x = this.canvasWidth / 2;
 		ball.y = this.canvasHeight / 2;
-		this.ball.velocity = 4;
+		this.ball.velocity = 5;
 		ball.dX = Math.random() > 0.5 ? 1 : - 1;
 		ball.dY = Math.random() > 0.5 ? 1 : - 1;
 		ball.y = Math.min(Math.max((Math.random() * this.canvasHeight), 100), 
@@ -115,7 +115,7 @@ export class PongGame {
 					ball.dY = 0;
 				}
 			}
-			this.ball.velocity += 0.5;
+			this.ball.velocity += 1;
 		}
 		// right paddle
 		if ((ball.x + 21) >= 833) {
@@ -130,7 +130,7 @@ export class PongGame {
 					ball.dY = 0;
 				}
 			}
-			this.ball.velocity += 0.5;
+			this.ball.velocity += 1;
 		}
 	}
 

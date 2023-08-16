@@ -23,6 +23,8 @@ import {
 	p2_id,
 	p1_socket_id,
 	p2_socket_id,
+	username1,
+	username2,
 	match_id,
 	socket_match_id,
 	} from './shared';
@@ -64,6 +66,8 @@ const startThisMatch = () => {
 
 			p1_id.value = match.player1.player_id;
 			p2_id.value = match.player2.player_id;
+			username1.value = "player1"
+			username2.value = "player2"
 			p1_socket_id.value = match.player1.socket_id;
 			p2_socket_id.value = match.player2.socket_id;
 			socket_match_id.value = match.matchId;
