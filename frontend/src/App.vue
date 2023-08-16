@@ -1,9 +1,9 @@
 <template>
-	<Menubar />
 	<router-view />
 	<Toast/>
 	<ConfirmDialog />
 	<template v-if="localVariablesAreSet">
+		<Menubar />
 		<FriendsMenubar />
 		<ChatNotification />
 		<GameInvitation />
