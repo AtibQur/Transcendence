@@ -21,6 +21,7 @@ export const loginPlayer = async () => {
     localStorage.setItem('newUser', 'true');
   }
 
+  socket.disconnect();
   socket.auth = { id: playerId };
   socket.connect();
 
