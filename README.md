@@ -42,6 +42,8 @@ A single-page web application with real-time chat functionality
 
 ## Usage
 
+_For our application, Docker needs to be installed on your computer._
+
 To use our application, you must first clone this repository.
 
 ```console
@@ -55,6 +57,12 @@ make
 ```
 
 This will start the deployment of our project using Docker Compose. 
+
+To launch Prisma Studio run the following command
+
+```console
+docker-compose exec backend npx prisma studio
+```
 
 ## Docker Container Setup
 
@@ -75,13 +83,25 @@ In our project, we've adopted a containerized approach using Docker to ensure co
 - Our PostgreSQL database is contained within this Docker container.
 - The container communicates via port 5432.
 
-<img src="https://github.com/AtibQur/Transcendence/blob/main/Container.png" alt="Container" width="400"/>
+<img src="https://github.com/AtibQur/Transcendence/blob/main/img/Container.png" alt="Container" width="400"/>
 
 ## Database Schema
 
-<img src="https://github.com/AtibQur/Transcendence/blob/fixReadMe/Database.png" alt="DatabaseSchema" width="900"/>
+<img src="https://github.com/AtibQur/Transcendence/blob/main/img/Database.png" alt="DatabaseSchema" width="900"/>
 
 ## User Account
+
+<p align="center">
+    <img width="49%" src="https://github.com/AtibQur/Transcendence/blob/main/img/LogIn.png" alt="apis"/>
+&nbsp;
+    <img width="49%" src="https://github.com/AtibQur/Transcendence/blob/main/img/Friends.png" alt="data-models"/>
+</p>
+
+<p align="center">
+    <img width="49%" src="https://github.com/AtibQur/Transcendence/blob/main/img/Leaderboard.png" alt="apis"/>
+&nbsp;
+    <img width="49%" src="https://github.com/AtibQur/Transcendence/blob/main/img/MatchHistory.png" alt="data-models"/>
+</p>
 
 - **Secure Login:** Seamlessly log in through OAuth using the 42 intranet, ensuring both accessibility and account security.
 
@@ -97,6 +117,7 @@ In our project, we've adopted a containerized approach using Docker to ensure co
 
 ## Chat
 
+
 - **Channel Creation:** Create public, private, or password-protected chat rooms tailored to your preferences.
 
 - **Direct Messaging:** Establish one-on-one connections with fellow gamers through direct messaging.
@@ -110,6 +131,7 @@ In our project, we've adopted a containerized approach using Docker to ensure co
 - **Invitations and Profiles:** Seamlessly send game invitations and access player profiles for a comprehensive understanding of your fellow gamers.
 
 ## Game
+
 
 - **Real-time game:** Engage in real-time Pong matches, bringing the classic game to life through seamless online play.
 
@@ -126,11 +148,11 @@ Furthermore, user passwords are never stored in their original form in our datab
 ## Contributors
 
 [//]: contributor-faces
-<a href="https://github.com/AtibQur"><img src="https://github.com/AtibQur/Transcendence/blob/all_merged/frontend/public/trance_avatars/haseeb.png" alt="Haseeb" width="175"></a>
-<a href="https://github.com/mariadaan"><img src="https://github.com/AtibQur/Transcendence/blob/all_merged/frontend/public/trance_avatars/maria.png" alt="Maria" width="175"></a>
-<a href="https://github.com/steryu"><img src="https://github.com/AtibQur/Transcendence/blob/all_merged/frontend/public/trance_avatars/ster.png" alt="Ster" width="175"></a>
-<a href="https://github.com/rkoper"><img src="https://github.com/AtibQur/Transcendence/blob/all_merged/frontend/public/trance_avatars/raav.png" alt="Raav" width="175"></a>
-<a href="https://github.com/tessavdvorst"><img src="https://github.com/AtibQur/Transcendence/blob/all_merged/frontend/public/trance_avatars/tessa.png" alt="Tessa" width="175"></a>
+<a href="https://github.com/AtibQur"><img src="https://github.com/AtibQur/Transcendence/blob/main/img/frontend/public/trance_avatars/haseeb.png" alt="Haseeb" width="175"></a>
+<a href="https://github.com/mariadaan"><img src="https://github.com/AtibQur/Transcendence/blob/main/img/frontend/public/trance_avatars/maria.png" alt="Maria" width="175"></a>
+<a href="https://github.com/steryu"><img src="https://github.com/AtibQur/Transcendence/blob/main/img/frontend/public/trance_avatars/ster.png" alt="Ster" width="175"></a>
+<a href="https://github.com/rkoper"><img src="https://github.com/AtibQur/Transcendence/blob/main/img/frontend/public/trance_avatars/raav.png" alt="Raav" width="175"></a>
+<a href="https://github.com/tessavdvorst"><img src="https://github.com/AtibQur/Transcendence/blob/main/img/frontend/public/trance_avatars/tessa.png" alt="Tessa" width="175"></a>
 
 [//]: contributor-faces
 
