@@ -37,7 +37,7 @@
     font-family: 'JetBrains Mono';
     font-style: normal;
     font-weight: 400;
-    font-size: 96px;
+    font-size: 60px;
     line-height: 127px;
     color: #134279;
     text-shadow: -3px 3px var(--gray-shadow);
