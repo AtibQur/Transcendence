@@ -1,9 +1,9 @@
 <template>
-	<Menubar />
 	<router-view />
 	<Toast/>
 	<ConfirmDialog />
 	<template v-if="localVariablesAreSet">
+		<Menubar />
 		<FriendsMenubar />
 		<ChatNotification />
 		<GameInvitation />
@@ -33,6 +33,7 @@ onMounted( async () => {
 	}
 	else if (accesstoken == "HALF_TOKEN") {
 		router.push({ name: 'TFA_VERIFY'});
+		localVariablesAreSet.value = true;
 	}
 	else {
 		setDefaultAuthHeader(accesstoken);

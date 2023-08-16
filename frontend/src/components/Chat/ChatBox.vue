@@ -53,6 +53,9 @@ const props = defineProps({
           if (response.data == false && message.channel_id == currentChannelId.value) {
             messages.value.push(message);
           }
+        })
+        .catch((error) => {
+          messages.value.push(message);
         });
 
       // Use nextTick to ensure that the DOM is updated before scrolling

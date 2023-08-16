@@ -189,6 +189,11 @@
   async function logOut() {
         removeCookie('auth');
         removeDefaultAuthHeader();
+        localStorage.removeItem('playerId')
+        localStorage.removeItem('intraUsername')
+        localStorage.removeItem('username')
+        localStorage.removeItem('logged')
+        toast.add({ severity: 'info', summary: 'Successfully logged out', detail: 'Log out on profile.intra.42.fr to fully log out', life: 6000 });
         router.push(process.env.VUE_APP_HOST_COMPUTER + ':8080/auth')
     }
 
