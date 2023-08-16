@@ -498,7 +498,7 @@ export class ChannelmemberService {
   {
     try {
         const member = await this.findChannelmember(member_id, channel_id);
-        const timeToMute = 10000; //1 minute
+        const timeToMute = 60000; //1 minute
 
         if (member.is_muted)
         {
