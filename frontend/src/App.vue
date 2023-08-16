@@ -56,6 +56,7 @@ onMounted( async () => {
 html,
 body,
 #app {
+	background-color: rgb(178, 218, 231);
 	padding: 0;
 	margin: 0;
 	height: 100%;
