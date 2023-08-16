@@ -19,7 +19,8 @@ import ProfilePage from './components/profile/ProfilePage.vue';
 import Leaderboard from './components/LeaderboardComponent.vue';
 import ChatView from './components/Chat/ChatView.vue';
 import FriendsPage from './components/Friends/FriendsMenubar/FriendsPage.vue';
-import WelcomePage from './components/profile/WelcomePage.vue'
+import WelcomePage from './components/profile/WelcomePage.vue';
+import NotFound from './components/NotFound.vue';
 import PrimeVue from 'primevue/config';
 import ToastService from 'primevue/toastservice';
 import ConfirmationService from 'primevue/confirmationservice';
@@ -28,6 +29,7 @@ import createCookies from 'vue3-cookies';
 const routes: RouteRecordRaw[] = [
     {
       path: '/',
+      name: 'home',
       component: Home,
     },
     {
@@ -69,6 +71,7 @@ const routes: RouteRecordRaw[] = [
     },
     {
       path: '/profile',
+      name: 'profile',
       component: ProfilePage,
     },
     {
@@ -89,6 +92,10 @@ const routes: RouteRecordRaw[] = [
       name: 'welcome',
       path: '/welcome',
       component: WelcomePage,
+    },
+    {
+        path: "/:notFound",
+        component: NotFound,
     },
 ];
 

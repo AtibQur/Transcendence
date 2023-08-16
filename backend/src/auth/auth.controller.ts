@@ -1,10 +1,9 @@
-import { Body, Controller, Get, Header, Post, Req, Res, Session, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, Post, Req, Res } from '@nestjs/common';
 import { PlayerService } from 'src/player/player.service';
 import * as speakeasy from 'speakeasy';
 import * as qrCode from 'qrcode';
-import e, { Request, Response, response } from 'express';
+import { Request, Response } from 'express';
 import { AuthService } from './auth.service';
-import * as dotenv from 'dotenv';
 
 @Controller('auth')
 export class AuthController {
@@ -57,7 +56,6 @@ export class AuthController {
         response.redirect(process.env.HOST_COMPUTER + ':8080/');
     }
     
-    // @UseGuards(AuthenticatedGuard)
     @Get('2fa')
     async twoFactorAuth(@Req() req: any, @Res() res: any) {
         const token = req.header('Authorization').split(' ')[1];
@@ -75,7 +73,6 @@ export class AuthController {
         return true;
     }
     
-    // @UseGuards(AuthenticatedGuard)
     @Post('2fa/verify')
     async create(@Body() body: any, @Res({passthrough: true}) response: Response) {
         const payload = JSON.parse(body.payload);

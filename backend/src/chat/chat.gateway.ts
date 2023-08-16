@@ -42,9 +42,7 @@ export class ChatGateway {
     async handleConnection(@ConnectedSocket() client: Socket){
         const playerId = parseInt(client.handshake.auth.id);
         if (!playerId) //if nobody is logged in
-        {
             console.log('nobody logged');
-        }
         else {
             console.log('logging...');
             const intra_username = await this.playerService.findOneIntraUsername(playerId);
@@ -123,7 +121,7 @@ export class ChatGateway {
             client.join(dm_id.toString());
 
             const playerUsername = await this.playerService.findOneUsername(payload.player_id);
-            const friendUsername = await this.playerService.findOneIntraUsername(payload.friend_id);
+            const friendUsername = await this.playerService.findOneUsername(payload.friend_id);
             this.server.to(client.id).emit('newDm', {channel_id: dm_id, friend_username: friendUsername});
             this.server.to(friendUsername).emit('newDm', {channel_id: dm_id, friend_username: playerUsername});
             
