@@ -14,7 +14,7 @@
                 </div>
             </div>
             <br>
-            <button @click=goToHome() class="custom-button-1">Back Home</button>
+            <button @click=goToHome() class="custom-button-1">Back to Home</button>
         </div>
     </div>
 </template>

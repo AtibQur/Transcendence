@@ -6,4 +6,5 @@ export class UpdatePlayerDto extends PartialType(CreatePlayerDto) {
     username?: string;
     achieved?: string;
     status?: PlayerStatus;
+    two_factor_enabled?: boolean;
 }

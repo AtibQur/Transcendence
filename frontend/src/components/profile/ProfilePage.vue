@@ -203,21 +203,25 @@
 
   const enableTFA = async () => {
     showChangeTfaModal.value = false;
+    toast.add({ severity: 'success', summary: "Two Factor Authorization enabled", detail: '', life: 3000 });
     try {
       router.push({ name: '2fa' });
+      twofastatus.value = 'enabled';
     } catch (error) {
-      alert("Two Factor Authorization could not be enabled");
+      toast.add({ severity: 'error', summary: "Two Factor Authorization could not be enabled", detail: '', life: 3000 });
+
     }
   };
 
   const disableTFA = async () => {
     showChangeTfaModal.value = false;
     try {
-      await axiosInstance.get('user/disable2fa');
-      alert("Two Factor Authorization disabled");
-      showChangeTfaModal.value = false;
+        await axiosInstance.patch('user/disable2fa', {two_factor_enabled: false});
+        toast.add({ severity: 'success', summary: "Two Factor Authorization disabled", detail: '', life: 3000 });
+        showChangeTfaModal.value = false;
+        twofastatus.value = 'disabled';
     } catch (error) {
-      alert("Two Factor Authorization could not be disabled");
+      toast.add({ severity: 'error', summary: "Two Factor Authorization could not be disabled", detail: '', life: 3000 });
     }
   };
 
