@@ -22,6 +22,9 @@ export class BlockedplayerService {
       if (await this.isBlocked(id, createBlockedplayerDto.blockedUsername)) {
         throw new Error("You already blocked this player");
       }
+      if (blockedId == id) {
+        throw new Error("You can not block yourself");
+      }
       const blockedPlayer = await prisma.blockedPlayer.create({
         data: {
           player_id: id,
