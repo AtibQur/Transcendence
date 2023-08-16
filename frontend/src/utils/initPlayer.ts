@@ -36,7 +36,7 @@ export async function setDefaultAvatar(playerId: string) {
 
   const defaultAvatarFile = await fetch(defaultAvatarPath);
   const defaultAvatarBlob = await defaultAvatarFile.blob();
-  const defaultAvatar = new File([defaultAvatarBlob], 'default_avatar.png');
+  const defaultAvatar = new File([defaultAvatarBlob], 'default_avatar');
 
   const formData = new FormData();
   formData.append('avatar', defaultAvatar);
