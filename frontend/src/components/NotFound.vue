@@ -23,7 +23,7 @@
 import { ref } from 'vue';
 import { useRouter } from 'vue-router';
 
-const avatars = ref<string[]>(['haseeb.png', 'maria.png', 'raav.png', 'ster.png', 'tessa.png']);
+const avatars = ref<string[]>(['haseeb_sad.png', 'maria_sad.png', 'raav_sad.png', 'ster_sad.png', 'tessa_sad.png']);
 const router = useRouter();
 
 function goToHome() {
