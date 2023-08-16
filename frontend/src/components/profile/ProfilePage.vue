@@ -189,7 +189,7 @@
   async function logOut() {
         removeCookie('auth');
         removeDefaultAuthHeader();
-        router.push(process.env.VUE_APP_HOST_COMPUTER + ':8080/')
+        router.push(process.env.VUE_APP_HOST_COMPUTER + ':8080/auth')
     }
 
   const cancelNameChange = () => {
