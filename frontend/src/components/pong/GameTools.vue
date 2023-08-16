@@ -60,22 +60,22 @@ html, body {
 	line-height: 127px;
 	color: #134279;
 	text-shadow: -3px 3px var(--gray-shadow);
-	padding: 100px;
+	padding: 4%;
 }
 
 .dynamicText1 {
 	position: absolute;
-	font-size: 25px;
+	font-size: 20px;
 	left: 15%;
-	top: -70px;
+	top: -65px;
 	color: rgb(90, 92, 159);
 }
 
 .dynamicText2 {
 	position: absolute;
-	font-size: 25px;
+	font-size: 20px;
 	right: 15%;
-	top: -70px;
+	top: -65px;
 	color: rgb(90, 92, 159);
 }
 
@@ -83,7 +83,6 @@ html, body {
 	display: flex;
 	align-items: center;
 	justify-content: center;
-	height: 30vh;
 }
 .canvas{
 	position: relative;
