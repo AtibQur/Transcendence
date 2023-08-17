@@ -152,7 +152,7 @@ _Click on us to check out our github!_
 <a href="https://github.com/AtibQur"><img src="https://github.com/AtibQur/Transcendence/blob/main/frontend/public/trance_avatars/haseeb.png" alt="Haseeb" width="175"></a>
 <a href="https://github.com/mariadaan"><img src="https://github.com/AtibQur/Transcendence/blob/main/frontend/public/trance_avatars/maria.png" alt="Maria" width="175"></a>
 <a href="https://github.com/steryu"><img src="https://github.com/AtibQur/Transcendence/blob/main/frontend/public/trance_avatars/ster.png" alt="Ster" width="175"></a>
-<a href="https://github.com/rkoper"><img src="https://github.com/AtibQur/Transcendence/blob/main/frontend/public/trance_avatars/raav.png" alt="Raav" width="175"></a>
+<a href="https://github.com/raavkoper"><img src="https://github.com/AtibQur/Transcendence/blob/main/frontend/public/trance_avatars/raav.png" alt="Raav" width="175"></a>
 <a href="https://github.com/tessavdvorst"><img src="https://github.com/AtibQur/Transcendence/blob/main/frontend/public/trance_avatars/tessa.png" alt="Tessa" width="175"></a>
 
 [//]: contributor-faces
