@@ -118,7 +118,7 @@ In our project, we've adopted a containerized approach using Docker to ensure co
 - **Match History:** Relive your gaming journey through an extensive Match History, encompassing 1v1 games, ladder matches, and more.
 
 ## Chat
-
+<img src="https://github.com/AtibQur/Transcendence/blob/main/img/Chat.png" alt="Chat" width="900"/>
 
 - **Channel Creation:** Create public, private, or password-protected chat rooms tailored to your preferences.
 
@@ -133,7 +133,11 @@ In our project, we've adopted a containerized approach using Docker to ensure co
 - **Invitations and Profiles:** Seamlessly send game invitations and access player profiles for a comprehensive understanding of your fellow gamers.
 
 ## Game
-
+<p align="center">
+    <img width="49%" src="https://github.com/AtibQur/Transcendence/blob/main/img/PongLight.png" alt="ponglight"/>
+&nbsp;
+    <img width="49%" src="https://github.com/AtibQur/Transcendence/blob/main/img/PongDark.png" alt="pongdark"/>
+</p>
 
 - **Real-time game:** Engage in real-time Pong matches, bringing the classic game to life through seamless online play.
 
