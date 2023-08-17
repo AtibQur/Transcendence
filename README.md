@@ -6,8 +6,8 @@
 - [Transcendence](#transcendence)
   - [Table of Contents](#table-of-contents)
   - [Project Overview](#project-overview)
-  - [Tech Stack](#tech-stack)
   - [Usage](#usage)
+  - [Tech Stack](#tech-stack)
   - [Docker Container Setup](#docker-container-setup)
   - [Database Schema](#database-schema)
   - [User Account](#user-account)
@@ -19,6 +19,33 @@
 ## Project Overview
 
 A single-page web application with real-time chat functionality
+
+## Usage
+
+_For our application, Docker needs to be installed on your computer._
+
+To use our application, you must first clone this repository.
+
+```console
+git clone https://github.com/AtibQur/Transcendence.git
+```
+
+Optional: If you want to use our test database with a few accounts to add as friends and some chats to join to see the platform in full glory, download the db folder <a href="https://drive.google.com/drive/folders/1V3ys8A_nG8dSllafXoHRy-wTheLdXiTH?usp=drive_link"> here</a> and place it in the root of this repository, **before** you run make. If you don't do this, you will start out with an empty database and you will be the first user.
+
+Once you have the source code and Docker is stared on your computer, you can compile it using the provided Makefile.
+
+```console
+make
+```
+
+This will start the deployment of our project using Docker Compose. 
+
+To launch Prisma Studio run the following command
+
+```console
+docker-compose exec backend npx prisma studio
+```
+If successfull, Prisma Studio is hosted on localhost:5555. Go to this address in your browser and see a visual editor of all the data in your database. If localhost:5555 remains unavailable, try running `npx prisma studio` in the terminal of the backend container.
 
 ## Tech Stack
 
@@ -38,31 +65,6 @@ A single-page web application with real-time chat functionality
 | **_PrimeVue_**           | PrimeVue offers a rich set of UI components that seamlessly integrate into Vue applications, enhancing the visual appeal and user experience.                               |
 | **_Speakeasy and QR Code_** | Speakeasy facilitates two-factor authentication (2FA) implementation, adding an extra layer of security to user accounts. QR codes streamline the setup process for users, such as 2FA setup.                                        |
 | **_Axios_**              | Axios simplifies HTTP requests, allowing smooth communication between the frontend and backend.                                                                           |
-
-
-## Usage
-
-_For our application, Docker needs to be installed on your computer._
-
-To use our application, you must first clone this repository.
-
-```console
-git clone https://github.com/AtibQur/Transcendence.git
-```
-
-Once you have the source code, you can compile it using the provided Makefile.
-
-```console
-make
-```
-
-This will start the deployment of our project using Docker Compose. 
-
-To launch Prisma Studio run the following command
-
-```console
-docker-compose exec backend npx prisma studio
-```
 
 ## Docker Container Setup
 
