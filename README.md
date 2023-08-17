@@ -146,6 +146,7 @@ To maintain the confidentiality of user information, we employ **JSON Web Tokens
 Furthermore, user passwords are never stored in their original form in our database. Instead, we use the **bcrypt hashing algorithm** to hash passwords before storing them. Bcrypt is known for its security and resistance to brute-force attacks, adding an additional layer of protection against unauthorized access.
 
 ## Contributors
+_Click on us to check out our github!_
 
 [//]: contributor-faces
 <a href="https://github.com/AtibQur"><img src="https://github.com/AtibQur/Transcendence/blob/main/frontend/public/trance_avatars/haseeb.png" alt="Haseeb" width="175"></a>
